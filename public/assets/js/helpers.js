@@ -77,3 +77,15 @@ async function pager(url, event) {
         console.error('Erro ao carregar o conteúdo:', error);
     }
 }
+
+document.querySelectorAll('a#aside-link').forEach(function(link) {
+    link.addEventListener('click', function(event) {
+        event.preventDefault(); // Impede o comportamento padrão do link
+
+        // Obtém a URL do href do link clicado
+        var url = link.getAttribute('href');
+
+        // Chama a função carregarConteudo() com a URL obtida
+        carregarConteudo(url, event);
+    });
+});

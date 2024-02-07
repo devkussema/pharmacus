@@ -13,33 +13,34 @@
                             <div class="p-3">
                                 <h2 class="mb-2">Sign In</h2>
                                 <p>Login to stay connected.</p>
-                                <form>
+                                <form id="login-form" method="POST" action="{{ route('login') }}">
+                                    @csrf
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="floating-label form-group">
-                                                <input class="floating-input form-control" type="email" placeholder=" ">
+                                                <input name="email" class="floating-input form-control" type="email" placeholder=" ">
                                                 <label>Email</label>
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="floating-label form-group">
-                                                <input class="floating-input form-control" type="password" placeholder=" ">
+                                                <input name="password" class="floating-input form-control" type="password" placeholder=" ">
                                                 <label>Password</label>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="custom-control custom-checkbox mb-3">
                                                 <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                                <label class="custom-control-label control-label-1" for="customCheck1">Remember Me</label>
+                                                <label class="custom-control-label control-label-1" for="customCheck1">Lembre-me</label>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <a href="auth-recoverpw.html" class="text-primary float-right">Forgot Password?</a>
+                                            <a href="auth-recoverpw.html" class="text-primary float-right">Esqueceu a senha?</a>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Sign In</button>
+                                    <button type="submit" class="btn btn-primary">Entrar</button>
                                     <p class="mt-3">
-                                        Create an Account <a href="{{ route('registar') }}" onclick="pager('{{ route('registar') }}', event)" class="text-primary">Criar conta</a>
+                                        Criar conta <a href="{{ route('registar') }}" onclick="pager('{{ route('registar') }}', event)" class="text-primary">Criar conta</a>
                                     </p>
                                 </form>
                             </div>

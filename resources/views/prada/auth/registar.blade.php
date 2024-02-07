@@ -13,42 +13,32 @@
                                 <div class="p-3">
                                     <h2 class="mb-2">Sign Up</h2>
                                     <p>Create your POSDash account.</p>
-                                    <form>
+                                    <form id="cadastrar" method="POST" action="{{ route('registar.store') }}">
+                                        @include('partials.session')
+                                        @csrf
                                         <div class="row">
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-12">
                                                 <div class="floating-label form-group">
-                                                    <input class="floating-input form-control" type="text" placeholder=" ">
-                                                    <label>Full Name</label>
+                                                    <input name="nome" class="floating-input form-control" type="text" placeholder=" ">
+                                                    <label>Nome</label>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-12">
                                                 <div class="floating-label form-group">
-                                                    <input class="floating-input form-control" type="text" placeholder=" ">
-                                                    <label>Last Name</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="floating-label form-group">
-                                                    <input class="floating-input form-control" type="email" placeholder=" ">
+                                                    <input name="email" class="floating-input form-control" type="email" placeholder=" ">
                                                     <label>Email</label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="floating-label form-group">
-                                                    <input class="floating-input form-control" type="text" placeholder=" ">
-                                                    <label>Phone No.</label>
+                                                    <input name="password" class="floating-input form-control" type="password" placeholder=" ">
+                                                    <label>Senha</label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="floating-label form-group">
-                                                    <input class="floating-input form-control" type="password" placeholder=" ">
-                                                    <label>Password</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="floating-label form-group">
-                                                    <input class="floating-input form-control" type="password" placeholder=" ">
-                                                    <label>Confirm Password</label>
+                                                    <input name="password_confirmation" class="floating-input form-control" type="password" placeholder=" ">
+                                                    <label>Confirmar Senha</label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
@@ -58,9 +48,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                                        <button type="submit" class="btn btn-primary">Criar conta</button>
                                         <p class="mt-3">
-                                            Already have an Account <a href="{{ route('login') }}" onclick="pager('{{ route('login') }}', event)" class="text-primary">Entrar</a>
+                                            Já tens uma conta <a href="{{ route('login') }}" onclick="pager('{{ route('login') }}', event)" class="text-primary">Entrar</a>
                                         </p>
                                     </form>
                                 </div>

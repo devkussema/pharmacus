@@ -45,5 +45,7 @@
 
     <!-- app JavaScript -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+    
+    <script src="{{ asset('assets/js/form.js') }}" async></script>
 </body>
 </html>
