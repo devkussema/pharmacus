@@ -57,28 +57,4 @@ $(document).ready(function() {
     });
 });
 
-$(document).ready(function() {
-    $('#formAddFarmacia').submit(function(e) {
-        e.preventDefault(); // Evita o comportamento padrão do formulário
 
-        // Obtém os dados do formulário
-        var formData = new FormData(this);
-
-        // Envia a requisição AJAX
-        $.ajax({
-            type: 'POST',
-            url: $(this).attr('action'),
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                // Manipule a resposta aqui, se necessário
-                console.log(response);
-            },
-            error: function(xhr, status, error) {
-                // Manipule os erros aqui
-                console.error(xhr.responseText);
-            }
-        });
-    });
-});

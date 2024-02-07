@@ -89,3 +89,43 @@ document.querySelectorAll('a#aside-link').forEach(function(link) {
         carregarConteudo(url, event);
     });
 });
+
+$(document).ready(function() {
+    $('#formAddFarmacia').submit(function(e) {
+        e.preventDefault(); // Evita o comportamento padrão do formulário
+
+        // Obtém os dados do formulário
+        var formData = new FormData(this);
+
+        // Envia a requisição AJAX
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                toastr.success(response.message);
+
+                // Limpa o formulário
+                $('#formAddFarmacia')[0].reset();
+
+                // Oculta o modal
+                $('#addFarmacia').modal('hide');
+            },
+            error: function(xhr, status, error) {
+                // Trata os erros de validação retornados pelo servidor
+                var errors = xhr.responseJSON.errors;
+                var errorMessage = '';
+
+                // Percorre os erros e os concatena em uma única string
+                $.each(errors, function(key, value) {
+                    errorMessage += value[0] + '<br>';
+                });
+
+                // Exibe a mensagem de erro com Toastr.js
+                toastr.error(errorMessage, 'Erro de validação');
+            }
+        });
+    });
+});

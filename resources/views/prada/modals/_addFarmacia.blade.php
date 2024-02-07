@@ -5,7 +5,7 @@
                 <div class="popup text-left">
                     <h4 class="mb-3">Adicionar farmácia</h4>
                     <div class="content create-workform bg-body">
-                        <form id="formAddFarmacia" method="POST" enctype="multipart/form-data">
+                        <form id="formAddFarmacia" action="{{ route('farmacia.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
                                 <label for="nome_farmacia">Nome *</label>

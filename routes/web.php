@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Prada\Controllers\HomeController;
 use App\Prada\Controllers\AuthController;
+use App\Prada\Controllers\FarmaciaController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,28 @@ Route::middleware('auth')->group(function () {
     Route::get('/main', [HomeController::class, 'home'])->name('main');
     Route::get('/produtos', [HomeController::class, 'produto'])->name('produto');
     Route::get('/categorias', [HomeController::class, 'categoria'])->name('categoria');
+
+    Route::prefix('farmacia')->group(function () {
+        Route::get('/', [FarmaciaController::class, 'index'])->name('farmacia');
+
+        // Rota para exibir o formulário de criação de farmácia
+        Route::get('/create', [FarmaciaController::class, 'create'])->name('farmacia.create');
+    
+        // Rota para processar o formulário de criação de farmácia
+        Route::post('/store', [FarmaciaController::class, 'store'])->name('farmacia.store');
+    
+        // Rota para exibir detalhes da farmácia
+        Route::get('/{farmacia}', [FarmaciaController::class, 'show'])->name('farmacia.show');
+    
+        // Rota para exibir o formulário de edição de farmácia
+        Route::get('/{farmacia}/edit', [FarmaciaController::class, 'edit'])->name('farmacia.edit');
+    
+        // Rota para processar o formulário de edição de farmácia
+        Route::put('/{farmacia}', [FarmaciaController::class, 'update'])->name('farmacia.update');
+    
+        // Rota para excluir a farmácia
+        Route::delete('/{farmacia}', [FarmaciaController::class, 'destroy'])->name('farmacia.destroy');
+    });
 
     Route::post('/logout', function () {
         Auth::logout();
