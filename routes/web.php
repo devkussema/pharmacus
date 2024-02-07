@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Prada\Controllers\HomeController;
 use App\Prada\Controllers\AuthController;
 use App\Prada\Controllers\FarmaciaController;
+use App\Prada\Controllers\CategoriaController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/produtos', [HomeController::class, 'produto'])->name('produto');
     Route::get('/categorias', [HomeController::class, 'categoria'])->name('categoria');
 
+    Route::prefix('categoria')->group(function () {
+        Route::post('/', [CategoriaController::class, 'store'])->name('categoria.store');
+    });
     Route::prefix('farmacia')->group(function () {
         Route::get('/', [FarmaciaController::class, 'index'])->name('farmacia');
 

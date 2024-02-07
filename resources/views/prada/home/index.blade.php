@@ -55,6 +55,7 @@
             </div>
         </div>
         @include('modals._addFarmacia')
+        @include('modals._addCategoria')
         <div class="content-page">
             <div class="container-fluid">
                 <div id="addAqui">

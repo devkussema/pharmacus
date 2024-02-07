@@ -72,8 +72,7 @@
 
                         <li>
                             <a href="#" class="btn border add-btn shadow-none mx-2 d-none d-md-block"
-                               data-toggle="modal" data-target="#new-order"><i class="las la-plus mr-2"></i>New
-                                Order</a>
+                               data-toggle="modal" data-target="#addCategoria"><i class="las la-plus mr-2"></i>Nova Categoria</a>
                         </li>
                         
                         <li>
