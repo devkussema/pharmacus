@@ -78,8 +78,8 @@ async function pager(url, event) {
     }
 }
 
-document.querySelectorAll('a#aside-link').forEach(function(link) {
-    link.addEventListener('click', function(event) {
+document.querySelectorAll('a#aside-link').forEach(function (link) {
+    link.addEventListener('click', function (event) {
         event.preventDefault(); // Impede o comportamento padrão do link
 
         // Obtém a URL do href do link clicado
@@ -90,8 +90,8 @@ document.querySelectorAll('a#aside-link').forEach(function(link) {
     });
 });
 
-$(document).ready(function() {
-    $('#formAddFarmacia').submit(function(e) {
+$(document).ready(function () {
+    $('#formAddFarmacia').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
 
         // Obtém os dados do formulário
@@ -104,7 +104,7 @@ $(document).ready(function() {
             data: formData,
             processData: false,
             contentType: false,
-            success: function(response) {
+            success: function (response) {
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -113,13 +113,13 @@ $(document).ready(function() {
                 // Oculta o modal
                 $('#addFarmacia').modal('hide');
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
 
                 // Percorre os erros e os concatena em uma única string
-                $.each(errors, function(key, value) {
+                $.each(errors, function (key, value) {
                     errorMessage += value[0] + '<br>';
                 });
 
@@ -129,7 +129,7 @@ $(document).ready(function() {
         });
     });
 
-    $('#formAddCategoria').submit(function(e) {
+    $('#formAddCategoria').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
 
         // Obtém os dados do formulário
@@ -142,7 +142,7 @@ $(document).ready(function() {
             data: formData,
             processData: false,
             contentType: false,
-            success: function(response) {
+            success: function (response) {
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -151,13 +151,13 @@ $(document).ready(function() {
                 // Oculta o modal
                 $('#addCategoria').modal('hide');
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
 
                 // Percorre os erros e os concatena em uma única string
-                $.each(errors, function(key, value) {
+                $.each(errors, function (key, value) {
                     errorMessage += value[0] + '<br>';
                 });
 
@@ -166,4 +166,26 @@ $(document).ready(function() {
             }
         });
     });
+
+
 });
+function getDataFarma(url) {
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            // Exibir a modal após preencher os dados
+            $('#editarFarmacia').modal('show');
+            // Preencher os campos do formulário com os dados recebidos
+            $('#nome_farmacia').val(response.nome);
+            $('#endereco').val(response.endereco);
+            $('#descricao').val(response.descricao);
+            // Lógica para manipular outros campos, se necessário
+        },
+        error: function (xhr, status, error) {
+            // Exibe a mensagem de erro com Toastr.js
+            toastr.error(xhr.responseJSON.message, 'Erro de validação');
+        }
+    });
+}   

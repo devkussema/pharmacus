@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('categoria')->group(function () {
         Route::post('/', [CategoriaController::class, 'store'])->name('categoria.store');
     });
+
     Route::prefix('farmacia')->group(function () {
         Route::get('/', [FarmaciaController::class, 'index'])->name('farmacia');
 
@@ -41,9 +42,11 @@ Route::middleware('auth')->group(function () {
     
         // Rota para exibir o formulário de edição de farmácia
         Route::get('/{farmacia}/edit', [FarmaciaController::class, 'edit'])->name('farmacia.edit');
+        
+        Route::get('/{id}/get', [FarmaciaController::class, 'get'])->name('farmacia.get');
     
         // Rota para processar o formulário de edição de farmácia
-        Route::put('/{farmacia}', [FarmaciaController::class, 'update'])->name('farmacia.update');
+        Route::post('/farmacia', [FarmaciaController::class, 'update'])->name('farmacia.update');
     
         // Rota para excluir a farmácia
         Route::delete('/{farmacia}', [FarmaciaController::class, 'destroy'])->name('farmacia.destroy');

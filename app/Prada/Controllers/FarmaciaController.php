@@ -13,6 +13,17 @@ class FarmaciaController extends Controller
         $farmacias = Farmacia::all();
         return view('farmacia.index', compact('farmacias'));
     }
+
+    public function get($id)
+    {
+        $get = Farmacia::find($id);
+        if ($get) {
+            return response()->json($get);
+        }
+
+        return response()->json(['message'=> 'Erro ao obter informações da farmácia, tente novamente'],403);
+    }
+
     public function store(Request $request)
     {
         // Validação dos dados do formulário
