@@ -13,6 +13,7 @@ class CategoriaController extends Controller
         $request->validate([
             'nome' => 'required',
             'tipo' => 'required',
+            'descricao' => 'nullable'
         ],[
             'nome.required' => 'O campo nome é obrigatório',
             'tipo.required' => 'O tipo da categoria é obrigatório'

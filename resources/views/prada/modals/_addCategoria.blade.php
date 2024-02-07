@@ -20,6 +20,11 @@
                                     <option value="geral">Geral</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="descricao_">Descrição</label>
+                                <textarea name="descricao" class="form-control" id="descricao_"
+                                    placeholder="Descrição da categoria"></textarea>
+                            </div>
                             <button type="submit" class="btn btn-primary">Cadastrar</button>
                         </form>
                     </div>
