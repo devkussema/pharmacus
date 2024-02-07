@@ -167,7 +167,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#formaddGerenteFarmaciam').submit(function (e) {
+    $('#formaddGerenteFarmacia').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
 
         // Obtém os dados do formulário

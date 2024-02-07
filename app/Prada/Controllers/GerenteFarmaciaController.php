@@ -4,6 +4,8 @@ namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ConfirmarGerente;
 use App\Models\{User, GerenteFarmacia};
 
 class GerenteFarmaciaController extends Controller
@@ -43,6 +45,9 @@ class GerenteFarmaciaController extends Controller
                 'farmacia_id' => $request->farmacia_id,
                 'contato' => $request->contato
             ]);
+
+            $destinatario = $request->email;
+            Mail::to($destinatario)->send(new ConfirmarGerente());
             
             return response()->json(['message' => "Gerente adicionado a farmácia"], 201);
         } else {
