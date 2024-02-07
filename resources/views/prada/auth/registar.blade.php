@@ -60,7 +60,7 @@
                                         </div>
                                         <button type="submit" class="btn btn-primary">Sign Up</button>
                                         <p class="mt-3">
-                                            Already have an Account <a href="{{ route('login') }}" class="text-primary">Entrar</a>
+                                            Already have an Account <a href="{{ route('login') }}" onclick="pager('{{ route('login') }}', event)" class="text-primary">Entrar</a>
                                         </p>
                                     </form>
                                 </div>

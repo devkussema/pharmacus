@@ -23,11 +23,14 @@
     <div class="wrapper">
         <section class="login-content">
             <div class="container">
-                @yield('conteudo')
+                <div id="rd">
+                    @yield('conteudo')
+                </div>
             </div>
         </section>
     </div>
 
+    <script src="{{ asset('assets/js/helpers.js') }}" async></script>
     <!-- Backend Bundle JavaScript -->
     <script src="{{ asset('assets/js/backend-bundle.min.js') }}"></script>
 

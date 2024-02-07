@@ -39,7 +39,7 @@
                                     </div>
                                     <button type="submit" class="btn btn-primary">Sign In</button>
                                     <p class="mt-3">
-                                        Create an Account <a href="{{ route('registar') }}" class="text-primary">Criar conta</a>
+                                        Create an Account <a href="{{ route('registar') }}" onclick="pager('{{ route('registar') }}', event)" class="text-primary">Criar conta</a>
                                     </p>
                                 </form>
                             </div>
