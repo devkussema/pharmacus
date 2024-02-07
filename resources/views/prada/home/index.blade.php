@@ -1,20 +1,22 @@
 <!doctype html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>POS Dash | Responsive Bootstrap 4 Admin Dashboard Template</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico')}}" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/backend-plugin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/backende209.css?v=1.0.0') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/remixicon/fonts/remixicon.css') }}">
 </head>
+
 <body class=" color-light ">
     <!-- loader Start -->
     <div id="loading">
@@ -50,7 +52,9 @@
                     </div>
                 </div>
             </div>
-        </div>      <div class="content-page">
+        </div>
+        @include('modals._addFarmacia')
+        <div class="content-page">
             <div class="container-fluid">
                 <div id="addAqui">
                     @yield('conteudo')
@@ -72,7 +76,11 @@
                             </ul>
                         </div>
                         <div class="col-lg-6 text-right">
-                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="#" class="">POS Dash</a>.
+                            <span class="mr-1">
+                                <script>
+                                    document.write(new Date().getFullYear())
+                                </script>©
+                            </span> <a href="#" class="">POS Dash</a>.
                         </div>
                     </div>
                 </div>
@@ -96,4 +104,5 @@
     <!-- app JavaScript -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
 </body>
+
 </html>

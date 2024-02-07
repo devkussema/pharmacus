@@ -75,6 +75,13 @@
                                data-toggle="modal" data-target="#new-order"><i class="las la-plus mr-2"></i>New
                                 Order</a>
                         </li>
+                        
+                        <li>
+                            <a href="#" title="Adicionar farmácia" class="btn add-btn shadow-none mx-2 d-none d-md-block"
+                               data-toggle="modal" data-target="#addFarmacia">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                            </a>
+                        </li>
                         {{-- btn pesquisa mobile --}}
                         <li class="nav-item nav-icon search-content">
                             <a href="#" class="search-toggle rounded" id="dropdownSearch" data-toggle="dropdown"
