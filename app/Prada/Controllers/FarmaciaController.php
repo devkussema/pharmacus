@@ -14,7 +14,7 @@ class FarmaciaController extends Controller
         return view('farmacia.index', compact('farmacias'));
     }
 
-    public function get($id)
+    public function get(string $id)
     {
         $get = Farmacia::find($id);
         if ($get) {

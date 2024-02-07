@@ -22,8 +22,8 @@
             </div>
             <div class="col-lg-12">
                 <div class="table-responsive rounded mb-3">
-                    <table class="data-table table mb-0 tbl-server-info">
-                        <thead class="bg-white text-uppercase">
+                    <table id="datatable" class="table data-table table-striped">
+                        <thead>
                             <tr class="ligth ligth-data">
                                 <th>
                                     <div class="checkbox d-inline-block">
@@ -54,7 +54,7 @@
                                                 class="img-fluid rounded avatar-50 mr-3" alt="image">
                                             <div>
                                                 {{ $farmacia->nome }}
-                                                <p class="mb-0"><small>This is test Product</small></p>
+                                                <p class="mb-0"><small>{{ $farmacia->id }}</small></p>
                                             </div>
                                         </div>
                                     </td>
@@ -70,6 +70,9 @@
                                             <button class="btn badge bg-success mr-2" onclick="getDataFarma('{{ route('farmacia.get', ['id' => $farmacia->id]) }}')" data-toggle="tooltip" data-placement="top"
                                                 title="" data-original-title="Editar">
                                                 <i class="ri-pencil-line mr-0"></i></button>
+                                            <a class="badge bg-info mr-2" href="#" onclick="preencherModalComFarmacia('{{ route('farmacia.get', ['id' => $farmacia->id]) }}')">
+                                                <i class="ri-bubble-chart-line"></i>
+                                            </a>
                                             <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
                                                 title="" data-original-title="Delete" href="#"><i
                                                     class="ri-delete-bin-line mr-0"></i></a>
@@ -83,4 +86,5 @@
             </div>
         </div>
     </div>
+    @include('modals._addGerenteFarmacia')
 @endsection

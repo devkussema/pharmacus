@@ -167,7 +167,43 @@ $(document).ready(function () {
         });
     });
 
+    $('#formaddGerenteFarmaciam').submit(function (e) {
+        e.preventDefault(); // Evita o comportamento padrão do formulário
 
+        // Obtém os dados do formulário
+        var formData = new FormData(this);
+
+        // Envia a requisição AJAX
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                toastr.success(response.message);
+
+                // Limpa o formulário
+                $('#formaddGerenteFarmacia')[0].reset();
+
+                // Oculta o modal
+                $('#addGerenteFarmacia').modal('hide');
+            },
+            error: function (xhr, status, error) {
+                // Trata os erros de validação retornados pelo servidor
+                var errors = xhr.responseJSON.errors;
+                var errorMessage = '';
+
+                // Percorre os erros e os concatena em uma única string
+                $.each(errors, function (key, value) {
+                    errorMessage += value[0] + '<br>';
+                });
+
+                // Exibe a mensagem de erro com Toastr.js
+                toastr.error(errorMessage, 'Erro de validação');
+            }
+        });
+    });
 });
 function getDataFarma(url) {
     $.ajax({
@@ -175,8 +211,7 @@ function getDataFarma(url) {
         type: 'GET',
         dataType: 'json',
         success: function (response) {
-            // Exibir a modal após preencher os dados
-            $('#editarFarmacia').modal('show');
+            
             // Preencher os campos do formulário com os dados recebidos
             $('#nome_farmacia').val(response.nome);
             $('#endereco').val(response.endereco);
@@ -184,8 +219,35 @@ function getDataFarma(url) {
             // Lógica para manipular outros campos, se necessário
         },
         error: function (xhr, status, error) {
+            console.error(xhr.responseText);
             // Exibe a mensagem de erro com Toastr.js
             toastr.error(xhr.responseJSON.message, 'Erro de validação');
         }
     });
+    // Exibir a modal após preencher os dados
+    $('#editarFarmacia').modal('show');
 }   
+
+function preencherModalComFarmacia(url) {
+    // Requisição AJAX para buscar os dados da farmácia
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(response) {
+            // Preencher o campo de nome da farmácia com os dados retornados
+            $('#formaddGerenteFarmacia #nome_farmacia').val(response.nome);
+            $('#formaddGerenteFarmacia #farmacia_id').val(response.id);
+
+            // Tornar o campo de nome da farmácia somente leitura (readonly)
+            $('#formaddGerenteFarmacia #nome_farmacia').prop('readonly', true);
+
+            // Exibir o modal
+            $('#addGerenteFarmacia').modal('show');
+        },
+        error: function(xhr, status, error) {
+            // Tratar erros, se necessário
+            //console.error(xhr.responseText);
+            alert('Erro ao obter dados da farmácia.');
+        }
+    });
+}

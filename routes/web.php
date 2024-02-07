@@ -6,6 +6,7 @@ use App\Prada\Controllers\HomeController;
 use App\Prada\Controllers\AuthController;
 use App\Prada\Controllers\FarmaciaController;
 use App\Prada\Controllers\CategoriaController;
+use App\Prada\Controllers\GerenteFarmaciaController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/', [CategoriaController::class, 'store'])->name('categoria.store');
     });
 
+    Route::prefix('gestor')->group(function () {
+        Route::post('/', [GerenteFarmaciaController::class, 'store'])->name('gestor.store');
+    });
+
     Route::prefix('farmacia')->group(function () {
         Route::get('/', [FarmaciaController::class, 'index'])->name('farmacia');
 
@@ -43,7 +48,7 @@ Route::middleware('auth')->group(function () {
         // Rota para exibir o formulário de edição de farmácia
         Route::get('/{farmacia}/edit', [FarmaciaController::class, 'edit'])->name('farmacia.edit');
         
-        Route::get('/{id}/get', [FarmaciaController::class, 'get'])->name('farmacia.get');
+        Route::get('/get/{id}', [FarmaciaController::class, 'get'])->name('farmacia.get');
     
         // Rota para processar o formulário de edição de farmácia
         Route::post('/farmacia', [FarmaciaController::class, 'update'])->name('farmacia.update');
