@@ -13,9 +13,14 @@ class Grupo extends Model
         'nome'
     ];
 
+    public function permissoes()
+    {
+        return $this->belongsToMany(Permissao::class);
+    }
+
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_grupos');
+        return $this->belongsToMany(User::class);
     }
 
 }

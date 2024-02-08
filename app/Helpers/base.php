@@ -3,6 +3,7 @@
 use \App\Models\User;
 use App\Models\Grupo;
 use App\Models\Permissao;
+use Illuminate\Support\Facades\DB;
 
 if (!function_exists('isPerm')) {
     function isPerm($permissaoChave, $permissoes)
@@ -33,14 +34,18 @@ if (!function_exists('getPerm')) {
         }
 
         // Obtém todas as permissões associadas ao grupo
-        $permissoes = Permissao::where('grupo_id', $grupo->id)->pluck('conteudo');
+        $permissoes = DB::table('grupo_permissoes')
+            ->join('permissoes', 'grupo_permissoes.permissao_id', '=', 'permissoes.id')
+            ->where('grupo_permissoes.grupo_id', $grupo->id)
+            ->pluck('permissoes.conteudo');
 
         // Retorna as permissões em formato JSON
         return $permissoes->toJson();
     }
 }
 
-function isGerente() {
+function isGerente()
+{
     if (auth()->user()->gerente) {
         return true;
     }

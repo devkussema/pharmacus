@@ -14,4 +14,9 @@ class Permissao extends Model
     protected $fillable = [
         'conteudo'
     ];
+
+    public function grupos()
+    {
+        return $this->belongsToMany(Grupo::class);
+    }
 }
