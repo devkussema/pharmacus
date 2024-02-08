@@ -14,15 +14,16 @@ class ConfirmarGerente extends Mailable
     use Queueable, SerializesModels;
 
     public $nome;
-    public $nome_para, $url;
+    public $nome_para, $url, $passwd;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($nome_para, $url)
+    public function __construct($nome_para, $url, $passwd)
     {
         $this->nome_para = $nome_para;
         $this->url = $url;
+        $this->passwd = $passwd;
     }
 
     /**

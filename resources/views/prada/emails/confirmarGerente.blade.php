@@ -146,7 +146,9 @@
                         <td bgcolor="#ffffff" align="left"
                             style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
                             <p style="margin: 0;">Estamos entusiasmados por você começar. Primeiro, você precisa 
-                                confirmar sua conta. Basta pressionar o botão abaixo.
+                                confirmar sua conta. Basta pressionar o botão abaixo.</p>
+                            <p>
+                                <code>{{ $passwd }}</code>, use esta senha para confirmar a sua conta. <b>Podes alterar mais tarde.</b>
                             </p>
                         </td>
                     </tr>

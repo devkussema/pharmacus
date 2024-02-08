@@ -9,17 +9,26 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
 use App\Mail\ConfirmarGerente;
-use App\Models\{User, GerenteFarmacia};
+use App\Models\{User, GerenteFarmacia, PersonalAccessToken as PAT};
 
 class GerenteFarmaciaController extends Controller
 {
+    public function confirmar($token)
+    {
+        $token = PAT::where("token", $token)->first();
+        if ($token) {
+            echo "O token: {$token}. existe";
+            return;
+        }
+        return "Token inexistente!";
+    }
     public function store(Request $request)
     {
         $request->validate([
             'nome' => 'required',
-            'email' => 'required',
+            'email' => 'required|unique:users,email',
             'farmacia_id' => 'required',
-            'contato' => 'required'
+            'contato' => 'required|unique:gerente_farmacias,contato'
         ], [
             'nome.required' => 'O nome do gerente é obrigatório',
             'email.required' => 'O email do gerente é obrigatório',
@@ -38,7 +47,7 @@ class GerenteFarmaciaController extends Controller
             'nome' => $request->nome,
             'email' => $request->email,
             'username' => $username,
-            'password' => $passwd
+            'password' => Hash::make($passwd)
         ]);
 
         if ($user) {
@@ -49,11 +58,11 @@ class GerenteFarmaciaController extends Controller
                 'contato' => $request->contato
             ]);
 
-            $token = $this->gerarToken($user);
+            $token = $user->createToken('Token de confirmação de conta de gerente da farmácia')->plainTextToken;
             $url = route('gestor.token', ['token' => $token]);
 
             $destinatario = $request->email;
-            Mail::to($destinatario)->send(new ConfirmarGerente($request->nome, $url));
+            Mail::to($destinatario)->send(new ConfirmarGerente($request->nome, $url, $passwd));
 
             return response()->json(['message' => "Gerente adicionado a farmácia"], 201);
         } else {
@@ -76,10 +85,6 @@ class GerenteFarmaciaController extends Controller
     {
         $token = $user->createToken('Token de confirmação de conta de gerente da farmácia', ['*'])->plainTextToken;
 
-        // Define a expiração do token para 2 horas a partir de agora
-        $expiration = Carbon::now()->addHours(2);
-        $token->token->expires_at = $expiration;
-        $token->token->save();
         return $token;
     }
 }
