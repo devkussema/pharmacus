@@ -12,4 +12,10 @@ class Grupo extends Model
     protected $fillable = [
         'nome'
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_grupos');
+    }
+
 }

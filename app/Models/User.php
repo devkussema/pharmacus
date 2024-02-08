@@ -36,6 +36,11 @@ class User extends Authenticatable
         });
     }
 
+    public function grupos()
+    {
+        return $this->belongsToMany(Grupo::class, 'user_grupos');
+    }
+
     public function gerente()
     {
         return $this->hasOne(User::class, 'id');
