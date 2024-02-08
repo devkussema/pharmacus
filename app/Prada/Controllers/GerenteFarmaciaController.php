@@ -5,6 +5,9 @@ namespace App\Prada\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
+use Carbon\Carbon;
 use App\Mail\ConfirmarGerente;
 use App\Models\{User, GerenteFarmacia};
 
@@ -17,7 +20,7 @@ class GerenteFarmaciaController extends Controller
             'email' => 'required',
             'farmacia_id' => 'required',
             'contato' => 'required'
-        ],[
+        ], [
             'nome.required' => 'O nome do gerente é obrigatório',
             'email.required' => 'O email do gerente é obrigatório',
             'farmacia_id.required' => 'Por favor selecione uma farmácia',
@@ -37,7 +40,7 @@ class GerenteFarmaciaController extends Controller
             'username' => $username,
             'password' => $passwd
         ]);
-        
+
         if ($user) {
             GerenteFarmacia::create([
                 'user_id' => $user->id,
@@ -46,22 +49,37 @@ class GerenteFarmaciaController extends Controller
                 'contato' => $request->contato
             ]);
 
+            $token = $this->gerarToken($user);
+            $url = route('gestor.token', ['token' => $token]);
+
             $destinatario = $request->email;
-            Mail::to($destinatario)->send(new ConfirmarGerente());
-            
+            Mail::to($destinatario)->send(new ConfirmarGerente($request->nome, $url));
+
             return response()->json(['message' => "Gerente adicionado a farmácia"], 201);
         } else {
             return response()->json(['message' => "Erro ao criar o usuário"], 500);
         }
     }
 
-    public function gerarSenhaAutomatica() {
+    public function gerarSenhaAutomatica()
+    {
         // Gera um número aleatório de 100000 a 999999
         $senha = rand(100000, 999999);
-        
+
         // Converte o número para uma string de 6 dígitos
         $senha = str_pad($senha, 6, '0', STR_PAD_LEFT);
-        
+
         return $senha;
+    }
+
+    public function gerarToken($user)
+    {
+        $token = $user->createToken('Token de confirmação de conta de gerente da farmácia', ['*'])->plainTextToken;
+
+        // Define a expiração do token para 2 horas a partir de agora
+        $expiration = Carbon::now()->addHours(2);
+        $token->token->expires_at = $expiration;
+        $token->token->save();
+        return $token;
     }
 }

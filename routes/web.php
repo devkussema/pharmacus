@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('gestor')->group(function () {
         Route::post('/', [GerenteFarmaciaController::class, 'store'])->name('gestor.store');
+        Route::get('/confirmar/conta/{token}', [GerenteFarmaciaController::class, 'store'])->name('gestor.token');
     });
 
     Route::prefix('farmacia')->group(function () {

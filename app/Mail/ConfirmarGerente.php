@@ -13,12 +13,16 @@ class ConfirmarGerente extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $nome;
+    public $nome_para, $url;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($nome_para, $url)
     {
-        //
+        $this->nome_para = $nome_para;
+        $this->url = $url;
     }
 
     /**

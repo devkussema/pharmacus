@@ -19,6 +19,7 @@
                     <a href="page-add-product.html" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add
                         Product</a>
                 </div>
+                @include('partials.session')
             </div>
             <div class="col-lg-12">
                 <div class="table-responsive rounded mb-3">
