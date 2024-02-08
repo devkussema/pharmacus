@@ -9,16 +9,16 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
 use App\Mail\ConfirmarGerente;
-use App\Models\{User, GerenteFarmacia, PersonalAccessToken as PAT};
+use Ramsey\Uuid\Uuid;
+use App\Models\{User, GerenteFarmacia, UsersToken as UT};
 
 class GerenteFarmaciaController extends Controller
 {
     public function confirmar($token)
     {
-        $token = PAT::where("token", $token)->first();
+        $token = UT::where("token", $token)->first();
         if ($token) {
-            echo "O token: {$token}. existe";
-            return;
+            return view('auth.gerenteConfirmar', compact('token'));
         }
         return "Token inexistente!";
     }
@@ -58,8 +58,8 @@ class GerenteFarmaciaController extends Controller
                 'contato' => $request->contato
             ]);
 
-            $token = $user->createToken('Token de confirmação de conta de gerente da farmácia')->plainTextToken;
-            $url = route('gestor.token', ['token' => $token]);
+            $token = $this->gerarToken($user);
+            $url = route('gestor.token', ['token' => $token->token]);
 
             $destinatario = $request->email;
             Mail::to($destinatario)->send(new ConfirmarGerente($request->nome, $url, $passwd));
@@ -83,7 +83,11 @@ class GerenteFarmaciaController extends Controller
 
     public function gerarToken($user)
     {
-        $token = $user->createToken('Token de confirmação de conta de gerente da farmácia', ['*'])->plainTextToken;
+        $token = UT::create([
+            'user_id' => $user->id,
+            'nome' => 'Confirmação de conta de gerente da farmácia',
+            'token' => Uuid::uuid4()->toString()
+        ]);
 
         return $token;
     }

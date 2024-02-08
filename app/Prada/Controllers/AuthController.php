@@ -22,9 +22,24 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|exists:users,email',
+            'password' => 'required',
+            'email_verified_at' => 'nullable'
+        ],[
+            'email.required' => 'O email é obrigatório',
+            'email.exists' => "Email inválido",
+            'password.required' => 'Informe a senha'
+        ]);
+
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
+            if ($request->email_verified_at) {
+                User::where('email', $request->email)->update([
+                    'email_verified_at' => now(),
+                ]);
+            }
             if ($request->ajax()) {
                 return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
             }
