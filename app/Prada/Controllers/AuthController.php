@@ -38,6 +38,7 @@ class AuthController extends Controller
             if ($request->email_verified_at) {
                 User::where('email', $request->email)->update([
                     'email_verified_at' => now(),
+                    'status' => 1,
                 ]);
             }
             if ($request->ajax()) {

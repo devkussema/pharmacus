@@ -1,9 +1,5 @@
 @extends('home.index')
 
-<div id="titulo">
-    Todas categorias
-</div>
-
 @section('conteudo')
     <div id="dadoPrincipal">
         <div class="row">

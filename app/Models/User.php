@@ -36,6 +36,10 @@ class User extends Authenticatable
         });
     }
 
+    public function gerente()
+    {
+        return $this->hasOne(User::class, 'id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
