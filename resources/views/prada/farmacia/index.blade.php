@@ -6,7 +6,7 @@
             <div class="col-lg-12">
                 <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
                     <div>
-                        <h4 class="mb-3">Lista de Farmácias @if (isGerente()) sim @endif</h4>
+                        <h4 class="mb-3">Lista de Farmácias {{ isPerm("can.add_farmacia", getPerm(1)) }}</h4>
                         <p class="mb-0">
                             Farmácias são vitais para a oferta de produtos e serviços de saúde, garantindo<br>
                             uma apresentação atrativa e informativa para os clientes.
