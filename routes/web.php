@@ -74,3 +74,9 @@ Route::prefix('auth')->middleware('guest')->group(function () {
     Route::get('/registar', [AuthController::class, 'registar'])->name('registar');
     Route::post('/registar', [AuthController::class, 'store'])->name('registar.store');
 });
+
+Route::prefix('api')->group(function () {
+    Route::get('/check-session', [AuthController::class, 'checkSession']);
+    Route::get('/check-session-expiration', [AuthController::class, 'checkSessionExpiration']);
+    Route::get('/check-user-status', [AuthController::class, 'checkUserStatus']);
+});

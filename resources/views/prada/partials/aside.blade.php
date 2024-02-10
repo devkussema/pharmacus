@@ -34,15 +34,10 @@
                                 <i class="las la-minus"></i><span>Listar</span>
                             </a>
                         </li>
-                        <li class="">
-                            <a href="page-add-product.html">
-                                <i class="las la-minus"></i><span>Add Product</span>
-                            </a>
-                        </li>
                     </ul>
                 </li>
                 <li class=" ">
-                    <a href="{{ route('categoria') }}" id="aside-link" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                    <a href="#" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash3" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
@@ -53,13 +48,8 @@
                     </a>
                     <ul id="category" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                         <li class="">
-                            <a href="page-list-category.html">
-                                <i class="las la-minus"></i><span>List Category</span>
-                            </a>
-                        </li>
-                        <li class="">
-                            <a href="page-add-category.html">
-                                <i class="las la-minus"></i><span>Add Category</span>
+                            <a href="{{ route('categoria') }}" id="aside-link">
+                                <i class="las la-minus"></i><span>Lista</span>
                             </a>
                         </li>
                     </ul>

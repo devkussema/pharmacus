@@ -100,4 +100,20 @@ class AuthController extends Controller
         }
         return redirect()->route('home')->with('success', 'Conta criada com sucesso!');
     }
+
+    /**
+     * Verifica se o usuário atual tem sessão ativa.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkSession()
+    {
+        $isLoggedIn = auth()->check();
+
+        //return response()->json($isLoggedIn);
+        if ($isLoggedIn)
+            return response()->json(['status' => 1]);
+
+            return response()->json(['status' => 0]);
+    }
 }

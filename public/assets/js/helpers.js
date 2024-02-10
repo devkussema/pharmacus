@@ -251,3 +251,24 @@ function preencherModalComFarmacia(url) {
         }
     });
 }
+
+let intervalId;
+
+function checkSession() {
+    fetch('/api/check-session')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        if (data.status == 0) {
+            // Redirecionar ou recarregar a página se não houver sessão ativa
+            alert('A tua sessão expirou');
+            clearInterval(intervalId); // Limpar o intervalo após a sessão expirar
+            window.location.reload();
+        }
+    })
+    .catch(error => alert('Erro ao verificar sessão:', error));
+}
+
+// Verificar a sessão a cada 1 minuto
+intervalId = setInterval(checkSession, 5000);
+

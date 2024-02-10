@@ -30,7 +30,7 @@
         </section>
     </div>
 
-    <script src="{{ asset('assets/js/helpers.js') }}" async></script>
+    {{-- <script src="{{ asset('assets/js/helpers.js') }}" async></script> --}}
     <!-- Backend Bundle JavaScript -->
     <script src="{{ asset('assets/js/backend-bundle.min.js') }}"></script>
 
