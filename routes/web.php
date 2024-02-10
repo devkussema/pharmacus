@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('areas_hospitalares')->group(function () {
         Route::get('', [AreaHospitalarController::class, 'index'])->name('a_h.index');
+        Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');
     });
 
     Route::prefix('gestor')->group(function () {
@@ -80,7 +81,9 @@ Route::prefix('auth')->middleware('guest')->group(function () {
     Route::post('/registar', [AuthController::class, 'store'])->name('registar.store');
 });
 
+// Por favor, não alterar a estrutura da url
 Route::prefix('api')->group(function () {
+    Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);
     Route::get('/check-session', [AuthController::class, 'checkSession']);
     Route::get('/check-session-expiration', [AuthController::class, 'checkSessionExpiration']);
     Route::get('/check-user-status', [AuthController::class, 'checkUserStatus']);

@@ -204,6 +204,44 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('form#formAddAH').submit(function (e) {
+        e.preventDefault(); // Evita o comportamento padrão do formulário
+
+        // Obtém os dados do formulário
+        var formData = new FormData(this);
+
+        // Envia a requisição AJAX
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                toastr.success(response.message);
+
+                // Limpa o formulário
+                $('#formAddAH')[0].reset();
+
+                // Oculta o modal
+                $('#area_hospitalar').modal('hide');
+            },
+            error: function (xhr, status, error) {
+                // Trata os erros de validação retornados pelo servidor
+                var errors = xhr.responseJSON.errors;
+                var errorMessage = '';
+
+                // Percorre os erros e os concatena em uma única string
+                $.each(errors, function (key, value) {
+                    errorMessage += value[0] + '<br>';
+                });
+
+                // Exibe a mensagem de erro com Toastr.js
+                toastr.error(errorMessage, 'Erro de validação');
+            }
+        });
+    });
 });
 function getDataFarma(url) {
     $.ajax({
@@ -211,7 +249,7 @@ function getDataFarma(url) {
         type: 'GET',
         dataType: 'json',
         success: function (response) {
-            
+
             // Preencher os campos do formulário com os dados recebidos
             $('#nome_farmacia').val(response.nome);
             $('#endereco').val(response.endereco);
@@ -226,14 +264,14 @@ function getDataFarma(url) {
     });
     // Exibir a modal após preencher os dados
     $('#editarFarmacia').modal('show');
-}   
+}
 
 function preencherModalComFarmacia(url) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
         url: url,
         type: 'GET',
-        success: function(response) {
+        success: function (response) {
             // Preencher o campo de nome da farmácia com os dados retornados
             $('#formaddGerenteFarmacia #nome_farmacia').val(response.nome);
             $('#formaddGerenteFarmacia #farmacia_id').val(response.id);
@@ -244,7 +282,7 @@ function preencherModalComFarmacia(url) {
             // Exibir o modal
             $('#addGerenteFarmacia').modal('show');
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             // Tratar erros, se necessário
             //console.error(xhr.responseText);
             alert('Erro ao obter dados da farmácia.');
@@ -252,21 +290,72 @@ function preencherModalComFarmacia(url) {
     });
 }
 
+// Função para buscar os dados da API e adicionar à tabela
+function popularTabela() {
+    fetch('/api/get/area_hospitalar')
+        .then(response => response.json())
+        .then(data => {
+            // Seleciona a tabela
+            var tabela = document.querySelector('.tbl-area_hospitalar tbody');
+
+            // Limpa o conteúdo existente da tabela
+            tabela.innerHTML = '';
+
+            // Para cada área hospitalar recebida
+            data.forEach(area => {
+                // Corta a descrição em seis palavras e adiciona '...' se houver mais palavras
+                var descricaoCurta = area.descricao.split(' ').slice(0, 6).join(' ');
+                if (area.descricao.split(' ').length > 6) {
+                    descricaoCurta += '...';
+                }
+
+                // Cria uma string HTML com os dados da área hospitalar
+                var content = `<tr>
+                        <td>
+                            <div class="checkbox d-inline-block">
+                                <input type="checkbox" class="checkbox-input" id="checkbox2">
+                                <label for="checkbox2" class="mb-0"></label>
+                            </div>
+                        </td>
+                        <td>${area.nome}</td>
+                        <td>${descricaoCurta}</td>
+                        <td>
+                            <div class="d-flex align-items-center list-action">
+                                <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top"
+                                    title="" data-original-title="View" href="#"><i
+                                        class="ri-eye-line mr-0"></i></a>
+                                <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
+                                    title="" data-original-title="Edit" href="#"><i
+                                        class="ri-pencil-line mr-0"></i></a>
+                                <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
+                                    title="" data-original-title="Delete" href="#"><i
+                                        class="ri-delete-bin-line mr-0"></i></a>
+                            </div>
+                        </td>
+                    </tr>`;
+
+                // Adiciona a string HTML à tabela
+                tabela.innerHTML += content;
+            });
+        })
+        .catch(error => console.error('Erro ao buscar dados da API:', error));
+}
+
 let intervalId;
 
 function checkSession() {
     fetch('/api/check-session')
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        if (data.status == 0) {
-            // Redirecionar ou recarregar a página se não houver sessão ativa
-            alert('A tua sessão expirou');
-            clearInterval(intervalId); // Limpar o intervalo após a sessão expirar
-            window.location.reload();
-        }
-    })
-    .catch(error => alert('Erro ao verificar sessão:', error));
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.status == 0) {
+                // Redirecionar ou recarregar a página se não houver sessão ativa
+                alert('A tua sessão expirou');
+                clearInterval(intervalId); // Limpar o intervalo após a sessão expirar
+                window.location.reload();
+            }
+        })
+        .catch(error => alert('Erro ao verificar sessão:', error));
 }
 
 // Verificar a sessão a cada 1 minuto

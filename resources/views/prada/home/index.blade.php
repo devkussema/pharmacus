@@ -107,7 +107,10 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
-
+    <script>
+        $(document).ready(function () {
+            popularTabela();
+        });
+    </script>
 </body>
-
 </html>
