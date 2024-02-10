@@ -242,6 +242,44 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('form#formEditarAH').submit(function (e) {
+        e.preventDefault(); // Evita o comportamento padrão do formulário
+
+        // Obtém os dados do formulário
+        var formData = new FormData(this);
+
+        // Envia a requisição AJAX
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                toastr.success(response.message);
+
+                // Limpa o formulário
+                $('#formEditarAH')[0].reset();
+
+                // Oculta o modal
+                $('#editar_area_hospitalar').modal('hide');
+            },
+            error: function (xhr, status, error) {
+                // Trata os erros de validação retornados pelo servidor
+                var errors = xhr.responseJSON.errors;
+                var errorMessage = '';
+
+                // Percorre os erros e os concatena em uma única string
+                $.each(errors, function (key, value) {
+                    errorMessage += value[0] + '<br>';
+                });
+
+                // Exibe a mensagem de erro com Toastr.js
+                toastr.error(errorMessage, 'Erro de validação');
+            }
+        });
+    });
 });
 function getDataFarma(url) {
     $.ajax({
@@ -290,15 +328,16 @@ function preencherModalComFarmacia(url) {
     });
 }
 
-function modalEditarAH(url) {
+function modalEditarAH(id) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
-        url: url,
+        url: 'api/get/area_hospitalar/'+id,
         type: 'GET',
         success: function (response) {
-            $('h3#nome_area').val(response.nome);
+            $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/'+id);
+            $('h4#nome_area').val(response.nome);
             $('#formEditarAH #nome').val(response.nome);
-            $('#formEditarAH #descricao').val(response.id);
+            $('#formEditarAH #descricao').val(response.descricao);
 
             // Exibir o modal
             $('#editar_area_hospitalar').modal('show');
@@ -311,8 +350,28 @@ function modalEditarAH(url) {
     });
 }
 
+function modalEliminarAH(id) {
+    // Requisição AJAX para buscar os dados da farmácia
+    $.ajax({
+        url: 'api/get/area_hospitalar/'+id,
+        type: 'GET',
+        success: function (response) {
+            $('#deleteFormAH').attr('action', '/areas_hospitalares/apagar/'+id);
+            $('#deleteFormAH #texto-aviso').html('Tens a certeza que queres eliminar a área '+response.nome);
+
+            // Exibir o modal
+            $('#modalEliminarAHp').modal('show');
+        },
+        error: function (xhr, status, error) {
+            // Tratar erros, se necessário
+            //console.error(xhr.responseText);
+            toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');
+        }
+    });
+}
+
 // Função para buscar os dados da API e adicionar à tabela
-function popularTabela() {
+function popularTabela(obj) {
     fetch('/api/get/area_hospitalar')
         .then(response => response.json())
         .then(data => {
@@ -342,16 +401,14 @@ function popularTabela() {
                         <td>${descricaoCurta}</td>
                         <td>
                             <div class="d-flex align-items-center list-action">
-                                <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top"
-                                    title="" data-original-title="View" href="#"><i
-                                        class="ri-eye-line mr-0"></i></a>
-                                <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
-                                    title="" data-original-title="Editar" href="#">
-                                    <i class="ri-pencil-line mr-0"></i>
-                                </a>
+                                    <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
+                                        title="Editar" href="#" onclick="modalEditarAH('${area.id}')">
+                                        <i class="ri-pencil-line mr-0"></i>
+                                    </a>
                                 <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
-                                    title="" data-original-title="Delete" href="#"><i
-                                        class="ri-delete-bin-line mr-0"></i></a>
+                                    title="Eliminar" href="#" onclick="modalEliminarAH('${area.id}')">
+                                    <i class="ri-delete-bin-line mr-0"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>`;

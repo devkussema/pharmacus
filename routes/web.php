@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('areas_hospitalares')->group(function () {
         Route::get('', [AreaHospitalarController::class, 'index'])->name('a_h.index');
+        Route::put('/a_h/{id}', [AreaHospitalarController::class, 'update']);
+        Route::delete('/apagar/{id}', [AreaHospitalarController::class, 'destroy'])->name('a_h.destroy');
         Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');
     });
 
@@ -84,6 +86,7 @@ Route::prefix('auth')->middleware('guest')->group(function () {
 // Por favor, não alterar a estrutura da url
 Route::prefix('api')->group(function () {
     Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);
+    Route::get('/get/area_hospitalar/{id}', [AreaHospitalarController::class, 'getInfo']);
     Route::get('/check-session', [AuthController::class, 'checkSession']);
     Route::get('/check-session-expiration', [AuthController::class, 'checkSessionExpiration']);
     Route::get('/check-user-status', [AuthController::class, 'checkUserStatus']);

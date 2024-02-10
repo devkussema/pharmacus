@@ -38,9 +38,11 @@
                     <div class="content create-workform bg-body">
                         <form id="formEditarAH" method="POST" action="{{ route('a_h.index.store') }}">
                             @csrf
+                            @method('PUT')
                             <div class="pb-3">
                                 <label class="mb-2">Nome *</label>
-                                <input type="text" class="form-control" id="nome" placeholder="Nome da área" name="nome">
+                                <input type="text" class="form-control" id="nome" placeholder="Nome da área"
+                                    name="nome">
                             </div>
                             <div class="pb-3">
                                 <label class="mb-2">Descrição (opcional)</label>
@@ -56,6 +58,30 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-sm" id="modalEliminarAHp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form id="deleteFormAH" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Área Hospitalar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="texto-aviso"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
