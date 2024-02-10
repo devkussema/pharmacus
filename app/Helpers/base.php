@@ -4,6 +4,25 @@ use \App\Models\User;
 use App\Models\Grupo;
 use App\Models\Permissao;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+if (!function_exists('isAdministrator')) {
+    function isAdministrator()
+    {
+        // Verifica se o usuário está autenticado
+        if (Auth::check()) {
+            // Obtém o ID do usuário atual
+            $userId = Auth::user()->id;
+
+            // Verifica se o usuário pertence ao grupo "Administrador"
+            return \App\Models\UserGroup::whereHas('grupo', function ($query) {
+                $query->where('nome', 'Administrador');
+            })->where('user_id', $userId)->exists();
+        }
+
+        return false;
+    }
+}
 
 if (!function_exists('isPerm')) {
     function isPerm($permissaoChave, $permissoes)

@@ -7,6 +7,7 @@ use App\Prada\Controllers\AuthController;
 use App\Prada\Controllers\FarmaciaController;
 use App\Prada\Controllers\CategoriaController;
 use App\Prada\Controllers\GerenteFarmaciaController;
+use App\Prada\Controllers\AreaHospitalarController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/', [CategoriaController::class, 'store'])->name('categoria.store');
     });
 
+    Route::prefix('areas_hospitalares')->group(function () {
+        Route::get('', [AreaHospitalarController::class, 'index'])->name('a_h.index');
+    });
+
     Route::prefix('gestor')->group(function () {
         Route::post('/', [GerenteFarmaciaController::class, 'store'])->name('gestor.store');
         Route::get('/confirmar/conta/{token}', [GerenteFarmaciaController::class, 'confirmar'])->name('gestor.token');
@@ -39,21 +44,21 @@ Route::middleware('auth')->group(function () {
 
         // Rota para exibir o formulário de criação de farmácia
         Route::get('/create', [FarmaciaController::class, 'create'])->name('farmacia.create');
-    
+
         // Rota para processar o formulário de criação de farmácia
         Route::post('/store', [FarmaciaController::class, 'store'])->name('farmacia.store');
-    
+
         // Rota para exibir detalhes da farmácia
         Route::get('/{farmacia}', [FarmaciaController::class, 'show'])->name('farmacia.show');
-    
+
         // Rota para exibir o formulário de edição de farmácia
         Route::get('/{farmacia}/edit', [FarmaciaController::class, 'edit'])->name('farmacia.edit');
-        
+
         Route::get('/get/{id}', [FarmaciaController::class, 'get'])->name('farmacia.get');
-    
+
         // Rota para processar o formulário de edição de farmácia
         Route::post('/farmacia', [FarmaciaController::class, 'update'])->name('farmacia.update');
-    
+
         // Rota para excluir a farmácia
         Route::delete('/{farmacia}', [FarmaciaController::class, 'destroy'])->name('farmacia.destroy');
     });
