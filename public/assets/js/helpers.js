@@ -290,6 +290,27 @@ function preencherModalComFarmacia(url) {
     });
 }
 
+function modalEditarAH(url) {
+    // Requisição AJAX para buscar os dados da farmácia
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+            $('h3#nome_area').val(response.nome);
+            $('#formEditarAH #nome').val(response.nome);
+            $('#formEditarAH #descricao').val(response.id);
+
+            // Exibir o modal
+            $('#editar_area_hospitalar').modal('show');
+        },
+        error: function (xhr, status, error) {
+            // Tratar erros, se necessário
+            //console.error(xhr.responseText);
+            toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');
+        }
+    });
+}
+
 // Função para buscar os dados da API e adicionar à tabela
 function popularTabela() {
     fetch('/api/get/area_hospitalar')
@@ -325,8 +346,9 @@ function popularTabela() {
                                     title="" data-original-title="View" href="#"><i
                                         class="ri-eye-line mr-0"></i></a>
                                 <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
-                                    title="" data-original-title="Edit" href="#"><i
-                                        class="ri-pencil-line mr-0"></i></a>
+                                    title="" data-original-title="Editar" href="#">
+                                    <i class="ri-pencil-line mr-0"></i>
+                                </a>
                                 <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
                                     title="" data-original-title="Delete" href="#"><i
                                         class="ri-delete-bin-line mr-0"></i></a>

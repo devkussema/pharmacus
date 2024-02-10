@@ -44,7 +44,7 @@
                         </a>
                         <ul id="farmacias" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                             <li class="">
-                                <a href="{{ route('farmacia') }}" id="aside-link">
+                                <a href="{{ route('farmacia') }}">
                                     <i class="las la-minus"></i><span>Listar</span>
                                 </a>
                             </li>
@@ -69,7 +69,7 @@
                     </a>
                     <ul id="areas_hospitalares" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                         <li class="">
-                            <a href="{{ route('a_h.index') }}" id="aside-link">
+                            <a href="{{ route('a_h.index') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
                                     height="18" fill="rgba(52,51,51,1)">
                                     <path

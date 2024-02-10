@@ -1,5 +1,7 @@
 @extends('home.index')
 
+@section('titulo', 'Fármacias')
+
 @section('conteudo')
     <div id="dadoPrincipal">
         <div class="row">
