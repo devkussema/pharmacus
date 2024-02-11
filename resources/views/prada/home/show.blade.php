@@ -6,8 +6,8 @@
             <div class="col-lg-4">
                 <div class="card card-transparent card-block card-stretch card-height border-none">
                     <div class="card-body p-0 mt-lg-2 mt-0">
-                        <h3 class="mb-3">Hi Graham, Good Morning</h3>
-                        <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business process.</p>
+                        <h3 class="mb-3">Olá {{ printNome(Auth::user()->nome) }}, {{ saudacaoDoDia() }}</h3>
+                        <p class="mb-0 mr-4">Seu painel oferece visualizações dos principais desempenhos ou processos de negócios.</p>
                     </div>
                 </div>
             </div>
@@ -21,7 +21,7 @@
                                         <img src="../assets/images/product/1.png" class="img-fluid" alt="image">
                                     </div>
                                     <div>
-                                        <p class="mb-2">Total Sales</p>
+                                        <p class="mb-2">Total de farmácias</p>
                                         <h4>31.50</h4>
                                     </div>
                                 </div>

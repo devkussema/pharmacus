@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/', [HomeController::class, 'home'])->name('home');
     Route::get('/main', [HomeController::class, 'home'])->name('main');
     Route::get('/produtos', [HomeController::class, 'produto'])->name('produto');
     Route::get('/categorias', [HomeController::class, 'categoria'])->name('categoria');

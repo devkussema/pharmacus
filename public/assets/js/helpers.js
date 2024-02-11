@@ -340,6 +340,7 @@ $(document).ready(function () {
 
                 // Oculta o modal
                 $('#addCargoGrupo').modal('hide');
+                location.reload();
             },
             error: function (xhr, status, error) {
                 // Trata os erros de validação retornados pelo servidor

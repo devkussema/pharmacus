@@ -6,8 +6,40 @@ use App\Models\Permissao;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function printNome($nomeCompleto) {
+    // Dividir o nome completo em partes (nome e sobrenome)
+    $partesNome = explode(' ', $nomeCompleto);
+
+    // Pegar o último elemento do array (sobrenome)
+    $sobrenome = end($partesNome);
+
+    // Pegar o primeiro elemento do array (primeiro nome)
+    // $primeiroNome = reset($partesNome);
+
+    // Retornar apenas o sobrenome
+    return $sobrenome;
+}
+
+if (!function_exists('saudacaoDoDia')) {
+    function saudacaoDoDia()
+    {
+        date_default_timezone_set('Africa/Luanda'); // Define o fuso horário para São Paulo
+
+        $hora = date('H'); // Obtém a hora atual no formato de 24 horas
+
+        if ($hora >= 5 && $hora < 12) {
+            return "Bom dia";
+        } elseif ($hora >= 12 && $hora < 18) {
+            return "Boa tarde";
+        } else {
+            return "Boa noite";
+        }
+    }
+}
+
 if (!function_exists('calcTempo')) {
-    function calcTempo($data) {
+    function calcTempo($data)
+    {
         // Converte a data para um objeto DateTime
         $data = new DateTime($data);
 
