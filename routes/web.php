@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('usuarios')->group(function () {
-        Route::get('/', [UsuarioController::class, 'store'])->name('usuario');
+        Route::get('/', [UsuarioController::class, 'index'])->name('usuario');
     });
 
     Route::prefix('areas_hospitalares')->group(function () {
@@ -69,7 +69,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/farmacia', [FarmaciaController::class, 'update'])->name('farmacia.update');
 
         // Rota para excluir a farmácia
-        Route::delete('/{farmacia}', [FarmaciaController::class, 'destroy'])->name('farmacia.destroy');
+        Route::delete('/apagar/{farmacia}', [FarmaciaController::class, 'destroy'])->name('farmacia.destroy');
     });
 
     Route::post('/logout', function () {
@@ -93,6 +93,10 @@ Route::prefix('auth')->middleware('guest')->group(function () {
 Route::prefix('api')->group(function () {
     Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);
     Route::get('/get/area_hospitalar/{id}', [AreaHospitalarController::class, 'getInfo']);
+
+    Route::get('/get/farmacia', [FarmaciaController::class, 'getAll']);
+    Route::get('/get/farmacia/{id}', [FarmaciaController::class, 'getInfo']);
+
     Route::get('/check-session', [AuthController::class, 'checkSession']);
     Route::get('/check-session-expiration', [AuthController::class, 'checkSessionExpiration']);
     Route::get('/check-user-status', [AuthController::class, 'checkUserStatus']);

@@ -391,6 +391,26 @@ function modalEditarAH(id) {
     });
 }
 
+function modalEliminarFarmacia(id) {
+    // Requisição AJAX para buscar os dados da farmácia
+    $.ajax({
+        url: 'api/get/farmacia/'+id,
+        type: 'GET',
+        success: function (response) {
+            $('#deleteFormFarmacia').attr('action', '/farmacia/apagar/'+id);
+            $('#deleteFormFarmacia #texto-aviso').html('Tens a certeza que queres eliminar a farmácia <b>'+response.nome+'</b>');
+
+            // Exibir o modal
+            $('#modalEliminarFarmacia').modal('show');
+        },
+        error: function (xhr, status, error) {
+            // Tratar erros, se necessário
+            //console.error(xhr.responseText);
+            toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');
+        }
+    });
+}
+
 function modalEliminarAH(id) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({

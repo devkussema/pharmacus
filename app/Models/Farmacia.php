@@ -17,6 +17,7 @@ class Farmacia extends Model
     protected $fillable = [
         'nome',
         'descricao',
+        'status',
         'logo',
         'endereco',
         'obs',

@@ -10,7 +10,7 @@ class FarmaciaController extends Controller
 {
     public function index()
     {
-        $farmacias = Farmacia::all();
+        $farmacias = Farmacia::where('status', '1')->get();
         return view('farmacia.index', compact('farmacias'));
     }
 
@@ -72,5 +72,41 @@ class FarmaciaController extends Controller
         $farmacia->update($request->all());
 
         return response()->json(['message' => "{$farmacia->nome} atualizada com sucesso"], 200);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $farmacia = Farmacia::find($id);
+
+        if (!$farmacia) {
+            return response()->json(['message' => 'Farmácia não encontrada'], 404);
+        }
+        $farmacia->status = 0;
+        $farmacia->save();
+
+        if ($request->ajax())
+            return response()->json(['message' => 'Farmácia excluída com sucesso']);
+        return redirect()->route('farmacia')->with('success', "{$farmacia->nome} eliminada com sucesso");
+    }
+
+    public function getAll($id)
+    {
+        if (!is_numeric($id))
+            return false;
+
+        $farmacia = Farmacia::find($id);
+        if ($farmacia) {
+            return response()->json($farmacia);
+        }
+    }
+
+    public function getInfo($id)
+    {
+        $info = Farmacia::find($id);
+
+        if (!$info)
+            return response()->json(['message' => "Selecione uma Farmácia"], 401);
+
+        return response()->json($info);
     }
 }

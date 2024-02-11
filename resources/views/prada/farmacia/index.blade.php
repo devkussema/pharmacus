@@ -83,9 +83,8 @@
                                                 onclick="preencherModalComFarmacia('{{ route('farmacia.get', ['id' => $farmacia->id]) }}')">
                                                 <i class="ri-bubble-chart-line"></i>
                                             </a>
-                                            <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
-                                                title="" data-original-title="Delete" href="javascript:void(0)"><i
-                                                    class="ri-delete-bin-line mr-0"></i>
+                                            <a class="badge bg-warning mr-2" title="Eliminar {{ $farmacia->nome }}" href="javascript:void(0)" onclick="modalEliminarFarmacia('{{ $farmacia->id }}')">
+                                                <i class="ri-delete-bin-line mr-0"></i>
                                             </a>
                                         </div>
                                     </td>
