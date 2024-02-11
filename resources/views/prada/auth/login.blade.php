@@ -11,23 +11,22 @@
                         <div class="d-flex align-items-center auth-content">
                             <div class="col-lg-7 align-self-center">
                                 <div class="p-3">
-                                    <h2 class="mb-2">Sign In</h2>
-                                    <p>Login to stay connected.</p>
+                                    <h2 class="mb-2">Entrar</h2>
+                                    <p>Entre para se conectar.</p>
                                     <form id="login-form" method="POST" action="{{ route('login') }}">
                                         @csrf
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="floating-label form-group">
-                                                    <input name="email" class="floating-input form-control" type="email"
-                                                        placeholder=" ">
+                                                    <input name="email" class="floating-input form-control" type="email">
                                                     <label>Email</label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
                                                 <div class="floating-label form-group">
                                                     <input name="password" class="floating-input form-control"
-                                                        type="password" placeholder=" ">
-                                                    <label>Password</label>
+                                                        type="password">
+                                                    <label>Senha</label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
@@ -38,7 +37,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
-                                                <a href="auth-recoverpw.html" class="text-primary float-right">Esqueceu a
+                                                <a href="#" class="text-primary float-right">Esqueceu a
                                                     senha?</a>
                                             </div>
                                         </div>

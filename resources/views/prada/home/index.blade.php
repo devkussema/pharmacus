@@ -108,9 +108,11 @@
 
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
     <script>
-        $(document).ready(function () {
-            popularTabela();
-        });
+
+        // Adiciona os dados na tabela áreas hospitalares
+        // $(document).ready(function () {
+        //     popularTabela();
+        // });
     </script>
 </body>
 </html>

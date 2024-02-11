@@ -401,10 +401,14 @@ function popularTabela(obj) {
                         <td>${descricaoCurta}</td>
                         <td>
                             <div class="d-flex align-items-center list-action">
-                                    <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
-                                        title="Editar" href="#" onclick="modalEditarAH('${area.id}')">
-                                        <i class="ri-pencil-line mr-0"></i>
-                                    </a>
+                                <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
+                                    title="Editar" href="#" onclick="modalEditarAH('${area.id}')">
+                                    <i class="ri-key-2-line mr-0"></i>
+                                </a>
+                                <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
+                                    title="Editar" href="#" onclick="modalEditarAH('${area.id}')">
+                                    <i class="ri-pencil-line mr-0"></i>
+                                </a>
                                 <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
                                     title="Eliminar" href="#" onclick="modalEliminarAH('${area.id}')">
                                     <i class="ri-delete-bin-line mr-0"></i>

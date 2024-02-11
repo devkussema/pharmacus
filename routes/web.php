@@ -30,6 +30,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/', [CategoriaController::class, 'store'])->name('categoria.store');
     });
 
+    Route::prefix('usuarios')->group(function () {
+        Route::post('/', [CategoriaController::class, 'store'])->name('categoria.store');
+    });
+
     Route::prefix('areas_hospitalares')->group(function () {
         Route::get('', [AreaHospitalarController::class, 'index'])->name('a_h.index');
         Route::put('/a_h/{id}', [AreaHospitalarController::class, 'update']);

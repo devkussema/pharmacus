@@ -2,10 +2,10 @@
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
         <a href="{{ route('home') }}" class="header-logo">
             <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal light-logo" alt="logo">
-            <h5 class="logo-title light-logo ml-3">POSDash</h5>
+            <h5 class="logo-title light-logo ml-3">{{ env('APP_NAME', 'Pharmacus') }}</h5>
         </a>
         <div class="iq-menu-bt-sidebar ml-0">
-            <i class="las la-bars wrapper-menu"></i>
+            <i class="ri-menu-2-line wrapper-menu"></i>
         </div>
     </div>
     <div class="data-scrollbar" data-scroll="1">
@@ -26,6 +26,31 @@
                     </a>
                 </li>
                 @if (isAdministrator())
+                    <li class="">
+                        <a href="#farmacias" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M8 20V14H16V20H19V4H5V20H8ZM10 20H14V16H10V20ZM21 20H23V22H1V20H3V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V20ZM11 8V6H13V8H15V10H13V12H11V10H9V8H11Z">
+                                </path>
+                            </svg>
+                            <span class="ml-4">Farmácias</span>
+                            <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="10 15 15 20 20 15"></polyline>
+                                <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                            </svg>
+                        </a>
+                        <ul id="farmacias" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            <li class="">
+                                <a href="{{ route('farmacia') }}">
+                                    <i class="las la-minus"></i><span>Listar</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li class="">
                         <a href="#farmacias" class="collapsed" data-toggle="collapse" aria-expanded="false">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"

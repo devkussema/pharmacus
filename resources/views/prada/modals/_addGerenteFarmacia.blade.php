@@ -28,6 +28,7 @@
                                 <input type="text" name="contato" class="form-control" id="contato_gestor" value=""
                                     placeholder="Telefone do Gestor da farmácia">
                             </div>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                             <button type="submit" class="btn btn-primary">Cadastrar</button>
                         </form>
                     </div>

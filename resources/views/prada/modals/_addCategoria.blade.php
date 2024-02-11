@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="popup text-left">
-                    <h4 class="mb-3">Adicionar farmácia</h4>
+                    <h4 class="mb-3">Adicionar categoria</h4>
                     <div class="content create-workform bg-body">
                         <form id="formAddCategoria" action="{{ route('categoria.store') }}" method="POST">
                             @csrf
@@ -26,6 +26,7 @@
                                     placeholder="Descrição da categoria"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Cadastrar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                         </form>
                     </div>
                 </div>

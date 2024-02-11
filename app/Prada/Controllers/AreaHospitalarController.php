@@ -10,7 +10,8 @@ class AreaHospitalarController extends Controller
 {
     public function index()
     {
-        return view('area_hospitalar.show');
+        $ah = AH::all();
+        return view('area_hospitalar.show', compact('ah'));
     }
 
     public function store(Request $request)
