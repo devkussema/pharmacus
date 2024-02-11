@@ -9,7 +9,7 @@
                             @csrf
                             @method('PUT')
                             <div class="form-group">
-                                <label for="endereco">Tipo *</label>
+                                <label for="endereco">Grupo *</label>
                                 <input type="hidden" name="user_id" id="user_id">
                                 <select name="grupo_id" id="" class="form-control">
                                     @foreach ($grupos as $grupo)
