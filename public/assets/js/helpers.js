@@ -318,6 +318,44 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('form#formAddCargoGrupo').submit(function (e) {
+        e.preventDefault(); // Evita o comportamento padrão do formulário
+
+        // Obtém os dados do formulário
+        var formData = new FormData(this);
+
+        // Envia a requisição AJAX
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                toastr.success(response.message);
+
+                // Limpa o formulário
+                $('#formAddCargoGrupo')[0].reset();
+
+                // Oculta o modal
+                $('#addCargoGrupo').modal('hide');
+            },
+            error: function (xhr, status, error) {
+                // Trata os erros de validação retornados pelo servidor
+                var errors = xhr.responseJSON.errors;
+                var errorMessage = '';
+
+                // Percorre os erros e os concatena em uma única string
+                $.each(errors, function (key, value) {
+                    errorMessage += value[0] + '<br>';
+                });
+
+                // Exibe a mensagem de erro com Toastr.js
+                toastr.error(errorMessage, 'Erro de validação');
+            }
+        });
+    });
 });
 function getDataFarma(url) {
     $.ajax({
@@ -387,6 +425,26 @@ function modalEditarAH(id) {
             // Tratar erros, se necessário
             //console.error(xhr.responseText);
             toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');
+        }
+    });
+}
+
+function addCargoGrupo(url) {
+    // Requisição AJAX para buscar os dados da farmácia
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+            // Preencher o campo de nome da farmácia com os dados retornados
+            $('#formAddCargoGrupo #user_id').val(response.id);
+
+            // Exibir o modal
+            $('#addCargoGrupo').modal('show');
+        },
+        error: function (xhr, status, error) {
+            // Tratar erros, se necessário
+            //console.error(xhr.responseText);
+            alert('Erro ao obter dados da farmácia.');
         }
     });
 }
@@ -525,5 +583,5 @@ function checkSession() {
 }
 
 // Verificar a sessão a cada 1 minuto
-intervalId = setInterval(checkSession, 5000);
+intervalId = setInterval(checkSession, 60000);
 

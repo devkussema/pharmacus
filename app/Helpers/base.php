@@ -6,6 +6,50 @@ use App\Models\Permissao;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+if (!function_exists('calcTempo')) {
+    function calcTempo($data) {
+        // Converte a data para um objeto DateTime
+        $data = new DateTime($data);
+
+        // Obtém a data atual
+        $dataAtual = new DateTime();
+
+        // Calcula a diferença entre as duas datas
+        $diferenca = $data->diff($dataAtual);
+
+        // Obtém a diferença de anos, meses e dias
+        $anos = $diferenca->y;
+        $meses = $diferenca->m;
+        $dias = $diferenca->d;
+
+        // Formata a string de tempo decorrido
+        $tempoDecorrido = '';
+        if ($anos > 0) {
+            $tempoDecorrido .= $anos . ' ano';
+            if ($anos > 1) {
+                $tempoDecorrido .= 's';
+            }
+            $tempoDecorrido .= ' ';
+        }
+        if ($meses > 0) {
+            $tempoDecorrido .= $meses . ' mês';
+            if ($meses > 1) {
+                $tempoDecorrido .= 'es';
+            }
+            $tempoDecorrido .= ' ';
+        }
+        if ($dias > 0) {
+            $tempoDecorrido .= $dias . ' dia';
+            if ($dias > 1) {
+                $tempoDecorrido .= 's';
+            }
+        }
+
+        // Retorna o tempo decorrido
+        return 'desde ' . $data->format('d \d\e F');
+    }
+}
+
 if (!function_exists('isAdministrator')) {
     function isAdministrator()
     {

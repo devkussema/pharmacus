@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('usuarios')->group(function () {
         Route::get('/', [UsuarioController::class, 'index'])->name('usuario');
+        Route::put('/', [UsuarioController::class, 'addCargo'])->name('usuario.addCargo');
     });
 
     Route::prefix('areas_hospitalares')->group(function () {
@@ -96,6 +97,9 @@ Route::prefix('api')->group(function () {
 
     Route::get('/get/farmacia', [FarmaciaController::class, 'getAll']);
     Route::get('/get/farmacia/{id}', [FarmaciaController::class, 'getInfo']);
+
+
+    Route::get('/get/usuario/{id}', [UsuarioController::class, 'getUser'])->name('user.get');
 
     Route::get('/check-session', [AuthController::class, 'checkSession']);
     Route::get('/check-session-expiration', [AuthController::class, 'checkSessionExpiration']);

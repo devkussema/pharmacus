@@ -24,6 +24,9 @@ class User extends Authenticatable
         'nome',
         'username',
         'email',
+        'status',
+        'grupo_id',
+        'foto_perfil',
         'password',
     ];
 
@@ -38,7 +41,12 @@ class User extends Authenticatable
 
     public function grupos()
     {
-        return $this->belongsToMany(Grupo::class, 'user_grupos');
+        return $this->belongsToMany(Grupo::class, 'user_grupos')->limit(1)->first();
+    }
+
+    public function grupo()
+    {
+        return $this->belongsTo(Grupo::class, 'grupo_id');
     }
 
     public function gerente()

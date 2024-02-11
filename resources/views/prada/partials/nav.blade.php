@@ -12,7 +12,7 @@
             <div class="iq-search-bar device-search">
                 <form action="#" class="searchbox">
                     <a class="search-link" href="#"><i class="ri-search-line"></i></a>
-                    <input type="text" class="text search-input" placeholder="Search here...">
+                    <input type="text" class="text search-input" placeholder="Procure aqui...">
                 </form>
             </div>
             <div class="d-flex align-items-center">
