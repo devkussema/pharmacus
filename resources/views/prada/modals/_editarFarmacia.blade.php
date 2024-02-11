@@ -1,4 +1,4 @@
-<div class="modal fade" id="editarFarmacia" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modalEditarFarmacia" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -7,10 +7,12 @@
                     <div class="content create-workform bg-body">
                         <form id="formEditFarmacia" action="{{ route('farmacia.update') }}" method="POST" enctype="multipart/form-data">
                             @csrf
+                            @method('PUT')
                             <div class="form-group">
                                 <label for="nome_farmacia">Nome *</label>
                                 <input type="text" name="nome" class="form-control" id="nome_farmacia" value=""
                                     placeholder="Nome da farmácia">
+                                <input type="hidden" name="id" id="id_farmacia">
                             </div>
                             <div class="form-group">
                                 <label for="logotipo_">Logotipo</label>

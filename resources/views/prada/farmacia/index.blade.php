@@ -14,8 +14,10 @@
                             uma apresentação atrativa e informativa para os clientes.
                         </p>
                     </div>
-                    <a href="page-add-product.html" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add
-                        Product</a>
+                    <a href="#" class="btn btn-primary add-list" data-toggle="modal" data-target="#addFarmacia"><i
+                            class="las la-plus mr-3"></i>
+                        Adicionar
+                    </a>
                 </div>
                 @include('partials.session')
             </div>
@@ -49,8 +51,13 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="../assets/images/table/product/01.jpg"
-                                                class="img-fluid rounded avatar-50 mr-3" alt="image">
+                                            @if (!$farmacia->logo)
+                                                <img src="assets/images/table/product/01.jpg"
+                                                    class="img-fluid rounded avatar-50 mr-3" alt="image">
+                                            @else
+                                                <img src="{{ asset('storage/' . $farmacia->logo) }}"
+                                                    class="img-fluid rounded avatar-50 mr-3" alt="image">
+                                            @endif
                                             <div>
                                                 {{ $farmacia->nome }}
                                                 <p class="mb-0"><small>{{ $farmacia->id }}</small></p>
@@ -64,17 +71,22 @@
                                     <td>
                                         <div class="d-flex align-items-center list-action">
                                             <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top"
-                                                title="" data-original-title="View" href="#"><i
-                                                    class="ri-eye-line mr-0"></i></a>
-                                            <button class="btn badge bg-success mr-2" onclick="getDataFarma('{{ route('farmacia.get', ['id' => $farmacia->id]) }}')" data-toggle="tooltip" data-placement="top"
-                                                title="" data-original-title="Editar">
-                                                <i class="ri-pencil-line mr-0"></i></button>
-                                            <a class="badge bg-info mr-2" href="#" onclick="preencherModalComFarmacia('{{ route('farmacia.get', ['id' => $farmacia->id]) }}')">
+                                                title="" data-original-title="View" href="javascript:void(0)"><i
+                                                    class="ri-eye-line mr-0"></i>
+                                            </a>
+                                            <a href="javascript:void(0)" class="badge bg-success mr-2"
+                                                onclick="getDataFarma('{{ route('farmacia.get', ['id' => $farmacia->id]) }}')"
+                                                title="Editar {{ $farmacia->nome }}">
+                                                <i class="ri-pencil-line mr-0"></i>
+                                            </a>
+                                            <a class="badge bg-info mr-2" href="javascript:void(0)"
+                                                onclick="preencherModalComFarmacia('{{ route('farmacia.get', ['id' => $farmacia->id]) }}')">
                                                 <i class="ri-bubble-chart-line"></i>
                                             </a>
                                             <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
-                                                title="" data-original-title="Delete" href="#"><i
-                                                    class="ri-delete-bin-line mr-0"></i></a>
+                                                title="" data-original-title="Delete" href="javascript:void(0)"><i
+                                                    class="ri-delete-bin-line mr-0"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -86,4 +98,5 @@
         </div>
     </div>
     @include('modals._addGerenteFarmacia')
+    @include('modals._editarFarmacia')
 @endsection

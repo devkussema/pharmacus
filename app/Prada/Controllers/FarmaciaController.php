@@ -36,7 +36,9 @@ class FarmaciaController extends Controller
 
         // Processamento do arquivo de logotipo, se fornecido
         if ($request->hasFile('logotipo')) {
-            $logotipoPath = $request->file('logotipo')->store('logotipos');
+            $logotipoPath = $request->file('logotipo')->store('public/logotipos');
+            // Substitua 'public/' pelo caminho desejado (a partir de 'logotipos' em diante)
+            $logotipoPath = str_replace('public/', '', $logotipoPath);
         } else {
             $logotipoPath = null;
         }
@@ -51,5 +53,24 @@ class FarmaciaController extends Controller
 
         // Retorno de uma resposta JSON de sucesso
         return response()->json(['message' => 'Farmácia cadastrada com sucesso'], 201);
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'logotipo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Exemplo de validação de arquivo de imagem
+            'endereco' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'id' => 'required|exists:farmacias,id',
+        ], [
+            'nome.required' => 'O nome é obrigatório',
+            'nome.unique' => 'Esta área já está cadastrada no sistema'
+        ]);
+
+        $farmacia = Farmacia::findOrFail($request->id);
+        $farmacia->update($request->all());
+
+        return response()->json(['message' => "{$farmacia->nome} atualizada com sucesso"], 200);
     }
 }

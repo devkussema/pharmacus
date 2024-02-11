@@ -167,7 +167,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#formaddGerenteFarmaciam').submit(function (e) {
+    $('#formaddGerenteFarmacia').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
 
         // Obtém os dados do formulário
@@ -280,6 +280,44 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('form#formEditFarmacia').submit(function (e) {
+        e.preventDefault(); // Evita o comportamento padrão do formulário
+
+        // Obtém os dados do formulário
+        var formData = new FormData(this);
+
+        // Envia a requisição AJAX
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                toastr.success(response.message);
+
+                // Limpa o formulário
+                $('#formEditFarmacia')[0].reset();
+
+                // Oculta o modal
+                $('#modalEditarFarmacia').modal('hide');
+            },
+            error: function (xhr, status, error) {
+                // Trata os erros de validação retornados pelo servidor
+                var errors = xhr.responseJSON.errors;
+                var errorMessage = '';
+
+                // Percorre os erros e os concatena em uma única string
+                $.each(errors, function (key, value) {
+                    errorMessage += value[0] + '<br>';
+                });
+
+                // Exibe a mensagem de erro com Toastr.js
+                toastr.error(errorMessage, 'Erro de validação');
+            }
+        });
+    });
 });
 function getDataFarma(url) {
     $.ajax({
@@ -287,12 +325,17 @@ function getDataFarma(url) {
         type: 'GET',
         dataType: 'json',
         success: function (response) {
-
             // Preencher os campos do formulário com os dados recebidos
-            $('#nome_farmacia').val(response.nome);
-            $('#endereco').val(response.endereco);
-            $('#descricao').val(response.descricao);
+            $('#formEditFarmacia #nome_farmacia').val(response.nome);
+            $('#formEditFarmacia #id_farmacia').val(response.id);
+            // $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/'+id);
+            //$('#formEditFarmacia #nome_farmacia').prop('readonly', true);
+            $('#formEditFarmacia #endereco').val(response.endereco);
+            $('#formEditFarmacia #descricao').val(response.descricao);
             // Lógica para manipular outros campos, se necessário
+
+            // Exibir o modal
+            $('#modalEditarFarmacia').modal('show');
         },
         error: function (xhr, status, error) {
             console.error(xhr.responseText);
@@ -300,8 +343,6 @@ function getDataFarma(url) {
             toastr.error(xhr.responseJSON.message, 'Erro de validação');
         }
     });
-    // Exibir a modal após preencher os dados
-    $('#editarFarmacia').modal('show');
 }
 
 function preencherModalComFarmacia(url) {
@@ -361,6 +402,28 @@ function modalEliminarAH(id) {
 
             // Exibir o modal
             $('#modalEliminarAHp').modal('show');
+        },
+        error: function (xhr, status, error) {
+            // Tratar erros, se necessário
+            //console.error(xhr.responseText);
+            toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');
+        }
+    });
+}
+
+function modalEditarFarmacia(id) {
+    // Requisição AJAX para buscar os dados da farmácia
+    $.ajax({
+        url: 'api/get/area_hospitalar/'+id,
+        type: 'GET',
+        success: function (response) {
+            $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/'+id);
+            $('h4#nome_area').val(response.nome);
+            $('#formEditarAH #nome').val(response.nome);
+            $('#formEditarAH #descricao').val(response.descricao);
+
+            // Exibir o modal
+            $('#editar_area_hospitalar').modal('show');
         },
         error: function (xhr, status, error) {
             // Tratar erros, se necessário
@@ -430,7 +493,7 @@ function checkSession() {
     fetch('/api/check-session')
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            //console.log(data);
             if (data.status == 0) {
                 // Redirecionar ou recarregar a página se não houver sessão ativa
                 alert('A tua sessão expirou');

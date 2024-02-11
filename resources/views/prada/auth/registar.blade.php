@@ -11,8 +11,8 @@
                         <div class="d-flex align-items-center auth-content">
                             <div class="col-lg-7 align-self-center">
                                 <div class="p-3">
-                                    <h2 class="mb-2">Sign Up</h2>
-                                    <p>Create your POSDash account.</p>
+                                    <h2 class="mb-2">Criar conta</h2>
+                                    <p>Crie a tua conta <b>{{ env('APP_NAME') }}</b>.</p>
                                     <form id="cadastrar" method="POST" action="{{ route('registar.store') }}">
                                         @include('partials.session')
                                         @csrf

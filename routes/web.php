@@ -10,6 +10,7 @@ use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
 use App\Prada\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -65,7 +66,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/get/{id}', [FarmaciaController::class, 'get'])->name('farmacia.get');
 
         // Rota para processar o formulário de edição de farmácia
-        Route::post('/farmacia', [FarmaciaController::class, 'update'])->name('farmacia.update');
+        Route::put('/farmacia', [FarmaciaController::class, 'update'])->name('farmacia.update');
 
         // Rota para excluir a farmácia
         Route::delete('/{farmacia}', [FarmaciaController::class, 'destroy'])->name('farmacia.destroy');

@@ -36,13 +36,14 @@
                 <div class="popup text-left">
                     <h4 class="mb-3" id="nome_area">Área Hospitalar</h4>
                     <div class="content create-workform bg-body">
-                        <form id="formEditarAH" method="POST" action="{{ route('a_h.index.store') }}">
+                        <form id="formEditarAH" method="POST" action="{{ route('a_h.index.store') }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="pb-3">
                                 <label class="mb-2">Nome *</label>
                                 <input type="text" class="form-control" id="nome" placeholder="Nome da área"
                                     name="nome">
+
                             </div>
                             <div class="pb-3">
                                 <label class="mb-2">Descrição (opcional)</label>
