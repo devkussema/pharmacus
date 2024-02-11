@@ -45,21 +45,27 @@
                         <ul id="farmacias" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                             <li class="">
                                 <a href="{{ route('farmacia') }}">
-                                    <i class="las la-minus"></i><span>Listar</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                                        height="18" fill="rgba(52,51,51,1)" class="mr-4">
+                                        <path
+                                            d="M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z">
+                                        </path>
+                                    </svg>
+                                    <span>Listar</span>
                                 </a>
                             </li>
                         </ul>
                     </li>
 
                     <li class="">
-                        <a href="#farmacias" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                        <a href="#usuarios" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
                                 fill="currentColor">
                                 <path
-                                    d="M8 20V14H16V20H19V4H5V20H8ZM10 20H14V16H10V20ZM21 20H23V22H1V20H3V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V20ZM11 8V6H13V8H15V10H13V12H11V10H9V8H11Z">
+                                    d="M20 22H18V20C18 18.3431 16.6569 17 15 17H9C7.34315 17 6 18.3431 6 20V22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13ZM12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z">
                                 </path>
                             </svg>
-                            <span class="ml-4">Farmácias</span>
+                            <span class="ml-4">Usuários</span>
                             <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -67,10 +73,16 @@
                                 <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
                             </svg>
                         </a>
-                        <ul id="farmacias" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <ul id="usuarios" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                             <li class="">
-                                <a href="{{ route('farmacia') }}">
-                                    <i class="las la-minus"></i><span>Listar</span>
+                                <a href="{{ route('usuario') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                                        height="18" fill="rgba(52,51,51,1)" class="mr-4">
+                                        <path
+                                            d="M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z">
+                                        </path>
+                                    </svg>
+                                    <span>Listar</span>
                                 </a>
                             </li>
                         </ul>
@@ -86,8 +98,8 @@
                         </svg>
                         <span class="ml-4">Áreas Hospitalares</span>
                         <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="10 15 15 20 20 15"></polyline>
                             <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
                         </svg>

@@ -23,6 +23,7 @@
                                                 <div class="floating-label form-group">
                                                     <input name="email" value="{{ $token->user->email }}" type="hidden">
                                                     <input name="email_verified_at" value="sim" type="hidden">
+                                                    <input name="token" value="{{ $token->token }}" type="hidden">
                                                     <input name="password" class="floating-input form-control" type="password">
                                                     <label>Senha</label>
                                                 </div>

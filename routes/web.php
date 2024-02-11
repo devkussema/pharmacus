@@ -8,6 +8,7 @@ use App\Prada\Controllers\FarmaciaController;
 use App\Prada\Controllers\CategoriaController;
 use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
+use App\Prada\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +32,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('usuarios')->group(function () {
-        Route::post('/', [CategoriaController::class, 'store'])->name('categoria.store');
+        Route::get('/', [UsuarioController::class, 'store'])->name('usuario');
     });
 
     Route::prefix('areas_hospitalares')->group(function () {

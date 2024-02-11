@@ -15,6 +15,7 @@
                                     <p>Entre para se conectar.</p>
                                     <form id="login-form" method="POST" action="{{ route('login') }}">
                                         @csrf
+                                        @include('partials.session')
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="floating-label form-group">

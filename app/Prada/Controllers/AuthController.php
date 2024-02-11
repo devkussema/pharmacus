@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Auth;
+use App\Models\{UsersToken as UT};
 
 class AuthController extends Controller
 {
@@ -25,7 +26,8 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|exists:users,email',
             'password' => 'required',
-            'email_verified_at' => 'nullable'
+            'email_verified_at' => 'nullable',
+            'token' => 'nullable'
         ],[
             'email.required' => 'O email é obrigatório',
             'email.exists' => "Email inválido",
@@ -35,11 +37,22 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            if ($request->email_verified_at) {
+            if ($request->email_verified_at && $request->token) {
                 User::where('email', $request->email)->update([
                     'email_verified_at' => now(),
                     'status' => 1,
                 ]);
+                UT::where('token', $request->token)->update([
+                    'last_used_at' => now()
+                ]);
+                if ($request->ajax()) {
+                    return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
+                }
+                return redirect()->route('home');
+            }
+            if (Auth::user()->status != 1) {
+                Auth::logout();
+                return redirect()->route('login')->with('error', 'A tua conta não está ativada');
             }
             if ($request->ajax()) {
                 return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
