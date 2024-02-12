@@ -55,6 +55,21 @@ class FarmaciaController extends Controller
         return response()->json(['message' => 'Farmácia cadastrada com sucesso'], 201);
     }
 
+    public function getStatDia()
+    {
+        $contagemPorDia = [
+            'Segunda-feira' => Farmacia::calcularContagemParaDia('Monday'),
+            'Terça-feira' => Farmacia::calcularContagemParaDia('Tuesday'),
+            'Quarta-feira' => Farmacia::calcularContagemParaDia('Wednesday'),
+            'Quinta-feira' => Farmacia::calcularContagemParaDia('Thursday'),
+            'Sexta-feira' => Farmacia::calcularContagemParaDia('Friday'),
+            'Sábado' => Farmacia::calcularContagemParaDia('Saturday'),
+            'Domingo' => Farmacia::calcularContagemParaDia('Sunday'),
+        ];
+
+        return response()->json($contagemPorDia);
+    }
+
     public function update(Request $request)
     {
         $request->validate([

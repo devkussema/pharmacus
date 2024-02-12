@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('farmacia')->group(function () {
         Route::get('/', [FarmaciaController::class, 'index'])->name('farmacia');
+        Route::get('/stat', [FarmaciaController::class, 'getStatDia'])->name('farmacia.get_stat_dia');
 
         // Rota para exibir o formulário de criação de farmácia
         Route::get('/create', [FarmaciaController::class, 'create'])->name('farmacia.create');

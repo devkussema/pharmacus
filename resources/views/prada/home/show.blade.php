@@ -7,7 +7,11 @@
                 <div class="card card-transparent card-block card-stretch card-height border-none">
                     <div class="card-body p-0 mt-lg-2 mt-0">
                         <h3 class="mb-3">Olá {{ printNome(Auth::user()->nome) }}, {{ saudacaoDoDia() }}</h3>
-                        <p class="mb-0 mr-4">Seu painel oferece visualizações dos principais desempenhos ou processos de negócios.</p>
+                        <p class="mb-0 mr-4">Seu painel oferece visualizações dos principais desempenhos ou processos de
+                            negócios.</p>
+                        @foreach ($contagemPorDia as $dia => $contagem)
+                            <p>{{ $dia }}: {{ $contagem }}</p>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -81,11 +85,11 @@
                         <div class="card-header-toolbar d-flex align-items-center">
                             <div class="dropdown">
                                 <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton001"
-                                      data-toggle="dropdown">
+                                    data-toggle="dropdown">
                                     Este Mês<i class="ri-arrow-down-s-line ml-1"></i>
                                 </span>
                                 <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                     aria-labelledby="dropdownMenuButton001">
+                                    aria-labelledby="dropdownMenuButton001">
                                     <a class="dropdown-item" href="#">Anual</a>
                                     <a class="dropdown-item" href="#">Mensal</a>
                                     <a class="dropdown-item" href="#">Semanal</a>
@@ -102,16 +106,42 @@
                 <div class="card card-block card-stretch card-height">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <div class="header-title">
+                            <h4 class="card-title">Chart.js</h4>
+                        </div>
+                        <div class="card-header-toolbar d-flex align-items-center">
+                            <div class="dropdown">
+                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton002"
+                                    data-toggle="dropdown">
+                                    This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                                </span>
+                                <div class="dropdown-menu dropdown-menu-right shadow-none"
+                                    aria-labelledby="dropdownMenuButton002">
+                                    <a class="dropdown-item" href="#">Yearly</a>
+                                    <a class="dropdown-item" href="#">Monthly</a>
+                                    <a class="dropdown-item" href="#">Weekly</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="myChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card card-block card-stretch card-height">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <div class="header-title">
                             <h4 class="card-title">Revenue Vs Cost</h4>
                         </div>
                         <div class="card-header-toolbar d-flex align-items-center">
                             <div class="dropdown">
                                 <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton002"
-                                      data-toggle="dropdown">
+                                    data-toggle="dropdown">
                                     This Month<i class="ri-arrow-down-s-line ml-1"></i>
                                 </span>
                                 <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                     aria-labelledby="dropdownMenuButton002">
+                                    aria-labelledby="dropdownMenuButton002">
                                     <a class="dropdown-item" href="#">Yearly</a>
                                     <a class="dropdown-item" href="#">Monthly</a>
                                     <a class="dropdown-item" href="#">Weekly</a>
@@ -133,11 +163,11 @@
                         <div class="card-header-toolbar d-flex align-items-center">
                             <div class="dropdown">
                                 <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton006"
-                                      data-toggle="dropdown">
+                                    data-toggle="dropdown">
                                     This Month<i class="ri-arrow-down-s-line ml-1"></i>
                                 </span>
                                 <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                     aria-labelledby="dropdownMenuButton006">
+                                    aria-labelledby="dropdownMenuButton006">
                                     <a class="dropdown-item" href="#">Year</a>
                                     <a class="dropdown-item" href="#">Month</a>
                                     <a class="dropdown-item" href="#">Week</a>
@@ -151,7 +181,8 @@
                                 <div class="card card-block card-stretch card-height mb-0">
                                     <div class="card-body">
                                         <div class="bg-warning-light rounded">
-                                            <img src="../assets/images/product/01.png" class="style-img img-fluid m-auto p-3" alt="image">
+                                            <img src="../assets/images/product/01.png"
+                                                class="style-img img-fluid m-auto p-3" alt="image">
                                         </div>
                                         <div class="style-text text-left mt-3">
                                             <h5 class="mb-1">Organic Cream</h5>
@@ -164,7 +195,8 @@
                                 <div class="card card-block card-stretch card-height mb-0">
                                     <div class="card-body">
                                         <div class="bg-danger-light rounded">
-                                            <img src="../assets/images/product/02.png" class="style-img img-fluid m-auto p-3" alt="image">
+                                            <img src="../assets/images/product/02.png"
+                                                class="style-img img-fluid m-auto p-3" alt="image">
                                         </div>
                                         <div class="style-text text-left mt-3">
                                             <h5 class="mb-1">Rain Umbrella</h5>
@@ -177,7 +209,8 @@
                                 <div class="card card-block card-stretch card-height mb-0">
                                     <div class="card-body">
                                         <div class="bg-info-light rounded">
-                                            <img src="../assets/images/product/03.png" class="style-img img-fluid m-auto p-3" alt="image">
+                                            <img src="../assets/images/product/03.png"
+                                                class="style-img img-fluid m-auto p-3" alt="image">
                                         </div>
                                         <div class="style-text text-left mt-3">
                                             <h5 class="mb-1">Serum Bottle</h5>
@@ -190,7 +223,8 @@
                                 <div class="card card-block card-stretch card-height mb-0">
                                     <div class="card-body">
                                         <div class="bg-success-light rounded">
-                                            <img src="../assets/images/product/02.png" class="style-img img-fluid m-auto p-3" alt="image">
+                                            <img src="../assets/images/product/02.png"
+                                                class="style-img img-fluid m-auto p-3" alt="image">
                                         </div>
                                         <div class="style-text text-left mt-3">
                                             <h5 class="mb-1">Organic Cream</h5>
@@ -218,7 +252,8 @@
                     <div class="card-body card-item-right">
                         <div class="d-flex align-items-top">
                             <div class="bg-warning-light rounded">
-                                <img src="../assets/images/product/04.png" class="style-img img-fluid m-auto" alt="image">
+                                <img src="../assets/images/product/04.png" class="style-img img-fluid m-auto"
+                                    alt="image">
                             </div>
                             <div class="style-text text-left">
                                 <h5 class="mb-2">Coffee Beans Packet</h5>
@@ -232,7 +267,8 @@
                     <div class="card-body card-item-right">
                         <div class="d-flex align-items-top">
                             <div class="bg-danger-light rounded">
-                                <img src="../assets/images/product/05.png" class="style-img img-fluid m-auto" alt="image">
+                                <img src="../assets/images/product/05.png" class="style-img img-fluid m-auto"
+                                    alt="image">
                             </div>
                             <div class="style-text text-left">
                                 <h5 class="mb-2">Bottle Cup Set</h5>
@@ -254,11 +290,11 @@
                             <div class="card-header-toolbar d-flex align-items-center">
                                 <div class="dropdown">
                                     <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton003"
-                                          data-toggle="dropdown">
+                                        data-toggle="dropdown">
                                         This Month<i class="ri-arrow-down-s-line ml-1"></i>
                                     </span>
                                     <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                         aria-labelledby="dropdownMenuButton003">
+                                        aria-labelledby="dropdownMenuButton003">
                                         <a class="dropdown-item" href="#">Year</a>
                                         <a class="dropdown-item" href="#">Month</a>
                                         <a class="dropdown-item" href="#">Week</a>
@@ -279,11 +315,11 @@
                             <div class="card-header-toolbar d-flex align-items-center">
                                 <div class="dropdown">
                                     <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton004"
-                                          data-toggle="dropdown">
+                                        data-toggle="dropdown">
                                         This Month<i class="ri-arrow-down-s-line ml-1"></i>
                                     </span>
                                     <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                         aria-labelledby="dropdownMenuButton004">
+                                        aria-labelledby="dropdownMenuButton004">
                                         <a class="dropdown-item" href="#">Year</a>
                                         <a class="dropdown-item" href="#">Month</a>
                                         <a class="dropdown-item" href="#">Week</a>
@@ -304,11 +340,11 @@
                         <div class="card-header-toolbar d-flex align-items-center">
                             <div class="dropdown">
                                 <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton005"
-                                      data-toggle="dropdown">
+                                    data-toggle="dropdown">
                                     This Month<i class="ri-arrow-down-s-line ml-1"></i>
                                 </span>
                                 <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                     aria-labelledby="dropdownMenuButton005">
+                                    aria-labelledby="dropdownMenuButton005">
                                     <a class="dropdown-item" href="#">Year</a>
                                     <a class="dropdown-item" href="#">Month</a>
                                     <a class="dropdown-item" href="#">Week</a>

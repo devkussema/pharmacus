@@ -103,16 +103,77 @@
     <!-- Chart Custom JavaScript -->
     <script async src="{{ asset('assets/js/chart-custom.js') }}"></script>
 
+    {{-- Chart.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- app JavaScript -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
     <script>
-
         // Adiciona os dados na tabela áreas hospitalares
         // $(document).ready(function () {
         //     popularTabela();
         // });
     </script>
+    <script>
+        // Obtenha o contexto do canvas
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        // Defina as configurações padrão do gráfico
+        var options = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }]
+            }
+        };
+
+        // Variável global para armazenar a referência ao gráfico
+        var myChart;
+
+        // Crie uma função para buscar e atualizar os dados do gráfico
+        function atualizarGrafico() {
+            // Faz a solicitação AJAX para obter os dados estatísticos por dia
+            fetch('/farmacia/stat')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // Atualiza os dados do gráfico
+                    var newData = {
+                        labels: Object.keys(data),
+                        datasets: [{
+                            label: 'Farmácia',
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: Object.values(data)
+                        }]
+                    };
+
+                    // Se o gráfico já foi criado, atualize os dados
+                    if (typeof myChart !== 'undefined') {
+                        myChart.data = newData;
+                        myChart.update();
+                    } else { // Se não, crie o gráfico
+                        myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: newData,
+                            options: options
+                        });
+                    }
+                })
+                .catch(error => console.error('Erro ao obter dados:', error));
+        }
+
+        // Chame a função para atualizar o gráfico ao carregar a página
+        atualizarGrafico();
+
+        // Defina um intervalo para atualizar o gráfico a cada minuto
+        setInterval(atualizarGrafico, 5000);
+    </script>
 </body>
+
 </html>
