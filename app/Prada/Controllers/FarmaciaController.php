@@ -10,7 +10,7 @@ class FarmaciaController extends Controller
 {
     public function index()
     {
-        $farmacias = Farmacia::where('status', '1')->get();
+        $farmacias = Farmacia::all();
         return view('farmacia.index', compact('farmacias'));
     }
 
@@ -29,6 +29,7 @@ class FarmaciaController extends Controller
         // Validação dos dados do formulário
         $request->validate([
             'nome' => 'required|string|max:255',
+            'categoria_id' => 'required|string|max:255|exists:categorias,id',
             'logotipo' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Exemplo de validação de arquivo de imagem
             'endereco' => 'required|string|max:255',
             'descricao' => 'nullable|string',
@@ -46,6 +47,7 @@ class FarmaciaController extends Controller
         // Criação de uma nova instância de Farmacia com os dados validados
         $farmacia = new Farmacia();
         $farmacia->nome = $request->nome;
+        $farmacia->categoria_id = $request->categoria_id;
         $farmacia->logo = $logotipoPath;
         $farmacia->endereco = $request->endereco;
         $farmacia->descricao = $request->descricao;

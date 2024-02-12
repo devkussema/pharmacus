@@ -34,6 +34,7 @@
                                 </th>
                                 <th>Nome</th>
                                 <th>Código</th>
+                                <th>Status</th>
                                 <th>Categoria</th>
                                 <th>Endereço</th>
                                 <th>OBS</th>
@@ -60,11 +61,17 @@
                                             @endif
                                             <div>
                                                 {{ $farmacia->nome }}
-                                                <p class="mb-0"><small>{{ $farmacia->id }}</small></p>
                                             </div>
                                         </div>
                                     </td>
                                     <td>{{ $farmacia->codigo }}</td>
+                                    <td>
+                                        @if ($farmacia->status)
+                                            Ativa
+                                        @else
+                                            Inativa
+                                        @endif
+                                    </td>
                                     <td>{{ @$farmacia->categoria->nome }}</td>
                                     <td>{{ $farmacia->endereco }}</td>
                                     <td>{{ $farmacia->obs }}</td>

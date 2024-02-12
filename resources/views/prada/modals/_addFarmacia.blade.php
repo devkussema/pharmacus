@@ -13,6 +13,15 @@
                                     placeholder="Nome da farmácia">
                             </div>
                             <div class="form-group">
+                                <label for="nome_farmacia">Nome *</label>
+                                <select name="categoria_id" id="" class="form-control">
+                                    @php $cats = \App\Models\Categoria::where('tipo', 'farmacia')->get() @endphp
+                                    @foreach ($cats as $categoria)
+                                        <option value="{{ $categoria->id }}">{{ $categoria->nome }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="logotipo_">Logotipo</label>
                                 <div class="custom-file">
                                     <input name="logotipo" type="file" class="custom-file-input" id="customFile">

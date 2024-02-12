@@ -141,10 +141,9 @@
             fetch('/farmacia/stat')
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
                     // Atualiza os dados do gráfico
                     var newData = {
-                        labels: Object.keys(data.farmacia),
+                        labels: Object.keys(data),
                         datasets: [{
                             label: 'Farmácia',
                             backgroundColor: 'rgb(255, 99, 132)',
