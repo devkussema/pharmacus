@@ -22,7 +22,7 @@
                                     </div>
                                     <div>
                                         <p class="mb-2">Total de farmácias</p>
-                                        <h4>31.50</h4>
+                                        <h4>{{ \App\Models\Farmacia::all()->count() }}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
@@ -40,7 +40,7 @@
                                         <img src="../assets/images/product/2.png" class="img-fluid" alt="image">
                                     </div>
                                     <div>
-                                        <p class="mb-2">Total Cost</p>
+                                        <p class="mb-2">Total Gestores</p>
                                         <h4>$ 4598</h4>
                                     </div>
                                 </div>
@@ -76,19 +76,19 @@
                 <div class="card card-block card-stretch card-height">
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">
-                            <h4 class="card-title">Overview</h4>
+                            <h4 class="card-title">Visão Geral</h4>
                         </div>
                         <div class="card-header-toolbar d-flex align-items-center">
                             <div class="dropdown">
                                 <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton001"
                                       data-toggle="dropdown">
-                                    This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                                    Este Mês<i class="ri-arrow-down-s-line ml-1"></i>
                                 </span>
                                 <div class="dropdown-menu dropdown-menu-right shadow-none"
                                      aria-labelledby="dropdownMenuButton001">
-                                    <a class="dropdown-item" href="#">Year</a>
-                                    <a class="dropdown-item" href="#">Month</a>
-                                    <a class="dropdown-item" href="#">Week</a>
+                                    <a class="dropdown-item" href="#">Anual</a>
+                                    <a class="dropdown-item" href="#">Mensal</a>
+                                    <a class="dropdown-item" href="#">Semanal</a>
                                 </div>
                             </div>
                         </div>
