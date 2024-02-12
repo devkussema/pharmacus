@@ -27,7 +27,7 @@
 
     <div class="wrapper">
         @include('partials.aside')
-
+        @include('modals._addCargo')
         @include('partials.nav')
 
         <div class="modal fade" id="new-order" tabindex="-1" role="dialog" aria-hidden="true">

@@ -8,7 +8,7 @@ use App\Prada\Controllers\FarmaciaController;
 use App\Prada\Controllers\CategoriaController;
 use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
-use App\Prada\Controllers\UsuarioController;
+use App\Prada\Controllers\{UsuarioController, CargoController};
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -27,6 +27,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/main', [HomeController::class, 'home'])->name('main');
     Route::get('/produtos', [HomeController::class, 'produto'])->name('produto');
     Route::get('/categorias', [HomeController::class, 'categoria'])->name('categoria');
+
+    Route::prefix('cargos')->group(function () {
+        Route::post('/', [CargoController::class, 'store'])->name('cargo.store');
+    });
 
     Route::prefix('categoria')->group(function () {
         Route::post('/', [CategoriaController::class, 'store'])->name('categoria.store');
