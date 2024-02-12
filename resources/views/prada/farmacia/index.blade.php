@@ -35,6 +35,7 @@
                                 <th>Nome</th>
                                 <th>Código</th>
                                 <th>Status</th>
+                                <th>Gerente</th>
                                 <th>Categoria</th>
                                 <th>Endereço</th>
                                 <th>OBS</th>
@@ -70,6 +71,13 @@
                                             Ativa
                                         @else
                                             Inativa
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if (!$farmacia->gerente)
+                                            Não definido
+                                        @else
+                                            {{ $farmacia->gerente }}
                                         @endif
                                     </td>
                                     <td>{{ @$farmacia->categoria->nome }}</td>

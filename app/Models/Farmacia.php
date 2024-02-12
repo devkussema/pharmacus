@@ -24,6 +24,11 @@ class Farmacia extends Model
         'obs',
     ];
 
+    public function gerente()
+    {
+        return $this->hasOne(GerenteFarmacia::class,'farmacia_id');
+    }
+
     public function statDia()
     {
         $estatisticas = [];
@@ -51,7 +56,6 @@ class Farmacia extends Model
         // Consulta ao banco de dados para contar o número de farmácias para o dia da semana especificado
         return Farmacia::whereRaw("DAYNAME(created_at) = '{$diaFormatado}'")->count();
     }
-
 
     protected static function boot()
     {

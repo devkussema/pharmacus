@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Auth;
-use App\Models\{UsersToken as UT};
+use App\Models\{UsersToken as UT, GerenteFarmacia, Farmacia};
 
 class AuthController extends Controller
 {
@@ -42,6 +42,8 @@ class AuthController extends Controller
                     'email_verified_at' => now(),
                     'status' => 1,
                 ]);
+                $gf = GerenteFarmacia::where('user_id', Auth::user()->id)->first();
+                Farmacia::where('id', $gf->farmacia_id)->update(['status' => 1]);
                 UT::where('token', $request->token)->update([
                     'last_used_at' => now()
                 ]);
