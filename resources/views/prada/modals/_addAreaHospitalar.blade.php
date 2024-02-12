@@ -93,17 +93,26 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="popup text-left">
-                    <h4 class="mb-3">Adicionar</h4>
+                    <h4 class="mb-3">Adicionar Cargo AH</h4>
                     <div class="content create-workform bg-body">
-                        <form id="formAddAH" method="POST" action="{{ route('a_h.index.store') }}">
+                        <form id="formAddCargoAH" method="POST" action="{{ route('a_h.addCargo') }}">
                             @csrf
                             <div class="pb-3">
-                                <label class="mb-2">Nome *</label>
-                                <input type="text" class="form-control" placeholder="Nome da área" name="nome">
+                                <label class="mb-2">Email *</label>
+                                <input type="email" class="form-control" placeholder="" name="email">
+                                <input type="hidden" id="area_id" class="form-control" placeholder="" name="area_id">
                             </div>
                             <div class="pb-3">
-                                <label class="mb-2">Descrição (opcional)</label>
-                                <textarea class="form-control" placeholder="Descrição da área" name="descricao"></textarea>
+                                <label class="mb-2">Cargo *</label>
+                                <select name="cargo_id" id="" class="form-control">
+                                    @foreach (\App\Models\Cargo::all() as $cargo)
+                                        <option value="{{ $cargo->id }}">{{ $cargo->nome }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="pb-3">
+                                <label class="mb-2">Telefone *</label>
+                                <input type="text" class="form-control" placeholder="" name="contato">
                             </div>
                             <div class="col-lg-12 mt-4">
                                 <div class="d-flex flex-wrap align-items-ceter justify-content-center">

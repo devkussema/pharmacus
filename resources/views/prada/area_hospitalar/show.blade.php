@@ -52,7 +52,7 @@
                                     <td>
                                         <div class="d-flex align-items-center list-action">
                                             <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
-                                                title="Adicionar Responsável" href="javascript:void(0)" onclick="modalEditarAH('{{ $a->id }}')">
+                                                title="Adicionar Responsável" href="javascript:void(0)" onclick="modalAddCargoAH('{{ $a->id }}')">
                                                 <i class="ri-key-2-line mr-0"></i>
                                             </a>
                                             <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"

@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('areas_hospitalares')->group(function () {
         Route::get('', [AreaHospitalarController::class, 'index'])->name('a_h.index');
+        Route::post('add/cargo', [AreaHospitalarController::class, 'addCargo'])->name('a_h.addCargo');
         Route::put('/a_h/{id}', [AreaHospitalarController::class, 'update']);
         Route::delete('/apagar/{id}', [AreaHospitalarController::class, 'destroy'])->name('a_h.destroy');
         Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');

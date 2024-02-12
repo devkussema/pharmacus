@@ -4,6 +4,9 @@ namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{Mail, Hash};
+use App\Models\UserAreaHospitalar;
+use App\Mail\ConfirmarContaGerenteAH as CCG;
 use App\Models\AreaHospitalar as AH;
 
 class AreaHospitalarController extends Controller
@@ -27,6 +30,18 @@ class AreaHospitalarController extends Controller
         AH::create($request->all());
 
         return response()->json(['message' => "{$request->nome} cadastrada com sucesso"], 201);
+    }
+
+    public function addCargo(Request $request)
+    {
+        // $request->validate([
+        //     'email' => 'required',
+        //     'cargo_id' => 'required',
+        //     'area_id' => 'required',
+        //     'contato' => 'required'
+        // ]);
+
+        Mail::to('e@mail.co')->send(new CCG());
     }
 
     public function getStatDia()
@@ -74,7 +89,6 @@ class AreaHospitalarController extends Controller
             return response()->json(['message' => 'Área hospitalar excluída com sucesso']);
         return redirect()->route('a_h.index')->with('success', "{$area_hospitalar->nome} eliminada com sucesso");
     }
-
 
     public function getAll()
     {
