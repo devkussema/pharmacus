@@ -10,7 +10,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
 use App\Mail\ConfirmarGerente;
 use Ramsey\Uuid\Uuid;
-use App\Models\{User, GerenteFarmacia, UsersToken as UT};
+use App\Models\{User, GerenteFarmacia, UsersToken as UT, Grupo};
 
 class GerenteFarmaciaController extends Controller
 {
@@ -40,6 +40,10 @@ class GerenteFarmaciaController extends Controller
 
         $nome = strtolower(trim($request->nome));
 
+        $grupo = Grupo::where('nome', 'Gerente')->first();
+        if ($grupo)
+            $grupo = null;
+
         // Substitui espaços por pontos no nome
         $username = str_replace(' ', '.', $nome);
 
@@ -47,6 +51,7 @@ class GerenteFarmaciaController extends Controller
             'nome' => $request->nome,
             'email' => $request->email,
             'username' => $username,
+            'grupo_id' => $grupo->id,
             'password' => Hash::make($passwd)
         ]);
 

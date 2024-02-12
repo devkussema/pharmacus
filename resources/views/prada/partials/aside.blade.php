@@ -1,8 +1,8 @@
 <div class="iq-sidebar  sidebar-default ">
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
         <a href="{{ route('home') }}" class="header-logo">
-            <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal light-logo" alt="logo">
-            <h5 class="logo-title light-logo ml-3">{{ env('APP_NAME', 'Pharmacus') }}</h5>
+            <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal" alt="logo">
+            <h5 class="logo-title ml-3">{{ env('APP_NAME', 'Pharmacus') }}</h5>
         </a>
         <div class="iq-menu-bt-sidebar ml-0">
             <i class="ri-menu-2-line wrapper-menu"></i>
@@ -22,7 +22,7 @@
                             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                             <line x1="12" y1="22.08" x2="12" y2="12"></line>
                         </svg>
-                        <span class="ml-4">Home</span>
+                        <span class="ml-4 text-light">Home</span>
                     </a>
                 </li>
                 @if (isAdministrator())

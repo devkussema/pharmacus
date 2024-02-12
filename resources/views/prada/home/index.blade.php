@@ -143,7 +143,7 @@
                 .then(data => {
                     // Atualiza os dados do gráfico
                     var newData = {
-                        labels: Object.keys(data),
+                        labels: Object.keys(data.area_hospitalar),
                         datasets: [{
                             label: 'Farmácia',
                             backgroundColor: 'rgb(255, 99, 132)',

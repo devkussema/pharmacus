@@ -31,6 +31,10 @@
             $('.darkmode-logo').removeClass('d-none')
             $('.light-logo').addClass('d-none')
             body.addClass('dark')
+
+            // Adiciona a classe text-light aos elementos de texto
+            $('h1, h2, h3, h4, h5, h6, p, span').addClass('text-light');
+
             dark = true
         } else {
             $('[data-mode="toggle"]').find('i.a-left').removeClass('ri-moon-clear-line');
@@ -39,6 +43,10 @@
             $('.light-logo').removeClass('d-none')
             $('.darkmode-logo').addClass('d-none')
             body.removeClass('dark')
+
+            // Remove a classe text-light dos elementos de texto
+            $('h1, h2, h3, h4, h5, h6, p, span').removeClass('text-light');
+
             dark = false
         }
         updateLocalStorage(dark)

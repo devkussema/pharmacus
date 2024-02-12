@@ -22,7 +22,7 @@
                                         <img src="../assets/images/product/1.png" class="img-fluid" alt="image">
                                     </div>
                                     <div>
-                                        <p class="mb-2">Total de farmácias</p>
+                                        <p class="mb-2">Total de Farmácias</p>
                                         <h4>{{ \App\Models\Farmacia::all()->count() }}</h4>
                                     </div>
                                 </div>
@@ -42,7 +42,7 @@
                                     </div>
                                     <div>
                                         <p class="mb-2">Total Gestores</p>
-                                        <h4>$ 4598</h4>
+                                        <h4>{{ \App\Models\GerenteFarmacia::all()->count() }}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
@@ -77,7 +77,7 @@
                 <div class="card card-block card-stretch card-height" style="max-height: calc(100% - 30px)">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <div class="header-title">
-                            <h4 class="card-title">Chart.js</h4>
+                            <h4 class="card-title">Estatistica da Farmácia e Área Hospitalar</h4>
                         </div>
                         <div class="card-header-toolbar d-flex align-items-center">
                             <div class="dropdown">

@@ -1,5 +1,5 @@
 <div class="modal fade" id="addFarmacia" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="popup text-left">
@@ -36,11 +36,14 @@
                                 <label for="descricao">Descrição</label>
                                 <textarea class="form-control" id="descricao"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Cadastrar</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                            <input type="submit" hidden id="btn_sender">
                         </form>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <label for="btn_sender" class="btn btn-primary">Cadastrar</label>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
