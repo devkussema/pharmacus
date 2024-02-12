@@ -33,7 +33,7 @@
             body.addClass('dark')
 
             // Adiciona a classe text-light aos elementos de texto
-            $('h1, h2, h3, h4, h5, h6, p, span').addClass('text-light');
+            $('h1, h2, h3, h4, h5, h6, p, span, label, button, input, select').addClass('text-light');
 
             dark = true
         } else {
@@ -45,7 +45,7 @@
             body.removeClass('dark')
 
             // Remove a classe text-light dos elementos de texto
-            $('h1, h2, h3, h4, h5, h6, p, span').removeClass('text-light');
+            $('h1, h2, h3, h4, h5, h6, p, span, label, button, input, select').removeClass('text-light');
 
             dark = false
         }
