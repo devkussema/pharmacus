@@ -77,7 +77,7 @@
                                         @if (!$farmacia->gerente)
                                             Não definido
                                         @else
-                                            {{ $farmacia->gerente }}
+                                            {{ $farmacia->gerente->user->nome }}
                                         @endif
                                     </td>
                                     <td>{{ @$farmacia->categoria->nome }}</td>
