@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/a_h/{id}', [AreaHospitalarController::class, 'update']);
         Route::delete('/apagar/{id}', [AreaHospitalarController::class, 'destroy'])->name('a_h.destroy');
         Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');
+        Route::get('/statUs', [AreaHospitalarController::class, 'getStatDia'])->name('a_h.get_stat_dia');
     });
 
     Route::prefix('gestor')->group(function () {

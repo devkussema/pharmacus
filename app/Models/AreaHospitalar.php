@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class AreaHospitalar extends Model
 {
@@ -15,4 +16,13 @@ class AreaHospitalar extends Model
         'nome',
         'descricao'
     ];
+
+    public static function calcularContagemParaDia($nomeDia)
+    {
+        // Converte o nome do dia da semana para o formato que está armazenado no banco de dados
+        $diaFormatado = Carbon::createFromFormat('l', $nomeDia)->format('l');
+
+        // Consulta ao banco de dados para contar o número de farmácias para o dia da semana especificado
+        return AreaHospitalar::whereRaw("DAYNAME(created_at) = '{$diaFormatado}'")->count();
+    }
 }

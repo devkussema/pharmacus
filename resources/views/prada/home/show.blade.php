@@ -9,9 +9,6 @@
                         <h3 class="mb-3">Olá {{ printNome(Auth::user()->nome) }}, {{ saudacaoDoDia() }}</h3>
                         <p class="mb-0 mr-4">Seu painel oferece visualizações dos principais desempenhos ou processos de
                             negócios.</p>
-                        @foreach ($contagemPorDia as $dia => $contagem)
-                            <p>{{ $dia }}: {{ $contagem }}</p>
-                        @endforeach
                     </div>
                 </div>
             </div>
@@ -76,34 +73,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="card card-block card-stretch card-height">
-                    <div class="card-header d-flex justify-content-between">
-                        <div class="header-title">
-                            <h4 class="card-title">Visão Geral</h4>
-                        </div>
-                        <div class="card-header-toolbar d-flex align-items-center">
-                            <div class="dropdown">
-                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton001"
-                                    data-toggle="dropdown">
-                                    Este Mês<i class="ri-arrow-down-s-line ml-1"></i>
-                                </span>
-                                <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                    aria-labelledby="dropdownMenuButton001">
-                                    <a class="dropdown-item" href="#">Anual</a>
-                                    <a class="dropdown-item" href="#">Mensal</a>
-                                    <a class="dropdown-item" href="#">Semanal</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="layout1-chart1"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="card card-block card-stretch card-height">
+            <div class="col-lg-12">
+                <div class="card card-block card-stretch card-height" style="max-height: calc(100% - 30px)">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <div class="header-title">
                             <h4 class="card-title">Chart.js</h4>
@@ -124,7 +95,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <canvas id="myChart" width="400" height="400"></canvas>
+                        <canvas id="myChart" height="80"></canvas>
                     </div>
                 </div>
             </div>

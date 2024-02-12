@@ -29,6 +29,21 @@ class AreaHospitalarController extends Controller
         return response()->json(['message' => "{$request->nome} cadastrada com sucesso"], 201);
     }
 
+    public function getStatDia()
+    {
+        $contagemPorDia = [
+            'Segunda-feira' => AH::calcularContagemParaDia('Monday'),
+            'Terça-feira' => AH::calcularContagemParaDia('Tuesday'),
+            'Quarta-feira' => AH::calcularContagemParaDia('Wednesday'),
+            'Quinta-feira' => AH::calcularContagemParaDia('Thursday'),
+            'Sexta-feira' => AH::calcularContagemParaDia('Friday'),
+            'Sábado' => AH::calcularContagemParaDia('Saturday'),
+            'Domingo' => AH::calcularContagemParaDia('Sunday'),
+        ];
+
+        return response()->json($contagemPorDia);
+    }
+
     public function update(Request $request, $id)
     {
         $request->validate([

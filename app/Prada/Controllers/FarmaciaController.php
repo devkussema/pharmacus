@@ -4,7 +4,7 @@ namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Farmacia;
+use App\Models\{Farmacia, AreaHospitalar as AH};
 
 class FarmaciaController extends Controller
 {
@@ -57,7 +57,7 @@ class FarmaciaController extends Controller
 
     public function getStatDia()
     {
-        $contagemPorDia = [
+        $contagemFarmacia = [
             'Segunda-feira' => Farmacia::calcularContagemParaDia('Monday'),
             'Terça-feira' => Farmacia::calcularContagemParaDia('Tuesday'),
             'Quarta-feira' => Farmacia::calcularContagemParaDia('Wednesday'),
@@ -67,7 +67,20 @@ class FarmaciaController extends Controller
             'Domingo' => Farmacia::calcularContagemParaDia('Sunday'),
         ];
 
-        return response()->json($contagemPorDia);
+        $contagemAH = [
+            'Segunda-feira' => AH::calcularContagemParaDia('Monday'),
+            'Terça-feira' => AH::calcularContagemParaDia('Tuesday'),
+            'Quarta-feira' => AH::calcularContagemParaDia('Wednesday'),
+            'Quinta-feira' => AH::calcularContagemParaDia('Thursday'),
+            'Sexta-feira' => AH::calcularContagemParaDia('Friday'),
+            'Sábado' => AH::calcularContagemParaDia('Saturday'),
+            'Domingo' => AH::calcularContagemParaDia('Sunday'),
+        ];
+
+        $array['farmacia'] = $contagemFarmacia;
+        $array['area_hospitalar'] = $contagemAH;
+
+        return response()->json($array);
     }
 
     public function update(Request $request)

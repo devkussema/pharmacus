@@ -136,7 +136,7 @@
         var myChart;
 
         // Crie uma função para buscar e atualizar os dados do gráfico
-        function atualizarGrafico() {
+        function updateGraphFarmacia() {
             // Faz a solicitação AJAX para obter os dados estatísticos por dia
             fetch('/farmacia/stat')
                 .then(response => response.json())
@@ -144,12 +144,17 @@
                     console.log(data);
                     // Atualiza os dados do gráfico
                     var newData = {
-                        labels: Object.keys(data),
+                        labels: Object.keys(data.farmacia),
                         datasets: [{
                             label: 'Farmácia',
                             backgroundColor: 'rgb(255, 99, 132)',
                             borderColor: 'rgb(255, 99, 132)',
-                            data: Object.values(data)
+                            data: Object.values(data.farmacia)
+                        }, {
+                            label: 'Área Hospitalar',
+                            backgroundColor: 'rgb(54, 162, 235)',
+                            borderColor: 'rgb(54, 162, 235)',
+                            data: Object.values(data.area_hospitalar)
                         }]
                     };
 
@@ -169,10 +174,10 @@
         }
 
         // Chame a função para atualizar o gráfico ao carregar a página
-        atualizarGrafico();
+        updateGraphFarmacia();
 
         // Defina um intervalo para atualizar o gráfico a cada minuto
-        setInterval(atualizarGrafico, 5000);
+        setInterval(updateGraphFarmacia, 5000);
     </script>
 </body>
 
