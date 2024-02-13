@@ -5,12 +5,18 @@
                 <div class="popup text-left">
                     <h4 class="mb-3">Adicionar Produto</h4>
                     <div class="content create-workform bg-body">
-                        <form id="formProdutoEstoque" method="POST" action="">
+                        <form id="formProdutoEstoque" method="POST" action="{{ route('estoque.store') }}">
                             @csrf
                             <div class="form-row">
                                 <div class="col pb-3">
                                     <label class="mb-2">Designação *</label>
                                     <input type="text" class="form-control" placeholder="" name="designacao">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col pb-3">
+                                    <label class="mb-2">Quantidade em Estoque *</label>
+                                    <input type="number" class="form-control" placeholder="" name="qtd">
                                 </div>
                                 <div class="col pb-3">
                                     <label class="mb-2">Dosagem *</label>
@@ -61,13 +67,15 @@
                                     <input type="number" class="form-control" placeholder="" name="qtd_embalagem">
                                 </div>
                             </div>
-                            <div class="col pb-3">
-                                <label class="mb-2">OBS</label>
-                                <textarea class="form-control" placeholder="" name="obs"></textarea>
+                            <div class="form-row">
+                                <div class="col pb-3">
+                                    <label class="mb-2">OBS</label>
+                                    <textarea class="form-control" placeholder="" name="obs"></textarea>
+                                </div>
                             </div>
                             <div class="col-lg-12 mt-4">
                                 <div class="d-flex flex-wrap align-items-ceter justify-content-center">
-                                    <input class="btn btn-outline-primary" type="submit" hidden>
+                                    <input id="input-addEstoqueFarma" class="btn btn-outline-primary" type="submit" hidden>
                                 </div>
                             </div>
                         </form>
@@ -75,7 +83,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <label for="btn_sender" class="btn btn-primary">Cadastrar</label>
+                <label for="input-addEstoqueFarma" class="btn btn-primary">Cadastrar</label>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
             </div>
         </div>

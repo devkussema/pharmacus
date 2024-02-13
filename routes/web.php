@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('estoque')->group(function () {
         Route::get('/', [EstoqueController::class, 'index'])->name('estoque');
+        Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
     });
 
     Route::prefix('categoria')->group(function () {

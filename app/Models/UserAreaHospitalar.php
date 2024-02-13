@@ -23,6 +23,11 @@ class UserAreaHospitalar extends Model
         return $this->belongsTo(Cargo::class, 'cargo_id');
     }
 
+    public function area_hospitalar()
+    {
+        return $this->belongsTo(AreaHospitalar::class, 'area_hospitalar_id');
+    }
+
     // No modelo User.php
     public function areasHospitalares()
     {

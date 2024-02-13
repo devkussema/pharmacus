@@ -11,8 +11,14 @@ class Estoque extends Model
 
     protected $fillable = [
         'produto_estoque_id',
-        'tipo'
+        'tipo',
+        'area_hospitalar_id'
     ];
+
+    public function area_hospitalar()
+    {
+        return $this->belongsTo(AreaHospitalar::class, 'area_hospitalar_id');
+    }
 
     public function produto()
     {

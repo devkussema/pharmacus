@@ -53,6 +53,7 @@
                 </div>
             </div>
         </div>
+        @include('modals._estoqueFarmaceutico')
         @include('modals._addFarmacia')
         @include('modals._addCategoria')
 
