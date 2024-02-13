@@ -89,7 +89,7 @@
                     </li>
                 @endif
                 <li class="">
-                    <a href="#areas_hospitalares" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                    <a href="#estoque_farmaceutico" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
                             fill="currentColor">
                             <path
@@ -104,9 +104,9 @@
                             <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
                         </svg>
                     </a>
-                    <ul id="areas_hospitalares" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                    <ul id="estoque_farmaceutico" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                         <li class="">
-                            <a href="{{ route('a_h.index') }}">
+                            <a href="{{ route('estoque') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
                                     height="18" fill="rgba(52,51,51,1)">
                                     <path

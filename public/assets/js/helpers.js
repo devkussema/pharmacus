@@ -486,6 +486,10 @@ function preencherModalComFarmacia(url) {
     });
 }
 
+function modalAddProdutoEstoque() {
+    $('#modalAddProdutoEstoque').modal('show');
+}
+
 function modalAddCargoAH(area_id) {
     $('#area_hospitalar_id').val(area_id);
     $('#addResponsavelAH').modal('show');

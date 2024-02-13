@@ -3,8 +3,14 @@
 namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\{AreaHospitalar as AH, Estoque};
 
 class EstoqueController extends Controller
 {
-    // Adicione suas funções aqui
+    public function index()
+    {
+        $ah = AH::all();
+        $estoque = Estoque::all();
+        return view('estoque.show', compact('estoque', 'ah'));
+    }
 }
