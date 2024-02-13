@@ -34,12 +34,20 @@ class AreaHospitalarController extends Controller
 
     public function addCargo(Request $request)
     {
-        // $request->validate([
-        //     'email' => 'required',
-        //     'cargo_id' => 'required',
-        //     'area_id' => 'required',
-        //     'contato' => 'required'
-        // ]);
+        $request->validate([
+            'email' => 'required|unique:users,email',
+            'cargo_id' => 'required|exists:cargos,id',
+            'area_id' => 'required|exists:areas_hospitalares,id',
+            'contato' => 'required'
+        ],[
+            'email.required' => "O email é obrigatório",
+            'email.unique' => "Este email já está a ser usado",
+            'cargo_id.required' => "Selecione um cargo",
+            'cargo.exists' => "Selecione um cargo válido",
+            'area_id' => 'Por favor selecione uma área primeiro',
+            'area_id.exists' => "Por favor selecione uma área hospitalar válida",
+            'contato.required' => "Informe um número de telefone válido"
+        ]);
 
         Mail::to('e@mail.co')->send(new CCG());
     }

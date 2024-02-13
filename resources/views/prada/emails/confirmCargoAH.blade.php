@@ -99,7 +99,7 @@
             <tr>
             <td align="center" valign="top" width="600">
             <![endif]-->
-            @include('components._emailFooterNavigation')
+            {{-- O footer --}}
             <!--[if (gte mso 9)|(IE)]>
             </td>
             </tr>

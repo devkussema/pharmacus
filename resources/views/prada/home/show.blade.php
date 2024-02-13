@@ -60,8 +60,8 @@
                                         <img src="../assets/images/product/3.png" class="img-fluid" alt="image">
                                     </div>
                                     <div>
-                                        <p class="mb-2">Product Sold</p>
-                                        <h4>4589 M</h4>
+                                        <p class="mb-2">Áreas Hospitalares</p>
+                                        <h4>{{ \App\Models\AreaHospitalar::all()->count() }}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
