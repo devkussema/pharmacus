@@ -22,6 +22,7 @@ class GerenteFarmaciaController extends Controller
         }
         return "Token inexistente!";
     }
+    
     public function store(Request $request)
     {
         $request->validate([

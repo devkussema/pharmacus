@@ -2,9 +2,20 @@
 
 use \App\Models\User;
 use App\Models\Grupo;
-use App\Models\Permissao;
+use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+
+function isCargo($cargo) {
+    $c = Grupo::where('nome', $cargo)->first();
+    if ($c) {
+        if (Auth::user()->grupo_id == $c->id) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 function printNome($nomeCompleto) {
     // Dividir o nome completo em partes (nome e sobrenome)

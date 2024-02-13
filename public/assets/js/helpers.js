@@ -487,7 +487,7 @@ function preencherModalComFarmacia(url) {
 }
 
 function modalAddCargoAH(area_id) {
-    $('#formAddCargoAH #area_id').val(area_id);
+    $('#area_hospitalar_id').val(area_id);
     $('#addResponsavelAH').modal('show');
 }
 

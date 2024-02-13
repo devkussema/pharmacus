@@ -92,17 +92,11 @@ class AuthController extends Controller
 
         $nome = strtolower(trim($request->nome));
 
-        // Substitui espaços por pontos no nome
-        $username = str_replace(' ', '.', $nome);
-
-        $uuid = Uuid::uuid4()->toString();
-
         // Criar novo usuário
         $user = User::create([
             'nome' => $request->nome,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'username' => $username,
         ]);
 
         // Se necessário, faça login automaticamente do usuário

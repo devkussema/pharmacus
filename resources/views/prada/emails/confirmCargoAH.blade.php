@@ -40,7 +40,7 @@
                     <tr>
                         <td bgcolor="#ffffff" align="left"
                             style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Olá,</p>
+                            <p style="margin: 0;">Olá,</p><br>
                             <p style="margin: 0;">Você está a um passo de começar a usar nosso serviço.
                                 Clique no botão abaixo para confirmar seu e-mail e concluir o processo de criação de conta:
                             </p>
@@ -55,7 +55,7 @@
                                         <table border="0" cellspacing="0" cellpadding="0">
                                             <tr>
                                                 <td align="center" style="border-radius: 3px;" bgcolor="#ff4c52">
-                                                    <a href="#" target="_blank"
+                                                    <a href="{{ $url }}" target="_blank"
                                                         style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 12px 50px; border-radius: 2px; border: 1px solid #ff4c52; display: inline-block;">
                                                         Confirmar
                                                     </a>

@@ -36,7 +36,24 @@ class User extends Authenticatable
 
         static::creating(function ($user) {
             $user->id = Uuid::uuid4()->toString();
+            $user->generateUsername();
         });
+    }
+
+    public function area_hospitalar()
+    {
+        return $this->hasOne(UserAreaHospitalar::class, 'user_id');
+    }
+
+    /**
+     * Cria o nome de usuário com base no nome fornecido.
+     *
+     * @return void
+     */
+    protected function generateUsername()
+    {
+        $nome = strtolower(trim($this->nome));
+        $this->username = str_replace(' ', '.', $nome);
     }
 
     public function grupos()

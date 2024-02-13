@@ -53,6 +53,7 @@ class AreaHospitalarController extends Controller
         ]);
 
         $ah = AH::find($request->area_id);
+        $cargo = Cargo::find($request->cargo_id);
 
         $user = User::create([
             'nome' => "Responsável {$ah->nome}",
@@ -68,9 +69,11 @@ class AreaHospitalarController extends Controller
         ]);
 
         $token = self::gerarToken($user);
-        $url = route('gestor.token', ['token' => $token->token]);
+        $url = route('confirmar.funcionario', ['token' => $token->token]);
 
-        Mail::to($request->email)->send(new CCG());
+        Mail::to($request->email)->send(new CCG($url));
+
+        return response()->json(['message' => "Um email para o {$cargo->nome} foi enviado."]);
     }
 
     public function getStatDia()

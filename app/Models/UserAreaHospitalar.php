@@ -9,7 +9,7 @@ class UserAreaHospitalar extends Model
 {
     use HasFactory;
 
-    protected $table = "";
+    protected $table = "user_area_hospitalar";
 
     protected $fillable = [
         'user_id',
@@ -17,6 +17,11 @@ class UserAreaHospitalar extends Model
         'cargo_id',
         'contato'
     ];
+
+    public function cargo()
+    {
+        return $this->belongsTo(Cargo::class, 'cargo_id');
+    }
 
     // No modelo User.php
     public function areasHospitalares()

@@ -13,14 +13,14 @@ class ConfirmarContaGerenteAH extends Mailable
 {
     use Queueable, SerializesModels;
 
-    
+    public $url;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($url)
     {
-        //
+        $this->url = $url;
     }
 
     /**

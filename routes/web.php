@@ -8,7 +8,9 @@ use App\Prada\Controllers\FarmaciaController;
 use App\Prada\Controllers\CategoriaController;
 use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
-use App\Prada\Controllers\{UsuarioController, CargoController};
+use App\Prada\Controllers\{UsuarioController, 
+    CargoController, ConfirmarController
+};
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -88,7 +90,8 @@ Route::middleware('auth')->group(function () {
 
 Route::prefix('auth')->middleware('guest')->group(function () {
     Route::prefix('')->group(function () {
-        Route::get('/confirmar/conta/{token}', [GerenteFarmaciaController::class, 'confirmar'])->name('gestor.token');
+        Route::get('/confirmar/{token}', [ConfirmarController::class, 'funcionario'])->name('confirmar.funcionario');
+        Route::post('/confirmar', [ConfirmarController::class, 'concluir'])->name('confirmar.funcionario.concluir');
     });
 
     Route::get('/', [AuthController::class, 'index'])->name('login');
