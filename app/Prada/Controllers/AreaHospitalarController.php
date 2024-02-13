@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Mail, Hash};
 use App\Models\UserAreaHospitalar;
 use App\Mail\ConfirmarContaGerenteAH as CCG;
-use App\Models\AreaHospitalar as AH;
+use App\Models\{UserAreaHospitalar as UAH, AreaHospitalar as AH, User, Cargo};
+use App\Traits\GenerateTrait;
 
 class AreaHospitalarController extends Controller
 {
+    use GenerateTrait;
+
     public function index()
     {
         $ah = AH::all();
@@ -49,7 +52,25 @@ class AreaHospitalarController extends Controller
             'contato.required' => "Informe um número de telefone válido"
         ]);
 
-        Mail::to('e@mail.co')->send(new CCG());
+        $ah = AH::find($request->area_id);
+
+        $user = User::create([
+            'nome' => "Responsável {$ah->nome}",
+            'email' => $request->email,
+            'password' => Hash::make(self::gerarSenhaAutomatica())
+        ]);
+
+        UAH::create([
+            'user_id' => $user->id,
+            'area_hospitalar_id' => $request->area_id,
+            'cargo_id' => $request->cargo_id,
+            'contato' => $request->contato
+        ]);
+
+        $token = self::gerarToken($user);
+        $url = route('gestor.token', ['token' => $token->token]);
+
+        Mail::to($request->email)->send(new CCG());
     }
 
     public function getStatDia()
