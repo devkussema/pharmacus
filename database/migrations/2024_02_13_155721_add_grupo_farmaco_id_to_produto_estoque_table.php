@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estoques', function (Blueprint $table) {
-            $table->id();
-            $table->string('tipo', 100)->nullable();
-            $table->foreignId('produto_estoque_id')->constrained('produto_estoques')->onDelete('cascade');
-            $table->timestamps();
+        Schema::table('produto_estoques', function (Blueprint $table) {
+            $table->foreignId('grupo_farmaco_id')->constrained('grupo_farmacologicos')->onDelete('cascade')->after('forma');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estoques');
+        Schema::table('produto_estoques', function (Blueprint $table) {
+            $table->dropForeignId('grupo_farmaco_id');
+        });
     }
 };

@@ -14,5 +14,11 @@ class ProdutoEstoque extends Model
         'dosagem',
         'forma',
         'quantidade_por_embalagem',
+        'grupo_farmaco_id'
     ];
+
+    public function grupo_farmaco()
+    {
+        return $this->belongsTo(GrupoFarmacologico::class, 'grupo_farmaco_id');
+    }
 }

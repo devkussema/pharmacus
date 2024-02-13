@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estoques', function (Blueprint $table) {
+        Schema::create('saldo_estoques', function (Blueprint $table) {
             $table->id();
-            $table->string('tipo', 100)->nullable();
             $table->foreignId('produto_estoque_id')->constrained('produto_estoques')->onDelete('cascade');
+            $table->bigInteger('qtd');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estoques');
+        Schema::dropIfExists('saldo_estoques');
     }
 };
