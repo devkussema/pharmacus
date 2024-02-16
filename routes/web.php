@@ -8,7 +8,7 @@ use App\Prada\Controllers\FarmaciaController;
 use App\Prada\Controllers\CategoriaController;
 use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
-use App\Prada\Controllers\{UsuarioController, 
+use App\Prada\Controllers\{UsuarioController,
     CargoController, ConfirmarController, EstoqueController
 };
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/', [CargoController::class, 'store'])->name('cargo.store');
     });
 
-    Route::prefix('estoque')->group(function () {
+    Route::prefix('estoque')->middleware('is.area_hospitalar')->group(function () {
         Route::get('/', [EstoqueController::class, 'index'])->name('estoque');
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
     });

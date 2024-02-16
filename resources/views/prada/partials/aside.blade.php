@@ -88,36 +88,38 @@
                         </ul>
                     </li>
                 @endif
-                <li class="">
-                    <a href="#estoque_farmaceutico" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
-                            fill="currentColor">
-                            <path
-                                d="M6.50488 2H17.5049C17.8196 2 18.116 2.14819 18.3049 2.4L21.0049 6V21C21.0049 21.5523 20.5572 22 20.0049 22H4.00488C3.4526 22 3.00488 21.5523 3.00488 21V6L5.70488 2.4C5.89374 2.14819 6.19013 2 6.50488 2ZM19.0049 8H5.00488V20H19.0049V8ZM18.5049 6L17.0049 4H7.00488L5.50488 6H18.5049ZM9.00488 10V12C9.00488 13.6569 10.348 15 12.0049 15C13.6617 15 15.0049 13.6569 15.0049 12V10H17.0049V12C17.0049 14.7614 14.7663 17 12.0049 17C9.24346 17 7.00488 14.7614 7.00488 12V10H9.00488Z">
-                            </path>
-                        </svg>
-                        <span class="ml-4">Estoque</span>
-                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="10 15 15 20 20 15"></polyline>
-                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                        </svg>
-                    </a>
-                    <ul id="estoque_farmaceutico" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                        <li class="">
-                            <a href="{{ route('estoque') }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
-                                    height="18" fill="rgba(52,51,51,1)">
-                                    <path
-                                        d="M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z">
-                                    </path>
-                                </svg>
-                                <span class="ml-4">Listar</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                @if (Auth::user()->area_hospitalar)
+                    <li class="">
+                        <a href="#estoque_farmaceutico" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                fill="currentColor">
+                                <path
+                                    d="M6.50488 2H17.5049C17.8196 2 18.116 2.14819 18.3049 2.4L21.0049 6V21C21.0049 21.5523 20.5572 22 20.0049 22H4.00488C3.4526 22 3.00488 21.5523 3.00488 21V6L5.70488 2.4C5.89374 2.14819 6.19013 2 6.50488 2ZM19.0049 8H5.00488V20H19.0049V8ZM18.5049 6L17.0049 4H7.00488L5.50488 6H18.5049ZM9.00488 10V12C9.00488 13.6569 10.348 15 12.0049 15C13.6617 15 15.0049 13.6569 15.0049 12V10H17.0049V12C17.0049 14.7614 14.7663 17 12.0049 17C9.24346 17 7.00488 14.7614 7.00488 12V10H9.00488Z">
+                                </path>
+                            </svg>
+                            <span class="ml-4">Estoque</span>
+                            <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="10 15 15 20 20 15"></polyline>
+                                <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                            </svg>
+                        </a>
+                        <ul id="estoque_farmaceutico" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            <li class="">
+                                <a href="{{ route('estoque') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                                        height="18" fill="rgba(52,51,51,1)">
+                                        <path
+                                            d="M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z">
+                                        </path>
+                                    </svg>
+                                    <span class="ml-4">Listar</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
                 <li class="">
                     <a href="#areas_hospitalares" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -149,7 +151,7 @@
                     </ul>
                 </li>
                 <li class=" ">
-                    <a href="#" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                    <a href="#categoria" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash3" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -164,15 +166,15 @@
                             <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
                         </svg>
                     </a>
-                    <ul id="category" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                    <ul id="categoria" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                         <li class="">
-                            <a href="{{ route('categoria') }}" id="aside-link">
+                            <a href="{{ route('categoria') }}" id="aside-linke">
                                 <i class="las la-minus"></i><span>Lista</span>
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class=" ">
+                <li class="">
                     <a href="#sale" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash4" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -180,7 +182,7 @@
                             <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
                             <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
                         </svg>
-                        <span class="ml-4">Sale</span>
+                        <span class="ml-4">Relatórios</span>
                         <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -203,7 +205,7 @@
                 </li>
             </ul>
         </nav>
-        <div id="sidebar-bottom" class="position-relative sidebar-bottom">
+        {{-- <div id="sidebar-bottom" class="position-relative sidebar-bottom">
             <div class="card border-none">
                 <div class="card-body p-0">
                     <div class="sidebarbottom-content">
@@ -214,7 +216,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="p-3"></div>
     </div>
 </div>
