@@ -28,6 +28,11 @@ class ProdutoEstoque extends Model
         return $this->belongsTo(GrupoFarmacologico::class, 'grupo_farmaco_id');
     }
 
+    public function estoque()
+    {
+        return $this->hasMany(Estoque::class, 'produto_estoque_id');
+    }
+
     public function saldo()
     {
         return $this->hasOne(SaldoEstoque::class, 'produto_estoque_id');

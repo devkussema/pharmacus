@@ -9,6 +9,7 @@ use App\Models\{AreaHospitalar as AH, Estoque, SaldoEstoque as SE, ProdutoEstoqu
 class EstoqueController extends Controller
 {
     private $estoque = null;
+
     public function index()
     {
         $ah = AH::all();
@@ -28,7 +29,7 @@ class EstoqueController extends Controller
             'data_expiracao' => 'required|date',
             'data_producao' => 'required|date',
             'num_documento' => 'nullable',
-            'qtd_embalagem' => 'required|integer|min:1',
+            'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
             'obs' => 'nullable',
             'qtd' => 'required',

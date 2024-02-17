@@ -13,4 +13,11 @@ class GrupoFarmacologico extends Model
         'nome',
         'descricao'
     ];
+
+    public function produtos()
+    {
+        return $this->hasMany(ProdutoEstoque::class, 'grupo_farmaco_id');
+    }
+
+
 }
