@@ -8,6 +8,15 @@
             <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Estoque {{ Auth::user()->area_hospitalar->area_hospitalar->nome }}</h4>
+
+                    @php
+                        $produto = \App\Models\ProdutoEstoque::find(3);
+                        $q = ($produto->saldo->qtd - 18);
+                        echo $q;
+                        if (!($q >= 0)) {
+                            echo "Erro";
+                        }
+                    @endphp
                 </div>
                 {{-- <a href="#" class="btn btn-primary add-list" style="float: right" data-toggle="modal" data-target="#addFarmacia"><i
                         class="las la-plus mr-3"></i>
@@ -17,9 +26,15 @@
             @include('partials.session')
             <div class="col-lg-12">
                 <div class="row">
-                    @foreach (\App\Models\GrupoFarmacologico::with(['produtos.saldo' => function ($query) {
-                        $query->orderByDesc('qtd')->take(4);
-                    }])->get() as $grupo)
+                    @foreach (\App\Models\GrupoFarmacologico::with([
+                        'produtos.saldo' => function ($query) {
+                            $query->orderByDesc('qtd')->take(4);
+                        },
+                    ])->whereHas('produtos', function ($query) {
+                            $query->whereHas('estoque', function ($query) {
+                                $query->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id);
+                            });
+                        })->get() as $grupo)
                         @php
                             $totalProdutos = $grupo->produtos->sum('saldo.qtd');
                         @endphp
@@ -244,6 +259,9 @@
                                                     <i class="ri-key-2-line mr-0"></i>
                                                 </a>
                                             @endif
+                                            <a class="badge bg-success mr-2" title="Dar baixa" href="javascript:void(0)" onclick="modalDarBaixa({{ $est->produto->id }})">
+                                                <i class="ri-install-line mr-0"></i>
+                                            </a>
                                             <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
                                                 title="Editar" href="javascript:void(0)" onclick="">
                                                 <i class="ri-pencil-line mr-0"></i>
@@ -262,4 +280,5 @@
             </div>
         </div>
     </div>
+    @include('modals._estoqueOps')
 @endsection
