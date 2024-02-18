@@ -6,6 +6,12 @@ use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function assets($path) {
+    $url = env("APP_THEME", "default") . "/".$path;
+
+    return asset($url);
+}
+
 function isCargo($cargo) {
     $c = Grupo::where('nome', $cargo)->first();
     if ($c) {
