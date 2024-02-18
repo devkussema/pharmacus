@@ -9,11 +9,12 @@ use App\Models\{AreaHospitalar as AH, Estoque, SaldoEstoque as SE, ProdutoEstoqu
 class EstoqueController extends Controller
 {
     private $estoque = null;
+
     public function index()
     {
         $ah = AH::all();
 
-        $estoque = Estoque::with('produto')->get();
+        $estoque = Estoque::with('produto')->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)->get();
         return view('estoque.show', compact('estoque', 'ah'));
     }
 
@@ -28,7 +29,7 @@ class EstoqueController extends Controller
             'data_expiracao' => 'required|date',
             'data_producao' => 'required|date',
             'num_documento' => 'nullable',
-            'qtd_embalagem' => 'required|integer|min:1',
+            'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
             'obs' => 'nullable',
             'qtd' => 'required',
@@ -75,5 +76,53 @@ class EstoqueController extends Controller
         ]);
 
         return response()->json(['message' => "{$request->designacao} adicionado!"]);
+    }
+
+    public function baixa(Request $request)
+    {
+        $request->validate([
+            'produto_id' => "required|exists:produto_estoques,id",
+            'area_hospitalar_id' => "required|exists:areas_hospitalares,id",
+            'qtd' => "required|min:1",
+        ]);
+
+        $produto = PE::find($request->produto_id);
+        $qtdBaixar = $request->qtd;
+        $qt = ($produto->saldo->qtd - $qtdBaixar);
+
+        if (!($qt >= 0)) {
+            return redirect()->back()->with('error', 'Deves informar uma quantidade igual ou inferior da existente');
+        }
+
+        $dataProduto = [
+            'designacao' => $produto->designacao,
+            'dosagem' => $produto->dosagem,
+            'forma' => $produto->forma,
+            'origem_destino' => $produto->origem_destino,
+            'num_lote' => $produto->num_lote,
+            'data_expiracao' => $produto->data_expiracao,
+            'data_producao' => $produto->data_producao,
+            'num_documento' => $produto->num_documento,
+            'obs' => $produto->obs,
+            'qtd_embalagem' => $produto->qtd_embalagem,
+            'grupo_farmaco_id' => $produto->grupo_farmaco_id
+        ];
+
+        $novoProduto = PE::create($dataProduto);
+        $saldO = SE::create([
+            'produto_estoque_id' => $novoProduto->id,
+            'qtd' => $qtdBaixar
+        ]);
+        
+        $estoque = Estoque::create([
+            'produto_estoque_id' => $novoProduto->id,
+            'area_hospitalar_id' => $request->area_hospitalar_id
+        ]);
+
+        $produto->saldo->update([
+            'qtd' => $qt
+        ]);
+
+        return response()->json(['message' => 'Baixa concluida'], 201);
     }
 }

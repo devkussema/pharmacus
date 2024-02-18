@@ -17,6 +17,11 @@ class AreaHospitalar extends Model
         'descricao'
     ];
 
+    public function isGerente()
+    {
+        return $this->hasOne(UserAreaHospitalar::class, 'area_hospitalar_id');
+    }
+
     public static function calcularContagemParaDia($nomeDia)
     {
         // Converte o nome do dia da semana para o formato que está armazenado no banco de dados
