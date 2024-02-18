@@ -8,15 +8,6 @@
             <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Estoque {{ Auth::user()->area_hospitalar->area_hospitalar->nome }}</h4>
-
-                    @php
-                        $produto = \App\Models\ProdutoEstoque::find(3);
-                        $q = ($produto->saldo->qtd - 18);
-                        echo $q;
-                        if (!($q >= 0)) {
-                            echo "Erro";
-                        }
-                    @endphp
                 </div>
                 {{-- <a href="#" class="btn btn-primary add-list" style="float: right" data-toggle="modal" data-target="#addFarmacia"><i
                         class="las la-plus mr-3"></i>
@@ -24,7 +15,7 @@
                 </a> --}}
             </div>
             @include('partials.session')
-            <div class="col-lg-12">
+            {{-- <div class="col-lg-12">
                 <div class="row">
                     @foreach (\App\Models\GrupoFarmacologico::with([
                         'produtos.saldo' => function ($query) {
@@ -67,152 +58,92 @@
                             </div>
                         @endif
                     @endforeach
-                    {{-- <div class="col-lg-3 col-md-3">
-                        <div class="card card-block card-stretch card-height">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-danger-light">
-                                        <img src="{{ asset('assets/images/product/2.png') }}" class="img-fluid"
-                                            alt="image">
-                                    </div>
-                                    <div>
-                                        <p class="mb-2">Total Gestores</p>
-                                        <h4>{{ \App\Models\GerenteFarmacia::all()->count() }}</h4>
-                                    </div>
-                                </div>
-                                <div class="iq-progress-bar mt-2">
-                                    <span class="bg-danger iq-progress progress-1" data-percent="70">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3">
-                        <div class="card card-block card-stretch card-height">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-success-light">
-                                        <img src="{{ asset('assets/images/product/3.png') }}" class="img-fluid"
-                                            alt="image">
-                                    </div>
-                                    <div>
-                                        <p class="mb-2">Áreas Hospitalares</p>
-                                        <h4>{{ \App\Models\AreaHospitalar::all()->count() }}</h4>
-                                    </div>
-                                </div>
-                                <div class="iq-progress-bar mt-2">
-                                    <span class="bg-success iq-progress progress-1" data-percent="75">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3">
-                        <div class="card card-block card-stretch card-height">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-success-light">
-                                        <img src="{{ asset('assets/images/product/3.png') }}" class="img-fluid"
-                                            alt="image">
-                                    </div>
-                                    <div>
-                                        <p class="mb-2">Áreas Hospitalares</p>
-                                        <h4>{{ \App\Models\AreaHospitalar::all()->count() }}</h4>
-                                    </div>
-                                </div>
-                                <div class="iq-progress-bar mt-2">
-                                    <span class="bg-success iq-progress progress-1" data-percent="75">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-                </div>
-            </div>
-            {{-- <div class="col-lg-12">
-                <div class="row">
-                    <div class="col-lg-3 col-md-3">
-                        <div class="card card-block card-stretch card-height">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-info-light">
-                                        <img src="{{ asset('assets/images/product/1.png') }}" class="img-fluid"
-                                            alt="image">
-                                    </div>
-                                    <div>
-                                        <p class="mb-2">Total de Farmácias</p>
-                                        <h4>{{ \App\Models\Farmacia::all()->count() }}</h4>
-                                    </div>
-                                </div>
-                                <div class="iq-progress-bar mt-2">
-                                    <span class="bg-info iq-progress progress-1" data-percent="85">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3">
-                        <div class="card card-block card-stretch card-height">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-danger-light">
-                                        <img src="{{ asset('assets/images/product/2.png') }}" class="img-fluid"
-                                            alt="image">
-                                    </div>
-                                    <div>
-                                        <p class="mb-2">Aa</p>
-                                        <h4>{{ \App\Models\GerenteFarmacia::all()->count() }}</h4>
-                                    </div>
-                                </div>
-                                <div class="iq-progress-bar mt-2">
-                                    <span class="bg-danger iq-progress progress-1" data-percent="70">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3">
-                        <div class="card card-block card-stretch card-height">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-success-light">
-                                        <img src="{{ asset('assets/images/product/3.png') }}" class="img-fluid"
-                                            alt="image">
-                                    </div>
-                                    <div>
-                                        <p class="mb-2">Áreas Hospitalares</p>
-                                        <h4>{{ \App\Models\AreaHospitalar::all()->count() }}</h4>
-                                    </div>
-                                </div>
-                                <div class="iq-progress-bar mt-2">
-                                    <span class="bg-success iq-progress progress-1" data-percent="75">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3">
-                        <div class="card card-block card-stretch card-height">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-success-light">
-                                        <img src="{{ asset('assets/images/product/3.png') }}" class="img-fluid"
-                                            alt="image">
-                                    </div>
-                                    <div>
-                                        <p class="mb-2">Áreas Hospitalares</p>
-                                        <h4>{{ \App\Models\AreaHospitalar::all()->count() }}</h4>
-                                    </div>
-                                </div>
-                                <div class="iq-progress-bar mt-2">
-                                    <span class="bg-success iq-progress progress-1" data-percent="75">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div> --}}
+            <div class="col-12">
+                <div class="box">
+                    <div class="row g-0 py-2">
+
+                        <div class="col-12 col-lg-3">
+                            <div class="box-body be-1 border-light">
+                                <div class="flexbox mb-1">
+                                    <span>
+                                        <span class="icon-User fs-40"><span class="path1"></span><span
+                                                class="path2"></span></span><br>
+                                        New Users
+                                    </span>
+                                    <span class="text-primary fs-40">845</span>
+                                </div>
+                                <div class="progress progress-xxs mt-10 mb-0">
+                                    <div class="progress-bar" role="progressbar"
+                                        style="width: 35%; height: 4px;" aria-valuenow="35"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-12 col-lg-3 hidden-down">
+                            <div class="box-body be-1 border-light">
+                                <div class="flexbox mb-1">
+                                    <span>
+                                        <span class="icon-Selected-file fs-40"><span
+                                                class="path1"></span><span class="path2"></span></span><br>
+                                        Today Invoices
+                                    </span>
+                                    <span class="text-info fs-40">952</span>
+                                </div>
+                                <div class="progress progress-xxs mt-10 mb-0">
+                                    <div class="progress-bar bg-info" role="progressbar"
+                                        style="width: 55%; height: 4px;" aria-valuenow="55"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-12 col-lg-3 d-none d-lg-block">
+                            <div class="box-body be-1 border-light">
+                                <div class="flexbox mb-1">
+                                    <span>
+                                        <span class="icon-Info-circle fs-40"><span
+                                                class="path1"></span><span class="path2"></span><span
+                                                class="path3"></span></span><br>
+                                        Open Issues
+                                    </span>
+                                    <span class="text-warning fs-40">845</span>
+                                </div>
+                                <div class="progress progress-xxs mt-10 mb-0">
+                                    <div class="progress-bar bg-warning" role="progressbar"
+                                        style="width: 65%; height: 4px;" aria-valuenow="65"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-12 col-lg-3 d-none d-lg-block">
+                            <div class="box-body">
+                                <div class="flexbox mb-1">
+                                    <span>
+                                        <span class="icon-Group-folders fs-40"><span
+                                                class="path1"></span><span class="path2"></span></span><br>
+                                        New Projects
+                                    </span>
+                                    <span class="text-danger fs-40">158</span>
+                                </div>
+                                <div class="progress progress-xxs mt-10 mb-0">
+                                    <div class="progress-bar bg-danger" role="progressbar"
+                                        style="width: 40%; height: 4px;" aria-valuenow="40"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-12">
                 <div class="table-responsive rounded mb-3">
                     <table class="data-table table mb-0 tbl-server-info tbl-estoque">
@@ -228,6 +159,7 @@
                                 <th>Dosagem</th>
                                 <th>Forma</th>
                                 <th>Lote</th>
+                                <th>Grupo</th>
                                 <th>Qtd.</th>
                                 <th>Documento nº</th>
                                 <th>Data Expiração</th>
@@ -244,10 +176,11 @@
                                             <label for="checkbox2" class="mb-0"></label>
                                         </div>
                                     </td>
-                                    <td>{{ $est->produto->designacao }}</td>
+                                    <td><b>{{ $est->produto->designacao }}</b></td>
                                     <td>{{ $est->produto->dosagem }}</td>
                                     <td>{{ $est->produto->forma }}</td>
                                     <td>{{ $est->produto->num_lote }}</td>
+                                    <td><b>{{ $est->produto->grupo_farmaco->nome }}</b></td>
                                     <td>{{ $est->produto->saldo->qtd }}</td>
                                     <td>{{ $est->produto->num_documento }}</td>
                                     <td>{{ $est->produto->data_expiracao }}</td>

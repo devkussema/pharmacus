@@ -42,7 +42,7 @@ class GerenteFarmaciaController extends Controller
         $nome = strtolower(trim($request->nome));
 
         $grupo = Grupo::where('nome', 'Gerente')->first();
-        if ($grupo)
+        if (!$grupo)
             $grupo = null;
 
         // Substitui espaços por pontos no nome
