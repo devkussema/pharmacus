@@ -15,7 +15,7 @@
                 </a> --}}
             </div>
             @include('partials.session')
-            {{-- <div class="col-lg-12">
+            <div class="col-lg-12">
                 <div class="row">
                     @foreach (\App\Models\GrupoFarmacologico::with([
                         'produtos.saldo' => function ($query) {
@@ -58,90 +58,6 @@
                             </div>
                         @endif
                     @endforeach
-                </div>
-            </div> --}}
-            <div class="col-12">
-                <div class="box">
-                    <div class="row g-0 py-2">
-
-                        <div class="col-12 col-lg-3">
-                            <div class="box-body be-1 border-light">
-                                <div class="flexbox mb-1">
-                                    <span>
-                                        <span class="icon-User fs-40"><span class="path1"></span><span
-                                                class="path2"></span></span><br>
-                                        New Users
-                                    </span>
-                                    <span class="text-primary fs-40">845</span>
-                                </div>
-                                <div class="progress progress-xxs mt-10 mb-0">
-                                    <div class="progress-bar" role="progressbar"
-                                        style="width: 35%; height: 4px;" aria-valuenow="35"
-                                        aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-12 col-lg-3 hidden-down">
-                            <div class="box-body be-1 border-light">
-                                <div class="flexbox mb-1">
-                                    <span>
-                                        <span class="icon-Selected-file fs-40"><span
-                                                class="path1"></span><span class="path2"></span></span><br>
-                                        Today Invoices
-                                    </span>
-                                    <span class="text-info fs-40">952</span>
-                                </div>
-                                <div class="progress progress-xxs mt-10 mb-0">
-                                    <div class="progress-bar bg-info" role="progressbar"
-                                        style="width: 55%; height: 4px;" aria-valuenow="55"
-                                        aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-12 col-lg-3 d-none d-lg-block">
-                            <div class="box-body be-1 border-light">
-                                <div class="flexbox mb-1">
-                                    <span>
-                                        <span class="icon-Info-circle fs-40"><span
-                                                class="path1"></span><span class="path2"></span><span
-                                                class="path3"></span></span><br>
-                                        Open Issues
-                                    </span>
-                                    <span class="text-warning fs-40">845</span>
-                                </div>
-                                <div class="progress progress-xxs mt-10 mb-0">
-                                    <div class="progress-bar bg-warning" role="progressbar"
-                                        style="width: 65%; height: 4px;" aria-valuenow="65"
-                                        aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-12 col-lg-3 d-none d-lg-block">
-                            <div class="box-body">
-                                <div class="flexbox mb-1">
-                                    <span>
-                                        <span class="icon-Group-folders fs-40"><span
-                                                class="path1"></span><span class="path2"></span></span><br>
-                                        New Projects
-                                    </span>
-                                    <span class="text-danger fs-40">158</span>
-                                </div>
-                                <div class="progress progress-xxs mt-10 mb-0">
-                                    <div class="progress-bar bg-danger" role="progressbar"
-                                        style="width: 40%; height: 4px;" aria-valuenow="40"
-                                        aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
                 </div>
             </div>
             <div class="col-lg-12">

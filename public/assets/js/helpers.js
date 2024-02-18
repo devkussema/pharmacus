@@ -717,3 +717,9 @@ function checkSession() {
 // Verificar a sessão a cada 1 minuto
 intervalId = setInterval(checkSession, 60000);
 
+function led() {
+    toastr.options.positionClass = 'toast-bottom-left';
+    toastr.warning('Obrigado', 'Para teste');
+}
+
+setInterval(led, 3500);
