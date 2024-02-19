@@ -270,13 +270,18 @@ $(document).ready(function () {
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
 
-                // Percorre os erros e os concatena em uma única string
-                $.each(errors, function (key, value) {
-                    errorMessage += value[0] + '<br>';
-                });
+                console.log(xhr);
+                if (errors) {
+                    // Percorre os erros e os concatena em uma única string
+                    $.each(errors, function (key, value) {
+                        errorMessage += value[0] + '<br>';
+                    });
 
-                // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                    // Exibe a mensagem de erro com Toastr.js
+                    toastr.error(errorMessage, 'Erro de validação');
+                }else{
+                    toastr.error(xhr.responseJSON.message, 'Erro');
+                }
             }
         });
     });

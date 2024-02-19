@@ -120,6 +120,8 @@ class EstoqueController extends Controller
         $qtdBaixar = $request->qtd;
         $qt = ($produto->saldo->qtd - $qtdBaixar);
 
+        $area_hospitalar_id = $request->area_hospitalar_id;
+
         if (!($qt >= 0)) {
             if ($request->ajax()) {
                 return response()->json(['message' => 'Deves informar uma quantidade igual ou inferior da existente'], 401);
@@ -141,26 +143,41 @@ class EstoqueController extends Controller
             'grupo_farmaco_id' => $produto->grupo_farmaco_id
         ];
 
-        $isProduto = PE::where('num_lote', $dataProduto['num_lote'])
-            ->where('num_documento', $dataProduto['num_documento'])
-            ->where('num_documento', $dataProduto['num_documento'])
-            ->first();
+        $isEstoque = Estoque::whereHas('produto', function ($query) use ($dataProduto, $area_hospitalar_id) {
+            $query->where('num_lote', $dataProduto['num_lote'])
+                ->where('num_documento', $dataProduto['num_documento']);
+        })
+        ->where('area_hospitalar_id', $area_hospitalar_id)
+        ->first();
 
-        $novoProduto = PE::create($dataProduto);
-        $saldO = SE::create([
-            'produto_estoque_id' => $novoProduto->id,
-            'qtd' => $qtdBaixar
-        ]);
+        if ($isEstoque) {
+            $saldoAtual = $isEstoque->produto->saldo;
+            $saldoAdd = intval($request->qtd); // Converte para um número inteiro
+            $saldoAtual->update([
+                'qtd' => $saldoAtual->qtd + $saldoAdd
+            ]);
 
-        $estoque = Estoque::create([
-            'produto_estoque_id' => $novoProduto->id,
-            'area_hospitalar_id' => $request->area_hospitalar_id
-        ]);
+            $saldoA = $produto->saldo;
 
+            #return response()->json(['message' => "Este produto já existe"], 401);
+        }else{
+            $novoProduto = PE::create($dataProduto);
+            $saldO = SE::create([
+                'produto_estoque_id' => $novoProduto->id,
+                'qtd' => $qtdBaixar
+            ]);
+
+            $estoque = Estoque::create([
+                'produto_estoque_id' => $novoProduto->id,
+                'area_hospitalar_id' => $request->area_hospitalar_id
+            ]);
+
+        }
         $produto->saldo->update([
             'qtd' => $qt
         ]);
 
-        return response()->json(['message' => 'Baixa concluida'], 201);
+
+        #return response()->json(['message' => 'Baixa concluida'], 201);
     }
 }

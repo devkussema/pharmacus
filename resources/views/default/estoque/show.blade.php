@@ -9,23 +9,37 @@
                 <div>
                     <h4 class="mb-3">Estoque {{ Auth::user()->area_hospitalar->area_hospitalar->nome }}</h4>
                 </div>
+                @php
+                    use App\Models\ProdutoEstoque;
+                    $area_hospitalar_id = Auth::user()->area_hospitalar->area_hospitalar->id;
+                    $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
+                        $query->where('area_hospitalar_id', $area_hospitalar_id);
+                    })->with('saldo')->get();
+
+                @endphp
+
                 {{-- <a href="#" class="btn btn-primary add-list" style="float: right" data-toggle="modal" data-target="#addFarmacia"><i
                         class="las la-plus mr-3"></i>
                     Adicionar
                 </a> --}}
             </div>
+            @foreach ($produtoEstoques as $p)
+                Grupo Farmaco: {{ $p->grupo_farmaco->nome }} <br>
+                Saldo qtd: {{ $p->saldo->qtd }} <hr>
+                <hr>
+            @endforeach
             @include('partials.session')
             <div class="col-lg-12">
                 <div class="row">
                     @foreach (\App\Models\GrupoFarmacologico::with([
-                        'produtos.saldo' => function ($query) {
-                            $query->orderByDesc('qtd')->take(4);
-                        },
-                    ])->whereHas('produtos', function ($query) {
-                            $query->whereHas('estoque', function ($query) {
-                                $query->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id);
-                            });
-                        })->get() as $grupo)
+            'produtos.saldo' => function ($query) {
+                $query->orderByDesc('qtd')->take(4);
+            },
+        ])->whereHas('produtos', function ($query) {
+                $query->whereHas('estoque', function ($query) {
+                    $query->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id);
+                });
+            })->distinct()->get() as $grupo)
                         @php
                             $totalProdutos = $grupo->produtos->sum('saldo.qtd');
                         @endphp
@@ -42,11 +56,11 @@
                                             <div>
                                                 <p class="mb-2">{{ $grupo->nome }}</p>
                                                 <h4>{{ $totalProdutos }}</h4>
-                                                <small>
+                                                {{-- <small>
                                                     @foreach ($grupo->produtos as $produto)
                                                         {{ $produto->forma }} <br>
                                                     @endforeach
-                                                </small>
+                                                </small> --}}
                                             </div>
                                         </div>
                                         <div class="iq-progress-bar mt-2">
@@ -108,7 +122,8 @@
                                                     <i class="ri-key-2-line mr-0"></i>
                                                 </a>
                                             @endif
-                                            <a class="badge bg-success mr-2" title="Dar baixa" href="javascript:void(0)" onclick="modalDarBaixa({{ $est->produto->id }})">
+                                            <a class="badge bg-success mr-2" title="Dar baixa" href="javascript:void(0)"
+                                                onclick="modalDarBaixa({{ $est->produto->id }})">
                                                 <i class="ri-install-line mr-0"></i>
                                             </a>
                                             <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
@@ -130,7 +145,7 @@
         </div>
     </div>
     @include('modals._estoqueOps')
-    <script type="text/javascript">    
+    <script type="text/javascript">
         // $(document).ready(function() {
         //     $('.tbl-estoque').DataTable({
         //         "processing": true,
