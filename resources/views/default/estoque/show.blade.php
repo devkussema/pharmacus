@@ -14,7 +14,10 @@
                     $area_hospitalar_id = Auth::user()->area_hospitalar->area_hospitalar->id;
                     $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
                         $query->where('area_hospitalar_id', $area_hospitalar_id);
-                    })->with('saldo')->get();
+                    })
+                        ->with('saldo')
+                        ->get()
+                        ->take(4);
 
                 @endphp
 
@@ -23,53 +26,48 @@
                     Adicionar
                 </a> --}}
             </div>
-            @foreach ($produtoEstoques as $p)
-                Grupo Farmaco: {{ $p->grupo_farmaco->nome }} <br>
-                Saldo qtd: {{ $p->saldo->qtd }} <hr>
-                <hr>
-            @endforeach
             @include('partials.session')
             <div class="col-lg-12">
                 <div class="row">
-                    @foreach (\App\Models\GrupoFarmacologico::with([
-            'produtos.saldo' => function ($query) {
-                $query->orderByDesc('qtd')->take(4);
-            },
-        ])->whereHas('produtos', function ($query) {
-                $query->whereHas('estoque', function ($query) {
-                    $query->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id);
-                });
-            })->distinct()->get() as $grupo)
+                    @php $gruposImpressos = []; @endphp
+                    @foreach ($produtoEstoques as $p)
                         @php
-                            $totalProdutos = $grupo->produtos->sum('saldo.qtd');
+                            $totalQtd = $produtoEstoques->where('grupo_farmaco.id', $p->grupo_farmaco_id)->sum('saldo.qtd');
+                            #$totalProdutos = $p->grupo_farmaco->produtos->sum('saldo.qtd');
+                            $totalProdutos = $totalQtd;
                         @endphp
+                        {{-- {{ $p }} <hr><hr> --}}
 
+                        {{-- {{ $p->grupo_farmaco->nome }}: {{ $p->saldo->qtd }}, Total: {{ $totalQtd }} <hr> --}}
                         @if ($totalProdutos > 0)
-                            <div class="col-lg-3 col-md-3">
-                                <div class="card card-block card-stretch card-height">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-4 card-total-sale">
-                                            <div class="icon iq-icon-box-2 bg-info-light">
-                                                <img src="{{ asset('assets/images/product/1.png') }}" class="img-fluid"
-                                                    alt="image">
+                            @if (!in_array($p->grupo_farmaco->id, $gruposImpressos)) 
+                                <div class="col-lg-3 col-md-3">
+                                    <div class="card card-block card-stretch card-height">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-4 card-total-sale">
+                                                <div class="icon iq-icon-box-2 bg-info-light">
+                                                    <img src="{{ asset('assets/images/product/1.png') }}" class="img-fluid"
+                                                        alt="image">
+                                                </div>
+                                                <div>
+                                                    <p class="mb-2">{{ $p->grupo_farmaco->nome }}</p>
+                                                    <h4>{{ $totalProdutos }}</h4>
+                                                    {{-- <small>
+                                                        @foreach ($grupo->produtos as $produto)
+                                                            {{ $produto->forma }} <br>
+                                                        @endforeach
+                                                    </small> --}}
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p class="mb-2">{{ $grupo->nome }}</p>
-                                                <h4>{{ $totalProdutos }}</h4>
-                                                {{-- <small>
-                                                    @foreach ($grupo->produtos as $produto)
-                                                        {{ $produto->forma }} <br>
-                                                    @endforeach
-                                                </small> --}}
+                                            <div class="iq-progress-bar mt-2">
+                                                <span class="bg-info iq-progress progress-1" data-percent="85">
+                                                </span>
                                             </div>
-                                        </div>
-                                        <div class="iq-progress-bar mt-2">
-                                            <span class="bg-info iq-progress progress-1" data-percent="85">
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                @php $gruposImpressos[] = $p->grupo_farmaco->id; @endphp
+                            @endif
                         @endif
                     @endforeach
                 </div>

@@ -114,6 +114,10 @@ class EstoqueController extends Controller
             'produto_id' => "required|exists:produto_estoques,id",
             'area_hospitalar_id' => "required|exists:areas_hospitalares,id",
             'qtd' => "required|min:1",
+        ],[
+            'produto_id.required' => "Selecione um item na tabela",
+            'area_hospitalar_id.required' => "Algo deu errado, por favor atualize a página e tente de novo",
+            'qtd.required' => "Informe uma quatidade"
         ]);
 
         $produto = PE::find($request->produto_id);
@@ -158,8 +162,6 @@ class EstoqueController extends Controller
             ]);
 
             $saldoA = $produto->saldo;
-
-            #return response()->json(['message' => "Este produto já existe"], 401);
         }else{
             $novoProduto = PE::create($dataProduto);
             $saldO = SE::create([
@@ -178,6 +180,6 @@ class EstoqueController extends Controller
         ]);
 
 
-        #return response()->json(['message' => 'Baixa concluida'], 201);
+        return response()->json(['message' => 'Baixa concluida'], 201);
     }
 }
