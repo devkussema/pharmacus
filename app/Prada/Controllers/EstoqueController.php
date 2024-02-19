@@ -12,6 +12,7 @@ use App\Models\{
 };
 use Yajra\DataTables\DataTables;
 use App\Traits\AtividadeTrait;
+use Carbon\Carbon;
 
 class EstoqueController extends Controller
 {
@@ -33,7 +34,7 @@ class EstoqueController extends Controller
 
         return DataTables::of($estoque)
             ->addColumn('checkbox', function ($row) {
-                return '<input type="checkbox" class="checkbox-input" id="checkbox'.$row->id.'">';
+                return '<input type="checkbox" class="checkbox-input" id="checkbox' . $row->id . '">';
             })
             ->addColumn('acoes', function ($row) {
                 // Adicione aqui o HTML para as ações
@@ -55,7 +56,7 @@ class EstoqueController extends Controller
             'origem_destino' => 'required',
             'num_lote' => 'required|unique:produto_estoques,num_lote',
             'data_producao' => 'required|date|before:today', // Verifica se a data de produção é anterior à data atual
-            'data_expiracao' => 'required|date|after_or_equal:'.now()->addMonths(10), // Verifica se a data de expiração é pelo menos 10 meses após a data atual
+            'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(10), // Verifica se a data de expiração é pelo menos 10 meses após a data atual
             'num_documento' => 'required|unique:produto_estoques,num_documento',
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
@@ -117,7 +118,7 @@ class EstoqueController extends Controller
             'produto_id' => "required|exists:produto_estoques,id",
             'area_hospitalar_id' => "required|exists:areas_hospitalares,id",
             'qtd' => "required|min:1",
-        ],[
+        ], [
             'produto_id.required' => "Selecione um item na tabela",
             'area_hospitalar_id.required' => "Algo deu errado, por favor atualize a página e tente de novo",
             'qtd.required' => "Informe uma quatidade"
@@ -154,8 +155,8 @@ class EstoqueController extends Controller
             $query->where('num_lote', $dataProduto['num_lote'])
                 ->where('num_documento', $dataProduto['num_documento']);
         })
-        ->where('area_hospitalar_id', $area_hospitalar_id)
-        ->first();
+            ->where('area_hospitalar_id', $area_hospitalar_id)
+            ->first();
 
         if ($isEstoque) {
             $saldoAtual = $isEstoque->produto->saldo;
@@ -165,7 +166,7 @@ class EstoqueController extends Controller
             ]);
 
             $saldoA = $produto->saldo;
-        }else{
+        } else {
             $novoProduto = PE::create($dataProduto);
             $saldO = SE::create([
                 'produto_estoque_id' => $novoProduto->id,
@@ -184,5 +185,59 @@ class EstoqueController extends Controller
 
 
         return response()->json(['message' => 'Baixa concluida'], 201);
+    }
+
+    public function calcularNivelAlerta()
+    {
+        // Defina os níveis de alerta e seus respectivos meses
+        $niveis = [
+            'Critico' => 3,
+            'Minimo' => 6,
+            'Medio' => 10,
+            'Maximo' => 12,
+        ];
+
+        // Inicializa os contadores para cada nível de alerta
+        $contadores = array_fill_keys(array_keys($niveis), 0);
+
+        // Obtém todos os produtos
+        $produtos = PE::all();
+
+        // Obtém a data atual
+        $dataAtual = Carbon::now();
+
+        // Itera sobre cada produto
+        foreach ($produtos as $produto) {
+            // Calcula a diferença em meses em relação à data atual
+            $dataExpiracao = Carbon::parse($produto->data_expiracao);
+            $diferencaMeses = $dataAtual->diffInMonths($dataExpiracao);
+
+            // Classifica o produto em um dos níveis de alerta
+            foreach ($niveis as $nivel => $limite) {
+                if ($diferencaMeses <= $limite) {
+                    $contadores[$nivel]++;
+                    break;
+                }
+            }
+        }
+
+        // Monta o relatório como uma tabela
+        $relatorio = '<table border="1">';
+        $relatorio .= '<tr><th>Critico</th><th>Minimo</th><th>Medio</th><th>Maximo</th></tr>';
+        $relatorio .= '<tr>';
+        foreach ($niveis as $nivel => $limite) {
+            $relatorio .= '<td>' . $contadores[$nivel] . '</td>';
+        }
+        $relatorio .= '</tr>';
+        $relatorio .= '</table>';
+
+        // Resumo básico
+        $totalProdutos = array_sum($contadores);
+        $resumo = "Cerca de $totalProdutos produtos atingiram níveis de alerta.";
+
+        // Adiciona o resumo ao relatório
+        $relatorio .= '<p>' . $resumo . '</p>';
+
+        return $relatorio;
     }
 }
