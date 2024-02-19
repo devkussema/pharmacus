@@ -108,12 +108,17 @@ class EstoqueController extends Controller
             'grupo_farmaco_id' => $produto->grupo_farmaco_id
         ];
 
+        $isProduto = PE::where('num_lote', $dataProduto['num_lote'])
+            ->where('num_documento', $dataProduto['num_documento'])
+            ->where('num_documento', $dataProduto['num_documento'])
+            ->first();
+
         $novoProduto = PE::create($dataProduto);
         $saldO = SE::create([
             'produto_estoque_id' => $novoProduto->id,
             'qtd' => $qtdBaixar
         ]);
-        
+
         $estoque = Estoque::create([
             'produto_estoque_id' => $novoProduto->id,
             'area_hospitalar_id' => $request->area_hospitalar_id

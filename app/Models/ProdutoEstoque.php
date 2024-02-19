@@ -30,7 +30,7 @@ class ProdutoEstoque extends Model
 
     public function estoque()
     {
-        return $this->hasMany(Estoque::class, 'produto_estoque_id');
+        return $this->hasOne(Estoque::class, 'produto_estoque_id');
     }
 
     public function saldo()
