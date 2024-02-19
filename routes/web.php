@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('gestor')->group(function () {
         Route::post('/', [GerenteFarmaciaController::class, 'store'])->name('gestor.store');
-        Route::get('/confirmar/conta/{token}', [GerenteFarmaciaController::class, 'confirmar'])->name('gestor.token');
+        #Route::get('/confirmar/conta/{token}', [GerenteFarmaciaController::class, 'confirmar'])->name('gestor.token');
     });
 
     Route::prefix('farmacia')->group(function () {
@@ -98,6 +98,11 @@ Route::prefix('auth')->middleware('guest')->group(function () {
     Route::prefix('')->group(function () {
         Route::get('/confirmar/{token}', [ConfirmarController::class, 'funcionario'])->name('confirmar.funcionario');
         Route::post('/confirmar', [ConfirmarController::class, 'concluir'])->name('confirmar.funcionario.concluir');
+    });
+
+    Route::prefix('gestor')->group(function () {
+        Route::post('/', [GerenteFarmaciaController::class, 'store'])->name('gestor.store');
+        Route::get('/confirmar/conta/{token}', [GerenteFarmaciaController::class, 'confirmar'])->name('gestor.token');
     });
 
     Route::get('/', [AuthController::class, 'index'])->name('login');

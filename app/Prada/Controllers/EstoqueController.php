@@ -4,7 +4,11 @@ namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{AreaHospitalar as AH, Estoque, SaldoEstoque as SE, ProdutoEstoque as PE};
+use App\Models\{
+    AreaHospitalar as AH, Estoque,
+    SaldoEstoque as SE, ProdutoEstoque as PE,
+    Atividade
+};
 
 class EstoqueController extends Controller
 {
@@ -73,6 +77,11 @@ class EstoqueController extends Controller
         Estoque::create([
             'produto_estoque_id' => $pe->id,
             'area_hospitalar_id' => auth()->user()->area_hospitalar->area_hospitalar_id
+        ]);
+
+        Atividade::create([
+            'texto' => "Adicionou cerca de {$request->qtd} {$request->forma} de {$request->designacao} para ".auth()->user()->area_hospitalar->area_hospitalar->nome,
+            'user_id' => auth()->user()->id
         ]);
 
         return response()->json(['message' => "{$request->designacao} adicionado!"]);

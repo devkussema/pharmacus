@@ -19,6 +19,11 @@ class GrupoSeeder extends Seeder
         ]);
 
         Grupo::create([
+            'nome' => 'Gerente',
+            'descricao' => 'Um usuário com poderes avançadas de gerenciamento da farmácia, responsável por revisar e moderar conteúdo gerado pelos usuários, como postagens em fóruns, comentários, etc.'
+        ]);
+
+        Grupo::create([
             'nome' => 'Moderador',
             'descricao' => 'Um usuário com poderes intermediários, responsável por revisar e moderar conteúdo gerado pelos usuários, como postagens em fóruns, comentários, etc.'
         ]);
