@@ -44,7 +44,7 @@
                                             <div class="col-lg-12">
                                                 <div class="custom-control custom-checkbox mb-3">
                                                     <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                                    <label class="custom-control-label" for="customCheck1">I agree with the terms of use</label>
+                                                    <label class="custom-control-label" for="customCheck1">Aceito os termos de utilização</label>
                                                 </div>
                                             </div>
                                         </div>

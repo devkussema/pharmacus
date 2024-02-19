@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('estoque')->middleware('is.area_hospitalar')->group(function () {
         Route::get('/', [EstoqueController::class, 'index'])->name('estoque');
+        Route::get('estoque/ajax', [EstoqueController::class, 'ajaxEstoque'])->name('estoque.ajax');
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
     });
@@ -101,7 +102,6 @@ Route::prefix('auth')->middleware('guest')->group(function () {
     });
 
     Route::prefix('gestor')->group(function () {
-        Route::post('/', [GerenteFarmaciaController::class, 'store'])->name('gestor.store');
         Route::get('/confirmar/conta/{token}', [GerenteFarmaciaController::class, 'confirmar'])->name('gestor.token');
     });
 

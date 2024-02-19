@@ -10,7 +10,7 @@ use App\Models\{
     SaldoEstoque as SE,
     ProdutoEstoque as PE,
 };
-use DataTables;
+use Yajra\DataTables\DataTables;
 use App\Traits\AtividadeTrait;
 
 class EstoqueController extends Controller
@@ -30,7 +30,19 @@ class EstoqueController extends Controller
     public function ajaxEstoque()
     {
         $estoque = Estoque::with('produto.saldo', 'produto.grupo_farmaco')->get();
-        #return DataTables::of($estoque)->toJson();
+
+        return DataTables::of($estoque)
+            ->addColumn('checkbox', function ($row) {
+                return '<input type="checkbox" class="checkbox-input" id="checkbox'.$row->id.'">';
+            })
+            ->addColumn('acoes', function ($row) {
+                // Adicione aqui o HTML para as ações
+                return '<div class="d-flex align-items-center list-action">
+                            <!-- Suas ações aqui -->
+                        </div>';
+            })
+            ->rawColumns(['checkbox', 'acoes'])
+            ->toJson();
     }
 
 
@@ -109,6 +121,9 @@ class EstoqueController extends Controller
         $qt = ($produto->saldo->qtd - $qtdBaixar);
 
         if (!($qt >= 0)) {
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Deves informar uma quantidade igual ou inferior da existente'], 401);
+            }
             return redirect()->back()->with('error', 'Deves informar uma quantidade igual ou inferior da existente');
         }
 
