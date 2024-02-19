@@ -84,7 +84,7 @@
                         </thead>
                         <tbody class="ligth-body">
                             {{-- Gerado automaticamente --}}
-                            @foreach ($estoque as $est)
+                            {{-- @foreach ($estoque as $est)
                                 <tr>
                                     <td>
                                         <div class="checkbox d-inline-block">
@@ -122,7 +122,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>
@@ -130,4 +130,27 @@
         </div>
     </div>
     @include('modals._estoqueOps')
+    <script type="text/javascript">
+    
+        $(document).ready(function() {
+            $('.tbl-estoque').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": "{{ route('estoque.ajax') }}",
+                "columns": [
+                    { "data": null }, // Checkbox
+                    { "data": "produto.designacao" },
+                    { "data": "produto.dosagem" },
+                    { "data": "produto.forma" },
+                    { "data": "produto.num_lote" },
+                    { "data": "produto.grupo_farmaco.nome" },
+                    { "data": "produto.saldo.qtd" },
+                    { "data": "produto.num_documento" },
+                    { "data": "produto.data_expiracao" },
+                    { "data": null } // Ações
+                ]
+            });
+        });
+    </script>
+
 @endsection

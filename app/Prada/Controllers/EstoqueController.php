@@ -5,13 +5,18 @@ namespace App\Prada\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{
-    AreaHospitalar as AH, Estoque,
-    SaldoEstoque as SE, ProdutoEstoque as PE,
-    Atividade
+    AreaHospitalar as AH,
+    Estoque,
+    SaldoEstoque as SE,
+    ProdutoEstoque as PE,
 };
+use DataTables;
+use App\Traits\AtividadeTrait;
 
 class EstoqueController extends Controller
 {
+    use AtividadeTrait;
+
     private $estoque = null;
 
     public function index()
@@ -21,6 +26,13 @@ class EstoqueController extends Controller
         $estoque = Estoque::with('produto')->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)->get();
         return view('estoque.show', compact('estoque', 'ah'));
     }
+
+    public function ajaxEstoque()
+    {
+        $estoque = Estoque::with('produto.saldo', 'produto.grupo_farmaco')->get();
+        #return DataTables::of($estoque)->toJson();
+    }
+
 
     public function store(Request $request)
     {
@@ -79,10 +91,7 @@ class EstoqueController extends Controller
             'area_hospitalar_id' => auth()->user()->area_hospitalar->area_hospitalar_id
         ]);
 
-        Atividade::create([
-            'texto' => "Adicionou cerca de {$request->qtd} {$request->forma} de {$request->designacao} para ".auth()->user()->area_hospitalar->area_hospitalar->nome,
-            'user_id' => auth()->user()->id
-        ]);
+        self::startAtv("Adicionou cerca de {$request->qtd} {$request->forma} de {$request->designacao} para " . auth()->user()->area_hospitalar->area_hospitalar->nome);
 
         return response()->json(['message' => "{$request->designacao} adicionado!"]);
     }

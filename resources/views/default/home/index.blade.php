@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/remixicon/fonts/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
 	<link rel="stylesheet" href={{ asset("src/css/manual.css") }}>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap4.min.css">
 </head>
 
 <body class=" color-light ">
@@ -112,12 +113,8 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
-    <script>
-        // Adiciona os dados na tabela áreas hospitalares
-        // $(document).ready(function () {
-        //     popularTabela();
-        // });
-    </script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap4.min.js"></script>
     <script>
         // Obtenha o contexto do canvas
         var ctx = document.getElementById('myChart').getContext('2d');
