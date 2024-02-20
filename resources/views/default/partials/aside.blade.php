@@ -192,8 +192,8 @@
                     </a>
                     <ul id="sale" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                         <li class="">
-                            <a href="page-list-sale.html">
-                                <i class="las la-minus"></i><span>List Sale</span>
+                            <a href="{{ route('nivel_alerta') }}">
+                                <i class="las la-minus"></i><span>Niveis de Alerta</span>
                             </a>
                         </li>
                         <li class="">

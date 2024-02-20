@@ -14,4 +14,9 @@ class NivelAlerta extends Model
     protected $fillable = [
         'nome'
     ];
+
+    public function relatorios()
+    {
+        return $this->hasMany(RelatorioEstoqueAlerta::class, 'nivel_alerta_id');
+    }
 }

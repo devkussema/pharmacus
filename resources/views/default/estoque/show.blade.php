@@ -18,7 +18,6 @@
                         ->with('saldo')
                         ->get()
                         ->take(4);
-
                 @endphp
 
                 {{-- <a href="#" class="btn btn-primary add-list" style="float: right" data-toggle="modal" data-target="#addFarmacia"><i
@@ -40,7 +39,7 @@
 
                         {{-- {{ $p->grupo_farmaco->nome }}: {{ $p->saldo->qtd }}, Total: {{ $totalQtd }} <hr> --}}
                         @if ($totalProdutos > 0)
-                            @if (!in_array($p->grupo_farmaco->id, $gruposImpressos)) 
+                            @if (!in_array($p->grupo_farmaco->id, $gruposImpressos))
                                 <div class="col-lg-3 col-md-3">
                                     <div class="card card-block card-stretch card-height">
                                         <div class="card-body">
