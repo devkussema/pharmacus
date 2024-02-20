@@ -44,6 +44,33 @@
                     @endforeach
                 </div>
             </div>
+            <div class="col-lg-12">
+                <div class="table-responsive rounded mb-3">
+                    <table class="data-table table mb-0 tbl-server-info tbl-estoque">
+                        <thead class="bg-white text-uppercase">
+                            <tr class="ligth ligth-data">
+                                <th>Designação</th>
+                                <th>Quantidade</th>
+                                <th>Área Hospitalar</th>
+                                <th>Lote</th>
+                                <th>Tempo restante</th>
+                            </tr>
+                        </thead>
+                        <tbody class="ligth-body">
+                            {{-- Gerado automaticamente --}}
+                            @foreach ($niveis as $na)
+                                <tr>
+                                    <td><b>{{ $na->produto->designacao }}</b></td>
+                                    <td>{{ $na->produto->saldo->qtd }}</td>
+                                    <td>{{ $na->produto->estoque->area_hospitalar->nome }}</td>
+                                    <td>{{ $na->produto->num_lote }}</td>
+                                    <td>{{ calcMes($na->produto->data_expiracao) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
