@@ -14,10 +14,10 @@ class NiveisDeAlertaSeeder extends Seeder
     public function run(): void
     {
         $niveis = [
-            ['nome' => 'Critico', 'regra' => '3M'],
-            ['nome' => 'Minimo', 'regra' => '6M'],
-            ['nome' => 'Médio', 'regra' => '10M'],
-            ['nome' => 'Máximo', 'regra' => '12M']
+            ['nome' => 'Critico', 'regra' => '3'],
+            ['nome' => 'Minimo', 'regra' => '6'],
+            ['nome' => 'Médio', 'regra' => '10'],
+            ['nome' => 'Máximo', 'regra' => '12']
         ];
 
         // Itera sobre os níveis e os cadastra no banco de dados
