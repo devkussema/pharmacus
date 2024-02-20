@@ -196,11 +196,6 @@
                                 <i class="las la-minus"></i><span>Niveis de Alerta</span>
                             </a>
                         </li>
-                        <li class="">
-                            <a href="page-add-sale.html">
-                                <i class="las la-minus"></i><span>Add Sale</span>
-                            </a>
-                        </li>
                     </ul>
                 </li>
             </ul>

@@ -12,12 +12,12 @@ use App\Models\{
     RelatorioEstoqueAlerta as REA,
 };
 use Yajra\DataTables\DataTables;
-use App\Traits\AtividadeTrait;
+use App\Traits\{AtividadeTrait, GenerateTrait};
 use Carbon\Carbon;
 
 class EstoqueController extends Controller
 {
-    use AtividadeTrait;
+    use AtividadeTrait, GenerateTrait;
 
     private $estoque = null;
 
@@ -26,6 +26,7 @@ class EstoqueController extends Controller
         $ah = AH::all();
 
         $estoque = Estoque::with('produto')->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)->get();
+        self::calcNivelAlerta();
         return view('estoque.show', compact('estoque', 'ah'));
     }
 
