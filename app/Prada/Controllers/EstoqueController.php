@@ -9,6 +9,7 @@ use App\Models\{
     Estoque,
     SaldoEstoque as SE,
     ProdutoEstoque as PE,
+    RelatorioEstoqueAlerta as REA,
 };
 use Yajra\DataTables\DataTables;
 use App\Traits\AtividadeTrait;
@@ -189,34 +190,63 @@ class EstoqueController extends Controller
 
     public function calcularNivelAlerta()
     {
-        // Defina os níveis de alerta e seus respectivos meses
-        $niveis = [
-            'Critico' => 3,
-            'Minimo' => 6,
-            'Medio' => 10,
-            'Maximo' => 12,
-        ];
+        $hoje = Carbon::now();
 
-        // Inicializa os contadores para cada nível de alerta
-        $contadores = array_fill_keys(array_keys($niveis), 0);
+        // Define os limites de tempo para cada nível de alerta (em meses)
+        $limites = [
+            1 => 3, // ID 1 para o nível Critico
+            2 => 6, // ID 2 para o nível Minimo
+            3 => 10, // ID 3 para o nível Medio
+            4 => 12, // ID 4 para o nível Maximo
+        ];
 
         // Obtém todos os produtos
         $produtos = PE::all();
 
-        // Obtém a data atual
-        $dataAtual = Carbon::now();
+        // Contadores para os níveis de alerta
+        $contadores = [
+            1 => 3, // ID 1 para o nível Critico
+            2 => 6, // ID 2 para o nível Minimo
+            3 => 10, // ID 3 para o nível Medio
+            4 => 12, // ID 4 para o nível Maximo
+        ];
 
-        // Itera sobre cada produto
+        // Percorre os produtos
         foreach ($produtos as $produto) {
-            // Calcula a diferença em meses em relação à data atual
-            $dataExpiracao = Carbon::parse($produto->data_expiracao);
-            $diferencaMeses = $dataAtual->diffInMonths($dataExpiracao);
+            // Calcula o tempo de expiração do produto em meses
+            $tempoExpiracao = Carbon::parse($produto->data_expiracao)->diffInMonths($hoje);
 
-            // Classifica o produto em um dos níveis de alerta
-            foreach ($niveis as $nivel => $limite) {
-                if ($diferencaMeses <= $limite) {
-                    $contadores[$nivel]++;
-                    break;
+            // Determina o nível de alerta do produto com base no tempo de expiração
+            $nivelAlerta = null;
+            foreach ($limites as $nivel => $limite) {
+                // Se o tempo de expiração for menor ou igual ao limite, define o nível de alerta
+                if ($tempoExpiracao <= $limite) {
+                    $nivelAlerta = $nivel;
+                    break; // Interrompe o loop assim que encontrar o primeiro nível adequado
+                }
+            }
+
+            // Se o nível de alerta for encontrado
+            if ($nivelAlerta !== null) {
+                // Atualiza o contador para o nível de alerta atual
+                $contadores[$nivelAlerta]++;
+
+                // Verifica se o produto já está na tabela relatorio_estoque_alerta
+                $relatorio = REA::where('produto_estoque_id', $produto->id)->first();
+
+                // Obtém a chave do nível de alerta com base no nome do nível
+                $nivelAlertaId = array_search($nivelAlerta, array_keys($limites));
+                $nivelAlertaId += 1;
+                // Atualiza ou cadastra o relatório conforme necessário
+                if ($relatorio) {
+                    // O produto já está na tabela, então atualiza o nível atual
+                    $relatorio->update(['nivel_alerta_id' => $nivelAlertaId]);
+                } else {
+                    // O produto não está na tabela, então cadastra um novo relatório
+                    REA::create([
+                        'produto_estoque_id' => $produto->id,
+                        'nivel_alerta_id' => $nivelAlertaId
+                    ]);
                 }
             }
         }
@@ -225,8 +255,8 @@ class EstoqueController extends Controller
         $relatorio = '<table border="1">';
         $relatorio .= '<tr><th>Critico</th><th>Minimo</th><th>Medio</th><th>Maximo</th></tr>';
         $relatorio .= '<tr>';
-        foreach ($niveis as $nivel => $limite) {
-            $relatorio .= '<td>' . $contadores[$nivel] . '</td>';
+        foreach ($contadores as $nivel => $contagem) {
+            $relatorio .= '<td>' . $contagem . '</td>';
         }
         $relatorio .= '</tr>';
         $relatorio .= '</table>';
