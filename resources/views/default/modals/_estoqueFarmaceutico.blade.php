@@ -10,7 +10,7 @@
                             <div class="form-row">
                                 <div class="col pb-3">
                                     <label class="mb-2">Designação *</label>
-                                    <input type="text" class="form-control" placeholder="" name="designacao">
+                                    <input type="text" id="designacao" class="form-control" placeholder="" name="designacao">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -60,7 +60,7 @@
                             <div class="form-row">
                                 <div class="col pb-3">
                                     <label class="mb-2">Documento Nº *</label>
-                                    <input type="number" class="form-control" placeholder="" name="num_documento">
+                                    <input type="number" id="cod_barras" class="form-control" placeholder="" name="num_documento">
                                 </div>
                                 <div class="col pb-3">
                                     <label class="mb-2">Quantidade Embalagem</label>

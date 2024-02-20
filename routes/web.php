@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('estoque')->middleware('is.area_hospitalar')->group(function () {
         Route::get('/', [EstoqueController::class, 'index'])->name('estoque');
+        Route::get('/aa', [EstoqueController::class, 'aa']);
         Route::get('estoque/ajax', [EstoqueController::class, 'ajaxEstoque'])->name('estoque.ajax');
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');

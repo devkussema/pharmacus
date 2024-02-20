@@ -114,6 +114,33 @@ class EstoqueController extends Controller
         return response()->json(['message' => "{$request->designacao} adicionado!"]);
     }
 
+    public function aa()
+    {
+        // Texto a ser traduzido
+        $texto = "Texto para tradução, sobrinho";
+
+        // Idioma de destino
+        $idioma_destino = "en"; // Por exemplo, "en" para inglês
+
+        // URL da API do Google Translate
+        $url = "https://translate.google.com/m?sl=auto&tl=$idioma_destino&ie=UTF-8&prev=_m&q=" . urlencode($texto);
+
+        // Faz a requisição HTTP GET
+        $traducao_html = file_get_contents($url);
+
+        // Analisa o HTML para extrair a tradução
+        $padrao = '/<div class="result-container">(.*?)<\/div>/s';
+        preg_match($padrao, $traducao_html, $traducao);
+
+        // var_dump($traducao_html);
+        if (isset($traducao[1])) {
+            // Imprime a tradução
+            echo "Tradução: " . htmlspecialchars_decode($traducao[1]);
+        } else {
+            echo "Erro ao traduzir o texto.";
+        }
+    }
+
     public function baixa(Request $request)
     {
         $request->validate([

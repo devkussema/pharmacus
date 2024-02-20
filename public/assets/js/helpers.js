@@ -324,6 +324,26 @@ $(document).ready(function () {
         });
     });
 
+    $('#formProdutoEstoque #cod_barras').change(function(){
+        var codigoBarras = $('#cod_barras').val();
+        var apiKey = 'f7aff0310a9b2aec516896d2c2950417d649073fbd7eae4f96d99197ef4c6b4b';
+        var url = 'https://go-upc.com/api/v1/code/' + codigoBarras + '?key=' + apiKey + '&format=true';
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                // Manipular a resposta JSON
+                console.log(response);
+                $('#formProdutoEstoque #designacao').val(response.product.name);
+                //$('#resultado').html(JSON.stringify(response));
+            },
+            error: function(xhr, status, error) {
+                alert('Erro: ' + error);
+            }
+        });
+    });
+
     $('form#formEditFarmacia').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
 

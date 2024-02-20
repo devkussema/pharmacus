@@ -15,7 +15,7 @@ class HomeController extends Controller
 
     public function home()
     {
-        if (auth()->user()->grupo->nome != "Administrador" or auth()->user()->grupo->nome != "Admin") {
+        if (auth()->user()->grupo->nome != "Administrador" and auth()->user()->grupo->nome != "Admin") {
             if (auth()->user()->grupo->nome == "Funcionário" or auth()->user()->grupo->nome == "Gerente")
             return redirect()->route('estoque');
         }
