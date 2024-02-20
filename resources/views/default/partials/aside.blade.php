@@ -150,7 +150,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class=" ">
+                {{-- <li class=" ">
                     <a href="#categoria" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash3" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -173,7 +173,7 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
                 <li class="">
                     <a href="#sale" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash4" width="20" height="20"
