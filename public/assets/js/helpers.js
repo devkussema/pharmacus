@@ -774,7 +774,7 @@ function checkSession() {
                 window.location.reload();
             }
         })
-        .catch(error => alert('Erro ao verificar sessão:', error));
+        .catch(error => console.error('Erro ao verificar sessão:', error));
 }
 
 // Verificar a sessão a cada 1 minuto

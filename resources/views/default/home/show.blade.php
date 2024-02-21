@@ -10,7 +10,7 @@
                         <h3 class="mb-3">Olá {{ printNome(Auth::user()->nome) }}, {{ saudacaoDoDia() }}</h3>
                         <p class="mb-0 mr-4">Seu painel oferece visualizações dos principais desempenhos ou processos de
                             negócios.</p>
-                            {{ auth()->user()->grupo }}
+                            {{-- {{ auth()->user()->grupo }} --}}
                     </div>
                 </div>
             </div>

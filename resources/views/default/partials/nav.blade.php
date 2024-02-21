@@ -340,10 +340,10 @@
                                         </form>
                                         <div class="p-3">
                                             <h5 class="mb-1">{{ auth()->user()->nome }}</h5>
-                                            <p class="mb-0">Since 10 march, 2020</p>
+                                            <p class="mb-0">Desde 10 Fevereiro, 2024</p>
                                             <div class="d-flex align-items-center justify-content-center mt-3">
-                                                <a href="https://templates.iqonic.design/posdash/html/app/user-profile.html"
-                                                    class="btn border mr-2">Profile</a>
+                                                <a href="#"
+                                                    class="btn border mr-2">Perfil</a>
                                                 <label for="btn-sair" class="btn border">Sair</label>
                                             </div>
                                         </div>
