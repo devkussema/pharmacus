@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             CategoriasSeeder::class,
             GrupoFarmaco::class,
             GrupoSeeder::class,
-            CategoriaProdutoSeeder::class
+            CategoriaProdutoSeeder::class,
+            NiveisDeAlertaSeeder::class,
         ]);
     }
 }

@@ -58,7 +58,7 @@ class User extends Authenticatable
 
     public function grupos()
     {
-        return $this->belongsToMany(Grupo::class, 'user_grupos')->limit(1)->first();
+        return $this->belongsToMany(Grupo::class, 'user_grupos')->limit(1);
     }
 
     public function grupo()

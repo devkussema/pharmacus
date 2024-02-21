@@ -6,7 +6,6 @@
                 <a href="{{ route('home') }}" class="header-logo">
                     <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal" alt="logo">
                     <h5 class="logo-title ml-3">{{ env('APP_NAME', 'Pharmacus') }}</h5>
-
                 </a>
             </div>
             <div class="iq-search-bar device-search">
@@ -90,17 +89,19 @@
                         </li>
                         {{-- termina btn idioma --}}
 
-                        <li>
-                            <a href="#" class="add-btn shadow-none d-block d-md-block" data-toggle="modal"
-                                data-target="#addCategoria" title="Adicionar categoria">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20"
-                                    height="20" fill="currentColor">
-                                    <path
-                                        d="M20.0834 15.1999L21.2855 15.9212C21.5223 16.0633 21.599 16.3704 21.457 16.6072C21.4147 16.6776 21.3559 16.7365 21.2855 16.7787L12.5145 22.0412C12.1979 22.2313 11.8022 22.2313 11.4856 22.0412L2.71463 16.7787C2.47784 16.6366 2.40106 16.3295 2.54313 16.0927C2.58536 16.0223 2.64425 15.9634 2.71463 15.9212L3.91672 15.1999L12.0001 20.0499L20.0834 15.1999ZM20.0834 10.4999L21.2855 11.2212C21.5223 11.3633 21.599 11.6704 21.457 11.9072C21.4147 11.9776 21.3559 12.0365 21.2855 12.0787L12.0001 17.6499L2.71463 12.0787C2.47784 11.9366 2.40106 11.6295 2.54313 11.3927C2.58536 11.3223 2.64425 11.2634 2.71463 11.2212L3.91672 10.4999L12.0001 15.3499L20.0834 10.4999ZM12.5145 1.30864L21.2855 6.5712C21.5223 6.71327 21.599 7.0204 21.457 7.25719C21.4147 7.32757 21.3559 7.38647 21.2855 7.42869L12.0001 12.9999L2.71463 7.42869C2.47784 7.28662 2.40106 6.97949 2.54313 6.7427C2.58536 6.67232 2.64425 6.61343 2.71463 6.5712L11.4856 1.30864C11.8022 1.11864 12.1979 1.11864 12.5145 1.30864ZM12.0001 3.33233L5.88735 6.99995L12.0001 10.6676L18.1128 6.99995L12.0001 3.33233Z">
-                                    </path>
-                                </svg>
-                            </a>
-                        </li>
+                        @if (isAdministrator())
+                            <li>
+                                <a href="#" class="add-btn shadow-none d-block d-md-block" data-toggle="modal"
+                                    data-target="#addCategoria" title="Adicionar categoria">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20"
+                                        height="20" fill="currentColor">
+                                        <path
+                                            d="M20.0834 15.1999L21.2855 15.9212C21.5223 16.0633 21.599 16.3704 21.457 16.6072C21.4147 16.6776 21.3559 16.7365 21.2855 16.7787L12.5145 22.0412C12.1979 22.2313 11.8022 22.2313 11.4856 22.0412L2.71463 16.7787C2.47784 16.6366 2.40106 16.3295 2.54313 16.0927C2.58536 16.0223 2.64425 15.9634 2.71463 15.9212L3.91672 15.1999L12.0001 20.0499L20.0834 15.1999ZM20.0834 10.4999L21.2855 11.2212C21.5223 11.3633 21.599 11.6704 21.457 11.9072C21.4147 11.9776 21.3559 12.0365 21.2855 12.0787L12.0001 17.6499L2.71463 12.0787C2.47784 11.9366 2.40106 11.6295 2.54313 11.3927C2.58536 11.3223 2.64425 11.2634 2.71463 11.2212L3.91672 10.4999L12.0001 15.3499L20.0834 10.4999ZM12.5145 1.30864L21.2855 6.5712C21.5223 6.71327 21.599 7.0204 21.457 7.25719C21.4147 7.32757 21.3559 7.38647 21.2855 7.42869L12.0001 12.9999L2.71463 7.42869C2.47784 7.28662 2.40106 6.97949 2.54313 6.7427C2.58536 6.67232 2.64425 6.61343 2.71463 6.5712L11.4856 1.30864C11.8022 1.11864 12.1979 1.11864 12.5145 1.30864ZM12.0001 3.33233L5.88735 6.99995L12.0001 10.6676L18.1128 6.99995L12.0001 3.33233Z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </li>
+                        @endif
                         <li>
                             <a href="#" title="Adicionar Produto"
                                 class="btn add-btn shadow-none d-block d-md-block" data-toggle="modal"
@@ -151,7 +152,7 @@
                                 <form action="#" class="searchbox p-2">
                                     <div class="form-group mb-0 position-relative">
                                         <input type="text" class="text search-input font-size-12"
-                                            placeholder="type here to search...">
+                                            placeholder="Procurar...">
                                         <a href="#" class="search-link"><i class="las la-search"></i></a>
                                     </div>
                                 </form>
@@ -160,7 +161,7 @@
                         {{-- end btn pesquisa mobile --}}
 
                         {{-- start btm mensagem --}}
-                        <li class="nav-item nav-icon dropdown">
+                        {{-- <li class="nav-item nav-icon dropdown">
                             <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton2"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -236,11 +237,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </li>
+                        </li> --}}
                         {{-- end btn mensagem --}}
 
                         {{-- start notificações --}}
-                        <li class="nav-item nav-icon dropdown">
+                        {{-- <li class="nav-item nav-icon dropdown">
                             <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -314,7 +315,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </li>
+                        </li> --}}
                         {{-- end notificações --}}
 
                         {{-- start perfil --}}
@@ -339,10 +340,10 @@
                                         </form>
                                         <div class="p-3">
                                             <h5 class="mb-1">{{ auth()->user()->nome }}</h5>
-                                            <p class="mb-0">Since 10 march, 2020</p>
+                                            <p class="mb-0">Desde 10 Fevereiro, 2024</p>
                                             <div class="d-flex align-items-center justify-content-center mt-3">
-                                                <a href="https://templates.iqonic.design/posdash/html/app/user-profile.html"
-                                                    class="btn border mr-2">Profile</a>
+                                                <a href="#"
+                                                    class="btn border mr-2">Perfil</a>
                                                 <label for="btn-sair" class="btn border">Sair</label>
                                             </div>
                                         </div>

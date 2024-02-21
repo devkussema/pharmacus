@@ -10,6 +10,7 @@
                         <h3 class="mb-3">Olá {{ printNome(Auth::user()->nome) }}, {{ saudacaoDoDia() }}</h3>
                         <p class="mb-0 mr-4">Seu painel oferece visualizações dos principais desempenhos ou processos de
                             negócios.</p>
+                            {{-- {{ auth()->user()->grupo }} --}}
                     </div>
                 </div>
             </div>
@@ -84,13 +85,13 @@
                             <div class="dropdown">
                                 <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton002"
                                     data-toggle="dropdown">
-                                    This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                                    Este mês<i class="ri-arrow-down-s-line ml-1"></i>
                                 </span>
                                 <div class="dropdown-menu dropdown-menu-right shadow-none"
                                     aria-labelledby="dropdownMenuButton002">
-                                    <a class="dropdown-item" href="#">Yearly</a>
-                                    <a class="dropdown-item" href="#">Monthly</a>
-                                    <a class="dropdown-item" href="#">Weekly</a>
+                                    <a class="dropdown-item" href="#">Anual</a>
+                                    <a class="dropdown-item" href="#">Mensal</a>
+                                    <a class="dropdown-item" href="#">Semanal</a>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +101,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+
+            {{-- <div class="col-lg-6">
                 <div class="card card-block card-stretch card-height">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <div class="header-title">
@@ -362,7 +364,7 @@
                         <div id="layout1-chart-5"></div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection

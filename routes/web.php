@@ -9,7 +9,8 @@ use App\Prada\Controllers\CategoriaController;
 use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
 use App\Prada\Controllers\{UsuarioController,
-    CargoController, ConfirmarController, EstoqueController
+    CargoController, ConfirmarController, EstoqueController,
+    NivelAlertaController
 };
 use Illuminate\Support\Facades\Auth;
 
@@ -34,11 +35,17 @@ Route::middleware('auth')->group(function () {
         Route::post('/', [CargoController::class, 'store'])->name('cargo.store');
     });
 
+    Route::prefix('nivel_alerta')->group(function () {
+        Route::get('/', [NivelAlertaController::class, 'index'])->name('nivel_alerta');
+    });
+
     Route::prefix('estoque')->middleware('is.area_hospitalar')->group(function () {
         Route::get('/', [EstoqueController::class, 'index'])->name('estoque');
+        Route::get('/aa', [EstoqueController::class, 'aa']);
         Route::get('estoque/ajax', [EstoqueController::class, 'ajaxEstoque'])->name('estoque.ajax');
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
+        Route::get('/relatorio', [EstoqueController::class, 'calcularNivelAlerta'])->name('estoque.relatorio');
     });
 
     Route::prefix('categoria')->group(function () {

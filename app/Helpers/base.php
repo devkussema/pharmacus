@@ -6,6 +6,57 @@ use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function translate($texto, $lang)
+{
+    // Texto a ser traduzido
+    #$texto = "Texto para tradução, sobrinho";
+
+    // Idioma de destino
+    $idioma_destino = $lang; // Por exemplo, "en" para inglês
+
+    // URL da API do Google Translate
+    $url = "https://translate.google.com/m?sl=auto&tl=$idioma_destino&ie=UTF-8&prev=_m&q=" . urlencode($texto);
+
+    // Faz a requisição HTTP GET
+    $traducao_html = file_get_contents($url);
+
+    // Analisa o HTML para extrair a tradução
+    $padrao = '/<div class="result-container">(.*?)<\/div>/s';
+    preg_match($padrao, $traducao_html, $traducao);
+
+    // var_dump($traducao_html);
+    if (isset($traducao[1])) {
+        // Imprime a tradução
+        echo "Tradução: " . htmlspecialchars_decode($traducao[1]);
+    } else {
+        echo "Erro ao traduzir o texto.";
+    }
+}
+
+function calcMes($dataAlvo)
+{
+    // Converte a data alvo para um objeto DateTime
+    $dataAlvo = new DateTime($dataAlvo);
+
+    // Obtém a data atual
+    $hoje = new DateTime();
+
+    // Calcula a diferença entre as duas datas
+    $intervalo = $hoje->diff($dataAlvo);
+
+    // Calcula o número total de meses restantes
+    $mesesRestantes = $intervalo->y * 12 + $intervalo->m;
+
+    if ($mesesRestantes < 1) {
+        // Se faltar menos de 1 mês, retorna o número de dias restantes
+        $diasRestantes = $intervalo->days;
+        return "$diasRestantes dias";
+    } else {
+        // Caso contrário, retorna o número de meses restantes
+        return "$mesesRestantes meses";
+    }
+}
+
 function assets($path) {
     $url = env("APP_THEME", "default") . "/".$path;
 

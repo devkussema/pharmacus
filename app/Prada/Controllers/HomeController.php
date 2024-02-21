@@ -15,6 +15,10 @@ class HomeController extends Controller
 
     public function home()
     {
+        if (auth()->user()->grupo->nome != "Administrador" and auth()->user()->grupo->nome != "Admin" and auth()->user()->grupo->nome == "Gerente") {
+            if (auth()->user()->grupo->nome == "Funcionário")
+                return redirect()->route('estoque');
+        }
         $farmacias = Farmacia::all();
         $areasHospitalares = AreaHospitalar::all();
 

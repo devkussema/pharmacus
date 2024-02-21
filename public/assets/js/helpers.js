@@ -270,13 +270,18 @@ $(document).ready(function () {
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
 
-                // Percorre os erros e os concatena em uma única string
-                $.each(errors, function (key, value) {
-                    errorMessage += value[0] + '<br>';
-                });
+                console.log(xhr);
+                if (errors) {
+                    // Percorre os erros e os concatena em uma única string
+                    $.each(errors, function (key, value) {
+                        errorMessage += value[0] + '<br>';
+                    });
 
-                // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                    // Exibe a mensagem de erro com Toastr.js
+                    toastr.error(errorMessage, 'Erro de validação');
+                }else{
+                    toastr.error(xhr.responseJSON.message, 'Erro');
+                }
             }
         });
     });
@@ -315,6 +320,26 @@ $(document).ready(function () {
 
                 // Exibe a mensagem de erro com Toastr.js
                 toastr.error(errorMessage, 'Erro de validação');
+            }
+        });
+    });
+
+    $('#formProdutoEstoque #cod_barras').change(function(){
+        var codigoBarras = $('#cod_barras').val();
+        var apiKey = 'f7aff0310a9b2aec516896d2c2950417d649073fbd7eae4f96d99197ef4c6b4b';
+        var url = 'https://go-upc.com/api/v1/code/' + codigoBarras + '?key=' + apiKey + '&format=true';
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                // Manipular a resposta JSON
+                console.log(response);
+                $('#formProdutoEstoque #designacao').val(response.product.name);
+                //$('#resultado').html(JSON.stringify(response));
+            },
+            error: function(xhr, status, error) {
+                alert('Erro: ' + error);
             }
         });
     });
@@ -749,7 +774,7 @@ function checkSession() {
                 window.location.reload();
             }
         })
-        .catch(error => alert('Erro ao verificar sessão:', error));
+        .catch(error => console.error('Erro ao verificar sessão:', error));
 }
 
 // Verificar a sessão a cada 1 minuto
