@@ -85,6 +85,7 @@
                                 <th>Designação</th>
                                 <th>Dosagem</th>
                                 <th>Forma</th>
+                                <th>Fornecedor</th>
                                 <th>Lote</th>
                                 <th>Grupo</th>
                                 <th>Qtd.</th>
@@ -106,6 +107,7 @@
                                     <td><b>{{ $est->produto->designacao }}</b></td>
                                     <td>{{ $est->produto->dosagem }}</td>
                                     <td>{{ $est->produto->forma }}</td>
+                                    <td>{{ $est->produto->origem_destino }}</td>
                                     <td>{{ $est->produto->num_lote }}</td>
                                     <td><b>{{ $est->produto->grupo_farmaco->nome }}</b></td>
                                     <td>{{ $est->produto->saldo->qtd }}</td>
