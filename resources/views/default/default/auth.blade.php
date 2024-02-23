@@ -9,7 +9,7 @@
     <meta name="geo.icbm" content="-8.838333; 13.234444">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>@yield('titulo') - Iniciar sessão</title>
+    <title>@yield('titulo') | {{ env('APP_NAME') }} - {{ env('APP_DESCRIPTION') }}</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
