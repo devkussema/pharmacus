@@ -5,7 +5,7 @@
 /public/storage
 /storage/*.key
 /vendoq
-#.env
+.env
 .env.backup
 .env.production
 .phpunit.result.cache
