@@ -5,6 +5,15 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+$dominio = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+// Verifica se a URL atual não começa com "https://www."
+if ($dominio == "pharmatina.com" and strpos($_SERVER['HTTP_HOST'], 'www.') === false || strpos($_SERVER['HTTPS'], 'https://') === false) {
+    // Redireciona para a versão correta da URL com "https://www."
+    header('Location: https://www.' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    exit();
+}
+
 /*
 |--------------------------------------------------------------------------
 | Check If The Application Is Under Maintenance
@@ -16,7 +25,7 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+if (file_exists($maintenance = __DIR__ . '/../storage/framework/maintenance.php')) {
     require $maintenance;
 }
 
@@ -31,7 +40,7 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 |
 */
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -44,9 +53,9 @@ require __DIR__.'/../vendor/autoload.php';
 |
 */
 
-$app = require_once __DIR__.'/../bootstrap/app.php';
+$app = require_once __DIR__ . '/../bootstrap/app.php';
 
-require_once __DIR__."/../app/Helpers/base.php";
+require_once __DIR__ . "/../app/Helpers/base.php";
 
 $kernel = $app->make(Kernel::class);
 
