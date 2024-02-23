@@ -8,8 +8,15 @@
     <meta name="geo.position" content="-8.838333; 13.234444">
     <meta name="geo.icbm" content="-8.838333; 13.234444">
 
+    <!-- Meta tag robots -->
+    <meta name="robots" content="index, follow">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@yield('titulo') | {{ env('APP_NAME') }} - {{ env('APP_DESCRIPTION') }}</title>
+
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
