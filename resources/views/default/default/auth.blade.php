@@ -2,6 +2,12 @@
 <html lang="pt">
 <head>
     <meta charset="utf-8">
+    <meta name="language" content="pt">
+    <meta name="geo.region" content="AO">
+    <meta name="geo.placename" content="Angola">
+    <meta name="geo.position" content="-8.838333; 13.234444">
+    <meta name="geo.icbm" content="-8.838333; 13.234444">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@yield('titulo') - Iniciar sessão</title>
 
@@ -45,7 +51,7 @@
 
     <!-- app JavaScript -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
-    
+
     <script src="{{ asset('assets/js/form.js') }}" async></script>
 </body>
 </html>
