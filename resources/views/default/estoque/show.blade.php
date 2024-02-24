@@ -8,6 +8,20 @@
             <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Estoque {{ Auth::user()->area_hospitalar->area_hospitalar->nome }}</h4>
+                    {{-- <button type="button" class="btn btn-danger mt-2"><i class="ri-radio-button-fill pr-0"></i></button>
+                    <form id="repeater-form">
+                        <div class="repeater">
+                            <div data-repeater-list="items">
+                                <div data-repeater-item>
+                                    <input type="text" name="item-name" placeholder="Item Name">
+                                    <input type="text" name="item-quantity" placeholder="Quantity">
+                                    <button type="button" data-repeater-delete>X</button>
+                                </div>
+                            </div>
+                            <button type="button" data-repeater-create>Add Item</button>
+                        </div>
+                        <button type="submit">Submit</button>
+                    </form> --}}
                 </div>
                 @php
                     use App\Models\ProdutoEstoque;

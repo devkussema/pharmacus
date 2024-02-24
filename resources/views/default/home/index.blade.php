@@ -16,8 +16,10 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/remixicon/fonts/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
-	<link rel="stylesheet" href={{ asset("src/css/manual.css") }}>
+    <link rel="stylesheet" href={{ asset('src/css/manual.css') }}>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap4.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 
 <body class=" color-light ">
@@ -111,11 +113,29 @@
 
     <!-- app JavaScript -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
 
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap4.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('select.select2').select2();
+        });
+        $(document).ready(function() {
+            $('#repeater-form').repeater({
+                show: function() {
+                    $(this).slideDown();
+                },
+                hide: function(deleteElement) {
+                    if (confirm('Are you sure you want to delete this item?')) {
+                        $(this).slideUp(deleteElement);
+                    }
+                }
+            });
+        });
+
         // Obtenha o contexto do canvas
         var ctx = document.getElementById('myChart').getContext('2d');
 
