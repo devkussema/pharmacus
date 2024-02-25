@@ -116,6 +116,8 @@ Route::prefix('auth')->middleware('guest')->group(function () {
     Route::post('/', [AuthController::class, 'login'])->name('entrar');
     Route::get('/registar', [AuthController::class, 'registar'])->name('registar');
     Route::post('/registar', [AuthController::class, 'store'])->name('registar.store');
+
+    Route::get('/conta_criada', [AuthController::class, 'conta_criada'])->name('conta_criada');
 });
 
 // Por favor, não alterar a estrutura da url

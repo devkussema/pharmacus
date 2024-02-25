@@ -12,6 +12,14 @@
                                     <label class="mb-2">Designação *</label>
                                     <input type="text" id="designacao" class="form-control" placeholder="" name="designacao">
                                 </div>
+                                <div class="col pb-3">
+                                    <label class="mb-2">Tipo *</label>
+                                    <select name="tipo" style="width: 100%" id="" class="form-control">
+                                            <option value="">Descartável</option>
+                                            <option value="">Medicamento</option>
+                                            <option value="">Descartável</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="col pb-3">
@@ -30,7 +38,7 @@
                                 </div>
                                 <div class="col pb-3">
                                     <label class="mb-2">Grupo Farmacológico *</label>
-                                    <select name="grupo_farmaco_id" id="" class="form-control">
+                                    <select name="grupo_farmaco_id" style="width: 100%" id="" class="form-control select2">
                                         @foreach (\App\Models\GrupoFarmacologico::all() as $gf)
                                             <option value="{{ $gf->id }}">{{ $gf->nome }}</option>
                                         @endforeach
