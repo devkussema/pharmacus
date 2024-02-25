@@ -31,7 +31,7 @@ class AtivarUsuario extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Ativar Usuario',
+            subject: 'Confirmação de email | '.env('APP_NAME'),
         );
     }
 

@@ -118,6 +118,10 @@ Route::prefix('auth')->middleware('guest')->group(function () {
     Route::post('/registar', [AuthController::class, 'store'])->name('registar.store');
 
     Route::get('/conta_criada', [AuthController::class, 'conta_criada'])->name('conta_criada');
+
+    Route::prefix('confirmar')->group(function () {
+        Route::get('/email/{token}', [AuthController::class, 'confirmar_email'])->name('auth.confirmar_email');
+    });
 });
 
 // Por favor, não alterar a estrutura da url

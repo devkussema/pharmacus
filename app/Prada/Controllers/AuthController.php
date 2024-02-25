@@ -9,9 +9,12 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Auth, Mail;
 use App\Mail\AtivarUsuario;
 use App\Models\{UsersToken as UT, GerenteFarmacia, Farmacia};
+use App\Traits\GenerateTrait;
 
 class AuthController extends Controller
 {
+    use GenerateTrait;
+
     public function index()
     {
         $app_desc = "Inicie sessão e esteja a par de tudo na ".env('APP_NAME');
@@ -33,12 +36,6 @@ class AuthController extends Controller
     {
         $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
         $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
-
-        $nomeUser = "Dev";
-        $url_ativacao = route('login');
-        $email_to = "this@email.co";
-
-        Mail::to($email_to)->send(new AtivarUsuario($nomeUser, $url_ativacao, $email_to));
 
         return view('auth.contaCriada', compact('app_desc', 'app_keywords'));
     }
@@ -121,15 +118,29 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
+        $token = self::gerarToken($user, "Confirmação de email");
+
+        $nomeUser = $request->nome;
+        $email_to = $request->email;
+        $url_ativacao = route('auth.confirmar_email', ['token' => $token->token]);
+
+        Mail::to($email_to)->send(new AtivarUsuario($nomeUser, $url_ativacao, $email_to));
+
         // Se necessário, faça login automaticamente do usuário
-        auth()->login($user);
+        //auth()->login($user);
 
         // Redirecionar o usuário após o registro
         #return redirect()->route('home')->with('success', 'Conta criada com sucesso!');
-        if ($request->ajax()) {
-            return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
-        }
-        return redirect()->route('home')->with('success', 'Conta criada com sucesso!');
+        // if ($request->ajax()) {
+        //     //return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
+        //     return redirect()->route('conta_criada')->with('email', $request->email);
+        // }
+        return redirect()->route('conta_criada')->with('email', $request->email);
+    }
+
+    public function confirmar_email($token)
+    {
+
     }
 
     /**

@@ -105,11 +105,14 @@ trait GenerateTrait
         return $senha;
     }
 
-    public static function gerarToken($user)
+    public static function gerarToken($user, $nome=null)
     {
+        $nomeT = "";
+        if ($nome==null) { $nomeT = "Token para uso geral"; }else{ $nomeT = $nome; }
+
         $token = UT::create([
             'user_id' => $user->id,
-            'nome' => 'Confirmação de conta de funcionários da farmácia',
+            'nome' => $nomeT,
             'token' => Uuid::uuid4()->toString()
         ]);
 
