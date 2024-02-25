@@ -140,7 +140,13 @@ class AuthController extends Controller
 
     public function confirmar_email($token)
     {
+        $t = UT::where('token', $token)->first();
+        if (!$t)
+            return redirect()->route('login')->with('error', 'Este link é inválido ou já foi usado.');
+        $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
+        $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
 
+        return view('auth.confirmEmail', compact('app_desc', 'app_keywords'));
     }
 
     /**
