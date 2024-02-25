@@ -71,6 +71,7 @@ class AuthController extends Controller
                 }
                 return redirect()->route('home');
             }
+
             if (Auth::user()->status != 1) {
                 Auth::logout();
                 return redirect()->route('login')->with('error', 'A tua conta não está ativada');
@@ -138,15 +139,50 @@ class AuthController extends Controller
         return redirect()->route('conta_criada')->with('email', $request->email);
     }
 
-    public function confirmar_email($token)
+    public function confirmar_email_store(Request $request)
     {
-        $t = UT::where('token', $token)->first();
-        if (!$t)
+        $request->validate([
+            'email'=> 'required|exists:users,email',
+            'password' => 'required|min:6',
+            'token_id' => 'required|exists:users_tokens,id'
+        ],[
+            'password.required' => 'A senha é obrigatória',
+            'password.min' => 'A senha deve no minimo :min caracteres',
+        ]);
+
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $token = UT::find($request->token_id);
+            $usr = Auth::user();
+
+            $usr->update([
+                'email_verified_at' => now()
+            ]);
+            
+            $token->update([
+                'last_used_at' => now()
+            ]);
+
+            Auth::logout();
+
+            return redirect()->route('login')->with('success', "Agora só falta a administração rever a tua conta. Receberás um email quando a administração rever a tua conta.");
+        }
+
+        return redirect()->back()->with('error', "Senha inválida");
+    }
+    public function confirmar_email($to)
+    {
+        $token = UT::where('token', $to)->first();
+        if (!$token)
             return redirect()->route('login')->with('error', 'Este link é inválido ou já foi usado.');
+        if ($token->last_used_at)
+            return redirect()->route('login')->with('error', 'Este link já foi usado.');
+
         $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
         $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
 
-        return view('auth.confirmEmail', compact('app_desc', 'app_keywords'));
+        return view('auth.confirmEmail', compact('app_desc', 'app_keywords', 'token'));
     }
 
     /**

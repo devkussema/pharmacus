@@ -121,6 +121,7 @@ Route::prefix('auth')->middleware('guest')->group(function () {
 
     Route::prefix('confirmar')->group(function () {
         Route::get('/email/{token}', [AuthController::class, 'confirmar_email'])->name('auth.confirmar_email');
+        Route::post('/email', [AuthController::class, 'confirmar_email_store'])->name('auth.confirmar_email_store');
     });
 });
 

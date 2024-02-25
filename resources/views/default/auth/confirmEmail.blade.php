@@ -12,16 +12,23 @@
                             <div class="p-3">
                                 <h2 class="mb-2">Confirmar Email</h2>
                                 <p>Digite a sua senha para confirmar o seu email.</p>
-                                <form>
+                                <form method="POST" action="{{ route('auth.confirmar_email_store') }}">
+                                    @csrf
+                                    @include('partials.session')
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="floating-label form-group">
-                                                <input class="floating-input form-control" type="email" placeholder=" ">
+                                                <input class="floating-input form-control" name="email" readonly type="email" value="{{ $token->user->email }}">
                                                 <label>Email</label>
+                                            </div>
+                                            <div class="floating-label form-group">
+                                                <input class="floating-input form-control" name="password" type="password" placeholder="">
+                                                <label>Senha</label>
+                                                <input type="hidden" value="{{ $token->id }}" name="token_id">
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Reset</button>
+                                    <button type="submit" class="btn btn-primary">Confirmar</button>
                                 </form>
                             </div>
                         </div>
