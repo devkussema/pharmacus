@@ -13,19 +13,19 @@
                                 <div class="p-3">
                                     <h2 class="mb-2">Criar conta</h2>
                                     <p>Crie a tua conta <b>{{ env('APP_NAME') }}</b>.</p>
-                                    <form id="cadastrar" method="POST" action="{{ route('registar.store') }}">
+                                    <form id="cadastrarQ" method="POST" action="{{ route('registar.store') }}">
                                         @include('partials.session')
                                         @csrf
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="floating-label form-group">
-                                                    <input name="nome" class="floating-input form-control" type="text" placeholder=" ">
+                                                    <input name="nome" class="floating-input form-control" type="text" value="{{ old('nome') }}">
                                                     <label>Nome</label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
                                                 <div class="floating-label form-group">
-                                                    <input name="email" class="floating-input form-control" type="email" placeholder=" ">
+                                                    <input name="email" class="floating-input form-control" type="email" value="{{ old('email') }}">
                                                     <label>Email</label>
                                                 </div>
                                             </div>

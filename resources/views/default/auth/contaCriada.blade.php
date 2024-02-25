@@ -13,9 +13,9 @@
                                 <img src="{{ asset('assets/images/login/mail.png') }}" class="img-fluid" width="80" alt="">
                                 <h2 class="mt-3 mb-0">Parabéns !</h2>
                                 <p class="cnf-mail mb-1">
-                                    Um email foi enviado para <code>youremail@domain.com</code>.
+                                    Um email foi enviado para <code>{{ $email ?? session('email') }}</code>.
                                     Verifique se há um email da <b>{{ env('APP_NAME') }}</b> e clique no link
-                                    incluído para ativar a sua conta.
+                                    incluído para ativar o email da sua conta.
                                 </p>
                                 <div class="d-inline-block w-100">
                                     <a href="{{ route('login') }}" class="btn btn-primary mt-3">Ir para o Login</a>
