@@ -6,19 +6,41 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth, Mail;
+use App\Mail\AtivarUsuario;
 use App\Models\{UsersToken as UT, GerenteFarmacia, Farmacia};
 
 class AuthController extends Controller
 {
     public function index()
     {
-        return view('auth.login');
+        $app_desc = "Inicie sessão e esteja a par de tudo na ".env('APP_NAME');
+        $app_keywords = "entrar, pharmatina, pharmatina angola, google angola, pharmatino, farmatina, farmácia ao, farmacia angola, augusto kussema, kussema";
+
+        return view('auth.login', compact('app_desc', 'app_keywords'));
     }
 
     public function registar()
     {
-        return view('auth.registar');
+        $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
+        $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
+
+        //return view('auth.contaCriada', compact('app_desc', 'app_keywords'));
+        return view('auth.registar', compact('app_desc', 'app_keywords'));
+    }
+
+    public function conta_criada()
+    {
+        $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
+        $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
+
+        $nomeUser = "Dev";
+        $url_ativacao = route('login');
+        $email_to = "this@email.co";
+
+        Mail::to($email_to)->send(new AtivarUsuario($nomeUser, $url_ativacao, $email_to));
+
+        return view('auth.contaCriada', compact('app_desc', 'app_keywords'));
     }
 
     public function login(Request $request)
