@@ -72,6 +72,7 @@ return [
 
     'timezone' => 'Africa/Luanda',
 
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

@@ -11,7 +11,7 @@
                         <div class="d-flex align-items-center auth-content">
                             <div class="col-lg-7 align-self-center">
                                 <div class="p-3">
-                                    <h2 class="mb-2">Entrar</h2>
+                                    <h2 class="mb-2">Entrar {{ nem('nested.nested_key1') }}</h2>
                                     <p>Entre para se conectar.</p>
                                     <form id="login-form" method="POST" action="{{ route('login') }}">
                                         @csrf

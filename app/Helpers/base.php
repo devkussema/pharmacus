@@ -6,6 +6,7 @@ use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+
 function translate($texto, $lang)
 {
     // Texto a ser traduzido

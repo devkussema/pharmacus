@@ -14,8 +14,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@yield('titulo') | {{ env('APP_NAME') }} - {{ env('APP_DESCRIPTION') }}</title>
 
-    <meta name="description" content="{{ $app_desc }}">
-    <meta name="keywords" content="{{ $app_keywords }}">
+    <meta name="description" content="{{ $app_desc ?? "" }}">
+    <meta name="keywords" content="{{ $app_keywords ?? "" }}">
     <meta name="author" content="Augusto Kussema">
 
     <!-- Favicon -->
