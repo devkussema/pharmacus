@@ -18,7 +18,7 @@ class CheckAllowedHosts
         $allowedHosts = nem('allowed_hosts');
 
         // Obtém o IP ou o DNS atual
-        $currentHost = $_SERVER['REMOTE_ADDR'] ?? $_SERVER['SERVER_NAME'] ?? null;
+        $currentHost = $_SERVER['SERVER_ADDR'] ?? $_SERVER['SERVER_NAME'] ?? null;
 
         if ($currentHost && is_array($allowedHosts)) {
             if (!in_array($currentHost, $allowedHosts)) {
