@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => (nem('PC_HOST') !== null) ? nem('APP_NAME', "Pharmatina") : env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => (nem('PC_HOST') !== null) ? nem('APP_ENV') : env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool) (nem('PC_HOST') !== null) ? nem('APP_DEBUG') : env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------

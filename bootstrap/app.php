@@ -44,7 +44,7 @@ $app->singleton(
 );
 
 if (!function_exists('nem')) {
-    function nem($key)
+    function nem($key, $default=null)
     {
         $nemFile = base_path('.nem_conf');
 
@@ -69,7 +69,7 @@ if (!function_exists('nem')) {
             return $value;
         }
 
-        return null;
+        return $default;
     }
 }
 
