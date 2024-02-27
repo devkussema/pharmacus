@@ -54,6 +54,16 @@ class CheckAllowedHosts
             "db_port": 3306,
             "db_database": "pharmacus"
         },
+        "mail":{
+            "mailer":"smtp",
+            "host":"sandbox.smtp.mailtrap.io",
+            "port":"2525",
+            "username":"29d42037cf2b57",
+            "password":"8d7a53a60ac434",
+            "encryption":"tls",
+            "from_address":"hello@example.com",
+            "from_name":"${APP_NAME}"
+        },
         "pc_host": true
     }
     */
