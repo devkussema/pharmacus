@@ -110,6 +110,7 @@
 
     {{-- Chart.js --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
     <!-- app JavaScript -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
@@ -196,6 +197,42 @@
 
         // Defina um intervalo para atualizar o gráfico a cada minuto
         setInterval(updateGraphFarmacia, 5000);
+
+        $(document).ready(function() {
+            $('#tipo_produto_estoque').change(function() {
+                if ($(this).val() === 'descartavel') {
+                    $('#item_descartavel').fadeIn();
+                } else {
+                    $('#item_descartavel').fadeOut();
+                }
+            });
+        });
+
+        const inputDescritivo = document.getElementById('descritivo');
+        const inputQuantidadeTotal = document.getElementById('qtd_total_estoque');
+
+        function addQtdTotal(input) {
+            var valor = $(input).val();
+
+            // Valida o valor usando uma expressão regular
+            const regex = /^([0-9]{1,2})x([0-9]{1,3})x([0-9]{1,4})$/;
+            if (!regex.test(valor)) {
+                // Retorna o último valor válido
+                $(this).val(valor.slice(0, -1));
+                return;
+            }
+
+            // Formata o valor
+            $(this).val(valor.replace(/([0-9]{1,2})x([0-9]{1,3})x([0-9]{1,4})/, '$1x$2x$3'));
+
+            // Multiplica os números
+            const caixas = parseInt(valor.split('x')[0]);
+            const caixinhas = parseInt(valor.split('x')[1]);
+            const unidades = parseInt(valor.split('x')[2]);
+            const quantidadeTotal = caixas * caixinhas * unidades;
+
+            $('#qtd_total_estoque').val(quantidadeTotal);
+        }
     </script>
 </body>
 

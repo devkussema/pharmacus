@@ -14,11 +14,22 @@
                                 </div>
                                 <div class="col pb-3">
                                     <label class="mb-2">Tipo *</label>
-                                    <select name="tipo" style="width: 100%" id="" class="form-control">
-                                            <option value="">Descartável</option>
-                                            <option value="">Medicamento</option>
-                                            <option value="">Descartável</option>
+                                    <select name="tipo" style="width: 100%" id="tipo_produto_estoque" class="form-control">
+                                        <option selected disabled>Selecionar tipo</option>
+                                        <option value="descartavel">Descartável</option>
+                                        <option value="medicamento">Medicamento</option>
+                                        <option value="liquido">Liquido</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-row" id="item_descartavel">
+                                <div class="col pb-3">
+                                    <label class="mb-2">Descritivo *</label>
+                                    <input type="text" id="descritivo" class="form-control mask" oninput="addQtdTotal(this)" data-mask="99x99x99" placeholder="" name="descritivo">
+                                </div>
+                                <div class="col pb-3">
+                                    <label class="mb-2">Total em unidades</label>
+                                    <input type="number" id="qtd_total_estoque" disabled class="form-control" name="qtd">
                                 </div>
                             </div>
                             <div class="form-row">

@@ -22,8 +22,7 @@ class CheckAllowedHosts
 
         if ($currentHost && is_array($allowedHosts)) {
             if (!in_array($currentHost, $allowedHosts)) {
-                abort(403, "Acesso não autorizado: {$_SERVER['REMOTE_ADDR']}, {$_SERVER['SERVER_NAME']}");
-                //echo "Acesso não autorizado: {$_SERVER['REMOTE_ADDR']}"; exit;
+                abort(403, "Acesso não autorizado");
             }
         } else {
             // Se não houver hosts permitidos configurados, aborta com erro
