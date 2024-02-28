@@ -544,7 +544,6 @@ $(document).ready(function () {
             }
         });
     });
-    
 });
 function getDataFarma(url) {
     $.ajax({

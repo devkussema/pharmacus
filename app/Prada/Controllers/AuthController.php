@@ -4,6 +4,7 @@ namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Auth, Mail;
@@ -42,6 +43,14 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        if (!Session::has('laravel_token') || Session::token() !== $request->input('_token')) {
+            return response()->json([
+                'success' => false,
+                'codigo' => 'csrf',
+                'message' => 'CSRF token inválido ou expirado.',
+            ], 401);
+        }
+
         $request->validate([
             'email' => 'required|exists:users,email',
             'password' => 'required',
