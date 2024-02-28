@@ -45,13 +45,28 @@ $(document).ready(function() {
             url: $(this).attr('action'),
             data: formData,
             success: function(response) {
-                location.reload();
+                toastr.success("Bem-vindo de volta", 'A redirecionar');
+                setTimeout(function() {
+                    location.reload();
+                }, 5000);
             },
-            error: function(xhr) {
-                // Manipula erros
-                //console.error(xhr.responseText);
-                //alert('Erro ao fazer login. Verifique suas credenciais.');
-                alert(xhr.responseText);
+            error: function(xhr, status, error) {
+                // Trata os erros de validação retornados pelo servidor
+                var errors = xhr.responseJSON.errors;
+                var errorMessage = '';
+
+                if (errors) {
+                    // Percorre os erros e os concatena em uma única string
+                    $.each(errors, function (key, value) {
+                        errorMessage += value[0] + '<br>';
+                    });
+                }else{
+                    if (xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    }
+                    errorMessage = xhr.responseJSON.message;
+                }
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });

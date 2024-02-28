@@ -56,6 +56,13 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
+            if (Auth::user()->status == 0) {
+                Auth::logout();
+                if ($request->ajax()) {
+                    return response()->json(['message' => 'A tua conta não está ativada'],422);
+                }
+                return redirect()->route('login')->with('error', 'A tua conta não está ativada');
+            }
             if ($request->email_verified_at && $request->token) {
                 User::where('email', $request->email)->update([
                     'email_verified_at' => now(),
@@ -72,10 +79,6 @@ class AuthController extends Controller
                 return redirect()->route('home');
             }
 
-            if (Auth::user()->status != 1) {
-                Auth::logout();
-                return redirect()->route('login')->with('error', 'A tua conta não está ativada');
-            }
             if ($request->ajax()) {
                 return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
             }
@@ -83,9 +86,9 @@ class AuthController extends Controller
         }
 
         if ($request->ajax()) {
-            return response()->json(['msg' => 'Credenciais inválidas, tente novamente'],401);
+            return response()->json(['message' => 'Credenciais inválidas, tente novamente'],422);
         }
-        return redirect()->back()->withInput()->withErrors(['email' => 'Credenciais inválidas']);
+        return redirect()->back()->withInput()->withErrors(['message' => 'Credenciais inválidas, tente novamente'], 422);
     }
 
     public function store(Request $request)
