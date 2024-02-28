@@ -202,11 +202,28 @@
             $('#tipo_produto_estoque').change(function() {
                 if ($(this).val() === 'descartavel') {
                     $('#item_descartavel').fadeIn();
+                    $('#item_medicamento').fadeOut();
                 } else {
                     $('#item_descartavel').fadeOut();
+                    $('#item_medicamento').fadeIn();
                 }
             });
         });
+
+        document.getElementById('btn_repetir_lote').addEventListener('click', function() {
+            // Get the existing element to clone
+            const originalElement = document.getElementById('repetir_');
+
+            // Clone the original element
+            const cloneElement = originalElement.cloneNode(true);
+
+            // Clear the input values in the cloned element
+            cloneElement.querySelectorAll('input').forEach(input => input.value = '');
+
+            // Append the cloned element to the parent of the original element
+            originalElement.parentNode.insertBefore(cloneElement, originalElement.nextSibling);
+        });
+
 
         const inputDescritivo = document.getElementById('descritivo');
         const inputQuantidadeTotal = document.getElementById('qtd_total_estoque');

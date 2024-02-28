@@ -25,7 +25,10 @@ class EstoqueController extends Controller
     {
         $ah = AH::all();
 
-        $estoque = Estoque::with('produto')->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)->get();
+        $estoque = Estoque::with('produto')
+            ->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)
+            ->orderBy('produtos.nome', 'asc')
+            ->get();
         self::calcNivelAlerta();
         return view('estoque.show', compact('estoque', 'ah'));
     }
