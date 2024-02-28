@@ -159,7 +159,7 @@ class AuthController extends Controller
             $usr->update([
                 'email_verified_at' => now()
             ]);
-            
+
             $token->update([
                 'last_used_at' => now()
             ]);
@@ -175,9 +175,9 @@ class AuthController extends Controller
     {
         $token = UT::where('token', $to)->first();
         if (!$token)
-            return redirect()->route('login')->with('error', 'Este link é inválido ou já foi usado.');
+            return redirect()->route('login')->with('error', 'Este link é inválido.');
         if ($token->last_used_at)
-            return redirect()->route('login')->with('error', 'Este link já foi usado.');
+            return redirect()->route('login')->with('error', 'Este link é inválido.');
 
         $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
         $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
