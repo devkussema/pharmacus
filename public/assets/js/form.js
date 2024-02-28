@@ -57,25 +57,18 @@ $(document).ready(function() {
 
                 console.log(xhr);
 
-                if (xhr.responseJSON.codigo == "csrf") {
-                    toastr.warning("Esteve inativo por muito tempo. Por favor aguarde.", 'Algo deu errado');
-                    setTimeout(function() {
-                        location.reload();
-                    }, 4000);
+                if (errors) {
+                    // Percorre os erros e os concatena em uma única string
+                    $.each(errors, function (key, value) {
+                        errorMessage += value[0] + '<br>';
+                    });
                 }else{
-                    if (errors) {
-                        // Percorre os erros e os concatena em uma única string
-                        $.each(errors, function (key, value) {
-                            errorMessage += value[0] + '<br>';
-                        });
-                    }else{
-                        if (xhr.responseJSON.error) {
-                            errorMessage = xhr.responseJSON.error;
-                        }
-                        errorMessage = xhr.responseJSON.message;
+                    if (xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
                     }
-                    toastr.error(errorMessage, 'Erro');
+                    errorMessage = xhr.responseJSON.message;
                 }
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
