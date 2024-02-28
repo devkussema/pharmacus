@@ -22,18 +22,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="" id="item_descartavel" style="display: none">
-                                <div class="form-row">
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Descritivo *</label>
-                                        <input type="text" id="descritivo" class="form-control mask" oninput="addQtdTotal(this)" data-mask="99x99x99" placeholder="" name="descritivo">
-                                    </div>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Total em unidades</label>
-                                        <input type="number" id="qtd_total_estoque" disabled class="form-control" name="qtd">
-                                    </div>
-                                </div>
-                            </div>
                             <div class="" id="item_medicamento" style="display:none">
                                 <div class="form-row">
                                     <div class="col pb-3">
@@ -45,6 +33,47 @@
                                         <input type="text" class="form-control" placeholder="" name="dosagem">
                                     </div>
                                 </div>
+                            </div>
+                            {{-- <div class="row">
+                                <hr>
+                                <button type="button" id="btn_repetir_lote" class="btn btn-success mt-2 mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="rgba(255,255,255,1)"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path></svg>
+                                </button>
+                            </div> --}}
+                            <div class="" id="repetir_">
+                                <div class="" id="item_descartavel" style="display: none">
+                                    <div class="form-row">
+                                        <div class="col pb-3">
+                                            <label class="mb-2">Descritivo *</label>
+                                            <input type="text" id="descritivo" class="form-control mask" oninput="addQtdTotal(this)" data-mask="99x99x99" name="descritivo">
+                                        </div>
+                                        <div class="col pb-3">
+                                            <label class="mb-2">Total em unidades</label>
+                                            <input type="number" id="qtd_total_estoque" disabled class="form-control" name="qtd">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col pb-3">
+                                        <label class="mb-2">Lote *</label>
+                                        <input type="text" class="form-control" name="num_lote">
+                                    </div>
+                                    <div class="col pb-3">
+                                        <label class="mb-2">Documento Nº *</label>
+                                        <input type="number" id="cod_barras" class="form-control" placeholder="" name="num_documento">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col pb-3">
+                                        <label class="mb-2">Data Produção *</label>
+                                        <input type="date" class="form-control" placeholder="" name="data_producao">
+                                    </div>
+                                    <div class="col pb-3">
+                                        <label class="mb-2">Data Expiração *</label>
+                                        <input type="date" class="form-control" placeholder="" name="data_expiracao">
+                                    </div>
+                                </div>
+                                <hr>
                             </div>
                             <div class="" id="diverso">
                                 <div class="form-row">
@@ -65,35 +94,6 @@
                                         <input type="text" class="form-control" placeholder="" name="origem_destino">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <hr>
-                                <button type="button" id="btn_repetir_lote" class="btn btn-success mt-2 mr-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="rgba(255,255,255,1)"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path></svg>
-                                </button>
-                            </div>
-                            <div class="" id="repetir_">
-                                <div class="form-row">
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Lote *</label>
-                                        <input type="text" class="form-control" placeholder="" name="num_lote">
-                                    </div>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Documento Nº *</label>
-                                        <input type="number" id="cod_barras" class="form-control" placeholder="" name="num_documento">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Data Produção *</label>
-                                        <input type="date" class="form-control" placeholder="" name="data_producao">
-                                    </div>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Data Expiração *</label>
-                                        <input type="date" class="form-control" placeholder="" name="data_expiracao">
-                                    </div>
-                                </div>
-                                <hr>
                             </div>
                             <div class="form-row">
                                 <div class="col pb-3">

@@ -210,6 +210,7 @@
             });
         });
 
+        let counter = 1;
         document.getElementById('btn_repetir_lote').addEventListener('click', function() {
             // Get the existing element to clone
             const originalElement = document.getElementById('repetir_');
@@ -217,8 +218,25 @@
             // Clone the original element
             const cloneElement = originalElement.cloneNode(true);
 
-            // Clear the input values in the cloned element
-            cloneElement.querySelectorAll('input').forEach(input => input.value = '');
+            // Numeração automática dos inputs
+            cloneElement.querySelectorAll('input').forEach(function(input, index) {
+                const elementId = input.getAttribute('id');
+                const inputName = input.getAttribute('name');
+                input.setAttribute('id', `${elementId}_${counter}`);
+                input.setAttribute('name', `${inputName}_${counter}`);
+                input.setAttribute('onchange', `addQtdTotal('#${elementId}_${counter}')`);
+                input.value = "";
+            });
+            counter++;
+
+            // Adicionar botão de eliminar
+            const btnEliminar = document.createElement('button');
+            btnEliminar.classList.add('btn', 'btn-danger', 'ml-2');
+            btnEliminar.textContent = 'Eliminar';
+            btnEliminar.addEventListener('click', function() {
+                this.parentNode.parentNode.removeChild(this.parentNode);
+            });
+            cloneElement.appendChild(btnEliminar);
 
             // Append the cloned element to the parent of the original element
             originalElement.parentNode.insertBefore(cloneElement, originalElement.nextSibling);
