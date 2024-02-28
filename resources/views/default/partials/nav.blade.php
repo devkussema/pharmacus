@@ -102,7 +102,7 @@
                                 </a>
                             </li>
                         @endif
-                        @if (Auth::user()->area_hospitalar)
+                        @if (Auth::user()->area_hospitalar->area_hospitalar->nome == "Armazém I")
                             <li>
                                 <a href="#" title="Adicionar Produto"
                                     class="btn add-btn shadow-none d-block d-md-block" data-toggle="modal"

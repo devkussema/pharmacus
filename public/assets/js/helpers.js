@@ -279,7 +279,7 @@ $(document).ready(function () {
 
                     // Exibe a mensagem de erro com Toastr.js
                     toastr.error(errorMessage, 'Erro de validação');
-                }else{
+                } else {
                     toastr.error(xhr.responseJSON.message, 'Erro');
                 }
             }
@@ -324,7 +324,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#formProdutoEstoque #cod_barrasq').change(function(){
+    $('#formProdutoEstoque #cod_barrasq').change(function () {
         var codigoBarras = $('#cod_barras').val();
         var apiKey = 'f7aff0310a9b2aec516896d2c2950417d649073fbd7eae4f96d99197ef4c6b4b';
         var url = 'https://go-upc.com/api/v1/code/' + codigoBarras + '?key=' + apiKey + '&format=true';
@@ -332,13 +332,13 @@ $(document).ready(function () {
         $.ajax({
             url: url,
             type: 'GET',
-            success: function(response) {
+            success: function (response) {
                 // Manipular a resposta JSON
                 console.log(response);
                 $('#formProdutoEstoque #designacao').val(response.product.name);
                 //$('#resultado').html(JSON.stringify(response));
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 alert('Erro: ' + error);
             }
         });
@@ -532,7 +532,7 @@ $(document).ready(function () {
                     $.each(errors, function (key, value) {
                         errorMessage += value[0] + '<br>';
                     });
-                }else{
+                } else {
                     if (xhr.responseJSON.error) {
                         errorMessage = xhr.responseJSON.error;
                     }
@@ -612,10 +612,10 @@ function modalAddCargoAH(area_id) {
 function modalEditarAH(id) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
-        url: 'api/get/area_hospitalar/'+id,
+        url: 'api/get/area_hospitalar/' + id,
         type: 'GET',
         success: function (response) {
-            $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/'+id);
+            $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/' + id);
             $('h4#nome_area').val(response.nome);
             $('#formEditarAH #nome').val(response.nome);
             $('#formEditarAH #descricao').val(response.descricao);
@@ -654,11 +654,11 @@ function addCargoGrupo(url) {
 function modalEliminarFarmacia(id) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
-        url: 'api/get/farmacia/'+id,
+        url: 'api/get/farmacia/' + id,
         type: 'GET',
         success: function (response) {
-            $('#deleteFormFarmacia').attr('action', '/farmacia/apagar/'+id);
-            $('#deleteFormFarmacia #texto-aviso').html('Tens a certeza que queres eliminar a farmácia <b>'+response.nome+'</b>');
+            $('#deleteFormFarmacia').attr('action', '/farmacia/apagar/' + id);
+            $('#deleteFormFarmacia #texto-aviso').html('Tens a certeza que queres eliminar a farmácia <b>' + response.nome + '</b>');
 
             // Exibir o modal
             $('#modalEliminarFarmacia').modal('show');
@@ -674,11 +674,11 @@ function modalEliminarFarmacia(id) {
 function modalEliminarAH(id) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
-        url: 'api/get/area_hospitalar/'+id,
+        url: 'api/get/area_hospitalar/' + id,
         type: 'GET',
         success: function (response) {
-            $('#deleteFormAH').attr('action', '/areas_hospitalares/apagar/'+id);
-            $('#deleteFormAH #texto-aviso').html('Tens a certeza que queres eliminar a área '+response.nome);
+            $('#deleteFormAH').attr('action', '/areas_hospitalares/apagar/' + id);
+            $('#deleteFormAH #texto-aviso').html('Tens a certeza que queres eliminar a área ' + response.nome);
 
             // Exibir o modal
             $('#modalEliminarAHp').modal('show');
@@ -694,10 +694,10 @@ function modalEliminarAH(id) {
 function modalEditarFarmacia(id) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
-        url: 'api/get/area_hospitalar/'+id,
+        url: 'api/get/area_hospitalar/' + id,
         type: 'GET',
         success: function (response) {
-            $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/'+id);
+            $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/' + id);
             $('h4#nome_area').val(response.nome);
             $('#formEditarAH #nome').val(response.nome);
             $('#formEditarAH #descricao').val(response.descricao);
@@ -765,6 +765,77 @@ function popularTabela(obj) {
             });
         })
         .catch(error => console.error('Erro ao buscar dados da API:', error));
+}
+
+$(document).ready(function () {
+    $('#tipo_produto_estoque').change(function () {
+        if ($(this).val() === 'descartável') {
+            $('#item_descartavel').fadeIn();
+            $('#item_medicamento').fadeOut();
+        } else {
+            $('#item_descartavel').fadeOut();
+            $('#item_medicamento').fadeIn();
+        }
+    });
+});
+
+let counter = 1;
+document.getElementById('btn_repetir_lote').addEventListener('click', function () {
+    // Get the existing element to clone
+    const originalElement = document.getElementById('repetir_');
+
+    // Clone the original element
+    const cloneElement = originalElement.cloneNode(true);
+
+    // Numeração automática dos inputs
+    cloneElement.querySelectorAll('input').forEach(function (input, index) {
+        const elementId = input.getAttribute('id');
+        const inputName = input.getAttribute('name');
+        input.setAttribute('id', `${elementId}_${counter}`);
+        input.setAttribute('name', `${inputName}_${counter}`);
+        input.setAttribute('onchange', `addQtdTotal('#${elementId}_${counter}')`);
+        input.value = "";
+    });
+    counter++;
+
+    // Adicionar botão de eliminar
+    const btnEliminar = document.createElement('button');
+    btnEliminar.classList.add('btn', 'btn-danger', 'ml-2');
+    btnEliminar.textContent = 'Eliminar';
+    btnEliminar.addEventListener('click', function () {
+        this.parentNode.parentNode.removeChild(this.parentNode);
+    });
+    cloneElement.appendChild(btnEliminar);
+
+    // Append the cloned element to the parent of the original element
+    originalElement.parentNode.insertBefore(cloneElement, originalElement.nextSibling);
+});
+
+
+const inputDescritivo = document.getElementById('descritivo');
+const inputQuantidadeTotal = document.getElementById('qtd_total_estoque');
+
+function addQtdTotal(input) {
+    var valor = $(input).val();
+
+    // Valida o valor usando uma expressão regular
+    const regex = /^([0-9]{1,2})x([0-9]{1,3})x([0-9]{1,4})$/;
+    if (!regex.test(valor)) {
+        // Retorna o último valor válido
+        $(this).val(valor.slice(0, -1));
+        return;
+    }
+
+    // Formata o valor
+    $(this).val(valor.replace(/([0-9]{1,2})x([0-9]{1,3})x([0-9]{1,4})/, '$1x$2x$3'));
+
+    // Multiplica os números
+    const caixas = parseInt(valor.split('x')[0]);
+    const caixinhas = parseInt(valor.split('x')[1]);
+    const unidades = parseInt(valor.split('x')[2]);
+    const quantidadeTotal = caixas * caixinhas * unidades;
+
+    $('#qtd_total_estoque').val(quantidadeTotal);
 }
 
 let intervalId;

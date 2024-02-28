@@ -198,17 +198,6 @@
         // Defina um intervalo para atualizar o gráfico a cada minuto
         setInterval(updateGraphFarmacia, 5000);
 
-        $(document).ready(function() {
-            $('#tipo_produto_estoque').change(function() {
-                if ($(this).val() === 'descartável') {
-                    $('#item_descartavel').fadeIn();
-                    $('#item_medicamento').fadeOut();
-                } else {
-                    $('#item_descartavel').fadeOut();
-                    $('#item_medicamento').fadeIn();
-                }
-            });
-        });
 
         let counter = 1;
         document.getElementById('btn_repetir_lote').addEventListener('click', function() {
