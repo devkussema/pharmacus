@@ -16,7 +16,7 @@
                                     <label class="mb-2">Tipo *</label>
                                     <select name="tipo" style="width: 100%" id="tipo_produto_estoque" class="form-control">
                                         <option selected disabled>Selecionar tipo</option>
-                                        <option value="descartavel">Descartável</option>
+                                        <option value="descartável">Descartável</option>
                                         <option value="medicamento">Medicamento</option>
                                         <option value="liquido">Liquido</option>
                                     </select>
@@ -49,7 +49,7 @@
                                         </div>
                                         <div class="col pb-3">
                                             <label class="mb-2">Total em unidades</label>
-                                            <input type="number" id="qtd_total_estoque" disabled class="form-control" name="qtd">
+                                            <input type="number" id="qtd_total_estoque" class="form-control" name="qtd_total">
                                         </div>
                                     </div>
                                 </div>

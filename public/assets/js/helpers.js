@@ -324,7 +324,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#formProdutoEstoque #cod_barras').change(function(){
+    $('#formProdutoEstoque #cod_barrasq').change(function(){
         var codigoBarras = $('#cod_barras').val();
         var apiKey = 'f7aff0310a9b2aec516896d2c2950417d649073fbd7eae4f96d99197ef4c6b4b';
         var url = 'https://go-upc.com/api/v1/code/' + codigoBarras + '?key=' + apiKey + '&format=true';
@@ -527,10 +527,17 @@ $(document).ready(function () {
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
 
-                // Percorre os erros e os concatena em uma única string
-                $.each(errors, function (key, value) {
-                    errorMessage += value[0] + '<br>';
-                });
+                if (errors) {
+                    // Percorre os erros e os concatena em uma única string
+                    $.each(errors, function (key, value) {
+                        errorMessage += value[0] + '<br>';
+                    });
+                }else{
+                    if (xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    }
+                    errorMessage = xhr.responseJSON.message;
+                }
 
                 // Exibe a mensagem de erro com Toastr.js
                 toastr.error(errorMessage, 'Erro de validação');

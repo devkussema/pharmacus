@@ -200,7 +200,7 @@
 
         $(document).ready(function() {
             $('#tipo_produto_estoque').change(function() {
-                if ($(this).val() === 'descartavel') {
+                if ($(this).val() === 'descartável') {
                     $('#item_descartavel').fadeIn();
                     $('#item_medicamento').fadeOut();
                 } else {

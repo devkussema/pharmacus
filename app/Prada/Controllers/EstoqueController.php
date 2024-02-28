@@ -56,8 +56,11 @@ class EstoqueController extends Controller
     {
         $request->validate([
             'designacao' => 'required',
-            'dosagem' => 'required',
+            'dosagem' => 'nullable',
             'forma' => 'required',
+            'tipo' => 'required',
+            'descritivo' => 'nullable',
+            'qtd_total' => 'required',
             'origem_destino' => 'required',
             'num_lote' => 'required|unique:produto_estoques,num_lote',
             'data_producao' => 'required|date|before:today', // Verifica se a data de produção é anterior à data atual
@@ -66,7 +69,7 @@ class EstoqueController extends Controller
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
             'obs' => 'nullable',
-            'qtd' => 'integer|required',
+            'qtd' => 'integer|nullable',
         ], [
             'designacao.required' => 'A designação é obrigatória.',
             'dosagem.required' => 'A dosagem é obrigatória.',
@@ -89,6 +92,8 @@ class EstoqueController extends Controller
         $dadosPE = [
             'designacao' => $request->designacao,
             'dosagem' => $request->dosagem,
+            'tipo' => $request->tipo,
+            'descritivo' => $request->descritivo,
             'forma' => $request->forma,
             'origem_destino' => $request->origem_destino,
             'num_lote' => $request->num_lote,
@@ -100,11 +105,16 @@ class EstoqueController extends Controller
             'grupo_farmaco_id' => $request->grupo_farmaco_id
         ];
 
-        $pe = PE::create($dadosPE);
+        $tipo = $request->tipo;
+        $qtd = $request->qtd;
+        if ($tipo == "descartável") {
+            $pe = PE::create($dadosPE);
+            $qtd = $request->qtd_total;
+        }
 
         SE::create([
             'produto_estoque_id' => $pe->id,
-            'qtd' => $request->qtd
+            'qtd' => $qtd
         ]);
 
         Estoque::create([
