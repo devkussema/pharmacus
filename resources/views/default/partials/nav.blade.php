@@ -4,7 +4,7 @@
             <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                 <i class="ri-menu-line wrapper-menu"></i>
                 <a href="{{ route('home') }}" class="header-logo">
-                    <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal" alt="logo">
+                    <img src="{{ asset('assets/images/black__logo.png') }}" class="img-fluid rounded-normal" alt="logo">
                     <h5 class="logo-title ml-3">{{ env('APP_NAME', 'Pharmacus') }}</h5>
                 </a>
             </div>

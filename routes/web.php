@@ -8,6 +8,7 @@ use App\Prada\Controllers\FarmaciaController;
 use App\Prada\Controllers\CategoriaController;
 use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
+use Illuminate\Support\Facades\Artisan;
 use App\Prada\Controllers\{UsuarioController,
     CargoController, ConfirmarController, EstoqueController,
     NivelAlertaController
@@ -139,4 +140,9 @@ Route::prefix('api')->group(function () {
     Route::get('/check-session', [AuthController::class, 'checkSession']);
     Route::get('/check-session-expiration', [AuthController::class, 'checkSessionExpiration']);
     Route::get('/check-user-status', [AuthController::class, 'checkUserStatus']);
+});
+
+Route::get('/execute-migrate', function () {
+    Artisan::call('migrate');
+    return response()->json(['output' => Artisan::output()]);
 });

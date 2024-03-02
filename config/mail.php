@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => (nem('PC_HOST') !== null) ? nem('mail.mailer') : env('MAIL_MAILER', 'smtp'),
+    'default' => (env('PC_HOST') !== null | env('PC_HOST') !== false) ? nem('mail.mailer') : env('MAIL_MAILER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,11 +37,11 @@ return [
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
-            'host' => (nem('PC_HOST') !== null) ? nem('mail.host') : env('MAIL_HOST', 'smtp.mailgun.org'),
-            'port' => (nem('PC_HOST') !== null) ? nem('mail.port') : env('MAIL_PORT', 587),
-            'encryption' => (nem('PC_HOST') !== null) ? nem('mail.encryption') : env('MAIL_ENCRYPTION', 'tls'),
-            'username' => (nem('PC_HOST') !== null) ? nem('mail.username') : env('MAIL_USERNAME'),
-            'password' => (nem('PC_HOST') !== null) ? nem('mail.password') : env('MAIL_PASSWORD'),
+            'host' => (env('PC_HOST') !== null | env('PC_HOST') !== false) ? nem('mail.host') : env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port' => (env('PC_HOST') !== null | env('PC_HOST') !== false) ? nem('mail.port') : env('MAIL_PORT', 587),
+            'encryption' => (env('PC_HOST') !== null | env('PC_HOST') !== false) ? nem('mail.encryption') : env('MAIL_ENCRYPTION', 'tls'),
+            'username' => (env('PC_HOST') !== null | env('PC_HOST') !== false) ? nem('mail.username') : env('MAIL_USERNAME'),
+            'password' => (env('PC_HOST') !== null | env('PC_HOST') !== false) ? nem('mail.password') : env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ],
@@ -108,8 +108,8 @@ return [
     */
 
     'from' => [
-        'address' => (nem('PC_HOST') !== null) ? nem('mail.from_address') : env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => (nem('PC_HOST') !== null) ? nem('mail.from_name') : env('MAIL_FROM_NAME', 'Example'),
+        'address' => (env('PC_HOST') !== null | env('PC_HOST') !== false) ? nem('mail.from_address') : env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => (env('PC_HOST') !== null | env('PC_HOST') !== false) ? nem('mail.from_name') : env('MAIL_FROM_NAME', 'Example'),
     ],
 
     /*

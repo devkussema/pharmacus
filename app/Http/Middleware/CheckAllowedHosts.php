@@ -20,9 +20,9 @@ class CheckAllowedHosts
         // Obtém o IP ou o DNS atual
         $currentHost = $_SERVER['SERVER_ADDR'] ?? $_SERVER['SERVER_NAME'] ?? null;
 
-        if ($currentHost && is_array($allowedHosts)) {
+        if (env('PC_HOST') and $currentHost && is_array($allowedHosts)) {
             if (!in_array($currentHost, $allowedHosts)) {
-                abort(403, "Acesso não autorizado");
+                abort(403, "Acesso não autorizado: ".$currentHost);
             }
         } else {
             // Se não houver hosts permitidos configurados, aborta com erro
@@ -32,7 +32,7 @@ class CheckAllowedHosts
         return $next($request);
     }
 
-    /* example
+    /* example nem_conf
     {
         "key1": "value1",
         "key2": "nem?conf",
