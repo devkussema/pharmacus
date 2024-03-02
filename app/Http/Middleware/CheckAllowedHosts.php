@@ -24,7 +24,7 @@ class CheckAllowedHosts
         if (!$nemConf) {
             if (env('PC_HOST') and $currentHost && is_array($allowedHosts)) {
                 if (!in_array($currentHost, $allowedHosts)) {
-                    abort(403, "Acesso não autorizado: ".$currentHost);
+                    abort(403, "Acesso não autorizado: ");
                 }
             } else {
                 // Se não houver hosts permitidos configurados, aborta com erro
@@ -33,7 +33,7 @@ class CheckAllowedHosts
         }else{
             if ($currentHost && is_array($allowedHosts)) {
                 if (!in_array($currentHost, $allowedHosts)) {
-                    abort(403, "Acesso não autorizado: ".$currentHost);
+                    abort(403, "Acesso não autorizado: ");
                 }
             } else {
                 // Se não houver hosts permitidos configurados, aborta com erro
