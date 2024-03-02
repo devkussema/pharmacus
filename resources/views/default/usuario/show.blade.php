@@ -76,7 +76,7 @@
                                         @if ($usr->email_verified_at)
                                             <h6>Verificado</h6>
                                         @else
-                                            <h6>Verificado</h6>
+                                            <h6>Não verificado</h6>
                                         @endif
                                     </td>
                                     <td>{{ @$usr->grupo->nome }}</td>

@@ -11,6 +11,8 @@
 |
 */
 
+//$allowedHosts = env('APP_ALLOWED_HOSTS', '50.800.90.56');
+
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
@@ -40,6 +42,37 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+
+if (!function_exists('nem')) {
+    function nem($key, $default=null)
+    {
+        $nemFile = base_path('.nem_conf');
+
+        if (file_exists($nemFile)) {
+            $nemContent = file_get_contents($nemFile);
+            $nemConfig = json_decode($nemContent, true);
+
+            // Quebrando a chave em partes usando '.' como delimitador
+            $keys = explode('.', $key);
+            $value = $nemConfig;
+
+            // Percorre cada parte da chave para acessar o valor aninhado
+            foreach ($keys as $part) {
+                if (isset($value[$part])) {
+                    $value = $value[$part];
+                } else {
+                    // Retorna null se a chave não existir
+                    return null;
+                }
+            }
+
+            return $value;
+        }
+
+        return $default;
+    }
+}
+
 
 /*
 |--------------------------------------------------------------------------

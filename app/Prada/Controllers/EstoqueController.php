@@ -25,7 +25,12 @@ class EstoqueController extends Controller
     {
         $ah = AH::all();
 
-        $estoque = Estoque::with('produto')->where('area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)->get();
+        $estoque = Estoque::join('produto_estoques', 'estoques.produto_estoque_id', '=', 'produto_estoques.id')
+            ->select('estoques.*')
+            ->where('estoques.area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)
+            ->orderBy('produto_estoques.designacao', 'asc')
+            ->get();
+
         self::calcNivelAlerta();
         return view('estoque.show', compact('estoque', 'ah'));
     }
@@ -53,8 +58,11 @@ class EstoqueController extends Controller
     {
         $request->validate([
             'designacao' => 'required',
-            'dosagem' => 'required',
+            'dosagem' => 'nullable',
             'forma' => 'required',
+            'tipo' => 'required',
+            'descritivo' => 'nullable',
+            'qtd_total' => 'required',
             'origem_destino' => 'required',
             'num_lote' => 'required|unique:produto_estoques,num_lote',
             'data_producao' => 'required|date|before:today', // Verifica se a data de produção é anterior à data atual
@@ -63,11 +71,12 @@ class EstoqueController extends Controller
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
             'obs' => 'nullable',
-            'qtd' => 'integer|required',
+            'qtd' => 'integer|nullable',
         ], [
             'designacao.required' => 'A designação é obrigatória.',
             'dosagem.required' => 'A dosagem é obrigatória.',
             'forma.required' => 'A forma é obrigatória.',
+            'tipo.required' => 'Selecione um tipo.',
             'origem_destino.required' => 'A origem ou destino é obrigatório.',
             'num_lote.required' => 'O número do lote é obrigatório.',
             'data_expiracao.required' => 'A data de expiração é obrigatória.',
@@ -78,6 +87,7 @@ class EstoqueController extends Controller
             'data_expiracao.after_or_equal' => 'A data de expiração deve ser pelo menos 10 meses após a data atual.',
             'num_documento.required' => 'O número do documento é obrigatório.',
             'num_documento.unique' => 'Já existe um item com este número de produto.',
+            'qtd_total.required' => 'Preencha o descritivo.',
             'qtd_embalagem.required' => 'A quantidade por embalagem é obrigatória.',
             'qtd_embalagem.integer' => 'A quantidade por embalagem deve ser um número inteiro.',
             'qtd_embalagem.min' => 'A quantidade por embalagem deve ser pelo menos 1.',
@@ -86,6 +96,8 @@ class EstoqueController extends Controller
         $dadosPE = [
             'designacao' => $request->designacao,
             'dosagem' => $request->dosagem,
+            'tipo' => $request->tipo,
+            'descritivo' => $request->descritivo,
             'forma' => $request->forma,
             'origem_destino' => $request->origem_destino,
             'num_lote' => $request->num_lote,
@@ -97,11 +109,16 @@ class EstoqueController extends Controller
             'grupo_farmaco_id' => $request->grupo_farmaco_id
         ];
 
-        $pe = PE::create($dadosPE);
+        $tipo = $request->tipo;
+        $qtd = $request->qtd;
+        if ($tipo == "descartável") {
+            $pe = PE::create($dadosPE);
+            $qtd = $request->qtd_total;
+        }
 
         SE::create([
             'produto_estoque_id' => $pe->id,
-            'qtd' => $request->qtd
+            'qtd' => $qtd
         ]);
 
         Estoque::create([

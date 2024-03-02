@@ -6,6 +6,17 @@ use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function isAreaDefault() {
+    $user = Auth::user()->with('area_hospitalar')->whereHas('area_hospitalar', function ($query) {
+        $query->where('area_hospitalar_id', 'Armazém I');
+    })->first();
+
+    if ($user)
+        return true;
+    else
+        return false;
+}
+
 function translate($texto, $lang)
 {
     // Texto a ser traduzido

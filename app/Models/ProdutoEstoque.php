@@ -20,6 +20,8 @@ class ProdutoEstoque extends Model
         'num_documento',
         'obs',
         'qtd_embalagem',
+        'descritivo',
+        'tipo',
         'grupo_farmaco_id'
     ];
 

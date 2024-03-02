@@ -4,25 +4,55 @@ namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth, Mail;
+use App\Mail\AtivarUsuario;
 use App\Models\{UsersToken as UT, GerenteFarmacia, Farmacia};
+use App\Traits\GenerateTrait;
 
 class AuthController extends Controller
 {
+    use GenerateTrait;
+
     public function index()
     {
-        return view('auth.login');
+        $app_desc = "Inicie sessão e esteja a par de tudo na ".env('APP_NAME');
+        $app_keywords = "entrar, pharmatina, pharmatina angola, google angola, pharmatino, farmatina, farmácia ao, farmacia angola, augusto kussema, kussema";
+
+        return view('auth.login', compact('app_desc', 'app_keywords'));
     }
 
     public function registar()
     {
-        return view('auth.registar');
+        $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
+        $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
+
+        //return view('auth.contaCriada', compact('app_desc', 'app_keywords'));
+        return view('auth.registar', compact('app_desc', 'app_keywords'));
+    }
+
+    public function conta_criada()
+    {
+        $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
+        $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
+
+        return view('auth.contaCriada', compact('app_desc', 'app_keywords'));
     }
 
     public function login(Request $request)
     {
+        $sessName = env('APP_NAME').'_session';
+        // if (!Session::has('laravel_token') || Session::token() !== $request->input('_token')) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'codigo' => 'csrf',
+        //         'message' => 'CSRF token inválido ou expirado.',
+        //     ], 401);
+        // }
+
         $request->validate([
             'email' => 'required|exists:users,email',
             'password' => 'required',
@@ -37,6 +67,13 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
+            if (Auth::user()->status == 0) {
+                Auth::logout();
+                if ($request->ajax()) {
+                    return response()->json(['message' => 'A tua conta não está ativada'],422);
+                }
+                return redirect()->route('login')->with('error', 'A tua conta não está ativada');
+            }
             if ($request->email_verified_at && $request->token) {
                 User::where('email', $request->email)->update([
                     'email_verified_at' => now(),
@@ -52,10 +89,7 @@ class AuthController extends Controller
                 }
                 return redirect()->route('home');
             }
-            if (Auth::user()->status != 1) {
-                Auth::logout();
-                return redirect()->route('login')->with('error', 'A tua conta não está ativada');
-            }
+
             if ($request->ajax()) {
                 return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
             }
@@ -63,9 +97,9 @@ class AuthController extends Controller
         }
 
         if ($request->ajax()) {
-            return response()->json(['msg' => 'Credenciais inválidas, tente novamente'],401);
+            return response()->json(['message' => 'Credenciais inválidas, tente novamente'],422);
         }
-        return redirect()->back()->withInput()->withErrors(['email' => 'Credenciais inválidas']);
+        return redirect()->back()->withInput()->withErrors(['message' => 'Credenciais inválidas, tente novamente'], 422);
     }
 
     public function store(Request $request)
@@ -99,15 +133,70 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
+        $token = self::gerarToken($user, "Confirmação de email");
+
+        $nomeUser = $request->nome;
+        $email_to = $request->email;
+        $url_ativacao = route('auth.confirmar_email', ['token' => $token->token]);
+
+        Mail::to($email_to)->send(new AtivarUsuario($nomeUser, $url_ativacao, $email_to));
+
         // Se necessário, faça login automaticamente do usuário
-        auth()->login($user);
+        //auth()->login($user);
 
         // Redirecionar o usuário após o registro
         #return redirect()->route('home')->with('success', 'Conta criada com sucesso!');
-        if ($request->ajax()) {
-            return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
+        // if ($request->ajax()) {
+        //     //return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
+        //     return redirect()->route('conta_criada')->with('email', $request->email);
+        // }
+        return redirect()->route('conta_criada')->with('email', $request->email);
+    }
+
+    public function confirmar_email_store(Request $request)
+    {
+        $request->validate([
+            'email'=> 'required|exists:users,email',
+            'password' => 'required|min:6',
+            'token_id' => 'required|exists:users_tokens,id'
+        ],[
+            'password.required' => 'A senha é obrigatória',
+            'password.min' => 'A senha deve no minimo :min caracteres',
+        ]);
+
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $token = UT::find($request->token_id);
+            $usr = Auth::user();
+
+            $usr->update([
+                'email_verified_at' => now()
+            ]);
+
+            $token->update([
+                'last_used_at' => now()
+            ]);
+
+            Auth::logout();
+
+            return redirect()->route('login')->with('success', "Agora só falta a administração rever a tua conta. Receberás um email quando a administração rever a tua conta.");
         }
-        return redirect()->route('home')->with('success', 'Conta criada com sucesso!');
+
+        return redirect()->back()->with('error', "Senha inválida");
+    }
+    public function confirmar_email($to)
+    {
+        $token = UT::where('token', $to)->first();
+        if (!$token)
+            return redirect()->route('login')->with('error', 'Este link é inválido.');
+        if ($token->last_used_at)
+            return redirect()->route('login')->with('error', 'Este link é inválido.');
+
+        $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
+        $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
+
+        return view('auth.confirmEmail', compact('app_desc', 'app_keywords', 'token'));
     }
 
     /**

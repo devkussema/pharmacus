@@ -28,6 +28,7 @@ class User extends Authenticatable
         'grupo_id',
         'foto_perfil',
         'password',
+        'email_verified_at',
     ];
 
     protected static function boot()

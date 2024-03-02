@@ -14,9 +14,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@yield('titulo') | {{ env('APP_NAME') }} - {{ env('APP_DESCRIPTION') }}</title>
 
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <meta name="author" content="">
+    <meta name="description" content="{{ $app_desc ?? "" }}">
+    <meta name="keywords" content="{{ $app_keywords ?? "" }}">
+    <meta name="author" content="Augusto Kussema">
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/black__logo.png') }}" />
@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/%40fortawesome/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/remixicon/fonts/remixicon.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
 </head>
 <body class=" ">
     <!-- loader Start -->
@@ -60,5 +61,6 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script src="{{ asset('assets/js/form.js') }}" async></script>
+    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 </body>
 </html>
