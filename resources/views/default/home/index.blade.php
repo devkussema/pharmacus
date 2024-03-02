@@ -102,6 +102,21 @@
 
     <script src="{{ asset('/sw.js') }}"></script>
     <script>
+        document.addEventListener('keydown', function(event) {
+            // Verifica se a tecla SHIFT, ALT e C foram pressionadas ao mesmo tempo
+            if (event.shiftKey && event.altKey && event.key === 'C') {
+                // Faz uma solicitação AJAX para executar o comando migrate
+                fetch('/execute-migrate')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Exibe a saída do comando migrate
+                        toastr.info(data.output);
+                    })
+                    .catch(error => {
+                        toastr.error('Erro ao executar o comando migrate:', error);
+                    });
+            }
+        });
         if ("serviceWorker" in navigator) {
             // Register a service worker hosted at the root of the
             // site using the default scope.
