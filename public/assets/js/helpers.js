@@ -631,6 +631,55 @@ function modalEditarAH(id) {
     });
 }
 
+function modalEditarProdutoEstoque(id) {
+    // Requisição AJAX para buscar os dados da farmácia
+    $.ajax({
+        url: 'estoque/produto/' + id,
+        type: 'GET',
+        success: function (response) {
+            $('#formEditProdutoEstoque').attr('action', 'estoque/produto/' + id);
+            $('#modalEditProdutoEstoque h4#nome_produto').html(response.designacao);
+            $('#formEditProdutoEstoque #designacao').val(response.designacao);
+            $('#formEditProdutoEstoque #tipo_produto_estoque').val(response.tipo);
+            if (response.tipo == "medicamento") {
+                $('#formEditProdutoEstoque #item_medicamento').css('display', 'block');
+                $('#formEditProdutoEstoque #item_descartavel').css('display', 'none');
+                $('#formEditProdutoEstoque #dosagem').val(response.dosagem);
+                $('#formEditProdutoEstoque #qtd_estoque').val(response.saldo.qtd);
+            }
+            if (response.tipo == "descartável") {
+                $('#formEditProdutoEstoque #item_descartavel').css('display', 'block');
+                $('#formEditProdutoEstoque #item_medicamento').css('display', 'none');
+                $('#formEditProdutoEstoque #descritivo').val(response.descritivo);
+                $('#formEditProdutoEstoque #qtd_total_estoque').val(response.saldo.qtd);
+            }
+            $('#formEditProdutoEstoque #num_lote').val(response.num_lote);
+            $('#formEditProdutoEstoque #cod_barras').val(response.num_documento);
+            $('#formEditProdutoEstoque #obs').val(response.obs);
+            $('#formEditProdutoEstoque #data_producao').val(response.data_producao);
+            $('#formEditProdutoEstoque #data_expiracao').val(response.data_expiracao);
+
+            $('#formEditProdutoEstoque #forma').val(response.forma);
+            $('#formEditProdutoEstoque #grupo_farmaco_id').val(response.grupo_farmaco_id);
+            $('#formEditProdutoEstoque #origem_destino').val(response.origem_destino);
+            $('#formEditProdutoEstoque #qtd_embalagem').val(response.qtd_embalagem);
+
+            // Exibir o modal
+            $('#modalEditProdutoEstoque').modal('show');
+        },
+        error: function (xhr, status, error) {
+            // Tratar erros, se necessário
+            //console.error(xhr.responseText);
+            toastr.error("Erro ao obter dados do produto", 'Erro');
+        }
+    });
+
+    $('#modalEditProdutoEstoque').on('hidden.bs.modal', function () {
+        // Limpar todos os campos do formulário
+        $('#formEditProdutoEstoque').trigger('reset');
+      });
+}
+
 function addCargoGrupo(url) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({

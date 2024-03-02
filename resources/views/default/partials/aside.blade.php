@@ -120,36 +120,38 @@
                         </ul>
                     </li>
                 @endif
-                <li class="">
-                    <a href="#areas_hospitalares" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <path
-                                d="M21 19H23V21H1V19H3V4C3 3.44772 3.44772 3 4 3H14C14.5523 3 15 3.44772 15 4V19H17V9H20C20.5523 9 21 9.44772 21 10V19ZM7 11V13H11V11H7ZM7 7V9H11V7H7Z">
-                            </path>
-                        </svg>
-                        <span class="ml-4">Áreas Hospitalares</span>
-                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="10 15 15 20 20 15"></polyline>
-                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                        </svg>
-                    </a>
-                    <ul id="areas_hospitalares" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                        <li class="">
-                            <a href="{{ route('a_h.index') }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
-                                    height="18" fill="rgba(52,51,51,1)">
-                                    <path
-                                        d="M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z">
-                                    </path>
-                                </svg>
-                                <span class="ml-4">Listar</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                @if (Auth::user()->isFarmacia)
+                    <li class="">
+                        <a href="#areas_hospitalares" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M21 19H23V21H1V19H3V4C3 3.44772 3.44772 3 4 3H14C14.5523 3 15 3.44772 15 4V19H17V9H20C20.5523 9 21 9.44772 21 10V19ZM7 11V13H11V11H7ZM7 7V9H11V7H7Z">
+                                </path>
+                            </svg>
+                            <span class="ml-4">Áreas Hospitalares</span>
+                            <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="10 15 15 20 20 15"></polyline>
+                                <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                            </svg>
+                        </a>
+                        <ul id="areas_hospitalares" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            <li class="">
+                                <a href="{{ route('a_h.index') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                                        height="18" fill="rgba(52,51,51,1)">
+                                        <path
+                                            d="M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z">
+                                        </path>
+                                    </svg>
+                                    <span class="ml-4">Listar</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
                 {{-- <li class=" ">
                     <a href="#categoria" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash3" width="20" height="20"

@@ -122,7 +122,7 @@
             // site using the default scope.
             navigator.serviceWorker.register("/sw.js").then(
                 (registration) => {
-                    console.log("Service worker registration succeeded:", registration);
+                    //console.log("Service worker registration succeeded:", registration);
                 },
                 (error) => {
                     console.error(`Service worker registration failed: ${error}`);
@@ -237,7 +237,7 @@
         setInterval(updateGraphFarmacia, 5000);
 
 
-        let counter = 1;
+        let contador = 1;
         document.getElementById('btn_repetir_lote').addEventListener('click', function() {
             // Get the existing element to clone
             const originalElement = document.getElementById('repetir_');
@@ -249,12 +249,12 @@
             cloneElement.querySelectorAll('input').forEach(function(input, index) {
                 const elementId = input.getAttribute('id');
                 const inputName = input.getAttribute('name');
-                input.setAttribute('id', `${elementId}_${counter}`);
-                input.setAttribute('name', `${inputName}_${counter}`);
-                input.setAttribute('onchange', `addQtdTotal('#${elementId}_${counter}')`);
+                input.setAttribute('id', `${elementId}_${contador}`);
+                input.setAttribute('name', `${inputName}_${contador}`);
+                input.setAttribute('onchange', `addQtdTotal('#${elementId}_${contador}')`);
                 input.value = "";
             });
-            counter++;
+            contador++;
 
             // Adicionar botão de eliminar
             const btnEliminar = document.createElement('button');

@@ -131,6 +131,26 @@ class EstoqueController extends Controller
         return response()->json(['message' => "{$request->designacao} adicionado!"]);
     }
 
+    public function getProduto($id)
+    {
+        $prod = PE::with('saldo')->where('id', $id)->first();
+
+        return $prod;
+    }
+
+    public function editarProduto(Request $request, $id)
+    {
+        $prod = PE::find($id);
+
+        if (!$prod) {
+            if ($request->ajax()) {
+                return response()->json(['message' => "Desculpe, parece que esse produto não existe!"]);
+            }
+
+            return redirect()->back()->with('error', "Desculpe, parece que esse produto não existe!");
+        }
+    }
+
     public function aa()
     {
         // Texto a ser traduzido

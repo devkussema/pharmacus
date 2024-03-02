@@ -129,18 +129,12 @@
                                     <td>{{ $est->produto->data_expiracao }}</td>
                                     <td>
                                         <div class="d-flex align-items-center list-action">
-                                            @if (isCargo('Gerente'))
-                                                <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
-                                                    title="Adicionar Responsável" href="javascript:void(0)" onclick="">
-                                                    <i class="ri-key-2-line mr-0"></i>
-                                                </a>
-                                            @endif
                                             <a class="badge bg-success mr-2" title="Dar baixa" href="javascript:void(0)"
                                                 onclick="modalDarBaixa({{ $est->produto->id }})">
                                                 <i class="ri-install-line mr-0"></i>
                                             </a>
-                                            <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
-                                                title="Editar" href="javascript:void(0)" onclick="">
+                                            <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
+                                                title="Editar" href="javascript:void(0)" onclick="modalEditarProdutoEstoque({{ $est->produto->id }})">
                                                 <i class="ri-pencil-line mr-0"></i>
                                             </a>
                                             <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
