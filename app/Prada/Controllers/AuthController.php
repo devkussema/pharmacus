@@ -60,7 +60,7 @@ class AuthController extends Controller
             'token' => 'nullable'
         ],[
             'email.required' => 'O email é obrigatório',
-            'email.exists' => "Email inválido",
+            'email.exists' => "Credenciais inválidas, tente novamente",
             'password.required' => 'Informe a senha'
         ]);
 
