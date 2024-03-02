@@ -14,7 +14,8 @@ class AreaHospitalar extends Model
 
     protected $fillable = [
         'nome',
-        'descricao'
+        'descricao',
+        'farmacia_id'
     ];
 
     public function isGerente()

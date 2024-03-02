@@ -254,7 +254,6 @@
             originalElement.parentNode.insertBefore(cloneElement, originalElement.nextSibling);
         });
 
-
         const inputDescritivo = document.getElementById('descritivo');
         const inputQuantidadeTotal = document.getElementById('qtd_total_estoque');
 

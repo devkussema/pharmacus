@@ -9,7 +9,7 @@
                 @include('partials.session')
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <div>
-                        <h4 class="mb-3">Áreas Hospitalares</h4>
+                        <h4 class="mb-3">Áreas Hospitalares {{ Auth::user()->isFarmacia->farmacia->nome }}</h4>
                         <p class="mb-0">Setores hospitalares são componentes fundamentais de hospitais,<br>
                              compreendendo áreas como emergência,
                             terapia intensiva, laboratórios e enfermarias.</p>

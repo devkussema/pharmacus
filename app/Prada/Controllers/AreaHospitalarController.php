@@ -4,7 +4,7 @@ namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Mail, Hash};
+use Illuminate\Support\Facades\{Mail, Hash, Auth};
 use App\Models\UserAreaHospitalar;
 use App\Mail\ConfirmarContaGerenteAH as CCG;
 use App\Models\{UserAreaHospitalar as UAH, AreaHospitalar as AH, User, Cargo};
@@ -16,7 +16,7 @@ class AreaHospitalarController extends Controller
 
     public function index()
     {
-        $ah = AH::all();
+        $ah = AH::where('farmacia_id', Auth::user()->isFarmacia->farmacia->id)->get();
         return view('area_hospitalar.show', compact('ah'));
     }
 
@@ -30,7 +30,11 @@ class AreaHospitalarController extends Controller
             'nome.unique' => 'Esta área já está cadastrada no sistema'
         ]);
 
-        AH::create($request->all());
+        AH::create([
+            'nome' => $request->nome,
+            'descricao' => $request->descricao,
+            'farmacia_id' => Auth::user()->isFarmacia->farmacia->id,
+        ]);
 
         return response()->json(['message' => "{$request->nome} cadastrada com sucesso"], 201);
     }

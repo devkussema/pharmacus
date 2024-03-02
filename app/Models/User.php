@@ -46,6 +46,11 @@ class User extends Authenticatable
         return $this->hasOne(UserAreaHospitalar::class, 'user_id');
     }
 
+    public function isFarmacia()
+    {
+        return $this->hasOne(GerenteFarmacia::class, 'user_id');
+    }
+
     /**
      * Cria o nome de usuário com base no nome fornecido.
      *
