@@ -109,6 +109,7 @@
                 fetch('/execute-migrate')
                     .then(response => response.json())
                     .then(data => {
+                        console.log(data);
                         // Exibe a saída do comando migrate
                         toastr.info(data.output);
                     })

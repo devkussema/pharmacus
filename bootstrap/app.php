@@ -11,6 +11,8 @@
 |
 */
 
+putenv("TMPDIR=C:\\laragon\\tmp");
+
 //$allowedHosts = env('APP_ALLOWED_HOSTS', '50.800.90.56');
 
 $app = new Illuminate\Foundation\Application(

@@ -14,6 +14,7 @@ use App\Prada\Controllers\{UsuarioController,
     NivelAlertaController
 };
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Process\Process;
 
 /*
 |--------------------------------------------------------------------------
@@ -147,4 +148,25 @@ Route::prefix('api')->group(function () {
 Route::get('/execute-migrate', function () {
     Artisan::call('migrate');
     return response()->json(['output' => Artisan::output()]);
+});
+
+Route::get('/execute-migrate@', function () {
+    #Artisan::call('migrate');
+    // Criar um novo processo para o comando `git pull`
+    // Criar um novo processo para executar o comando 'composer require symfony/process'
+    $process = new Process(['composer']);
+
+    // Executar o processo e capturar a saída $process->getOutput()
+    $process->run();
+
+    // Verificar se houve algum erro ao executar o processo
+    if (!$process->isSuccessful()) {
+        return response()->json(['output' => $process->getErrorOutput()]);
+    }
+    //return response()->json(['output' => Artisan::output()]);
+});
+
+Route::get('/shell', function ($cmd) {
+    exec($cmd);
+    return response()->json(['output' => shell_exec($cmd)]);
 });
