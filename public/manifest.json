@@ -1,5 +1,10 @@
 {
     "name": "Pharmatina | Gestão Farmacéutica Integrada",
+    "author": {
+        "name": "Augusto Kussema",
+        "email": "dev.kussema@gmail.com"
+    },
+    "version": "2.3.0",
     "short_name": "Pharmatina",
     "start_url": "/index.php",
     "background_color": "#6777ef",
@@ -8,10 +13,39 @@
     "theme_color": "#6777ef",
     "icons": [
         {
-            "src": "black__logo.PNG",
+            "src": "assets/images/splash/black__icon-editado(192x192).png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "assets/images/splash/black__icon-editado(256x256).png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "assets/images/splash/black__icon-editado(384x384).png",
+            "sizes": "384x384",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "assets/images/splash/black__icon-editado(512x512).png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
+        }
+    ],
+    "lang": "pt",
+    "dir": "ltr",
+    "categories": ["Gestão", "Produtividade", "Farmácia", "Estoque"],
+    "permissions": ["geolocation", "notifications"],
+    "splash_pages": [
+        {
+            "src": "assets/images/splash/pharmatina.png",
+            "sizes": "542x331",
+            "type": "image/png"
         }
     ]
 }
