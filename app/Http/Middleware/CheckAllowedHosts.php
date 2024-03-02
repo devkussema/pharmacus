@@ -19,14 +19,26 @@ class CheckAllowedHosts
 
         // Obtém o IP ou o DNS atual
         $currentHost = $_SERVER['SERVER_ADDR'] ?? $_SERVER['SERVER_NAME'] ?? null;
+        $nemConf = nem('PC_HOST');
 
-        if (env('PC_HOST') and $currentHost && is_array($allowedHosts)) {
-            if (!in_array($currentHost, $allowedHosts)) {
-                abort(403, "Acesso não autorizado: ".$currentHost);
+        if (!$nemConf) {
+            if (env('PC_HOST') and $currentHost && is_array($allowedHosts)) {
+                if (!in_array($currentHost, $allowedHosts)) {
+                    abort(403, "Acesso não autorizado: ".$currentHost);
+                }
+            } else {
+                // Se não houver hosts permitidos configurados, aborta com erro
+                abort(500, 'Configuração de hosts permitidos ausente ou inválida.');
             }
-        } else {
-            // Se não houver hosts permitidos configurados, aborta com erro
-            abort(500, 'Configuração de hosts permitidos ausente ou inválida.');
+        }else{
+            if ($currentHost && is_array($allowedHosts)) {
+                if (!in_array($currentHost, $allowedHosts)) {
+                    abort(403, "Acesso não autorizado: ".$currentHost);
+                }
+            } else {
+                // Se não houver hosts permitidos configurados, aborta com erro
+                abort(500, 'Configuração de hosts permitidos ausente ou inválida.');
+            }
         }
 
         return $next($request);
