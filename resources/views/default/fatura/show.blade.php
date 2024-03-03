@@ -6,7 +6,7 @@
     <div id="dadoPrincipal">
         <div class="row">
             <div class="col-lg-12">
-                <div class="card card-block card-stretch card-height print rounded">
+                <div class="card card-block card-stretch card-height print rounded" id="conteudoPDF">
                     <div class="card-header d-flex justify-content-between bg-primary header-invoice">
                         <div class="iq-header-title">
                             <h4 class="card-title mb-0">Invoice#1234567</h4>
@@ -16,8 +16,10 @@
                                 <i class="las la-print"></i>
                                 Print
                             </button>
-                            <button type="button" class="btn btn-primary-dark"><i
-                                    class="las la-file-download"></i>PDF</button>
+                            <button type="button" class="btn btn-primary-dark" onclick="generatePDF('#conteudoPDF')">
+                                <i class="las la-file-download"></i>
+                                PDF
+                            </button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -191,4 +193,41 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function generatePDF(selector) {
+            var table = document.querySelector(selector);
+
+            // Cria um novo documento PDF
+            const doc = new jsPDF();
+
+            // Define a posição inicial para desenhar a tabela
+            var yPos = 10;
+
+            // Obtém todas as linhas da tabela
+            var rows = table.getElementsByTagName('tr');
+
+            // Itera sobre as linhas da tabela
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+
+                // Obtém todas as células da linha
+                var cells = row.getElementsByTagName('td');
+
+                // Itera sobre as células da linha
+                for (var j = 0; j < cells.length; j++) {
+                    var cell = cells[j];
+
+                    // Desenha o conteúdo da célula no documento PDF
+                    doc.text(cell.textContent, 10, yPos);
+
+                    // Move para a próxima linha
+                    yPos += 10;
+                }
+            }
+
+            // Salva o documento PDF
+            doc.save('documento.pdf');
+        }
+    </script>
 @endsection
