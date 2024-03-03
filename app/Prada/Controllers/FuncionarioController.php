@@ -6,5 +6,9 @@ use App\Http\Controllers\Controller;
 
 class FuncionarioController extends Controller
 {
-    // Adicione suas funções aqui
+    public function index()
+    {
+        //return view('funcionario.list');
+        return view('fatura.show');
+    }
 }

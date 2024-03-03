@@ -9,7 +9,8 @@ use App\Prada\Controllers\CategoriaController;
 use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
 use Illuminate\Support\Facades\Artisan;
-use App\Prada\Controllers\{UsuarioController,
+use App\Prada\Controllers\{
+    UsuarioController, FuncionarioController,
     CargoController, ConfirmarController, EstoqueController,
     NivelAlertaController
 };
@@ -35,6 +36,10 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('cargos')->group(function () {
         Route::post('/', [CargoController::class, 'store'])->name('cargo.store');
+    });
+
+    Route::prefix('funcionarios')->group(function () {
+        Route::get('/', [FuncionarioController::class, 'index'])->name('funcionarios');
     });
 
     Route::prefix('nivel_alerta')->group(function () {
