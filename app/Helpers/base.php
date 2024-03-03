@@ -156,7 +156,7 @@ if (!function_exists('calcTempo')) {
             }
         }
 
-        // Retorna o tempo decorrido
+        // Retorna o tempo decorrido com o nome do mês em português
         return 'desde ' . $data->format('d \d\e F');
     }
 }

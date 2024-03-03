@@ -720,6 +720,14 @@ function modalEliminarFarmacia(id) {
     });
 }
 
+function modalBloquearUsr(id, nome, urlBase) {
+    $('#formBloquearUsr').attr('action', urlBase + '/bloquear/' + id);
+    $('#formBloquearUsr #texto-aviso').html('Tens a certeza que queres bloquear ' + nome);
+
+    // Exibir o modal
+    $('#modalBloquearUsr').modal('show');
+}
+
 function modalEliminarAH(id) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({

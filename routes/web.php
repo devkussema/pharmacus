@@ -61,9 +61,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/', [CategoriaController::class, 'store'])->name('categoria.store');
     });
 
-    Route::prefix('usuarios')->group(function () {
+    Route::prefix('u')->group(function () {
         Route::get('/', [UsuarioController::class, 'index'])->name('usuario');
         Route::put('/', [UsuarioController::class, 'addCargo'])->name('usuario.addCargo');
+        // não alterar a rota aqui
+        Route::put('bloquear/{id}', [UsuarioController::class, 'addCargo'])->name('usuario.addCargo');
+        Route::get('{username}', [UsuarioController::class, 'perfil'])->name('u.perfil');
     });
 
     Route::prefix('areas_hospitalares')->middleware('is.gestor_farmacia')->group(function () {

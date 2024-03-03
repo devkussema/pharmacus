@@ -18,6 +18,16 @@ class UsuarioController extends Controller
         return view('usuario.show', compact('farmacias', 'users', 'grupos'));
     }
 
+    public function perfil($username)
+    {
+        $u = User::where('username', $username)->first();
+
+        if (!$u)
+            return redirect()->back()->with('warning', 'Ocorreu um erro, usuário não encontrado!');
+
+        return view('perfil.view', compact('u'));
+    }
+
     public function addCargo(Request $request)
     {
         $request->validate([

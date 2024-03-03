@@ -17,7 +17,7 @@ class FuncionarioController extends Controller
                 $query->where('farmacia_id', Auth::user()->isFarmacia->farmacia->id);
             })
             ->get();
-        return view('funcionario.add', compact('usrs'));
+        return view('funcionario.list', compact('usrs'));
         //return view('perfil.view');
     }
 }
