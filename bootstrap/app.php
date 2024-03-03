@@ -12,6 +12,9 @@
 */
 
 putenv("TMPDIR=C:\\laragon\\tmp");
+// Define as variáveis de ambiente necessárias para o Composer
+putenv("APPDATA=C:\\Users\\'Augusto Kussema'\\AppData");
+putenv("COMPOSER_HOME=C:\\composer");
 
 //$allowedHosts = env('APP_ALLOWED_HOSTS', '50.800.90.56');
 
