@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/', [UsuarioController::class, 'addCargo'])->name('usuario.addCargo');
         // não alterar a rota aqui
         Route::put('bloquear/{id}', [UsuarioController::class, 'blockUser'])->name('u.bloquear');
+        Route::get('desbloquear/{id}', [UsuarioController::class, 'unblockUser'])->name('u.desbloquear');
         Route::get('{username}', [UsuarioController::class, 'perfil'])->name('u.perfil');
     });
 

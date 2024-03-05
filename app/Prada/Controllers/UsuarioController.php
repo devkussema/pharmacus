@@ -28,6 +28,26 @@ class UsuarioController extends Controller
         return view('perfil.view', compact('u'));
     }
 
+    public function unblockUser(Request $request, $id)
+    {
+        $u = User::find($id);
+        if (!$u) {
+            if ($request->ajax())
+                return response()->json(['message' => 'Ocorreu um erro e não pudemos processar o seu pedido'], 422);
+
+            return redirect()->back()->with('error', 'Ocorreu um erro e não pudemos processar o seu pedido');
+        }
+
+        $u->update([
+            'status' => 1
+        ]);
+
+        if ($request->ajax())
+            return response()->json(['message' => 'Usuário desbloqueado'], 201);
+
+        return redirect()->route('funcionarios')->with('success', 'Usuário desbloqueado');
+    }
+
     public function blockUser(Request $request, $id)
     {
         $u = User::find($id);

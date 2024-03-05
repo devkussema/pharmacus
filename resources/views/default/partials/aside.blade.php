@@ -11,7 +11,7 @@
     <div class="data-scrollbar" data-scroll="1">
         <nav class="iq-sidebar-menu">
             <ul id="iq-sidebar-toggle" class="iq-menu">
-                <li class="">
+                {{-- <li class="">
                     <a href="{{ route('home') }}" id="aside-link" class="svg-icon">
                         <svg class="svg-icon" id="p-dash1" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -24,7 +24,7 @@
                         </svg>
                         <span class="ml-4 text-light">Home</span>
                     </a>
-                </li>
+                </li> --}}
                 @if (isAdministrator())
                     <li class="">
                         <a href="#farmacias" class="collapsed" data-toggle="collapse" aria-expanded="false">
@@ -155,44 +155,45 @@
                             </li>
                         </ul>
                     </li>
-
-                    <li class="">
-                        <a href="#ah_funcionarios" class="collapsed" data-toggle="collapse"
-                            aria-expanded="false">
-                            <svg width="24px" height="24px" viewBox="0 0 24 24"
-                                fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path opacity="0.15"
-                                    d="M12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"
-                                    fill="none" />
-                                <path
-                                    d="M3 19H1V18C1 16.1362 2.27477 14.5701 4 14.126M6 10.8293C4.83481 10.4175 4 9.30621 4 7.99999C4 6.69378 4.83481 5.58254 6 5.1707M21 19H23V18C23 16.1362 21.7252 14.5701 20 14.126M18 5.1707C19.1652 5.58254 20 6.69378 20 7.99999C20 9.30621 19.1652 10.4175 18 10.8293M10 14H14C16.2091 14 18 15.7909 18 18V19H6V18C6 15.7909 7.79086 14 10 14ZM15 8C15 9.65685 13.6569 11 12 11C10.3431 11 9 9.65685 9 8C9 6.34315 10.3431 5 12 5C13.6569 5 15 6.34315 15 8Z"
-                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-                            <span class="ml-4">Funcionários</span>
-                            <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
-                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <polyline points="10 15 15 20 20 15"></polyline>
-                                <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                            </svg>
-                        </a>
-                        <ul id="ah_funcionarios" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                            <li class="">
-                                <a href="{{ route('funcionarios') }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
-                                        height="18" fill="rgba(52,51,51,1)">
-                                        <path
-                                            d="M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z">
-                                        </path>
-                                    </svg>
-                                    <span class="ml-4">Lista</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
                 @endif
+
+                <li class="">
+                    <a href="#ah_funcionarios" class="collapsed" data-toggle="collapse"
+                        aria-expanded="false">
+                        <svg width="24px" height="24px" viewBox="0 0 24 24"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.15"
+                                d="M12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"
+                                fill="none" />
+                            <path
+                                d="M3 19H1V18C1 16.1362 2.27477 14.5701 4 14.126M6 10.8293C4.83481 10.4175 4 9.30621 4 7.99999C4 6.69378 4.83481 5.58254 6 5.1707M21 19H23V18C23 16.1362 21.7252 14.5701 20 14.126M18 5.1707C19.1652 5.58254 20 6.69378 20 7.99999C20 9.30621 19.1652 10.4175 18 10.8293M10 14H14C16.2091 14 18 15.7909 18 18V19H6V18C6 15.7909 7.79086 14 10 14ZM15 8C15 9.65685 13.6569 11 12 11C10.3431 11 9 9.65685 9 8C9 6.34315 10.3431 5 12 5C13.6569 5 15 6.34315 15 8Z"
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <span class="ml-4">Funcionários</span>
+                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <polyline points="10 15 15 20 20 15"></polyline>
+                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                        </svg>
+                    </a>
+                    <ul id="ah_funcionarios" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="">
+                            <a href="{{ route('funcionarios') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                                    height="18" fill="rgba(52,51,51,1)">
+                                    <path
+                                        d="M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z">
+                                    </path>
+                                </svg>
+                                <span class="ml-4">Lista</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
                 {{-- <li class=" ">
                     <a href="#categoria" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash3" width="20" height="20"
