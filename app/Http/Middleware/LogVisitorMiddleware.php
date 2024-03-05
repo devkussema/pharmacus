@@ -17,6 +17,7 @@ class LogVisitorMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        /*
         // Verificar se o dispositivo com este IP acessou o sistema hoje
         $visitor = Visitor::where('ip', $request->ip())
             ->where('device', $request->header('User-Agent'))
@@ -41,7 +42,7 @@ class LogVisitorMiddleware
                 'referrer' => $request->header('referer'), // referência do site
                 'device' => $request->header('User-Agent'),
             ]);
-        }
+        } */
         return $next($request);
     }
 
