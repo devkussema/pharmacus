@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [UsuarioController::class, 'index'])->name('usuario');
         Route::put('/', [UsuarioController::class, 'addCargo'])->name('usuario.addCargo');
         // não alterar a rota aqui
-        Route::put('bloquear/{id}', [UsuarioController::class, 'blockUser'])->name('u.bloquear');
+        Route::put('bloquear/{id}', [UsuarioController::class, 'addCargo'])->name('usuario.addCargo');
         Route::get('{username}', [UsuarioController::class, 'perfil'])->name('u.perfil');
     });
 
