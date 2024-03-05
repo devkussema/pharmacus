@@ -39,11 +39,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
+            opacity: 0;
+            /* Inicialmente, o loader estará invisível */
+            transition: opacity 0.5s;
         }
 
         .loader img {
@@ -150,9 +153,29 @@
             loader.style.opacity = '0';
             loader.style.display = 'flex'; // Exibe o loader
             setTimeout(() => {
-                loader.style.opacity = '10';
-            }, 2000); // Tempo de espera para o efeito de fade
+                loader.style.opacity = '1';
+            }, 1); // Tempo de espera para o efeito de fade
         });
+
+        // Função para exibir o loader com efeito de fade-in
+        function showLoader() {
+            const loader = document.getElementById('loaderish');
+            loader.style.display = 'block'; // Exibe o loader
+            loader.style.opacity = '0';
+            loader.style.display = 'flex';
+            setTimeout(() => {
+                loader.style.opacity = '1'; // Define a opacidade como 1 para exibir gradualmente
+            }, 1); // Tempo de espera para iniciar o efeito de fade
+        }
+
+        // Função para esconder o loader com efeito de fade-out
+        function hideLoader() {
+            const loader = document.getElementById('loaderish');
+            loader.style.opacity = '0'; // Define a opacidade como 0 para esconder gradualmente
+            setTimeout(() => {
+                loader.style.display = 'none'; // Oculta o loader após o efeito de fade-out
+            }, 50); // Tempo de espera para concluir a transição
+        }
 
         document.addEventListener('keydown', function(event) {
             // Verifica se a tecla SHIFT, ALT e C foram pressionadas ao mesmo tempo

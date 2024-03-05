@@ -93,7 +93,7 @@ document.querySelectorAll('a#aside-link').forEach(function (link) {
 $(document).ready(function () {
     $('#formAddFarmacia').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -105,6 +105,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -114,6 +115,7 @@ $(document).ready(function () {
                 $('#addFarmacia').modal('hide');
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -131,7 +133,7 @@ $(document).ready(function () {
 
     $('#formAddCategoria').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -143,6 +145,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -152,6 +155,7 @@ $(document).ready(function () {
                 $('#addCategoria').modal('hide');
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -169,7 +173,7 @@ $(document).ready(function () {
 
     $('#formaddGerenteFarmacia').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -181,6 +185,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -190,6 +195,7 @@ $(document).ready(function () {
                 $('#addGerenteFarmacia').modal('hide');
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -207,6 +213,7 @@ $(document).ready(function () {
 
     $('form#formAddAH').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
+        showLoader();
 
         // Obtém os dados do formulário
         var formData = new FormData(this);
@@ -226,8 +233,10 @@ $(document).ready(function () {
 
                 // Oculta o modal
                 $('#area_hospitalar').modal('hide');
+                hideLoader();
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -245,7 +254,7 @@ $(document).ready(function () {
 
     $('#formBaixaEstoque').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -257,6 +266,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -266,6 +276,7 @@ $(document).ready(function () {
                 $('#estoqueOps').modal('hide');
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -288,7 +299,7 @@ $(document).ready(function () {
 
     $('form#formEditarAH').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -300,6 +311,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -309,6 +321,7 @@ $(document).ready(function () {
                 $('#editar_area_hospitalar').modal('hide');
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -346,7 +359,7 @@ $(document).ready(function () {
 
     $('form#formEditFarmacia').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -358,6 +371,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -367,6 +381,7 @@ $(document).ready(function () {
                 $('#modalEditarFarmacia').modal('hide');
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -384,7 +399,7 @@ $(document).ready(function () {
 
     $('form#formAddCargoGrupo').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -396,6 +411,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -406,6 +422,7 @@ $(document).ready(function () {
                 location.reload();
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -423,7 +440,7 @@ $(document).ready(function () {
 
     $('form#formAddCargo').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -435,6 +452,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -445,6 +463,7 @@ $(document).ready(function () {
                 location.reload();
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -462,7 +481,7 @@ $(document).ready(function () {
 
     $('form#formAddCargoAH').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -474,6 +493,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -484,6 +504,7 @@ $(document).ready(function () {
                 // location.reload();
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
@@ -572,11 +593,13 @@ function getDataFarma(url) {
 }
 
 function preencherModalComFarmacia(url) {
+    showLoader();
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
         url: url,
         type: 'GET',
         success: function (response) {
+            hideLoader();
             // Preencher o campo de nome da farmácia com os dados retornados
             $('#formaddGerenteFarmacia #nome_farmacia').val(response.nome);
             $('#formaddGerenteFarmacia #farmacia_id').val(response.id);
@@ -588,6 +611,7 @@ function preencherModalComFarmacia(url) {
             $('#addGerenteFarmacia').modal('show');
         },
         error: function (xhr, status, error) {
+            hideLoader();
             // Tratar erros, se necessário
             //console.error(xhr.responseText);
             alert('Erro ao obter dados da farmácia.');
@@ -632,11 +656,13 @@ function modalEditarAH(id) {
 }
 
 function modalEditarProdutoEstoque(id) {
+    showLoader();
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
         url: 'estoque/produto/' + id,
         type: 'GET',
         success: function (response) {
+            hideLoader();
             $('#formEditProdutoEstoque').attr('action', 'estoque/produto/' + id);
             $('#modalEditProdutoEstoque h4#nome_produto').html(response.designacao);
             $('#formEditProdutoEstoque #designacao').val(response.designacao);
@@ -668,6 +694,7 @@ function modalEditarProdutoEstoque(id) {
             $('#modalEditProdutoEstoque').modal('show');
         },
         error: function (xhr, status, error) {
+            hideLoader();
             // Tratar erros, se necessário
             //console.error(xhr.responseText);
             toastr.error("Erro ao obter dados do produto", 'Erro');
@@ -681,11 +708,13 @@ function modalEditarProdutoEstoque(id) {
 }
 
 function addCargoGrupo(url) {
+    showLoader();
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
         url: url,
         type: 'GET',
         success: function (response) {
+            hideLoader();
             // Preencher o campo de nome da farmácia com os dados retornados
             $('#formAddCargoGrupo #user_id').val(response.id);
 
@@ -693,6 +722,7 @@ function addCargoGrupo(url) {
             $('#addCargoGrupo').modal('show');
         },
         error: function (xhr, status, error) {
+            hideLoader();
             // Tratar erros, se necessário
             //console.error(xhr.responseText);
             alert('Erro ao obter dados da farmácia.');
@@ -701,11 +731,13 @@ function addCargoGrupo(url) {
 }
 
 function modalEliminarFarmacia(id) {
+    showLoader();
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
         url: 'api/get/farmacia/' + id,
         type: 'GET',
         success: function (response) {
+            hideLoader();
             $('#deleteFormFarmacia').attr('action', '/farmacia/apagar/' + id);
             $('#deleteFormFarmacia #texto-aviso').html('Tens a certeza que queres eliminar a farmácia <b>' + response.nome + '</b>');
 
@@ -713,6 +745,7 @@ function modalEliminarFarmacia(id) {
             $('#modalEliminarFarmacia').modal('show');
         },
         error: function (xhr, status, error) {
+            hideLoader();
             // Tratar erros, se necessário
             //console.error(xhr.responseText);
             toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');
@@ -749,11 +782,13 @@ function modalEliminarAH(id) {
 }
 
 function modalEditarFarmacia(id) {
+    showLoader();
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
         url: 'api/get/area_hospitalar/' + id,
         type: 'GET',
         success: function (response) {
+            hideLoader();
             $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/' + id);
             $('h4#nome_area').val(response.nome);
             $('#formEditarAH #nome').val(response.nome);
@@ -763,6 +798,7 @@ function modalEditarFarmacia(id) {
             $('#editar_area_hospitalar').modal('show');
         },
         error: function (xhr, status, error) {
+            hideLoader();
             // Tratar erros, se necessário
             //console.error(xhr.responseText);
             toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');

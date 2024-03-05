@@ -1,6 +1,7 @@
 $(document).ready(function () {
     $('form#cadastrar').submit(function (e) {
         e.preventDefault(); // Impede o envio padrão do formulário
+        showLoader();
 
         // Serialize o formulário para enviar os dados
         var formData = $(this).serialize();
@@ -11,10 +12,12 @@ $(document).ready(function () {
             url: $(this).attr('action'), // URL para o endpoint do formulário
             data: formData,
             success: function (response) {
+                hideLoader();
                 // Manipular a resposta bem-sucedida
                 location.reload();
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Converte a resposta JSON em um objeto JavaScript
                 var errors = JSON.parse(xhr.responseText);
 
@@ -37,6 +40,7 @@ $(document).ready(function () {
 $(document).ready(function() {
     $('#login-form').submit(function(e) {
         e.preventDefault(); // Impede o envio padrão do formulário
+        showLoader();
 
         var formData = $(this).serialize(); // Serializa os dados do formulário
 
@@ -45,12 +49,14 @@ $(document).ready(function() {
             url: $(this).attr('action'),
             data: formData,
             success: function(response) {
+                hideLoader();
                 toastr.success("Bem-vindo de volta", 'A redirecionar');
                 setTimeout(function() {
                     location.reload();
                 }, 5000);
             },
             error: function(xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
