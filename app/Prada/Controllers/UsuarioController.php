@@ -28,6 +28,26 @@ class UsuarioController extends Controller
         return view('perfil.view', compact('u'));
     }
 
+    public function blockUser(Request $request, $id)
+    {
+        $u = User::find($id);
+        if (!$u) {
+            if ($request->ajax())
+                return response()->json(['message' => 'Ocorreu um erro e não pudemos processar o seu pedido'], 422);
+
+            return redirect()->back()->with('error', 'Ocorreu um erro e não pudemos processar o seu pedido');
+        }
+
+        $u->update([
+            'status' => 0
+        ]);
+
+        if ($request->ajax())
+            return response()->json(['message' => 'Usuário bloqueado'], 201);
+
+        return redirect()->back()->with('success', 'Usuário bloqueado');
+    }
+
     public function addCargo(Request $request)
     {
         $request->validate([

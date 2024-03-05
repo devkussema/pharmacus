@@ -30,11 +30,15 @@
                                 </th>
                                 <th>Nome</th>
                                 <th>Área Hospitalar</th>
+                                <th>Estado</th>
                                 <th class="hide-on-print">Ação</th>
                             </tr>
                         </thead>
                         <tbody class="ligth-body">
                             @foreach ($usrs as $usr)
+                                {{ $usr }} <hr>
+                            @endforeach
+                            {{-- @foreach ($usrs as $usr)
                                 <tr>
                                     <td>
                                         <div class="checkbox d-inline-block">
@@ -43,11 +47,18 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="{{ route('u.perfil', ['username' => $usr->username]) }}">
+                                        <a href="{{ route('u.perfil', ['username' => $usr->username ?? $user]) }}">
                                             {{ $usr->nome }}
                                         </a>
                                     </td>
                                     <td>{{ $usr->area_hospitalar->area_hospitalar->nome }}</td>
+                                    <td>
+                                        @if ($usr->status == 0)
+                                            Inativo
+                                        @else
+                                            Ativo
+                                        @endif
+                                    </td>
                                     <td class="hide-on-print">
                                         <div class="d-flex align-items-center list-action">
                                             <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
@@ -58,14 +69,21 @@
                                                 title="Editar" href="javascript:void(0)">
                                                 <i class="ri-pencil-line mr-0"></i>
                                             </a>
-                                            <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
-                                                title="Bloquear {{ $usr->nome }}" href="javascript:void(0)" onclick="modalBloquearUsr('{{ $usr->id }}', '{{ $usr->nome }}', '{{ route('usuario') }}')">
-                                                <i class="ri-spam-3-line"></i>
-                                            </a>
+                                            @if ($usr->status == 1)
+                                                <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
+                                                    title="Bloquear {{ $usr->nome }}" href="javascript:void(0)" onclick="modalBloquearUsr('{{ $usr->id }}', '{{ $usr->nome }}', '{{ route('usuario') }}')">
+                                                    <i class="ri-spam-3-line"></i>
+                                                </a>
+                                            @else
+                                                <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
+                                                    title="Desbloquear {{ $usr->nome }}" href="javascript:void(0)" onclick="modalBloquearUsr('{{ $usr->id }}', '{{ $usr->nome }}', '{{ route('usuario') }}')">
+                                                    <i class="ri-radio-button-fill"></i>
+                                                </a>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>
