@@ -241,6 +241,33 @@
                         </li>
                     </ul>
                 </li>
+                @if (isAdministrator())
+                    <li class="">
+                        <a href="#desenvolvedor" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <i class="ri-terminal-box-fill"></i>
+                            <span class="ml-4">Desenvolvedor</span>
+                            <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="10 15 15 20 20 15"></polyline>
+                                <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                            </svg>
+                        </a>
+                        <ul id="desenvolvedor" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            <li class="">
+                                <a href="{{ route('dev.visitante') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                                        height="18" fill="rgba(52,51,51,1)" class="mr-4">
+                                        <path
+                                            d="M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z">
+                                        </path>
+                                    </svg>
+                                    <span>Visitantes</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
             </ul>
         </nav>
         {{-- <div id="sidebar-bottom" class="position-relative sidebar-bottom">

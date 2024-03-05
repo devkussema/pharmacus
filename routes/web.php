@@ -17,6 +17,10 @@ use App\Prada\Controllers\{
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
 
+use App\Http\Controllers\Dev\{
+    VisitanteController
+};
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -80,7 +84,6 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('gestor')->group(function () {
         Route::post('/', [GerenteFarmaciaController::class, 'store'])->name('gestor.store');
-        #Route::get('/confirmar/conta/{token}', [GerenteFarmaciaController::class, 'confirmar'])->name('gestor.token');
     });
 
     Route::prefix('farmacia')->group(function () {
@@ -112,6 +115,11 @@ Route::middleware('auth')->group(function () {
         Auth::logout();
         return redirect('/'); // Redireciona para a página inicial após o logout
     })->name('logout');
+
+    // Dev
+    Route::prefix('desenvolvedor')->group(function () {
+        Route::get('visitantes', [VisitanteController::class, 'index'])->name('dev.visitante');
+    });
 });
 
 Route::prefix('auth')->middleware('guest')->group(function () {

@@ -6,7 +6,8 @@ use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-function isAreaDefault() {
+function isAreaDefault()
+{
     $user = Auth::user()->with('area_hospitalar')->whereHas('area_hospitalar', function ($query) {
         $query->where('area_hospitalar_id', 'Armazém I');
     })->first();
@@ -68,13 +69,15 @@ function calcMes($dataAlvo)
     }
 }
 
-function assets($path) {
-    $url = env("APP_THEME", "default") . "/".$path;
+function assets($path)
+{
+    $url = env("APP_THEME", "default") . "/" . $path;
 
     return asset($url);
 }
 
-function isCargo($cargo) {
+function isCargo($cargo)
+{
     $c = Grupo::where('nome', $cargo)->first();
     if ($c) {
         if (Auth::user()->grupo_id == $c->id) {
@@ -85,7 +88,128 @@ function isCargo($cargo) {
     return false;
 }
 
-function printNome($nomeCompleto) {
+function getMobileBrand($user_agent)
+{
+    #$brand = 'Desconhecido';
+
+    // Define os padrões de marca
+    $brands = [
+        '/(iPhone|iPad|iPod)/' => 'Apple',
+        '/(Samsung|Galaxy)/' => 'Samsung',
+        '/(Huawei|Honor)/' => 'Huawei',
+        '/(Xiaomi|Redmi)/' => 'Xiaomi',
+        '/(OnePlus)/' => 'OnePlus',
+        '/(Google Pixel)/' => 'Google',
+        '/(Motorola Moto)/' => 'Motorola',
+        '/(LG G|LG V)/' => 'LG',
+        '/(Sony Xperia)/' => 'Sony',
+        '/(Oppo)/' => 'Oppo',
+        '/(Vivo)/' => 'Vivo',
+        '/(Realme)/' => 'Realme',
+    ];
+
+    $brand = null;
+    foreach ($brands as $pattern => $branD) {
+        if (preg_match($pattern, $user_agent)) {
+            $brand = $branD;
+            break; // Sai do loop após encontrar a primeira correspondência
+        }
+    }
+
+    // Verifica se o User-Agent contém padrões específicos para marcas de dispositivos móveis conhecidas
+    /*if (preg_match('/(iPhone|iPad|iPod)/', $user_agent)) {
+        $brand = 'Apple';
+    } elseif (preg_match('/(Samsung|Galaxy)/', $user_agent)) {
+        $brand = 'Samsung';
+    }*/
+    // Exibe a marca
+    if ($brand) {
+        return $brand;
+    } else {
+        return "Desconhecido";
+    }
+}
+
+function getDesktopOS($user_agent) {
+    $os = 'Desconhecido';
+    $version = '';
+
+    // Verifica se o User-Agent contém padrões específicos para sistemas operacionais de desktop conhecidos
+    if (preg_match('/Windows NT (\d+\.\d+)/', $user_agent, $matches)) {
+        $os = 'Windows';
+        $version = $matches[1];
+    } elseif (preg_match('/(Macintosh|Mac OS X) (\d+(_\d+)?)/', $user_agent, $matches)) {
+        $os = 'macOS';
+        $version = str_replace('_', '.', $matches[2]);
+    }
+    // Adicione mais verificações para outros sistemas operacionais de desktop, se necessário
+
+    return "{$os} {$version}";
+}
+
+function getDeviceTipo($user_agent)
+{
+    // Lista dos tipos de dispositivos
+    $devices = array(
+        'Mobile' => 'Telemóvel',
+        'Tablet' => 'Tablet',
+        'Desktop' => 'Desktop',
+        'Smart TV' => 'Smart TV',
+        'Console' => 'Console'
+        // Adicione outros tipos de dispositivos conforme necessário
+    );
+    $mobile = getMobileBrand($user_agent);
+    $desktop = getDesktopOS($user_agent);
+
+    if ($mobile != "Desconhecido"){
+        return getMobileBrand($user_agent);
+    }else if ($desktop != "Desconhecido"){
+        return getDesktopOS($user_agent);
+    }
+
+    // Percorre a lista de dispositivos e verifica se o User-Agent contém o tipo de dispositivo
+    /*foreach ($devices as $device => $device_name) {
+        if (strpos($user_agent, $device) !== false) {
+            if ($device_name == "Mobile"){
+                return getMobileBrand($user_agent);
+            }else if ($device_name == "Desktop"){
+                return getDesktopOS($user_agent);
+            }
+            return $device_name;
+        }
+    }*/
+
+    // Se nenhum tipo de dispositivo for encontrado, retorna "Desconhecido"
+
+    return 'Desconhecido';
+}
+
+function getBrowserName($user_agent)
+{
+    // Lista dos principais navegadores
+    $browsers = array(
+        'Opera' => 'Opera',
+        'Edge' => 'Edge',
+        'Chrome' => 'Chrome',
+        'Safari' => 'Safari',
+        'Firefox' => 'Firefox',
+        'Brave' => 'Brave',
+        'IE' => 'Internet Explorer'
+    );
+
+    // Percorre a lista de navegadores e verifica se o User-Agent contém o nome do navegador
+    foreach ($browsers as $browser => $browser_name) {
+        if (strpos($user_agent, $browser) !== false) {
+            return $browser_name;
+        }
+    }
+
+    // Se nenhum dos principais navegadores for encontrado, retorna "Desconhecido"
+    return 'Desconhecido';
+}
+
+function printNome($nomeCompleto)
+{
     // Dividir o nome completo em partes (nome e sobrenome)
     $partesNome = explode(' ', $nomeCompleto);
 
