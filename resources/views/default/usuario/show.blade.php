@@ -95,9 +95,17 @@
                                                 onclick="addCargoGrupo('{{ route('user.get', ['id' => $usr->id]) }}')">
                                                 <i class="ri-key-line"></i>
                                             </a>
-                                            <a class="badge bg-warning mr-2" title="Eliminar {{ $usr->nome }}" href="javascript:void(0)" onclick="modalEliminarFarmacia('{{ $usr->id }}')">
-                                                <i class="ri-delete-bin-line mr-0"></i>
-                                            </a>
+                                            @if ($usr->status == 1)
+                                                    <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
+                                                        title="Bloquear {{ $usr->nome }}" href="javascript:void(0)" onclick="modalBloquearUsr('{{ $usr->id }}', '{{ $usr->nome }}', '{{ route('usuario') }}')">
+                                                        <i class="ri-spam-3-line"></i>
+                                                    </a>
+                                                @else
+                                                    <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
+                                                        title="Desbloquear {{ $usr->nome }}" href="{{ route('u.desbloquear', ['id' => $usr->id]) }}">
+                                                        <i class="ri-spam-3-line"></i>
+                                                    </a>
+                                                @endif
                                         </div>
                                     </td>
                                 </tr>

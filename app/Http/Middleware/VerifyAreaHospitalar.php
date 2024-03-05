@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class VerifyAreaHospitalar
@@ -16,7 +17,12 @@ class VerifyAreaHospitalar
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check() && auth()->user()->area_hospitalar) {
-            return $next($request);
+            if (auth()->user()->area_hospitalar->area_hospitalar->farmacia->status == 1) {
+                return $next($request);
+            }else{
+                Auth::logout();
+                return redirect()->route('login')->with('error', "Algo deu errado. Por alguma razão a farmácia encontra-se inativa. Por favor entre em contato com o webmaster.");
+            }
         }
 
         return redirect()->route('home')->with('warning', 'Não tens permissão para acessar esta página.');

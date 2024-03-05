@@ -18,6 +18,11 @@ class AreaHospitalar extends Model
         'farmacia_id'
     ];
 
+    public function farmacia()
+    {
+        return $this->belongsTo(Farmacia::class, 'farmacia_id');
+    }
+
     public function isGerente()
     {
         return $this->hasOne(UserAreaHospitalar::class, 'area_hospitalar_id');

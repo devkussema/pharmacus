@@ -29,7 +29,13 @@
                                     </div>
                                 </th>
                                 <th>Nome</th>
-                                <th>Área Hospitalar</th>
+                                <th>
+                                    @if ($cfg == 1)
+                                        Área Hospitalar
+                                    @else
+                                        Farmácia
+                                    @endif
+                                </th>
                                 <th>Estado</th>
                                 <th class="hide-on-print">Ação</th>
                             </tr>
@@ -71,6 +77,45 @@
                                                 @else
                                                     <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
                                                         title="Desbloquear {{ $usr->nome }}" href="{{ route('u.desbloquear', ['id' => $usr->id]) }}">
+                                                        <i class="ri-spam-3-line"></i>
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                @foreach ($usrs as $usr)
+                                    <tr>
+                                        <td>
+                                            <div class="checkbox d-inline-block">
+                                                <input type="checkbox" class="checkbox-input" id="checkbox2">
+                                                <label for="checkbox2" class="mb-0"></label>
+                                            </div>
+                                        </td>
+                                        <td>{{ $usr->user->nome }}</td>
+                                        <td>{{ $usr->farmacia->nome }}</td>
+                                        <td>
+                                            @if ($usr->user->status == 0)
+                                                Inativo
+                                            @else
+                                                Ativo
+                                            @endif
+                                        </td>
+                                        <td class="hide-on-print">
+                                            <div class="d-flex align-items-center list-action">
+                                                <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
+                                                    title="Ver perfil de {{ $usr->user->nome }}" href="{{ route('u.perfil', ['username' => $usr->user->username]) }}">
+                                                    <i class="ri-eye-line"></i>
+                                                </a>
+                                                @if ($usr->user->status == 1)
+                                                    <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
+                                                        title="Bloquear {{ $usr->user->nome }}" href="javascript:void(0)" onclick="modalBloquearUsr('{{ $usr->user->id }}', '{{ $usr->user->nome }}', '{{ route('usuario') }}')">
+                                                        <i class="ri-spam-3-line"></i>
+                                                    </a>
+                                                @else
+                                                    <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
+                                                        title="Desbloquear {{ $usr->user->nome }}" href="{{ route('u.desbloquear', ['id' => $usr->user->id]) }}">
                                                         <i class="ri-spam-3-line"></i>
                                                     </a>
                                                 @endif
