@@ -35,6 +35,9 @@
                         </thead>
                         <tbody class="ligth-body">
                             @foreach ($usrs as $usr)
+                                {{ $usr }} <hr>
+                            @endforeach
+                            {{-- @foreach ($usrs as $usr)
                                 <tr>
                                     <td>
                                         <div class="checkbox d-inline-block">
@@ -65,7 +68,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>
