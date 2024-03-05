@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <meta name="theme-color" content="#6777ef" />
-    <link rel="apple-touch-icon" href="{{ asset('logo.PNG') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
     <title>@yield('titulo', 'Página Inicial') - {{ env('APP_NAME') }}</title>
@@ -32,14 +32,43 @@
                 display: none;
             }
         }
+
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loader img {
+            width: 48px;
+            /* Defina o tamanho da imagem como uma porcentagem da largura da tela */
+            animation: spin 2s linear infinite;
+            /* Efeito de rotação */
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
 <body class=" color-light ">
     <!-- loader Start -->
-    <div id="loading">
-        <div id="loading-center">
-        </div>
+    <div class="loader" id="loaderish" style="display: none">
+        <img src="{{ asset('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">
     </div>
 
     <div class="wrapper">
@@ -110,6 +139,21 @@
 
     <script src="{{ asset('/sw.js') }}"></script>
     <script>
+        // Obtém uma referência para o botão e para o loader
+        const button = document.getElementById('btnClick2');
+        const loader = document.getElementById('loaderish');
+
+        // Adiciona um ouvinte de evento de clique ao botão
+        button.addEventListener('click', function() {
+            // Exibe o loader com fade
+            loader.style.display = 'block';
+            loader.style.opacity = '0';
+            loader.style.display = 'flex'; // Exibe o loader
+            setTimeout(() => {
+                loader.style.opacity = '10';
+            }, 2000); // Tempo de espera para o efeito de fade
+        });
+
         document.addEventListener('keydown', function(event) {
             // Verifica se a tecla SHIFT, ALT e C foram pressionadas ao mesmo tempo
             if (event.shiftKey && event.altKey && event.key === 'C') {
@@ -303,4 +347,5 @@
         }
     </script>
 </body>
+
 </html>

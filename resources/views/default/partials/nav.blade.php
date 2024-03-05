@@ -41,7 +41,7 @@
                         {{--  --}}
                         <li class="nav-item nav-icon dropdown">
                             <a href="#" class="search-toggle dropdown-toggle btn border add-btn"
-                                id="dropdownMenuButton02" data-toggle="dropdown" aria-haspopup="true"
+                                id="btnClick2" data-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" id="flag-icons-ao"
                                     viewBox="0 0 640 480">
