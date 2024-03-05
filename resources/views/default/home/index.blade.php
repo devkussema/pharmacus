@@ -165,7 +165,7 @@
             loader.style.display = 'flex';
             setTimeout(() => {
                 loader.style.opacity = '1'; // Define a opacidade como 1 para exibir gradualmente
-            }, 1); // Tempo de espera para iniciar o efeito de fade
+            }, 2000); // Tempo de espera para iniciar o efeito de fade
         }
 
         // Função para esconder o loader com efeito de fade-out
@@ -174,7 +174,7 @@
             loader.style.opacity = '0'; // Define a opacidade como 0 para esconder gradualmente
             setTimeout(() => {
                 loader.style.display = 'none'; // Oculta o loader após o efeito de fade-out
-            }, 50); // Tempo de espera para concluir a transição
+            }, 2000); // Tempo de espera para concluir a transição
         }
 
         document.addEventListener('keydown', function(event) {
