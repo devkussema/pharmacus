@@ -154,7 +154,7 @@
             loader.style.display = 'flex'; // Exibe o loader
             setTimeout(() => {
                 loader.style.opacity = '1';
-            }, 1); // Tempo de espera para o efeito de fade
+            }, 2000); // Tempo de espera para o efeito de fade
         });
 
         // Função para exibir o loader com efeito de fade-in
