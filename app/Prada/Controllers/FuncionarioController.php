@@ -22,7 +22,7 @@ class FuncionarioController extends Controller
                 ->get();
                 $cfg = 1;
         }else{
-            $usrs = GF::with('user')->get();
+            $usrs = GF::with('user', 'farmacia')->get();
             $cfg = 2;
         }
         return view('funcionario.list', compact('usrs', 'cfg'));
