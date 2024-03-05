@@ -84,7 +84,7 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="popup text-left">
-                            <h4 class="mb-3">New Order</h4>
+                            <h4 class="mb-3">Novo pedido</h4>
                             <div class="content create-workform bg-body">
                                 <div class="pb-3">
                                     <label class="mb-2">Email</label>
@@ -92,8 +92,8 @@
                                 </div>
                                 <div class="col-lg-12 mt-4">
                                     <div class="d-flex flex-wrap align-items-ceter justify-content-center">
-                                        <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
-                                        <div class="btn btn-outline-primary" data-dismiss="modal">Create</div>
+                                        <div class="btn btn-primary mr-4" data-dismiss="modal">Cancelar</div>
+                                        <div class="btn btn-outline-primary" data-dismiss="modal">Criar</div>
                                     </div>
                                 </div>
                             </div>

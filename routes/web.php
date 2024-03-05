@@ -153,12 +153,12 @@ Route::prefix('api')->group(function () {
     Route::get('/check-user-status', [AuthController::class, 'checkUserStatus']);
 });
 
-Route::get('/execute-migrater', function () {
+Route::get('/execute-migrate', function () {
     Artisan::call('migrate');
     return response()->json(['output' => Artisan::output()]);
 });
 
-Route::get('/execute-migrate', function () {
+Route::get('/execute-migrater', function () {
     #Artisan::call('migrate');
     // Criar um novo processo para o comando `git pull`
     // Criar um novo processo para executar o comando 'composer require symfony/process'
