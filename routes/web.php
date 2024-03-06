@@ -32,7 +32,7 @@ use App\Http\Controllers\Dev\{
 |
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'is.status'])->group(function () {
     Route::get('/', [HomeController::class, 'home'])->name('home');
     Route::get('/main', [HomeController::class, 'home'])->name('main');
     Route::get('/produtos', [HomeController::class, 'produto'])->name('produto');

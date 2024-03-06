@@ -43,11 +43,11 @@
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Entrar</button>
-                                        <p class="mt-3">
+                                        {{-- <p class="mt-3">
                                             Criar conta <a href="{{ route('registar') }}"
                                                 onclick="pager('{{ route('registar') }}', event)" class="text-primary">Criar
                                                 conta</a>
-                                        </p>
+                                        </p> --}}
                                     </form>
                                 </div>
                             </div>
