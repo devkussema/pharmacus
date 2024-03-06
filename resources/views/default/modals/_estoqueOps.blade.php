@@ -7,13 +7,17 @@
                     <div class="content create-workform bg-body">
                         <form id="formBaixaEstoque" action="{{ route('estoque.baixa') }}" method="POST">
                             @csrf
+                            @php
+                                $area_h_id = @$area_id;
+                                $farmacia_id = (@auth()->user()->isFarmacia->farmacia_id ? auth()->user()->isFarmacia->farmacia_id : @auth()->user()->area_hospitalar->area_hospitalar->farmacia_id);
+                            @endphp
                             <div class="form-group">
                                 <label for="endereco">Área *</label>
                                 <input type="hidden" name="user_id" id="user_id">
                                 <select name="area_hospitalar_id" id="" class="form-control">
-                                    @foreach (\App\Models\AreaHospitalar::all() as $ah)
-                                        @if ($ah->isGerente and $ah->id != auth()->user()->area_hospitalar->area_hospitalar_id)
-                                            <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
+                                    @foreach (\App\Models\AreaHospitalar::where('farmacia_id', $farmacia_id)->get() as $ahw)
+                                        @if ($ahw->id != $area_h_id)
+                                            <option value="{{ $ahw->id }}">{{ $ahw->nome }}</option>
                                         @endif
                                     @endforeach
                                 </select>

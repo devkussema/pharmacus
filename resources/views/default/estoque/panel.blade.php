@@ -11,29 +11,36 @@
                         <h4 class="mb-3">Áreas Hospitalares </h4>
                     </div>
                 </div>
+                @php
+                    $colors = ['bg-green', 'bg-purple-light', 'bg-indigo', 'bg-info-light', 'bg-warning-light', 'bg-teal-light', 'bg-danger-light', 'bg-success-light'];
+                    $colorIndex = 0;
+                @endphp
                 <div class="row">
-                    @foreach($all_areas as $area)
+                    @foreach ($all_areas as $area)
                         <div class="col-lg-3">
                             <div class="card card-block card-stretch card-height">
                                 <div class="card-body">
-                                    <a href="#">
+                                    <a href="{{ route('estoque.getEstoque', ['id' => $area->id]) }}">
                                         <div class="d-flex align-items-center mb-4 card-total-sale">
-                                            <div class="icon iq-icon-box-2 bg-warning-light">
-                                                <img src="{{ asset('assets/images/white__logo.png')}}" class="img-fluid" alt="image">
+                                            <div class="icon iq-icon-box-2 {{ $colors[$colorIndex] }}">
+                                                <img src="{{ asset('assets/images/white__logo.png') }}" class="img-fluid"
+                                                    alt="image">
                                             </div>
                                             <div>
-                                                <p class="mb-2">{{ $area->nome }}</p>
-                                                <h4>{{ \App\Models\Farmacia::all()->count() }}</h4>
+                                                <p class="mb-2"><b> {{ $area->nome }} </b></p>
+                                                <h4></h4>
                                             </div>
                                         </div>
                                     </a>
                                     <div class="iq-progress-bar mt-2">
-                                        <span class="bg-info iq-progress progress-1" data-percent="85">
-                                        </span>
+                                        <span class="{{ $colors[$colorIndex++] }} iq-progress progress-1" data-percent="85"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        @if ($colorIndex >= count($colors))
+                            @php $colorIndex = 0; @endphp
+                        @endif
                     @endforeach
                 </div>
             </div>

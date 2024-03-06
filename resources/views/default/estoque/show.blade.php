@@ -7,7 +7,7 @@
         <div class="row">
             <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
                 <div>
-                    <h4 class="mb-3">Estoque {{ Auth::user()->area_hospitalar->area_hospitalar->nome }}</h4>
+                    <h4 class="mb-3">Estoque {{ $ah->nome }}</h4>
                     {{-- <button type="button" class="btn btn-danger mt-2"><i class="ri-radio-button-fill pr-0"></i></button>
                     <form id="repeater-form">
                         <div class="repeater">
@@ -25,13 +25,23 @@
                 </div>
                 @php
                     use App\Models\ProdutoEstoque;
-                    $area_hospitalar_id = Auth::user()->area_hospitalar->area_hospitalar->id;
-                    $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
-                        $query->where('area_hospitalar_id', $area_hospitalar_id);
-                    })
-                        ->with('saldo')
-                        ->get()
-                        ->take(4);
+                    if (!(@$non_)) {
+                        $area_hospitalar_id = Auth::user()->area_hospitalar->area_hospitalar->id;
+                        $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
+                            $query->where('area_hospitalar_id', $area_hospitalar_id);
+                        })
+                            ->with('saldo')
+                            ->get()
+                            ->take(4);
+                    }else{
+                        $area_hospitalar_id = $area_id;
+                        $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
+                            $query->where('area_hospitalar_id', $area_hospitalar_id);
+                        })
+                            ->with('saldo')
+                            ->get()
+                            ->take(4);
+                    }
                 @endphp
 
                 {{-- <a href="#" class="btn btn-primary add-list" style="float: right" data-toggle="modal" data-target="#addFarmacia"><i

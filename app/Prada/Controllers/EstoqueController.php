@@ -35,10 +35,30 @@ class EstoqueController extends Controller
                 ->get();
 
             self::calcNivelAlerta();
-            return view('estoque.show', compact('estoque', 'ah'));
+            $ah = auth()->user()->area_hospitalar->area_hospitalar;
+            $area_id = auth()->user()->area_hospitalar->area_hospitalar->id;
+            return view('estoque.show', compact('estoque', 'ah', 'area_id'));
         }
 
         return view('estoque.panel');
+    }
+
+    public function getEstoque(Request $request, $id)
+    {
+        $ah = AH::find($id);
+        $area_id = $id;
+        $non_ = true;
+        if (!$ah)
+            return redirect()->back()->with('warning', 'Algo deu errado e não podemos acessar esta página.');
+
+        $estoque = Estoque::join('produto_estoques', 'estoques.produto_estoque_id', '=', 'produto_estoques.id')
+            ->select('estoques.*')
+            ->where('estoques.area_hospitalar_id', $id)
+            ->orderBy('produto_estoques.designacao', 'asc')
+            ->get();
+
+        self::calcNivelAlerta();
+        return view('estoque.show', compact('estoque', 'non_', 'area_id', 'ah'));
     }
 
     public function getListHome()
