@@ -4,6 +4,8 @@ namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\{
     Farmacia, User, Grupo
 };
@@ -25,7 +27,21 @@ class UsuarioController extends Controller
         if (!$u)
             return redirect()->back()->with('warning', 'Ocorreu um erro, usuário não encontrado!');
 
-        return view('perfil.view', compact('u'));
+        return view('perfil.altSenha', compact('u'));
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $this->validate($request, [
+            'current-password' => 'required|string|current_password',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return redirect()->route('home')->with('success', 'Senha alterada com sucesso!');
     }
 
     public function unblockUser(Request $request, $id)

@@ -33,7 +33,7 @@
                                         </div>
                                     </a>
                                     <div class="iq-progress-bar mt-2">
-                                        <span class="{{ $colors[$colorIndex++] }} iq-progress progress-1" data-percent="85"></span>
+                                        <span class="{{ $colors[$colorIndex++] }} iq-progress progress-1" data-percent="0"></span>
                                     </div>
                                 </div>
                             </div>

@@ -344,8 +344,7 @@
                                             <h5 class="mb-1">{{ auth()->user()->nome }}</h5>
                                             <p class="mb-0">Desde 10 Fevereiro, 2024</p>
                                             <div class="d-flex align-items-center justify-content-center mt-3">
-                                                <a href="#"
-                                                    class="btn border mr-2">Perfil</a>
+                                                <a href="{{ route('u.perfil', ['username' => auth()->user()->username]) }}" class="btn border mr-2">Perfil</a>
                                                 <label for="btn-sair" class="btn border">Sair</label>
                                             </div>
                                         </div>

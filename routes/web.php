@@ -70,10 +70,11 @@ Route::middleware(['auth', 'is.status'])->group(function () {
     Route::prefix('u')->group(function () {
         Route::get('/', [UsuarioController::class, 'index'])->name('usuario');
         Route::put('/', [UsuarioController::class, 'addCargo'])->name('usuario.addCargo');
-        // não alterar a rota aqui
+        // não alterar a rota aqui updatePassword
         Route::put('bloquear/{id}', [UsuarioController::class, 'blockUser'])->name('u.bloquear');
         Route::get('desbloquear/{id}', [UsuarioController::class, 'unblockUser'])->name('u.desbloquear');
         Route::get('{username}', [UsuarioController::class, 'perfil'])->name('u.perfil');
+        Route::post('alterar-senha', [UsuarioController::class, 'updatePassword'])->name('u.altSenha');
     });
 
     Route::prefix('areas_hospitalares')->middleware('is.gestor_farmacia')->group(function () {
