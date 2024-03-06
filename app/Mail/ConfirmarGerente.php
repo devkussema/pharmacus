@@ -32,7 +32,7 @@ class ConfirmarGerente extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Confirmar Gerente',
+            subject: 'Confirmar Conta | '.env('APP_NAME'),
         );
     }
 

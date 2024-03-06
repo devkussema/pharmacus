@@ -52,6 +52,7 @@ Route::middleware(['auth', 'is.status'])->group(function () {
 
     Route::prefix('estoque')->middleware('is.area_hospitalar')->group(function () {
         Route::get('/', [EstoqueController::class, 'index'])->name('estoque');
+        Route::get('/home', [EstoqueController::class, 'getListHome'])->name('estoque.gerente');
         Route::get('/aa', [EstoqueController::class, 'aa']);
         Route::get('/produto/{id}', [EstoqueController::class, 'getProduto']);
         Route::put('/produto/{id}', [EstoqueController::class, 'editarProduto']);

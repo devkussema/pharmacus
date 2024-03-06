@@ -102,6 +102,7 @@
                 </div>
             </div>
         </div>
+        
         @include('modals._estoqueFarmaceutico')
         @include('modals._addFarmacia')
         @include('modals._addCategoria')
@@ -142,30 +143,47 @@
 
     <script src="{{ asset('/sw.js') }}"></script>
     <script>
-        // Obtém uma referência para o botão e para o loader
-        const button = document.getElementById('btnClick2');
-        const loader = document.getElementById('loaderish');
+        document.querySelectorAll('a.link-loaderish').forEach(function(alink) {
+            alink.addEventListener('click', function(event) {
+                event.preventDefault(); // Impede o comportamento padrão do link
 
-        // Adiciona um ouvinte de evento de clique ao botão
-        button.addEventListener('click', function() {
-            // Exibe o loader com fade
-            loader.style.display = 'block';
-            loader.style.opacity = '0';
-            loader.style.display = 'flex'; // Exibe o loader
-            setTimeout(() => {
-                loader.style.opacity = '1';
-            }, 2000); // Tempo de espera para o efeito de fade
+                // Obtém a URL do href do link clicado
+                var url = alink.getAttribute('href');
+
+                showLoader(800);
+
+                setTimeout(function() {
+                    window.location.href = alink.href; // Redireciona para o link após o tempo de espera
+                }, 2000);
+                return false;
+            });
         });
 
+        // adrianopeligangalata@gmail.com
+        // const alink = document.querySelector('a.link-loaderish');
+        // alink.addEventListener('click', function(event) {
+        //     event.preventDefault();
+
+        //     showLoader();
+
+        //     setTimeout(function() {
+        //         window.location.href = alink.href; // Redireciona para o link após o tempo de espera
+        //     }, 5000); // Tempo de espera em milissegundos (2 segundos neste exemplo)
+
+        //     return false; // Impede o navegador de seguir o link padrão
+        // });
+
+        const link = document.querySelector('a');
+
         // Função para exibir o loader com efeito de fade-in
-        function showLoader() {
+        function showLoader(tempo=2000) {
             const loader = document.getElementById('loaderish');
             loader.style.display = 'block'; // Exibe o loader
             loader.style.opacity = '0';
             loader.style.display = 'flex';
             setTimeout(() => {
                 loader.style.opacity = '1'; // Define a opacidade como 1 para exibir gradualmente
-            }, 2000); // Tempo de espera para iniciar o efeito de fade
+            }, tempo); // Tempo de espera para iniciar o efeito de fade
         }
 
         // Função para esconder o loader com efeito de fade-out

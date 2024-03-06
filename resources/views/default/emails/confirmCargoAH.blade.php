@@ -72,7 +72,7 @@
                         <td bgcolor="#ffffff" align="left"
                             style="padding: 0px 30px 20px 30px; color: #aaaaaa; font-family: &apos;Lato&apos;, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 400; line-height: 25px;">
                             <p style="margin: 0; text-align: center;">
-                                Se você não solicitou esta criação de conta, por favor, ignore este e-mail.
+                                Se você não tens conhecimento disso, por favor, ignore este e-mail.
                             </p>
                         </td>
                     </tr>
@@ -80,7 +80,7 @@
                     <tr>
                         <td bgcolor="#ffffff" align="left"
                             style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 0px 0px; color: #666666; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Saudações,<br>A equipa de software</p>
+                            <p style="margin: 0;">Saudações,<br>A equipa de Suporte</p>
                         </td>
                     </tr>
                 </table>

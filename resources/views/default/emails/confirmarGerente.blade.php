@@ -96,7 +96,7 @@
                     <tr>
                         <td bgcolor="#ffffff" align="left"
                             style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 0px 0px; color: #666666; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Cheers,<br>Team</p>
+                            <p style="margin: 0;">Saudação,<br>A equipa de Suporte</p>
                         </td>
                     </tr>
                 </table>
@@ -115,7 +115,7 @@
             <tr>
             <td align="center" valign="top" width="600">
             <![endif]-->
-            @include('components._emailFooterNavigation')
+            {{-- @include('components._emailFooterNavigation') --}}
             <!--[if (gte mso 9)|(IE)]>
             </td>
             </tr>

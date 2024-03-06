@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\{
     AreaHospitalar as AH,
     Estoque,
+    Farmacia,
     SaldoEstoque as SE,
     ProdutoEstoque as PE,
     RelatorioEstoqueAlerta as REA,
@@ -24,15 +25,30 @@ class EstoqueController extends Controller
     public function index()
     {
         $ah = AH::all();
+        $estoque = "";
 
-        $estoque = Estoque::join('produto_estoques', 'estoques.produto_estoque_id', '=', 'produto_estoques.id')
-            ->select('estoques.*')
-            ->where('estoques.area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)
-            ->orderBy('produto_estoques.designacao', 'asc')
-            ->get();
+        if (!auth()->user()->isFarmacia and auth()->user()->area_hospitalar->area_hospitalar_id) {
+            $estoque = Estoque::join('produto_estoques', 'estoques.produto_estoque_id', '=', 'produto_estoques.id')
+                ->select('estoques.*')
+                ->where('estoques.area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)
+                ->orderBy('produto_estoques.designacao', 'asc')
+                ->get();
 
-        self::calcNivelAlerta();
-        return view('estoque.show', compact('estoque', 'ah'));
+            self::calcNivelAlerta();
+            return view('estoque.show', compact('estoque', 'ah'));
+        }
+
+        return view('estoque.panel');
+    }
+
+    public function getListHome()
+    {
+        if (!auth()->user()->isFarmacia)
+            return redirect()->route('home')->with('error', 'Não podes aceder esta página.');
+
+        $all_areas = AH::where('farmacia_id', auth()->user()->isFarmacia->farmacia_id)->get();
+
+        return view('estoque.panel', compact('all_areas'));
     }
 
     public function ajaxEstoque()

@@ -1,6 +1,6 @@
 @extends('home.index')
 
-@section('titulo', 'Fármacias')
+@section('titulo', 'Farmácias')
 
 @section('conteudo')
     <div id="dadoPrincipal">

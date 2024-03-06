@@ -29,7 +29,7 @@ class ConfirmarContaGerenteAH extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Confirme sua conta',
+            subject: 'Confirme sua conta | '.env('APP_NAME'),
         );
     }
 

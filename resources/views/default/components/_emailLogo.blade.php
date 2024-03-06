@@ -11,7 +11,7 @@
                     <a href="#" target="_blank" style="text-decoration: none;">
                         <span
                             style="display: block; font-family: 'Poppins', sans-serif; color: #3e8ef7; font-size: 36px;"
-                            border="0"><b>Pharmacus</b></span>
+                            border="0"><b>{{ env('APP_NAME', 'Pharmatina') }}</b></span>
                     </a>
                 </td>
             </tr>
