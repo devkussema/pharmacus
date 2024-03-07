@@ -116,8 +116,10 @@ Route::middleware(['auth', 'is.status'])->group(function () {
     });
 
     Route::post('/logout', function () {
-        Auth::logout();
-        return redirect('/'); // Redireciona para a página inicial após o logout
+        if (auth()->check()) {
+            Auth::logout();
+        }
+        return redirect()->route('login'); // Redireciona para a página inicial após o logout
     })->name('logout');
 
     // Dev

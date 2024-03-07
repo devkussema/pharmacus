@@ -44,7 +44,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $sessName = env('APP_NAME').'_session';
+        $sessName = env('APP_NAME').'_session';     
         // if (!Session::has('laravel_token') || Session::token() !== $request->input('_token')) {
         //     return response()->json([
         //         'success' => false,

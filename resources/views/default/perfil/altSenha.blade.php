@@ -28,18 +28,18 @@
                                             @csrf
                                             <div class="form-group col-md-12">
                                                 <label for="uname">Senha atual:</label>
-                                                <input type="password" class="form-control" id="uname" name="current-password">
+                                                <input disabled type="password" class="form-control" id="uname" name="current-password">
                                             </div>
                                             <div class="form-group col-md-12">
                                                 <label for="pass">Nova senha:</label>
-                                                <input type="password" class="form-control" id="pass" name="password">
+                                                <input disabled type="password" class="form-control" id="pass" name="password">
                                             </div>
                                             <div class="form-group col-md-12">
                                                 <label for="rpass">Repetir senha:</label>
-                                                <input type="password" class="form-control" id="rpass" name="confirm-password">
+                                                <input disabled type="password" class="form-control" id="rpass" name="confirm-password">
                                             </div>
                                             <div class="form-group col-md-4">
-                                                <button type="submit" class="btn btn-primary">Alterar senha</button>
+                                                <button disabled type="submit" class="btn btn-primary">Alterar senha</button>
                                             </div>
                                         </form>
                                     </div>

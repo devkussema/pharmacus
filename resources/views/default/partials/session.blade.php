@@ -27,3 +27,9 @@
         </ul>
     </div>
 @endif
+
+@if (nem('MANUTENCAO_LEVE'))
+    <div class="alert alert-warning" role="alert">
+        Alguns recursos podem estar indisponiveis pelo que estamos a trabalhar para melhorar
+    </div>
+@endif
