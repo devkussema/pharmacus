@@ -28,7 +28,7 @@
     </div>
 @endif
 
-@if (nem('MANUTENCAO_LEVE'))
+@if (nem('MANUTENCAO_LEVE') and auth()->check())
     <div class="alert alert-warning" role="alert">
         Alguns recursos podem estar indisponiveis pelo que estamos a trabalhar para melhorar
     </div>
