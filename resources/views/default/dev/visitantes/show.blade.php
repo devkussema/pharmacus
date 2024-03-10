@@ -34,6 +34,7 @@
                                 <th>Referência</th>
                                 <th>Navegador</th>
                                 <th>Dispositivo</th>
+                                <th>Data</th>
                             </tr>
                         </thead>
                         <tbody class="ligth-body">
@@ -51,6 +52,7 @@
                                     <td>{{ $vs->referrer }}</td>
                                     <td>{{ getBrowserName($vs->browser) }}</td>
                                     <td>{{ getDeviceTipo($vs->device) }}</td>
+                                    <td>{{ tempo_decorrido($vs->created_at) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -10,7 +10,8 @@ class VisitanteController extends Controller
 {
     public function index()
     {
-        $visitantes = Visitante::all();
+        $visitantes = Visitante::orderBy('created_at', 'desc')->get();
+
         return view("dev.visitantes.show", compact('visitantes'));
     }
 }

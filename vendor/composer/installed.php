@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'd95d8b040e24a0a3d4671202bc1cdf4ceeb13f8b',
+        'reference' => '40318f7bdb86825d5fea0ed67c29e9ca65b045f4',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -400,7 +400,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'fc9db218368ec582cc2ee3d08acf0edba0bf5e99',
+            'reference' => '40318f7bdb86825d5fea0ed67c29e9ca65b045f4',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -513,6 +513,15 @@
             'install_path' => __DIR__ . '/../maximebf/debugbar',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'mobiledetect/mobiledetectlib' => array(
+            'pretty_version' => '4.8.06',
+            'version' => '4.8.06.0',
+            'reference' => 'af088b54cecc13b3264edca7da93a89ba7aa2d9e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../mobiledetect/mobiledetectlib',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'mockery/mockery' => array(
             'pretty_version' => '1.6.7',

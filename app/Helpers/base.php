@@ -130,7 +130,8 @@ function getMobileBrand($user_agent)
     }
 }
 
-function getDesktopOS($user_agent) {
+function getDesktopOS($user_agent)
+{
     $os = 'Desconhecido';
     $version = '';
 
@@ -161,9 +162,9 @@ function getDeviceTipo($user_agent)
     $mobile = getMobileBrand($user_agent);
     $desktop = getDesktopOS($user_agent);
 
-    if ($mobile != "Desconhecido"){
+    if ($mobile != "Desconhecido") {
         return getMobileBrand($user_agent);
-    }else if ($desktop != "Desconhecido"){
+    } else if ($desktop != "Desconhecido") {
         return getDesktopOS($user_agent);
     }
 
@@ -237,6 +238,33 @@ if (!function_exists('saudacaoDoDia')) {
         } else {
             return "Boa noite";
         }
+    }
+}
+
+function tempo_decorrido($data)
+{
+    // Converte a data para um objeto DateTime
+    $data = new DateTime($data);
+
+    // Obtém a data atual
+    $dataAtual = new DateTime();
+
+    // Calcula a diferença entre as duas datas
+    $intervalo = $data->diff($dataAtual);
+
+    // Verifica o intervalo de tempo decorrido
+    if ($intervalo->y > 0) {
+        return 'há ' . $intervalo->y . ' ano' . ($intervalo->y > 1 ? 's' : '');
+    } elseif ($intervalo->m > 0) {
+        return 'há ' . $intervalo->m . ' mês' . ($intervalo->m > 1 ? 'es' : '');
+    } elseif ($intervalo->d > 0) {
+        return 'há ' . $intervalo->d . ' dia' . ($intervalo->d > 1 ? 's' : '');
+    } elseif ($intervalo->h > 0) {
+        return 'há ' . $intervalo->h . ' hora' . ($intervalo->h > 1 ? 's' : '');
+    } elseif ($intervalo->i > 0) {
+        return 'há ' . $intervalo->i . ' minuto' . ($intervalo->i > 1 ? 's' : '');
+    } else {
+        return 'agora mesmo';
     }
 }
 
