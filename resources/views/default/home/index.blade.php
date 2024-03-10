@@ -102,7 +102,7 @@
                 </div>
             </div>
         </div>
-        
+
         @include('modals._estoqueFarmaceutico')
         @include('modals._addFarmacia')
         @include('modals._addCategoria')
@@ -226,30 +226,28 @@
         }
     </script>
 
-    <script src="{{ asset('assets/js/helpers.js') }}" async></script>
-    <!-- Backend Bundle JavaScript -->
-    <script src="{{ asset('assets/js/backend-bundle.min.js') }}"></script>
-
-    <!-- Table Treeview JavaScript -->
-    <script src="{{ asset('assets/js/table-treeview.js') }}"></script>
-
-    <!-- Chart Custom JavaScript -->
-    <script src="{{ asset('assets/js/customizer.js') }}"></script>
-
-    <!-- Chart Custom JavaScript -->
-    <script async src="{{ asset('assets/js/chart-custom.js') }}"></script>
-
-    {{-- Chart.js --}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-
-    <!-- app JavaScript -->
-    <script src="{{ asset('assets/js/app.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
-    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap4.min.js"></script>
+    @if (nem('APP_ENV') != 'production')
+        <script src="{{ asset('assets/js/dev/helpers.js') }}" async></script>
+        <script src="{{ asset('assets/js/dev/backend-bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/js/dev/table-treeview.js') }}"></script>
+        <script src="{{ asset('assets/js/dev/customizer.js') }}"></script>
+        <script async src="{{ asset('assets/js/dev/chart-custom.js') }}"></script>
+        <script src="{{ asset('assets/js/dev/app.js') }}"></script>
+        <script src="{{ asset('assets/js/dev/toastr.min.js') }}"></script>
+    @else
+        <script src="{{ asset('assets/js/helpers.js') }}" async></script>
+        <script src="{{ asset('assets/js/backend-bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/js/table-treeview.js') }}"></script>
+        <script src="{{ asset('assets/js/customizer.js') }}"></script>
+        <script async src="{{ asset('assets/js/chart-custom.js') }}"></script>
+        <script src="{{ asset('assets/js/app.js') }}"></script>
+        <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
+    @endif
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
             $('select.select2').select2();
