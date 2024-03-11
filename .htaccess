@@ -11,6 +11,6 @@
     ExpiresActive On
 
     # Definir uma data de expiração de 2 dias para arquivos JavaScript e CSS
-    ExpiresByType application/javascript "access plus 2 days"
-    ExpiresByType text/css "access plus 2 days"
+    ExpiresByType application/javascript "access plus 2 months"
+    ExpiresByType text/css "access plus 2 months"
 </IfModule>

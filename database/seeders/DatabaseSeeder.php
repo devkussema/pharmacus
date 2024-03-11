@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             GrupoSeeder::class,
             CategoriaProdutoSeeder::class,
             NiveisDeAlertaSeeder::class,
+            UserOwnerCreate::class,
         ]);
     }
 }
