@@ -13,7 +13,7 @@
                                     placeholder="Nome da farmácia">
                             </div>
                             <div class="form-group">
-                                <label for="nome_farmacia">Nome *</label>
+                                <label for="nome_farmacia">Tipo de Farmácia *</label>
                                 <select name="categoria_id" id="" class="form-control">
                                     @php $cats = \App\Models\Categoria::where('tipo', 'farmacia')->get() @endphp
                                     @foreach ($cats as $categoria)

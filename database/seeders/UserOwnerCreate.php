@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
+use App\Models\{User, UserGroup};
 
 class UserOwnerCreate extends Seeder
 {
@@ -24,6 +24,11 @@ class UserOwnerCreate extends Seeder
                 "password" => "$2y$12$3FaFZeOaWjPwb7kky7PCWeuFSqLDnm3IwjajW6NshnU.Ydh3zHw0u",
         ];
         
-        User::create($users);
+        $usr = User::create($users);
+
+        UserGroup::create([
+            'user_id' => $usr->id,
+            'grupo_id' => 1
+        ]);
     }
 }

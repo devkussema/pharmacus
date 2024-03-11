@@ -20,11 +20,11 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            AHSeeder::class,
-            CategoriasSeeder::class,
-            GrupoFarmaco::class,
+            // AHSeeder::class,
+            // CategoriasSeeder::class,
+            // GrupoFarmaco::class,
             GrupoSeeder::class,
-            CategoriaProdutoSeeder::class,
+            //CategoriaProdutoSeeder::class,
             NiveisDeAlertaSeeder::class,
             UserOwnerCreate::class,
         ]);

@@ -49,8 +49,8 @@
                     Adicionar
                 </a> --}}
             </div>
-            @include('partials.session')
             <div class="col-lg-12">
+            @include('partials.session')
                 <div class="row">
                     @php $gruposImpressos = []; @endphp
                     @foreach ($produtoEstoques as $p)
