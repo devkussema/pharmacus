@@ -53,19 +53,38 @@ function calcMes($dataAlvo)
     // Obtém a data atual
     $hoje = new DateTime();
 
-    // Calcula a diferença entre as duas datas
-    $intervalo = $hoje->diff($dataAlvo);
+    // Verifica se a data alvo é anterior à data atual
+    if ($dataAlvo < $hoje) {
+        // Calcula a diferença em dias entre as duas datas
+        $intervalo = $hoje->diff($dataAlvo);
+        $diasExpirados = $intervalo->days;
 
-    // Calcula o número total de meses restantes
-    $mesesRestantes = $intervalo->y * 12 + $intervalo->m;
-
-    if ($mesesRestantes < 1) {
-        // Se faltar menos de 1 mês, retorna o número de dias restantes
-        $diasRestantes = $intervalo->days;
-        return "$diasRestantes dias";
+        if ($diasExpirados > 365) {
+            // Calcula o número total de anos excedidos
+            $anosExpirados = floor($diasExpirados / 365);
+            return "Expirou há $anosExpirados anos";
+        } elseif ($diasExpirados > 30) {
+            // Calcula o número total de meses excedidos
+            $mesesExpirados = floor($diasExpirados / 30);
+            return "Expirou há $mesesExpirados meses";
+        } else {
+            return "Expirou há $diasExpirados dias";
+        }
     } else {
-        // Caso contrário, retorna o número de meses restantes
-        return "$mesesRestantes meses";
+        // Calcula a diferença entre as duas datas
+        $intervalo = $hoje->diff($dataAlvo);
+
+        // Calcula o número total de meses restantes
+        $mesesRestantes = $intervalo->y * 12 + $intervalo->m;
+
+        if ($mesesRestantes < 1) {
+            // Se faltar menos de 1 mês, retorna o número de dias restantes
+            $diasRestantes = $intervalo->days;
+            return "$diasRestantes dias";
+        } else {
+            // Caso contrário, retorna o número de meses restantes
+            return "$mesesRestantes meses";
+        }
     }
 }
 

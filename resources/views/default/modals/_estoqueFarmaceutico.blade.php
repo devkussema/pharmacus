@@ -24,10 +24,10 @@
                             </div>
                             <div class="" id="item_medicamento" style="display:none">
                                 <div class="form-row">
-                                    <div class="col pb-3">
+                                    {{-- <div class="col pb-3">
                                         <label class="mb-2">Quantidade em Estoque *</label>
                                         <input type="number" class="form-control" placeholder="" name="qtd">
-                                    </div>
+                                    </div> --}}
                                     <div class="col pb-3">
                                         <label class="mb-2">Dosagem *</label>
                                         <input type="text" class="form-control" placeholder="" name="dosagem">
@@ -41,7 +41,7 @@
                                 </button>
                             </div> --}}
                             <div class="" id="repetir_">
-                                <div class="" id="item_descartavel" style="display: none">
+                                <div class="" id="item_descartavelq" style="">
                                     <div class="form-row">
                                         <div class="col pb-3">
                                             <label class="mb-2">Descritivo *</label>
@@ -93,6 +93,16 @@
                                         <label class="mb-2">Origem / Destino *</label>
                                         <input type="text" class="form-control" placeholder="" name="origem_destino">
                                     </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col pb-3">
+                                    <label class="mb-2">Área Hospitalar</label>
+                                    <select name="area_id" style="width: 100%" id="" class="form-control select2">
+                                        @foreach (\App\Models\AreaHospitalar::all() as $ah)
+                                            <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-row">

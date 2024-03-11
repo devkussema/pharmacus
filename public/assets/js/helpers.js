@@ -668,12 +668,16 @@ function modalEditarProdutoEstoque(id) {
             $('#formEditProdutoEstoque #designacao').val(response.designacao);
             $('#formEditProdutoEstoque #tipo_produto_estoque').val(response.tipo);
             if (response.tipo == "medicamento") {
+                $('#formEditProdutoEstoque #dosagem_inp').css('display', 'block');
+
                 $('#formEditProdutoEstoque #item_medicamento').css('display', 'block');
                 $('#formEditProdutoEstoque #item_descartavel').css('display', 'none');
                 $('#formEditProdutoEstoque #dosagem').val(response.dosagem);
                 $('#formEditProdutoEstoque #qtd_estoque').val(response.saldo.qtd);
             }
             if (response.tipo == "descartável") {
+                $('#formEditProdutoEstoque #dosagem_inp').css('display', 'none');
+                
                 $('#formEditProdutoEstoque #item_descartavel').css('display', 'block');
                 $('#formEditProdutoEstoque #item_medicamento').css('display', 'none');
                 $('#formEditProdutoEstoque #descritivo').val(response.descritivo);
@@ -865,7 +869,11 @@ $(document).ready(function () {
         if ($(this).val() === 'descartável') {
             $('#item_descartavel').fadeIn();
             $('#item_medicamento').fadeOut();
+            $('#formProdutoEstoque #dosagem_inp').css('display', 'none');
+            $('#formProdutoEstoque #dosagem_inp').fadeOut();
         } else {
+            $('#formProdutoEstoque #dosagem_inp').css('display', 'block');
+            $('#formProdutoEstoque #dosagem_inp').fadeIn();
             $('#item_descartavel').fadeOut();
             $('#item_medicamento').fadeIn();
         }

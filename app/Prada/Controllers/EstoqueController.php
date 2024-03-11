@@ -97,7 +97,7 @@ class EstoqueController extends Controller
             'dosagem' => 'nullable',
             'forma' => 'required',
             'tipo' => 'required',
-            'descritivo' => 'nullable',
+            'descritivo' => 'required',
             'qtd_total' => 'required',
             'origem_destino' => 'required',
             'num_lote' => 'required|unique:produto_estoques,num_lote',
@@ -129,9 +129,12 @@ class EstoqueController extends Controller
             'qtd_embalagem.min' => 'A quantidade por embalagem deve ser pelo menos 1.',
         ]);
 
+        if ($request->tipo == 'medicamento' and !$request->dosagem)
+            return response()->json(['message' => "Um medicamento deve ter uma dosagem"], 401);
+
         $dadosPE = [
             'designacao' => $request->designacao,
-            'dosagem' => $request->dosagem,
+            'dosagem' => ($request->dosagem ? $request->dosagem : ''),
             'tipo' => $request->tipo,
             'descritivo' => $request->descritivo,
             'forma' => $request->forma,
@@ -141,16 +144,13 @@ class EstoqueController extends Controller
             'data_producao' => $request->data_producao,
             'num_documento' => $request->num_documento,
             'obs' => $request->obs,
-            'qtd_embalagem' => $request->qtd_embalagem,
+            'qtd_embalagem' => ($request->qtd_embalagem ? $request->qtd_embalagem : null),
             'grupo_farmaco_id' => $request->grupo_farmaco_id
         ];
 
         $tipo = $request->tipo;
-        $qtd = $request->qtd;
-        if ($tipo == "descartável") {
-            $pe = PE::create($dadosPE);
-            $qtd = $request->qtd_total;
-        }
+        $pe = PE::create($dadosPE);
+        $qtd = $request->qtd_total;
 
         SE::create([
             'produto_estoque_id' => $pe->id,
@@ -159,10 +159,10 @@ class EstoqueController extends Controller
 
         Estoque::create([
             'produto_estoque_id' => $pe->id,
-            'area_hospitalar_id' => auth()->user()->area_hospitalar->area_hospitalar_id
+            'area_hospitalar_id' => $request->area_id
         ]);
 
-        self::startAtv("Adicionou cerca de {$request->qtd} {$request->forma} de {$request->designacao} para " . auth()->user()->area_hospitalar->area_hospitalar->nome);
+        self::startAtv("Adicionou cerca de {$request->qtd_total} {$request->forma} de {$request->designacao}");
 
         return response()->json(['message' => "{$request->designacao} adicionado!"]);
     }
