@@ -101,7 +101,7 @@ class EstoqueController extends Controller
             'origem_destino' => 'required',
             'num_lote' => 'required|unique:produto_estoques,num_lote',
             'data_producao' => 'required|date|before:today', // Verifica se a data de produção é anterior à data atual
-            'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(10), // Verifica se a data de expiração é pelo menos 10 meses após a data atual
+            'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(4), // Verifica se a data de expiração é pelo menos 10 meses após a data atual
             'num_documento' => 'required|unique:produto_estoques,num_documento',
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
@@ -114,12 +114,12 @@ class EstoqueController extends Controller
             'tipo.required' => 'Selecione um tipo.',
             'origem_destino.required' => 'A origem ou destino é obrigatório.',
             'num_lote.required' => 'O número do lote é obrigatório.',
-            'data_expiracao.required' => 'A data de expiração é obrigatória.',
-            'data_expiracao.date' => 'A data de expiração deve ser uma data válida.',
+            'data_expiracao.required' => 'A data de caducidade é obrigatória.',
+            'data_expiracao.date' => 'A data de caducidade deve ser uma data válida.',
             'data_producao.required' => 'A data de produção é obrigatória.',
             'data_producao.date' => 'A data de produção deve ser uma data válida.',
             'data_producao.before' => 'A data de produção deve ser anterior à data atual.',
-            'data_expiracao.after_or_equal' => 'A data de expiração deve ser pelo menos 10 meses após a data atual.',
+            'data_expiracao.after_or_equal' => 'A data de caducidade deve ser pelo menos 4 meses após a data atual.',
             'num_documento.required' => 'O número do documento é obrigatório.',
             'num_documento.unique' => 'Já existe um item com este número de produto.',
             'qtd_total.required' => 'Preencha o descritivo.',
