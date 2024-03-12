@@ -44,25 +44,24 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $sessName = env('APP_NAME').'_session';     
-        // if (!Session::has('laravel_token') || Session::token() !== $request->input('_token')) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'codigo' => 'csrf',
-        //         'message' => 'CSRF token inválido ou expirado.',
-        //     ], 401);
-        // }
+        $sessName = env('APP_NAME').'_session';
+
+        if ( !higienizarEmail($request->email) ){
+            if ($request->ajax()) {
+                return response()->json(['message' => "Informe um email válido"], 401);
+            }
+            return redirect()->back()->with('error', 'Informe um email válido');
+        }
 
         $request->validate([
             'email' => 'required|exists:users,email',
             'password' => 'required',
-            'email_verified_at' => 'nullable',
-            'token' => 'nullable'
         ],[
             'email.required' => 'O email é obrigatório',
             'email.exists' => "Credenciais inválidas, tente novamente",
             'password.required' => 'Informe a senha'
         ]);
+
 
         $credentials = $request->only('email', 'password');
 
@@ -73,21 +72,6 @@ class AuthController extends Controller
                     return response()->json(['message' => 'A tua conta não está ativada'],422);
                 }
                 return redirect()->route('login')->with('error', 'A tua conta não está ativada');
-            }
-            if ($request->email_verified_at && $request->token) {
-                User::where('email', $request->email)->update([
-                    'email_verified_at' => now(),
-                    'status' => 1,
-                ]);
-                $gf = GerenteFarmacia::where('user_id', Auth::user()->id)->first();
-                Farmacia::where('id', $gf->farmacia_id)->update(['status' => 1]);
-                UT::where('token', $request->token)->update([
-                    'last_used_at' => now()
-                ]);
-                if ($request->ajax()) {
-                    return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
-                }
-                return redirect()->route('home');
             }
 
             if ($request->ajax()) {

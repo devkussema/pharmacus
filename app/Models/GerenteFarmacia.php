@@ -31,12 +31,12 @@ class GerenteFarmacia extends Model
     // Relação com o usuário
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // Relação com a farmácia
     public function farmacia()
     {
-        return $this->belongsTo(Farmacia::class);
+        return $this->belongsTo(Farmacia::class, 'farmacia_id');
     }
 }

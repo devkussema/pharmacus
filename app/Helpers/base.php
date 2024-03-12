@@ -6,6 +6,22 @@ use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function higienizarEmail($email) {
+    // Remove espaços em branco no início e no final do email
+    $email = trim($email);
+
+    // Remove caracteres especiais do email
+    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+    // Verifica se o email tem um formato válido
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return $email;
+    } else {
+        // Se o email não for válido, retorna uma string vazia
+        return false;
+    }
+}
+
 function isAreaDefault()
 {
     $user = Auth::user()->with('area_hospitalar')->whereHas('area_hospitalar', function ($query) {
@@ -234,13 +250,13 @@ function printNome($nomeCompleto)
     $partesNome = explode(' ', $nomeCompleto);
 
     // Pegar o último elemento do array (sobrenome)
-    $sobrenome = end($partesNome);
+    // $sobrenome = end($partesNome);
 
     // Pegar o primeiro elemento do array (primeiro nome)
-    // $primeiroNome = reset($partesNome);
+    $primeiroNome = reset($partesNome);
 
     // Retornar apenas o sobrenome
-    return $sobrenome;
+    return $primeiroNome;
 }
 
 if (!function_exists('saudacaoDoDia')) {

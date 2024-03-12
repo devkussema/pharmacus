@@ -89,7 +89,6 @@ class EstoqueController extends Controller
             ->toJson();
     }
 
-
     public function store(Request $request)
     {
         $request->validate([

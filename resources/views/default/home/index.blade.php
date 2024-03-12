@@ -226,7 +226,6 @@
         }
     </script>
 
-    @if (nem('APP_ENV') != 'production')
         <script src="{{ asset('assets/js/dev/helpers.js') }}" async></script>
         <script src="{{ asset('assets/js/dev/backend-bundle.min.js') }}"></script>
         <script src="{{ asset('assets/js/dev/table-treeview.js') }}"></script>
@@ -234,15 +233,7 @@
         <script async src="{{ asset('assets/js/dev/chart-custom.js') }}"></script>
         <script src="{{ asset('assets/js/dev/app.js') }}"></script>
         <script src="{{ asset('assets/js/dev/toastr.min.js') }}"></script>
-    @else
-        <script src="{{ asset('assets/js/helpers.js') }}" async></script>
-        <script src="{{ asset('assets/js/backend-bundle.min.js') }}"></script>
-        <script src="{{ asset('assets/js/table-treeview.js') }}"></script>
-        <script src="{{ asset('assets/js/customizer.js') }}"></script>
-        <script async src="{{ asset('assets/js/chart-custom.js') }}"></script>
-        <script src="{{ asset('assets/js/app.js') }}"></script>
-        <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
-    @endif
+
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

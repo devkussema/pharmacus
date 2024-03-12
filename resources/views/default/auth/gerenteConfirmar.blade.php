@@ -15,7 +15,7 @@
                                         alt="">
                                     <h2 class="mb-2">Olá ! {{ $token->user->nome }}</h2>
                                     <p>Informe a sua senha para acessar a tua conta.</p>
-                                    <form method="post" action="{{ route('entrar') }}">
+                                    <form method="post" action="{{ route('autenticar.gerenteFarmacia') }}">
                                         @csrf
                                         <div class="row">
                                             <div class="col-lg-12">

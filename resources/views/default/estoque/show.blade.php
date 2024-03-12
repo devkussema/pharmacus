@@ -140,7 +140,7 @@
                                     <td>
                                         <div class="d-flex align-items-center list-action">
                                             <a class="badge bg-success mr-2" title="Dar baixa" href="javascript:void(0)"
-                                                onclick="modalDarBaixa({{ $est->produto->id }})">
+                                                onclick="modalDarBaixa({{ $est->produto->id }}, '{{ $est->produto->descritivo }}')">
                                                 <i class="ri-install-line mr-0"></i>
                                             </a>
                                             <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
