@@ -153,7 +153,8 @@
                 showLoader(800);
 
                 setTimeout(function() {
-                    window.location.href = alink.href; // Redireciona para o link após o tempo de espera
+                    window.location.href = alink
+                        .href; // Redireciona para o link após o tempo de espera
                 }, 2000);
                 return false;
             });
@@ -176,7 +177,7 @@
         const link = document.querySelector('a');
 
         // Função para exibir o loader com efeito de fade-in
-        function showLoader(tempo=2000) {
+        function showLoader(tempo = 2000) {
             const loader = document.getElementById('loaderish');
             loader.style.display = 'block'; // Exibe o loader
             loader.style.opacity = '0';
@@ -226,19 +227,19 @@
         }
     </script>
 
-        <script src="{{ asset('assets/js/dev/helpers.js') }}" async></script>
-        <script src="{{ asset('assets/js/dev/backend-bundle.min.js') }}"></script>
-        <script src="{{ asset('assets/js/dev/table-treeview.js') }}"></script>
-        <script src="{{ asset('assets/js/dev/customizer.js') }}"></script>
-        <script async src="{{ asset('assets/js/dev/chart-custom.js') }}"></script>
-        <script src="{{ asset('assets/js/dev/app.js') }}"></script>
-        <script src="{{ asset('assets/js/dev/toastr.min.js') }}"></script>
+    <script src="{{ asset('assets/js/dev/helpers.js') }}" async></script>
+    <script src="{{ asset('assets/js/dev/backend-bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/dev/table-treeview.js') }}"></script>
+    <script src="{{ asset('assets/js/dev/customizer.js') }}"></script>
+    <script async src="{{ asset('assets/js/dev/chart-custom.js') }}"></script>
+    <script src="{{ asset('assets/js/dev/app.js') }}"></script>
+    <script src="{{ asset('assets/js/dev/toastr.min.js') }}"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-        <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
             $('select.select2').select2();
@@ -357,21 +358,19 @@
             var valor = $(input).val();
 
             // Valida o valor usando uma expressão regular
-            const regex = /^([0-9]{1,2})x([0-9]{1,3})x([0-9]{1,4})$/;
+            const regex = /^(\d{1,2})x(\d{1,3})x(\d{1,5})$/; // Aumentamos para até 5 dígitos na terceira parte
             if (!regex.test(valor)) {
                 // Retorna o último valor válido
-                $(this).val(valor.slice(0, -1));
+                $(input).val(valor.slice(0, -1));
                 return;
             }
 
             // Formata o valor
-            $(this).val(valor.replace(/([0-9]{1,2})x([0-9]{1,3})x([0-9]{1,4})/, '$1x$2x$3'));
+            $(input).val(valor.replace(/(\d{1,2})x(\d{1,3})x(\d{1,5})/, '$1x$2x$3'));
 
             // Multiplica os números
-            const caixas = parseInt(valor.split('x')[0]);
-            const caixinhas = parseInt(valor.split('x')[1]);
-            const unidades = parseInt(valor.split('x')[2]);
-            const quantidadeTotal = caixas * caixinhas * unidades;
+            const partes = valor.split('x').map(Number); // Converte cada parte para número
+            const quantidadeTotal = partes.reduce((total, valor) => total * valor, 1); // Multiplica todas as partes
 
             $('#qtd_total_estoque').val(quantidadeTotal);
         }
