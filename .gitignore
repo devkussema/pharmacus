@@ -20,3 +20,4 @@ yarn-error.log
 .env
 .env
 .nem_conf
+.htaccess
