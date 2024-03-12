@@ -22,6 +22,12 @@
                                     @endforeach
                                 </select>
                             </div>
+
+                            <div class="form-group">
+                                <label for="qtd_">Descritivo</label>
+                                <input type="text" name="descritivo" class="form-control" id="descritivo_" min="1">
+                            </div>
+
                             <div class="form-group">
                                 <input type="hidden" name="produto_id" id="id_produto">
                                 <label for="qtd_">Quantidade a transferir</label>

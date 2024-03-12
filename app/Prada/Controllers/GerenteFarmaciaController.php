@@ -20,9 +20,9 @@ class GerenteFarmaciaController extends Controller
         if ($token) {
             return view('auth.gerenteConfirmar', compact('token'));
         }
-        return "Token inexistente!";
+        return redirect()->route('login')->with('error', "Este link não existe!");
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([

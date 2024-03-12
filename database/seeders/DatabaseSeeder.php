@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // AHSeeder::class,
             // CategoriasSeeder::class,
-            // GrupoFarmaco::class,
+            GrupoFarmaco::class,
             GrupoSeeder::class,
             //CategoriaProdutoSeeder::class,
             NiveisDeAlertaSeeder::class,

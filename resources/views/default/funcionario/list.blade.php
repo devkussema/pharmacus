@@ -94,7 +94,7 @@
                                             </div>
                                         </td>
                                         <td>{{ $usr->user->nome }}</td>
-                                        <td>{{ $usr->farmacia->nome }}</td>
+                                        <td>{{ @$usr->farmacia->nome }}</td>
                                         <td>
                                             @if ($usr->user->status == 0)
                                                 Inativo
@@ -124,38 +124,6 @@
                                     </tr>
                                 @endforeach
                             @endif
-                            {{-- @foreach ($usrs as $usr)
-                                <tr>
-                                    <td>
-                                        <div class="checkbox d-inline-block">
-                                            <input type="checkbox" class="checkbox-input" id="checkbox2">
-                                            <label for="checkbox2" class="mb-0"></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('u.perfil', ['username' => $usr->username]) }}">
-                                            {{ $usr->nome }}
-                                        </a>
-                                    </td>
-                                    <td>{{ $usr->area_hospitalar->area_hospitalar->nome }}</td>
-                                    <td class="hide-on-print">
-                                        <div class="d-flex align-items-center list-action">
-                                            <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
-                                                title="Ver perfil de {{ $usr->nome }}" href="{{ route('u.perfil', ['username' => $usr->username]) }}">
-                                                <i class="ri-eye-line"></i>
-                                            </a>
-                                            <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
-                                                title="Editar" href="javascript:void(0)">
-                                                <i class="ri-pencil-line mr-0"></i>
-                                            </a>
-                                            <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
-                                                title="Bloquear {{ $usr->nome }}" href="javascript:void(0)" onclick="modalBloquearUsr('{{ $usr->id }}', '{{ $usr->nome }}', '{{ route('usuario') }}')">
-                                                <i class="ri-spam-3-line"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>

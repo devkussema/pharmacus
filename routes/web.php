@@ -10,6 +10,7 @@ use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
 use Illuminate\Support\Facades\Artisan;
 use App\Prada\Controllers\{
+    AutenticarUserController,
     UsuarioController, FuncionarioController,
     CargoController, ConfirmarController, EstoqueController,
     NivelAlertaController
@@ -132,6 +133,11 @@ Route::prefix('auth')->middleware('guest')->group(function () {
     Route::prefix('')->group(function () {
         Route::get('/confirmar/{token}', [ConfirmarController::class, 'funcionario'])->name('confirmar.funcionario');
         Route::post('/confirmar', [ConfirmarController::class, 'concluir'])->name('confirmar.funcionario.concluir');
+    });
+
+    Route::prefix('autenticar')->group(function () {
+        Route::get('/confirmar/{token}', [ConfirmarController::class, 'funcionario'])->name('confirmar.funcionario');
+        Route::post('/usuario', [AutenticarUserController::class, 'gerenteFarmacia'])->name('autenticar.gerenteFarmacia');
     });
 
     Route::prefix('gestor')->group(function () {
