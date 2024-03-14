@@ -24,6 +24,16 @@ class Farmacia extends Model
         'obs',
     ];
 
+    /**
+     * Get all of the areas_hospitalares for the Farmacia
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function areas_hospitalares(): HasMany
+    {
+        return $this->hasMany(FarmaciaAreaHospitalar::class, 'farmacia_id');
+    }
+
     public function gerente()
     {
         return $this->hasOne(GerenteFarmacia::class,'farmacia_id');

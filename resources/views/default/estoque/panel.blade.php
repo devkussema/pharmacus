@@ -1,6 +1,6 @@
 @extends('home.index')
 
-@section('titulo', 'Areas Hosp')
+@section('titulo', 'Áreas Hospitalares')
 
 @section('conteudo')
     <div class="dadoPrincipal">
@@ -11,40 +11,47 @@
                         <h4 class="mb-3">Áreas Hospitalares </h4>
                     </div>
                 </div>
+                @if (count($all_areas) === 0)
+                    <div class="alert alert-info text-center" role="alert">
+                        Ainda não adicionaste nenhuma área hospitalar.<a href="{{ route('a_h.index') }}" class="btn btn-dark btn-sm ml-4">Adicione uma</a>
+                    </div>
+                @endif
                 @php
                     $colors = ['bg-green', 'bg-purple-light', 'bg-indigo', 'bg-info-light', 'bg-warning-light', 'bg-teal-light', 'bg-danger-light', 'bg-success-light'];
                     $colorIndex = 0;
                 @endphp
                 <div class="row">
-                    @foreach ($all_areas as $area)
-                        <div class="col-lg-3">
-                            <div class="card card-block card-stretch card-height">
-                                <div class="card-body">
-                                    <a href="{{ route('estoque.getEstoque', ['id' => $area->id]) }}">
-                                        <div class="d-flex align-items-center mb-4 card-total-sale">
-                                            <div class="icon iq-icon-box-2 {{ $colors[$colorIndex] }}">
-                                                <img src="{{ asset('assets/images/white__logo.png') }}" class="img-fluid"
-                                                    alt="image">
+                    @if (count($all_areas) != 0)
+                        @foreach ($all_areas as $area)
+                            <div class="col-lg-3">
+                                <div class="card card-block card-stretch card-height">
+                                    <div class="card-body">
+                                        <a href="{{ route('estoque.getEstoque', ['id' => $area->id]) }}">
+                                            <div class="d-flex align-items-center mb-4 card-total-sale">
+                                                <div class="icon iq-icon-box-2 {{ $colors[$colorIndex] }}">
+                                                    <img src="{{ asset('assets/images/white__logo.png') }}" class="img-fluid"
+                                                        alt="image">
+                                                </div>
+                                                <div>
+                                                    <p class="mb-2"><b> {{ $area->nome }} </b></p>
+                                                    <h4></h4>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p class="mb-2"><b> {{ $area->nome }} </b></p>
-                                                <h4></h4>
-                                            </div>
+                                        </a>
+                                        <div class="iq-progress-bar mt-2">
+                                            <span class="{{ $colors[$colorIndex++] }} iq-progress progress-1" data-percent="0"></span>
                                         </div>
-                                    </a>
-                                    <div class="iq-progress-bar mt-2">
-                                        <span class="{{ $colors[$colorIndex++] }} iq-progress progress-1" data-percent="0"></span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        @if ($colorIndex >= count($colors))
-                            @php $colorIndex = 0; @endphp
-                        @endif
-                    @endforeach
+                            @if ($colorIndex >= count($colors))
+                                @php $colorIndex = 0; @endphp
+                            @endif
+                        @endforeach
+                    @endif
                 </div>
             </div>
-            <div class="col-lg-8">
+            {{-- <div class="col-lg-8">
                 <div class="card card-block card-stretch card-height">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <div class="header-title">
@@ -168,7 +175,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection

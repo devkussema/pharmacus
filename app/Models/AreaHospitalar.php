@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\{HasManyThrough};
 
 class AreaHospitalar extends Model
 {
@@ -17,6 +18,16 @@ class AreaHospitalar extends Model
         'descricao',
         'farmacia_id'
     ];
+
+    /**
+     * Get all of the farmacias for the AreaHospitalar
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function farmacias(): HasManyThrough
+    {
+        return $this->hasManyThrough(Farmacia::class, FarmaciaAreaHospitalar::class, 'farmacia_id', 'area_hospitalar_id');
+    }
 
     public function farmacia()
     {
