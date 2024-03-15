@@ -36,9 +36,6 @@ function isAreaDefault()
 
 function translate($texto, $lang)
 {
-    // Texto a ser traduzido
-    #$texto = "Texto para tradução, sobrinho";
-
     // Idioma de destino
     $idioma_destino = $lang; // Por exemplo, "en" para inglês
 
