@@ -11,7 +11,7 @@
                         <div class="d-flex align-items-center auth-content">
                             <div class="col-lg-7 align-self-center">
                                 <div class="p-3">
-                                    <img src="{{ asset('assets/images/user/1.png') }}" class="rounded avatar-80 mb-3"
+                                    <img src="{{ pharma('assets/images/user/1.png') }}" class="rounded avatar-80 mb-3"
                                         alt="">
                                     <h2 class="mb-2">Olá ! {{ $token->user->nome }}</h2>
                                     <p>Informe a sua senha para acessar a tua conta.</p>
@@ -34,7 +34,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-5 content-right">
-                                <img src="{{ asset('assets/images/login/01.png')}}" class="img-fluid image-right" alt="">
+                                <img src="{{ pharma('assets/images/login/01.png')}}" class="img-fluid image-right" alt="">
                             </div>
                         </div>
                     </div>

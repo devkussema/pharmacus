@@ -10,7 +10,7 @@
                     <div class="d-flex align-items-center auth-content">
                         <div class="col-lg-7 align-self-center">
                             <div class="p-3">
-                                <img src="{{ asset('assets/images/login/mail.png') }}" class="img-fluid" width="80" alt="">
+                                <img src="{{ pharma('assets/images/login/mail.png') }}" class="img-fluid" width="80" alt="">
                                 <h2 class="mt-3 mb-0">Parabéns !</h2>
                                 <p class="cnf-mail mb-1">
                                     Um email foi enviado para <code>{{ $email ?? session('email') }}</code>.
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div class="col-lg-5 content-right">
-                            <img src="{{ asset('assets/images/login/01.png') }}" class="img-fluid image-right" alt="">
+                            <img src="{{ pharma('assets/images/login/01.png') }}" class="img-fluid image-right" alt="">
                         </div>
                     </div>
                 </div>

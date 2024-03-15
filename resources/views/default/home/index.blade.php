@@ -8,20 +8,20 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <meta name="theme-color" content="#6777ef" />
-    <link rel="apple-touch-icon" href="{{ asset('assets/images/white__logo2.png') }}">
-    <link rel="manifest" href="{{ asset('/manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
+    <link rel="manifest" href="{{ pharma('/manifest.json') }}">
 
     <title>@yield('titulo', 'Página Inicial') - {{ env('APP_NAME') }}</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/white__logo2.png') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/backend-plugin.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/backende209.css?v=1.0.0') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/remixicon/fonts/remixicon.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
-    <link rel="stylesheet" href={{ asset('src/css/manual.css') }}>
+    <link rel="shortcut icon" href="{{ pharma('assets/images/white__logo2.png') }}" />
+    <link rel="stylesheet" href="{{ pharma('assets/css/backend-plugin.min.css') }}">
+    <link rel="stylesheet" href="{{ pharma('assets/css/backende209.css?v=1.0.0') }}">
+    <link rel="stylesheet" href="{{ pharma('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ pharma('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ pharma('assets/vendor/remixicon/fonts/remixicon.css') }}">
+    <link rel="stylesheet" href="{{ pharma('assets/css/toastr.min.css') }}">
+    <link rel="stylesheet" href={{ pharma('src/css/manual.css') }}>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap4.min.css">
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -71,7 +71,7 @@
 <body class=" color-light ">
     <!-- loader Start -->
     <div class="loader" id="loaderish" style="display: none">
-        <img src="{{ asset('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">
+        <img src="{{ pharma('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">
     </div>
 
     <div class="wrapper">
@@ -227,13 +227,13 @@
         }
     </script>
 
-    <script src="{{ asset('assets/js/dev/helpers.js') }}" async></script>
-    <script src="{{ asset('assets/js/dev/backend-bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/js/dev/table-treeview.js') }}"></script>
-    <script src="{{ asset('assets/js/dev/customizer.js') }}"></script>
-    <script async src="{{ asset('assets/js/dev/chart-custom.js') }}"></script>
-    <script src="{{ asset('assets/js/dev/app.js') }}"></script>
-    <script src="{{ asset('assets/js/dev/toastr.min.js') }}"></script>
+    <script src="{{ pharma('assets/js/dev/helpers.js') }}" async></script>
+    <script src="{{ pharma('assets/js/dev/backend-bundle.min.js') }}"></script>
+    <script src="{{ pharma('assets/js/dev/table-treeview.js') }}"></script>
+    <script src="{{ pharma('assets/js/dev/customizer.js') }}"></script>
+    <script async src="{{ pharma('assets/js/dev/chart-custom.js') }}"></script>
+    <script src="{{ pharma('assets/js/dev/app.js') }}"></script>
+    <script src="{{ pharma('assets/js/dev/toastr.min.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>

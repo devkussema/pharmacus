@@ -6,6 +6,14 @@ use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function pharma($path)
+{
+    $theme = (nem('APP_THEME') ? nem('APP_THEME') : env('APP_THEME'));
+    $dir = "theme/". $theme . '/' .$path;
+
+    return asset($dir);
+}
+
 function higienizarEmail($email) {
     // Remove espaços em branco no início e no final do email
     $email = trim($email);

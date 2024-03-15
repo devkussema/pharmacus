@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <div class="col-lg-5 content-right">
-                            <img src="{{ asset('assets/images/login/01.png')}}" class="img-fluid image-right" alt="">
+                            <img src="{{ pharma('assets/images/login/01.png')}}" class="img-fluid image-right" alt="">
                         </div>
                     </div>
                 </div>
