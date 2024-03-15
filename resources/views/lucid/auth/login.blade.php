@@ -6,13 +6,15 @@
             <p class="fs-5 mb-0">Entre na sua conta</p>
         </div>
         <div class="card-body">
-            <form action="#">
+            <form id="login-form" method="POST" action="{{ route('login') }}">
+                @csrf
+                @include('partials.session')
                 <div class="form-floating mb-1">
-                    <input type="email" class="form-control" placeholder="name@example.com">
+                    <input name="email" type="email" class="form-control" placeholder="">
                     <label>Email</label>
                 </div>
                 <div class="form-floating">
-                    <input type="password" class="form-control" placeholder="Password">
+                    <input name="password" type="password" class="form-control" placeholder="Password">
                     <label>Senha</label>
                 </div>
                 <div class="form-check my-3">
