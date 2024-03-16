@@ -61,25 +61,25 @@
                                             <label for="checkbox2" class="mb-0"></label>
                                         </div>
                                     </td>
-                                    <td>{{ $a->nome }}</td>
-                                    <td>{{ $a->descricao }}</td>
+                                    <td>{{ $a->area_hospitalar->nome }}</td>
+                                    <td>{{ $a->area_hospitalar->descricao }}</td>
                                     <td class="hide-on-print">
                                         <div class="d-flex align-items-center list-action">
                                             @if (isCargo('Gerente'))
                                                 <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
                                                     title="Adicionar Responsável" href="javascript:void(0)"
-                                                    onclick="modalAddCargoAH('{{ $a->id }}')">
+                                                    onclick="modalAddCargoAH('{{ $a->area_hospitalar->id }}')">
                                                     <i class="ri-key-2-line mr-0"></i>
                                                 </a>
                                             @endif
                                             <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
                                                 title="Editar" href="javascript:void(0)"
-                                                onclick="modalEditarAH('{{ $a->id }}')">
+                                                onclick="modalEditarAH('{{ $a->area_hospitalar->id }}')">
                                                 <i class="ri-pencil-line mr-0"></i>
                                             </a>
                                             <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
                                                 title="Eliminar" href="javascript:void(0)"
-                                                onclick="modalEliminarAH('{{ $a->id }}')">
+                                                onclick="modalEliminarAH('{{ $a->area_hospitalar->id }}')">
                                                 <i class="ri-delete-bin-line mr-0"></i>
                                             </a>
                                         </div>

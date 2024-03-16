@@ -636,11 +636,13 @@ function modalAddCargoAH(area_id) {
 }
 
 function modalEditarAH(id) {
+    showLoader();
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
         url: 'api/get/area_hospitalar/' + id,
         type: 'GET',
         success: function (response) {
+            hideLoader();
             $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/' + id);
             $('h4#nome_area').val(response.nome);
             $('#formEditarAH #nome').val(response.nome);
@@ -650,6 +652,7 @@ function modalEditarAH(id) {
             $('#editar_area_hospitalar').modal('show');
         },
         error: function (xhr, status, error) {
+            hideLoader();
             // Tratar erros, se necessário
             //console.error(xhr.responseText);
             toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');
@@ -768,11 +771,13 @@ function modalBloquearUsr(id, nome, urlBase) {
 }
 
 function modalEliminarAH(id) {
+    showLoader();
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
         url: 'api/get/area_hospitalar/' + id,
         type: 'GET',
         success: function (response) {
+            hideLoader();
             $('#deleteFormAH').attr('action', '/areas_hospitalares/apagar/' + id);
             $('#deleteFormAH #texto-aviso').html('Tens a certeza que queres eliminar a área ' + response.nome);
 
@@ -780,6 +785,7 @@ function modalEliminarAH(id) {
             $('#modalEliminarAHp').modal('show');
         },
         error: function (xhr, status, error) {
+            hideLoader();
             // Tratar erros, se necessário
             //console.error(xhr.responseText);
             toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');

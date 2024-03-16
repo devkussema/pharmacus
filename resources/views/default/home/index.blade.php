@@ -148,6 +148,31 @@
         $(document).ready(function() {
             $('select.selectr2').select2();
         });
+        // Função para detectar a combinação de teclas Ctrl + Shift + X
+        document.addEventListener('keydown', function(event) {
+            var isCtrlPressed = event.ctrlKey || event.metaKey; // Verifica se a tecla Ctrl está pressionada
+            var isShiftPressed = event.shiftKey; // Verifica se a tecla Shift está pressionada
+            var isXPressed = event.key === 'x' || event.keyCode === 88; // Verifica se a tecla X está pressionada
+
+            // Se todas as teclas estiverem pressionadas, exibe o alerta
+            if (isCtrlPressed && isShiftPressed && isXPressed) {
+                // Exibe um alerta com botões Sim e Não
+                var confirmed = confirm('Deseja limpar o cache do site?');
+
+                // Se o usuário clicar em Sim, limpa o cache
+                if (confirmed) {
+                    clearCache();
+                }
+            }
+        });
+        // Função para limpar o cache
+        function clearCache() {
+            // Adicione aqui o código para limpar o cache do seu site
+            // Por exemplo:
+            localStorage.clear(); // Limpa o cache local
+            sessionStorage.clear(); // Limpa o cache de sessão
+            location.reload(); // Recarrega a página
+        }
         document.querySelectorAll('a.link-loaderish').forEach(function(alink) {
             alink.addEventListener('click', function(event) {
                 event.preventDefault(); // Impede o comportamento padrão do link

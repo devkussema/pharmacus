@@ -9,12 +9,25 @@
                             @csrf
                             <div class="pb-3">
                                 <label class="mb-2">Nome *</label>
-                                <input type="text" class="form-control" placeholder="Nome da área" name="nome">
+                                    @php
+                                        $areas = [];
+                                        $areas = \App\Models\FarmaciaAreaHospitalar::where('farmacia_id', Auth::user()->isFarmacia->farmacia->id)->pluck('area_hospitalar_id')->toArray();
+                                        $areas_hosp = \App\Models\AreaHospitalar::all();
+                                    @endphp
+                                    {{ in_array(5, $areas) }}
+                                <select name="area_id" style="width: 100%" id="" class="form-control selectr2">
+                                    @foreach ($areas_hosp as $ah)
+                                        {{-- @if (!in_array($ah->id, $areas))
+                                            <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
+                                        @endif --}}
+                                    @endforeach
+                                </select>
+                                <input type="hidden" name="farmacia_id" value="{{ auth()->user()->isFarmacia->farmacia->farmacia_id }}">
                             </div>
-                            <div class="pb-3">
+                            {{-- <div class="pb-3">
                                 <label class="mb-2">Descrição (opcional)</label>
                                 <textarea class="form-control" placeholder="Descrição da área" name="descricao"></textarea>
-                            </div>
+                            </div> --}}
                             <div class="col-lg-12 mt-4">
                                 <div class="d-flex flex-wrap align-items-ceter justify-content-center">
                                     <div class="btn btn-primary mr-4" data-dismiss="modal">Cancelar</div>

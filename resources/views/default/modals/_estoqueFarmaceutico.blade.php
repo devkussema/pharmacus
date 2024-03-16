@@ -100,7 +100,9 @@
                                     <label class="mb-2">Área Hospitalar</label>
                                     <select name="area_id" style="width: 100%" id="" class="form-control select2">
                                         @foreach (\App\Models\AreaHospitalar::all() as $ah)
-                                            <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
+                                            @if ($ah->nome == 'Armazém I')
+                                                <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>

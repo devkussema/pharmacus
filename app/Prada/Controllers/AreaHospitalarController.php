@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Mail, Hash, Auth};
 use App\Models\UserAreaHospitalar;
 use App\Mail\ConfirmarContaGerenteAH as CCG;
-use App\Models\{UserAreaHospitalar as UAH, AreaHospitalar as AH, User, Cargo};
+use App\Models\{UserAreaHospitalar as UAH, AreaHospitalar as AH, User, Cargo, FarmaciaAreaHospitalar as FAH};
 use App\Traits\GenerateTrait;
 
 class AreaHospitalarController extends Controller
@@ -16,18 +16,20 @@ class AreaHospitalarController extends Controller
 
     public function index()
     {
-        $ah = AH::where('farmacia_id', Auth::user()->isFarmacia->farmacia->id)->get();
+        $ah = FAH::where('farmacia_id', Auth::user()->isFarmacia->farmacia->id)->get();
         return view('area_hospitalar.show', compact('ah'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nome' => 'required|unique:areas_hospitalares,nome',
+            'area_id' => 'required|exists:areas_hospitalares,id',
+            'farmacia_id' => 'required|exists:farmacias,id',
             'descricao' => 'nullable'
         ], [
-            'nome.required' => 'O nome é obrigatório',
-            'nome.unique' => 'Esta área já está cadastrada no sistema'
+            'area_id.required' => 'Selecione uma área válida', //farmacia_id
+            'area_id.exists' => 'Por favor tente novamente',
+            'farmacia_id.required' => 'Por favor recarregue a página e tente novamente',
         ]);
 
         AH::create([
