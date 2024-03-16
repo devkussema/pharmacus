@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap4.min.css">
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
         /* Estilo para ocultar elementos durante a impressão */
         @media print {
@@ -143,6 +145,9 @@
 
     <script src="{{ asset('/sw.js') }}"></script>
     <script>
+        $(document).ready(function() {
+            $('select.selectr2').select2();
+        });
         document.querySelectorAll('a.link-loaderish').forEach(function(alink) {
             alink.addEventListener('click', function(event) {
                 event.preventDefault(); // Impede o comportamento padrão do link
@@ -237,7 +242,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap4.min.js"></script>
     <script>

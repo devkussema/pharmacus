@@ -65,27 +65,6 @@
                                         d="m331.5 348.8-125-75.5m109.6 58.1L274 304.1m18.2 42.7L249.3 322" />
                                 </svg>
                             </a>
-                            {{-- <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                <div class="card shadow-none m-0">
-                                    <div class="card-body p-3">
-                                        <a class="iq-sub-card" href="#"><img
-                                                src="../assets/images/small/flag-02.png" alt="img-flag"
-                                                class="img-fluid mr-2">French</a>
-                                        <a class="iq-sub-card" href="#"><img
-                                                src="../assets/images/small/flag-03.png" alt="img-flag"
-                                                class="img-fluid mr-2">Spanish</a>
-                                        <a class="iq-sub-card" href="#"><img
-                                                src="../assets/images/small/flag-04.png" alt="img-flag"
-                                                class="img-fluid mr-2">Italian</a>
-                                        <a class="iq-sub-card" href="#"><img
-                                                src="../assets/images/small/flag-05.png" alt="img-flag"
-                                                class="img-fluid mr-2">German</a>
-                                        <a class="iq-sub-card" href="#"><img
-                                                src="../assets/images/small/flag-06.png" alt="img-flag"
-                                                class="img-fluid mr-2">Japanese</a>
-                                    </div>
-                                </div>
-                            </div> --}}
                         </li>
                         {{-- termina btn idioma --}}
 
@@ -324,15 +303,15 @@
                         <li class="nav-item nav-icon dropdown caption-content">
                             <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton4"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="../assets/images/user/1.png" class="img-fluid rounded" alt="user">
+                                <img src="{{ pharma('assets/images/user/1.png')}}" class="img-fluid rounded" alt="user">
                             </a>
                             <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <div class="card shadow-none m-0">
                                     <div class="card-body p-0 text-center">
                                         <div class="media-body profile-detail text-center">
-                                            <img src="../assets/images/page-img/profile-bg.jpg" alt="profile-bg"
+                                            <img src="{{ pharma('assets/images/page-img/profile-bg.jpg')}}" alt="profile-bg"
                                                 class="rounded-top img-fluid mb-4">
-                                            <img src="../assets/images/user/1.png" alt="profile-img"
+                                            <img src="{{ pharma('assets/images/user/1.png')}}" alt="profile-img"
                                                 class="rounded profile-img img-fluid avatar-70">
                                         </div>
                                         <form style="display: none" id="logout-form" action="{{ route('logout') }}"

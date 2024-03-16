@@ -29,7 +29,7 @@
                                         <a href="{{ route('estoque.getEstoque', ['id' => $area->id]) }}">
                                             <div class="d-flex align-items-center mb-4 card-total-sale">
                                                 <div class="icon iq-icon-box-2 {{ $colors[$colorIndex] }}">
-                                                    <img src="{{ asset('assets/images/white__logo.png') }}" class="img-fluid"
+                                                    <img src="{{ pharma('assets/images/white__logo.png') }}" class="img-fluid"
                                                         alt="image">
                                                 </div>
                                                 <div>

@@ -83,7 +83,7 @@
                                     </div>
                                     <div class="col pb-3">
                                         <label class="mb-2">G. Farmacológico *</label>
-                                        <select name="grupo_farmaco_id" style="width: 100%" id="" class="form-control select2">
+                                        <select name="grupo_farmaco_id" style="width: 100%" id="" class="form-control selectr2">
                                             @foreach (\App\Models\GrupoFarmacologico::all() as $gf)
                                                 <option value="{{ $gf->id }}">{{ $gf->nome }}</option>
                                             @endforeach
