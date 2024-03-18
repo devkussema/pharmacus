@@ -59,18 +59,19 @@
                             #$totalProdutos = $p->grupo_farmaco->produtos->sum('saldo.qtd');
                             $totalProdutos = $totalQtd;
                         @endphp
-                        {{-- {{ $p }} <hr><hr> --}}
-
-                        {{-- {{ $p->grupo_farmaco->nome }}: {{ $p->saldo->qtd }}, Total: {{ $totalQtd }} <hr> --}}
+                        
+                        @php
+                            $colors = ['bg-green', 'bg-purple-light', 'bg-indigo', 'bg-info-light', 'bg-warning-light', 'bg-teal-light', 'bg-danger-light', 'bg-success-light'];
+                            $colorIndex = 0;
+                        @endphp
                         @if ($totalProdutos > 0)
                             @if (!in_array($p->grupo_farmaco->id, $gruposImpressos))
                                 <div class="col-lg-3 col-md-3">
                                     <div class="card card-block card-stretch card-height">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center mb-4 card-total-sale">
-                                                <div class="icon iq-icon-box-2 bg-info-light">
-                                                    <img src="{{ asset('assets/images/product/1.png') }}" class="img-fluid"
-                                                        alt="image">
+                                                <div class="icon iq-icon-box-2 {{ $colors[$colorIndex] }}">
+                                                    <img src="{{ pharma('assets/images/white__logo.png') }}" class="img-fluid" alt="image">
                                                 </div>
                                                 <div>
                                                     <p class="mb-2">{{ $p->grupo_farmaco->nome }}</p>
@@ -83,13 +84,18 @@
                                                 </div>
                                             </div>
                                             <div class="iq-progress-bar mt-2">
-                                                <span class="bg-info iq-progress progress-1" data-percent="85">
+                                                <span class="{{ $colors[$colorIndex++] }} iq-progress progress-1" data-percent="85">
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                @php $gruposImpressos[] = $p->grupo_farmaco->id; @endphp
+                                @php 
+                                    $gruposImpressos[] = $p->grupo_farmaco->id; 
+                                @endphp
+                        @if ($colorIndex >= count($colors))
+                            @php $colorIndex = 0; @endphp
+                        @endif
                             @endif
                         @endif
                     @endforeach

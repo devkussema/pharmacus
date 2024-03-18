@@ -18,7 +18,7 @@
                 @endif
                 @php
                     $colors = ['bg-green', 'bg-purple-light', 'bg-indigo', 'bg-info-light', 'bg-warning-light', 'bg-teal-light', 'bg-danger-light', 'bg-success-light'];
-                    $colorIndex = 0;
+                    $colorIndex = 1;
                 @endphp
                 <div class="row">
                     @if (count($all_areas) != 0)
@@ -29,8 +29,7 @@
                                         <a href="{{ route('estoque.getEstoque', ['id' => $area->id]) }}">
                                             <div class="d-flex align-items-center mb-4 card-total-sale">
                                                 <div class="icon iq-icon-box-2 {{ $colors[$colorIndex] }}">
-                                                    <img src="{{ pharma('assets/images/white__logo.png') }}" class="img-fluid"
-                                                        alt="image">
+                                                    <img src="{{ pharma('assets/images/white__logo.png') }}" class="img-fluid" alt="image">
                                                 </div>
                                                 <div>
                                                     <p class="mb-2"><b> {{ $area->nome }} </b></p>
