@@ -623,8 +623,10 @@ function modalAddProdutoEstoque() {
     $('#modalAddProdutoEstoque').modal('show');
 }
 
-function modalDarBaixa(id_produto) { //formBaixaEstoque
+function modalDarBaixa(id_produto, descritivo) { //formBaixaEstoque
     $('#estoqueOps #formBaixaEstoque #id_produto').val(id_produto);
+    $('#estoqueOps #formBaixaEstoque #descritivo_').val(descritivo);
+    $('#estoqueOps #formBaixaEstoque #descritivo_').prop("disabled", true);
     $('#estoqueOps').modal('show');
 }
 

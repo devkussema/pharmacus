@@ -227,8 +227,22 @@ class EstoqueController extends Controller
         ]);
 
         $produto = PE::find($request->produto_id);
+        $descritivo = $produto->descritivo;
         $qtdBaixar = $request->qtd;
-        $qt = ($produto->saldo->qtd - $qtdBaixar);
+
+        $produtoMasDescr = downCaixa($descritivo, $qtdBaixar);
+
+        if ($produtoMasDescr == 0) {
+            return response()->json(['message' => "Não restará nada depois desta operação."], 400);
+        }
+
+        $newDescritivo = newCaixa($descritivo, $qtdBaixar);
+        $newQtdUnit = getCaixaUnit($newDescritivo);
+        $antigoQtdUnit = getCaixaUnit($descritivo);
+
+        $saldoRestante = $antigoQtdUnit - $newQtdUnit;
+
+        $qt = $newQtdUnit;
 
         $area_hospitalar_id = $request->area_hospitalar_id;
 
@@ -256,33 +270,36 @@ class EstoqueController extends Controller
         $isEstoque = Estoque::whereHas('produto', function ($query) use ($dataProduto, $area_hospitalar_id) {
             $query->where('num_lote', $dataProduto['num_lote'])
                 ->where('num_documento', $dataProduto['num_documento']);
-        })
+            })
             ->where('area_hospitalar_id', $area_hospitalar_id)
             ->first();
 
         if ($isEstoque) {
             $saldoAtual = $isEstoque->produto->saldo;
-            $saldoAdd = intval($request->qtd); // Converte para um número inteiro
+            $saldoAdd = $newQtdUnit;
             $saldoAtual->update([
                 'qtd' => $saldoAtual->qtd + $saldoAdd
             ]);
 
             $saldoA = $produto->saldo;
         } else {
+            $dataProduto['descritivo'] = $newDescritivo;
             $novoProduto = PE::create($dataProduto);
             $saldO = SE::create([
                 'produto_estoque_id' => $novoProduto->id,
-                'qtd' => $qtdBaixar
+                'qtd' => $newQtdUnit
             ]);
 
             $estoque = Estoque::create([
                 'produto_estoque_id' => $novoProduto->id,
                 'area_hospitalar_id' => $request->area_hospitalar_id
             ]);
-
         }
+        $produto->update([
+            'descritivo' => $produtoMasDescr
+        ]);
         $produto->saldo->update([
-            'qtd' => $qt
+            'qtd' => $saldoRestante
         ]);
 
 

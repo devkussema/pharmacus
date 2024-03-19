@@ -15,16 +15,16 @@
                                 <label for="endereco">Área *</label>
                                 <input type="hidden" name="user_id" id="user_id">
                                 <select name="area_hospitalar_id" id="" class="form-control">
-                                    @foreach (\App\Models\AreaHospitalar::where('farmacia_id', $farmacia_id)->get() as $ahw)
-                                        @if ($ahw->id != $area_h_id)
-                                            <option value="{{ $ahw->id }}">{{ $ahw->nome }}</option>
+                                    @foreach (\App\Models\FarmaciaAreaHospitalar::where('farmacia_id', $farmacia_id)->get() as $ahw)
+                                        @if ($ahw->area_hospitalar->id != $area_h_id)
+                                            <option value="{{ $ahw->area_hospitalar->id }}">{{ $ahw->area_hospitalar->nome }}</option>
                                         @endif
                                     @endforeach
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="qtd_">Descritivo</label>
+                                <label for="qtd_">Total de Caixas</label>
                                 <input type="text" name="descritivo" class="form-control" id="descritivo_" min="1">
                             </div>
 
@@ -32,7 +32,7 @@
                                 <input type="hidden" name="produto_id" id="id_produto">
                                 <label for="qtd_">Quantidade a transferir</label>
                                 <input type="number" name="qtd" class="form-control" id="qtd_"
-                                    placeholder="Quantidade a transferir" min="1">
+                                    placeholder="Quantidade a transferir" min="1" max="{{ getCaixa($est->produto->descritivo) }}">
                             </div>
                             <button type="submit" class="btn btn-primary">Enviar</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>

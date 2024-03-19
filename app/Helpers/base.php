@@ -17,6 +17,48 @@ function getCaixa($string) {
     return $valor;
 }
 
+function downCaixa($formato, $caixasASubtrair) {
+    // Separar os valores do formato
+    $valores = explode('x', $formato);
+
+    // Subtrair o número de caixas especificado
+    $valores[0] -= $caixasASubtrair;
+
+    if ($valores[0] <= 0)
+        return 0;
+
+    // Montar o novo formato
+    $novoFormato = implode('x', $valores);
+
+    return $novoFormato;
+}
+
+function newCaixa($formato, $novaQuantidadeCaixas) {
+    // Separar os valores do formato
+    $valores = explode('x', $formato);
+
+    // Alterar a quantidade de caixas
+    $valores[0] = $novaQuantidadeCaixas;
+
+    // Montar o novo formato
+    $novoFormato = implode('x', $valores);
+
+    return $novoFormato;
+}
+
+function getCaixaUnit($formato) {
+    // Separar os valores do formato
+    $valores = explode('x', $formato);
+
+    $caixa = $valores[0];
+    $caixinha = $valores[1];
+    $unit = $valores[2];
+
+    $total = $caixa * $caixinha * $unit;
+
+    return $total;
+}
+
 function pharma($path)
 {
     $theme = (nem('APP_THEME') ? nem('APP_THEME') : env('APP_THEME'));
