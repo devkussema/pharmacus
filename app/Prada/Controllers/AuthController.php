@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\{Auth, Mail, Hash, DB};
-use App\Mail\AtivarUsuario;
+use App\Mail\{AtivarUsuario, SenhaAlterada};
 use App\Models\{UsersToken as UT, GerenteFarmacia, Farmacia};
 use App\Traits\GenerateTrait;
 use Illuminate\Support\Facades\Password;
@@ -106,6 +106,8 @@ class AuthController extends Controller
         // Redefinir a senha do usuário
         $user->password = Hash::make($request->password);
         $user->save();
+
+        Mail::to($email)->send(new SenhaAlterada($email, $user->nome));
 
         // Retornar uma resposta adequada
         return redirect()->route('login')->with('success', 'Senha alterada com sucesso. Faça o login com sua nova senha.');
