@@ -1,0 +1,11 @@
+Foram feitas as seguintes alterações:
+
+-- No arquivo show.blade.php, da área hospitalar (do responsável da farmácia), em vez de pegar os dados atráves da nova tbl criada 'farmacia_areas_hospitalares' pega direito da tbl AreaHospitalar. da linha 64 até a linha 86. **
+
+-- No controller AreaHospitalar, em vez de pegar de FAH::where... pega através de AH::where... na linha 19. **
+
+-- A modal _areaHospitalar (cadastro de áreas hospitalares) em vez do select inacabado, voltei para o estado anterior (nome e descrição).
+
+-- No store do AreaHospitalar o $request->, voltei para o estado anterior (nome e descricao). --
+
+-- No HomeController no index() e no home(), add o 'se for gestor da farmacia redireciona para a página de estoque', e o 'use' do Auth. **

@@ -1,0 +1,8 @@
+Adicionar campo Qtd. Caixas no estoque,
+Adicionar o botão eliminar nos Niveis de Alerta
+Deve alertar os niveis mesmo fora da página 'niveis de alerta'
+Deve cadastrar outros usuários com funcões restritas (apenas: cadastro ou baixa)
+
+:: O sistema deve ser escalável, com ações dependentes uma da outra.
+:: Ao dar baixa, pode ser necessário dar baixa apenas de caixinhas.
+:: Atenção, ao cadastrar produto, fica a saber que forma é mesmo o tipo.
