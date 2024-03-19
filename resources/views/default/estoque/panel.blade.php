@@ -11,6 +11,7 @@
                         <h4 class="mb-3">Áreas Hospitalares </h4>
                     </div>
                 </div>
+                @include('partials.session')
                 @if (count($all_areas) === 0)
                     <div class="alert alert-info text-center" role="alert">
                         Ainda não adicionaste nenhuma área hospitalar.<a href="{{ route('a_h.index') }}" class="btn btn-dark btn-sm ml-4">Adicione uma</a>
@@ -26,13 +27,13 @@
                             <div class="col-lg-3">
                                 <div class="card card-block card-stretch card-height">
                                     <div class="card-body">
-                                        <a href="{{ route('estoque.getEstoque', ['id' => $area->id]) }}">
+                                        <a href="{{ route('estoque.getEstoque', ['id' => $area->area_hospitalar->id]) }}">
                                             <div class="d-flex align-items-center mb-4 card-total-sale">
                                                 <div class="icon iq-icon-box-2 {{ $colors[$colorIndex] }}">
                                                     <img src="{{ pharma('assets/images/white__logo.png') }}" class="img-fluid" alt="image">
                                                 </div>
                                                 <div>
-                                                    <p class="mb-2"><b> {{ $area->nome }} </b></p>
+                                                    <p class="mb-2"><b> {{ $area->area_hospitalar->nome }} </b></p>
                                                     <h4></h4>
                                                 </div>
                                             </div>

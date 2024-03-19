@@ -27,6 +27,19 @@ class GateCollector extends MessagesCollector
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected function customizeMessageHtml($messageHtml, $message)
+    {
+        $pos = strpos((string) $messageHtml, 'array:4');
+        if ($pos !== false) {
+            $messageHtml = substr_replace($messageHtml, $message['ability'], $pos, 7);
+        }
+
+        return parent::customizeMessageHtml($messageHtml, $message);
+    }
+
     public function addCheck($user, $ability, $result, $arguments = [])
     {
         $userKey = 'user';
@@ -34,7 +47,7 @@ class GateCollector extends MessagesCollector
 
         if ($user) {
             $userKey = Str::snake(class_basename($user));
-            $userId = $user instanceof Authenticatable ? $user->getAuthIdentifier() : $user->id;
+            $userId = $user instanceof Authenticatable ? $user->getAuthIdentifier() : $user->getKey();
         }
 
         $label = $result ? 'success' : 'error';

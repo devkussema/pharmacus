@@ -8,6 +8,7 @@ use App\Models\{
     AreaHospitalar as AH,
     Estoque,
     Farmacia,
+    FarmaciaAreaHospitalar as FAH,
     SaldoEstoque as SE,
     ProdutoEstoque as PE,
     RelatorioEstoqueAlerta as REA,
@@ -66,7 +67,7 @@ class EstoqueController extends Controller
         if (!auth()->user()->isFarmacia)
             return redirect()->route('home')->with('error', 'Não podes aceder esta página.');
 
-        $all_areas = AH::where('farmacia_id', auth()->user()->isFarmacia->farmacia_id)->get();
+        $all_areas = FAH::with('area_hospitalar')->where('farmacia_id', auth()->user()->isFarmacia->farmacia_id)->get();
 
         return view('estoque.panel', compact('all_areas'));
     }
