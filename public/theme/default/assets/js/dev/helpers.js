@@ -126,7 +126,7 @@ $(document).ready(function () {
                 });
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -166,7 +166,7 @@ $(document).ready(function () {
                 });
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -206,7 +206,7 @@ $(document).ready(function () {
                 });
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -233,7 +233,7 @@ $(document).ready(function () {
 
                 // Oculta o modal
                 $('#area_hospitalar').modal('hide');
-                hideLoader();
+                location.reload();
             },
             error: function (xhr, status, error) {
                 hideLoader();
@@ -247,7 +247,7 @@ $(document).ready(function () {
                 });
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -289,7 +289,7 @@ $(document).ready(function () {
                     });
 
                     // Exibe a mensagem de erro com Toastr.js
-                    toastr.error(errorMessage, 'Erro de validação');
+                    toastr.error(errorMessage, 'Erro');
                 } else {
                     toastr.error(xhr.responseJSON.message, 'Erro');
                 }
@@ -332,7 +332,7 @@ $(document).ready(function () {
                 });
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -392,7 +392,7 @@ $(document).ready(function () {
                 });
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -433,7 +433,7 @@ $(document).ready(function () {
                 });
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -474,7 +474,7 @@ $(document).ready(function () {
                 });
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -515,7 +515,7 @@ $(document).ready(function () {
                 });
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -561,7 +561,7 @@ $(document).ready(function () {
                 }
 
                 // Exibe a mensagem de erro com Toastr.js
-                toastr.error(errorMessage, 'Erro de validação');
+                toastr.error(errorMessage, 'Erro');
             }
         });
     });
@@ -587,7 +587,7 @@ function getDataFarma(url) {
         error: function (xhr, status, error) {
             console.error(xhr.responseText);
             // Exibe a mensagem de erro com Toastr.js
-            toastr.error(xhr.responseJSON.message, 'Erro de validação');
+            toastr.error(xhr.responseJSON.message, 'Erro');
         }
     });
 }

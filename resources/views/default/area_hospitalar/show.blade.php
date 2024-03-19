@@ -9,7 +9,18 @@
                 @include('partials.session')
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <div>
-                        <h4 class="mb-3">Áreas Hospitalares </h4>
+                        <h4 class="mb-3">Áreas Hospitalares</h4>
+                        @php
+                            $areas_hospitalares_ids = auth()->user()->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                            // Convertendo a coleção em um array se necessário
+                            $areas_hospitalares_ids_array = $areas_hospitalares_ids->all();
+                        @endphp
+
+                        {{--@foreach(\App\Models\AreaHospitalar::all() as $ahs)
+                            @if(!in_array($ahs->id, $areas_hospitalares_ids_array))
+                                --}}{{--{{ $ahs->nome  }} <br><br>--}}{{--
+                            @endif
+                        @endforeach--}}
                         <p class="mb-0">Setores hospitalares são componentes fundamentais de hospitais,<br>
                             compreendendo áreas como emergência,
                             terapia intensiva, laboratórios e enfermarias.</p>

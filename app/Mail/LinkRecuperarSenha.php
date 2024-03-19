@@ -29,7 +29,7 @@ class LinkRecuperarSenha extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Link Recuperar Senha',
+            subject: 'Recuperação de conta | '.env('APP_NAME'),
         );
     }
 

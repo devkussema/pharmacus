@@ -9,20 +9,19 @@
                             @csrf
                             <div class="pb-3">
                                 <label class="mb-2">Nome *</label>
-                                    @php
-                                        $areas = [];
-                                        $areas = \App\Models\FarmaciaAreaHospitalar::where('farmacia_id', Auth::user()->isFarmacia->farmacia->id)->pluck('area_hospitalar_id')->toArray();
-                                        $areas_hosp = \App\Models\AreaHospitalar::all();
-                                    @endphp
-                                    {{ in_array(5, $areas) }}
-                                <select name="area_id" style="width: 100%" id="" class="form-control selectr2">
-                                    @foreach ($areas_hosp as $ah)
-                                        {{-- @if (!in_array($ah->id, $areas))
-                                            <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
-                                        @endif --}}
+                                @php
+                                    $areas_hospitalares_ids = auth()->user()->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                                    // Convertendo a coleção em um array se necessário
+                                    $areas_hospitalares_ids_array = $areas_hospitalares_ids->all();
+                                @endphp
+                                <select name="area_id" style="width: 100%" class="form-control selectr2">
+                                    @foreach(\App\Models\AreaHospitalar::all() as $ahs)
+                                        @if(!in_array($ahs->id, $areas_hospitalares_ids_array))
+                                            <option value="{{ $ahs->id }}">{{ $ahs->nome }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
-                                <input type="hidden" name="farmacia_id" value="{{ auth()->user()->isFarmacia->farmacia->farmacia_id }}">
+                                <input type="hidden" name="farmacia_id" value="{{ auth()->user()->isFarmacia->farmacia->id }}">
                             </div>
                             {{-- <div class="pb-3">
                                 <label class="mb-2">Descrição (opcional)</label>
@@ -49,7 +48,7 @@
                 <div class="popup text-left">
                     <h4 class="mb-3" id="nome_area">Área Hospitalar</h4>
                     <div class="content create-workform bg-body">
-                        <form id="formEditarAH" method="POST" action="{{ route('a_h.index.store') }}" enctype="multipart/form-data">
+                        <form id="formEditarAH" method="POST" action="#" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="pb-3">

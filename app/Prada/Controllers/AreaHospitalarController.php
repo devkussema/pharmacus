@@ -32,13 +32,12 @@ class AreaHospitalarController extends Controller
             'farmacia_id.required' => 'Por favor recarregue a página e tente novamente',
         ]);
 
-        AH::create([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'farmacia_id' => Auth::user()->isFarmacia->farmacia->id,
+        FAH::create([
+            'area_hospitalar_id' => $request->area_id,
+            'farmacia_id' => $request->farmacia_id,
         ]);
 
-        return response()->json(['message' => "{$request->nome} cadastrada com sucesso"], 201);
+        return response()->json(['message' => "Área Hospitalar cadastrada."], 201);
     }
 
     public function addCargo(Request $request)
