@@ -8,20 +8,6 @@
             <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Estoque {{ $ah->nome }}</h4>
-                    {{-- <button type="button" class="btn btn-danger mt-2"><i class="ri-radio-button-fill pr-0"></i></button>
-                    <form id="repeater-form">
-                        <div class="repeater">
-                            <div data-repeater-list="items">
-                                <div data-repeater-item>
-                                    <input type="text" name="item-name" placeholder="Item Name">
-                                    <input type="text" name="item-quantity" placeholder="Quantity">
-                                    <button type="button" data-repeater-delete>X</button>
-                                </div>
-                            </div>
-                            <button type="button" data-repeater-create>Add Item</button>
-                        </div>
-                        <button type="submit">Submit</button>
-                    </form> --}}
                 </div>
                 @php
                     use App\Models\ProdutoEstoque;
@@ -43,11 +29,6 @@
                             ->take(4);
                     }
                 @endphp
-
-                {{-- <a href="#" class="btn btn-primary add-list" style="float: right" data-toggle="modal" data-target="#addFarmacia"><i
-                        class="las la-plus mr-3"></i>
-                    Adicionar
-                </a> --}}
             </div>
             <div class="col-lg-12">
             @include('partials.session')
@@ -59,7 +40,7 @@
                             #$totalProdutos = $p->grupo_farmaco->produtos->sum('saldo.qtd');
                             $totalProdutos = $totalQtd;
                         @endphp
-                        
+
                         @php
                             $colors = ['bg-green', 'bg-purple-light', 'bg-indigo', 'bg-info-light', 'bg-warning-light', 'bg-teal-light', 'bg-danger-light', 'bg-success-light'];
                             $colorIndex = 0;
@@ -90,8 +71,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                @php 
-                                    $gruposImpressos[] = $p->grupo_farmaco->id; 
+                                @php
+                                    $gruposImpressos[] = $p->grupo_farmaco->id;
                                 @endphp
                         @if ($colorIndex >= count($colors))
                             @php $colorIndex = 0; @endphp
@@ -118,7 +99,8 @@
                                 <th>Fornecedor</th>
                                 <th>Lote</th>
                                 <th>Grupo</th>
-                                <th>Qtd.</th>
+                                <th>Qtd. Caixa</th>
+                                <th>Qtd. Unit.</th>
                                 <th>Documento nº</th>
                                 <th>Data Expiração</th>
                                 <th>Ação</th>
@@ -140,6 +122,7 @@
                                     <td>{{ $est->produto->origem_destino }}</td>
                                     <td>{{ $est->produto->num_lote }}</td>
                                     <td><b>{{ $est->produto->grupo_farmaco->nome }}</b></td>
+                                    <td>{{ getCaixa($est->produto->descritivo) }}</td>
                                     <td>{{ $est->produto->saldo->qtd }}</td>
                                     <td>{{ $est->produto->num_documento }}</td>
                                     <td>{{ $est->produto->data_expiracao }}</td>

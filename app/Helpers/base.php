@@ -6,6 +6,17 @@ use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function getCaixa($string) {
+    $valores = explode('x', $string);
+    $valor = $valores[0];
+
+    if ($valor < 10) {
+        $valor = str_replace('0', '', $valor);
+    }
+
+    return $valor;
+}
+
 function pharma($path)
 {
     $theme = (nem('APP_THEME') ? nem('APP_THEME') : env('APP_THEME'));
