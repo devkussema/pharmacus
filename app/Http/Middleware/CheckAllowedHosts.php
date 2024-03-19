@@ -5,9 +5,11 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Traits\{GenerateTrait};
 
 class CheckAllowedHosts
 {
+    use GenerateTrait;
     /**
      * Handle an incoming request.
      *
@@ -16,6 +18,7 @@ class CheckAllowedHosts
     public function handle(Request $request, Closure $next): Response
     {
         $allowedHosts = nem('allowed_hosts');
+        self::calcNivelAlerta();
 
         // Obtém o IP ou o DNS atual
         $currentHost = $_SERVER['SERVER_ADDR'] ?? $_SERVER['SERVER_NAME'] ?? null;

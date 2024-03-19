@@ -183,6 +183,7 @@ Route::prefix('api')->group(function () {
 
 Route::get('/execute-migrate', function () {
     Artisan::call('migrate');
+    //Artisan::call('db:seed');
     return response()->json(['output' => Artisan::output()]);
 });
 

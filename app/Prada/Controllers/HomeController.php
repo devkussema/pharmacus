@@ -5,6 +5,8 @@ namespace App\Prada\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Farmacia;
 use App\Models\AreaHospitalar;
+use App\Models\Grupo;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -15,6 +17,14 @@ class HomeController extends Controller
 
     public function home()
     {
+        $grupoo = Grupo::where('nome', 'Funcionário AH')->first();
+        $grupooGerente = Grupo::where('nome', 'Gerente')->first();
+        if (Auth::user()->grupo_id == $grupoo->id)
+            return redirect()->route('estoque');
+
+        if (Auth::user()->grupo_id == $grupooGerente->id)
+            return redirect()->route('a_h.index');
+
         if (@auth()->user()->grupo->nome != "Administrador" and @auth()->user()->grupo->nome != "Admin" and @auth()->user()->grupo->nome == "Gerente") {
             if (@auth()->user()->grupo->nome == "Funcionário")
                 return redirect()->route('estoque');

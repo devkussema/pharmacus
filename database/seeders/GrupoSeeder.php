@@ -54,6 +54,11 @@ class GrupoSeeder extends Seeder
         ]);
 
         Grupo::create([
+            'nome' => 'Funcionário AH',
+            'descricao' => 'Um usuário associado a uma organização ou empresa, com permissões específicas relacionadas ao seu papel ou departamento dentro da empresa.'
+        ]);
+
+        Grupo::create([
             'nome' => 'Usuário Anônimo',
             'descricao' => 'Um usuário que acessa o sistema sem se identificar, geralmente com acesso limitado a recursos básicos.'
         ]);

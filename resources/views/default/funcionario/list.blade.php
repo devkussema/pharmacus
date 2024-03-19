@@ -65,10 +65,10 @@
                                         </td>
                                         <td class="hide-on-print">
                                             <div class="d-flex align-items-center list-action">
-                                                <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
+                                                {{--<a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top"
                                                     title="Ver perfil de {{ $usr->nome }}" href="{{ route('u.perfil', ['username' => $usr->username]) }}">
                                                     <i class="ri-eye-line"></i>
-                                                </a>
+                                                </a>--}}
                                                 @if ($usr->status == 1)
                                                     <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
                                                         title="Bloquear {{ $usr->nome }}" href="javascript:void(0)" onclick="modalBloquearUsr('{{ $usr->id }}', '{{ $usr->nome }}', '{{ route('usuario') }}')">

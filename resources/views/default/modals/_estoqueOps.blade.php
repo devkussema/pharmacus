@@ -32,7 +32,7 @@
                                 <input type="hidden" name="produto_id" id="id_produto">
                                 <label for="qtd_">Quantidade a transferir</label>
                                 <input type="number" name="qtd" class="form-control" id="qtd_"
-                                    placeholder="Quantidade a transferir" min="1" max="{{ getCaixa($est->produto->descritivo) }}">
+                                    placeholder="Quantidade a transferir" min="1" max="{{ @getCaixa($est->produto->descritivo) }}">
                             </div>
                             <button type="submit" class="btn btn-primary">Enviar</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>

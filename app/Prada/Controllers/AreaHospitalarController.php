@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Mail, Hash, Auth};
 use App\Models\UserAreaHospitalar;
 use App\Mail\ConfirmarContaGerenteAH as CCG;
-use App\Models\{UserAreaHospitalar as UAH, AreaHospitalar as AH, User, Cargo, FarmaciaAreaHospitalar as FAH};
+use App\Models\{Grupo, UserAreaHospitalar as UAH, AreaHospitalar as AH, User, Cargo, FarmaciaAreaHospitalar as FAH};
 use App\Traits\GenerateTrait;
 
 class AreaHospitalarController extends Controller
@@ -60,9 +60,12 @@ class AreaHospitalarController extends Controller
         $ah = AH::find($request->area_id);
         $cargo = Cargo::find($request->cargo_id);
 
+        $grupo = Grupo::where('nome', 'Funcionário AH')->first();
+
         $user = User::create([
             'nome' => "Responsável {$ah->nome}",
             'email' => $request->email,
+            'grupo_id' => $grupo->id,
             'password' => Hash::make(self::gerarSenhaAutomatica())
         ]);
 
