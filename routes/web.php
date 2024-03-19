@@ -182,9 +182,19 @@ Route::prefix('api')->group(function () {
 });
 
 Route::get('/execute-migrate', function () {
+    // Executar o comando 'migrate'
     Artisan::call('migrate');
+    // Capturar a saída do comando 'migrate'
+    $migrateOutput = Artisan::output();
+
+    // Executar o comando 'db:seed'
     //Artisan::call('db:seed');
-    return response()->json(['output' => Artisan::output()]);
+    // Capturar a saída do comando 'db:seed'
+    $seedOutput = $migrateOutput. '<hr>' .Artisan::output();
+
+    // Retornar a saída de ambos os comandos em formato JSON
+    //return response()->json(['migrate_output' => $migrateOutput, 'seed_output' => $seedOutput]);
+    return response()->json(['output' => $seedOutput]);
 });
 
 Route::get('/execute-migrater', function () {

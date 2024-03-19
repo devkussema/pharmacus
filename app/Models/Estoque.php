@@ -13,6 +13,7 @@ class Estoque extends Model
     protected $fillable = [
         'produto_estoque_id',
         'tipo',
+        'farmacia_id',
         'area_hospitalar_id'
     ];
 

@@ -29,10 +29,11 @@ class EstoqueController extends Controller
         $estoque = "";
 
         if (!auth()->user()->isFarmacia and auth()->user()->area_hospitalar->area_hospitalar_id) {
-            $estoque = Estoque::join('produto_estoques', 'estoques.produto_estoque_id', '=', 'produto_estoques.id')
-                ->select('estoques.*')
-                ->where('estoques.area_hospitalar_id', auth()->user()->area_hospitalar->area_hospitalar_id)
-                ->orderBy('produto_estoques.designacao', 'asc')
+            $area_hospitalar_id = auth()->user()->area_hospitalar->area_hospitalar_id;
+            $farmacia_id = @auth()->user()->isFarmacia->farmacia->id;
+
+            $estoque = Estoque::where('area_hospitalar_id', $area_hospitalar_id)
+                ->orderBy('produto_estoque_id')
                 ->get();
 
             self::calcNivelAlerta();
@@ -52,11 +53,19 @@ class EstoqueController extends Controller
         if (!$ah)
             return redirect()->back()->with('warning', 'Algo deu errado e não podemos acessar esta página.');
 
-        $estoque = Estoque::join('produto_estoques', 'estoques.produto_estoque_id', '=', 'produto_estoques.id')
+        $area_hospitalar_id = $area_id;
+        $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
+
+        $estoque = Estoque::where('area_hospitalar_id', $area_hospitalar_id)
+            ->where('farmacia_id', auth()->user()->isFarmacia->farmacia->id)
+            ->orderBy('produto_estoque_id')
+            ->get();
+
+        /*$estoque = Estoque::join('produto_estoques', 'estoques.produto_estoque_id', '=', 'produto_estoques.id')
             ->select('estoques.*')
             ->where('estoques.area_hospitalar_id', $id)
             ->orderBy('produto_estoques.designacao', 'asc')
-            ->get();
+            ->get();*/
 
         self::calcNivelAlerta();
         return view('estoque.show', compact('estoque', 'non_', 'area_id', 'ah'));
