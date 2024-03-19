@@ -8,10 +8,11 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Facades\Auth, Mail;
+use Illuminate\Support\Facades\{Auth, Mail, Hash, DB};
 use App\Mail\AtivarUsuario;
 use App\Models\{UsersToken as UT, GerenteFarmacia, Farmacia};
 use App\Traits\GenerateTrait;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -19,7 +20,7 @@ class AuthController extends Controller
 
     public function index()
     {
-        $app_desc = "Inicie sessão e esteja a par de tudo na ".env('APP_NAME');
+        $app_desc = "Inicie sessão e esteja a par de tudo na " . env('APP_NAME');
         $app_keywords = "entrar, pharmatina, pharmatina angola, google angola, pharmatino, farmatina, farmácia ao, farmacia angola, augusto kussema, kussema";
 
         return view('auth.login', compact('app_desc', 'app_keywords'));
@@ -27,16 +28,92 @@ class AuthController extends Controller
 
     public function registar()
     {
-        $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
+        $app_desc = "Crie uma conta na " . env('APP_NAME') . " e esteja a para de tudo.";
         $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
 
         //return view('auth.contaCriada', compact('app_desc', 'app_keywords'));
         return view('auth.registar', compact('app_desc', 'app_keywords'));
     }
 
+    public function recuperarSenha()
+    {
+        return view('auth.recuperarSenha');
+    }
+
+    public function alterar_senha(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ], [
+            'email.exists' => "Endereço de email incorreto.",
+            'email.required' => "O email é obrigatório.",
+            'email.email' => "Introduza um email válido."
+        ]);
+
+        // Se a validação passar, o e-mail existe na tabela de usuários
+        // Agora, você pode gerar um token de redefinição de senha e enviar um e-mail com um link para redefinir a senha
+
+        // Gerar um token de redefinição de senha
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        // Verificar o status para determinar a resposta adequada
+        if ($status === Password::RESET_LINK_SENT) {
+            return redirect()->route('login')->with('info', "Enviamos por e-mail seu link de redefinição de senha.");
+        } else {
+            return redirect()->route('recuperar_senha')->withErrors(['email' => __($status)]);
+        }
+    }
+
+    public function password_reset(Request $request)
+    {
+        // Recuperar o token e o email da solicitação GET
+        $token = $request->input('token');
+        $email = $request->input('email');
+
+        // Verificar se o token é válido consultando a tabela de resets de senha
+        $reset = DB::table('password_reset_tokens')->where('email', $email)->first();
+
+        if ($reset && Hash::check($token, $reset->token)) {
+            return view('auth.alterarSenha');
+        } else {
+            return redirect()->route('login')->with('error', 'Link inválido.');
+        }
+    }
+
+    public function post_password_reset(Request $request) //password_reset
+    {
+        // Validação dos dados recebidos
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ], [
+            'password.required' => 'A nova senha é obrigatória.',
+            'password.string' => 'A nova senha deve ser uma string.',
+            'password.min' => 'A nova senha deve ter no mínimo :min caracteres.',
+            'password.confirmed' => 'A confirmação da senha não corresponde.',
+        ]);
+
+        $email = $request->input('email');
+
+        // Localizar o usuário com base no e-mail fornecido
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return back()->with('error', 'Endereço de e-mail não encontrado.');
+        }
+
+        // Redefinir a senha do usuário
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Retornar uma resposta adequada
+        return redirect()->route('login')->with('success', 'Senha alterada com sucesso. Faça o login com sua nova senha.');
+    }
+
     public function conta_criada()
     {
-        $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
+        $app_desc = "Crie uma conta na " . env('APP_NAME') . " e esteja a para de tudo.";
         $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
 
         return view('auth.contaCriada', compact('app_desc', 'app_keywords'));
@@ -44,9 +121,9 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $sessName = env('APP_NAME').'_session';
+        $sessName = env('APP_NAME') . '_session';
 
-        if ( !higienizarEmail($request->email) ){
+        if (!higienizarEmail($request->email)) {
             if ($request->ajax()) {
                 return response()->json(['message' => "Informe um email válido"], 401);
             }
@@ -56,7 +133,7 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|exists:users,email',
             'password' => 'required',
-        ],[
+        ], [
             'email.required' => 'O email é obrigatório',
             'email.exists' => "Credenciais inválidas, tente novamente",
             'password.required' => 'Informe a senha'
@@ -69,19 +146,19 @@ class AuthController extends Controller
             if (Auth::user()->status == 0) {
                 Auth::logout();
                 if ($request->ajax()) {
-                    return response()->json(['message' => 'A tua conta não está ativada'],422);
+                    return response()->json(['message' => 'A tua conta não está ativada'], 422);
                 }
                 return redirect()->route('login')->with('error', 'A tua conta não está ativada');
             }
 
             if ($request->ajax()) {
-                return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
+                return response()->json(['message' => 'Cadastro efetuado', 'success' => true], 201);
             }
             return redirect()->route('home');
         }
 
         if ($request->ajax()) {
-            return response()->json(['message' => 'Credenciais inválidas, tente novamente'],422);
+            return response()->json(['message' => 'Credenciais inválidas, tente novamente'], 422);
         }
         return redirect()->back()->withInput()->withErrors(['message' => 'Credenciais inválidas, tente novamente'], 422);
     }
@@ -140,10 +217,10 @@ class AuthController extends Controller
     public function confirmar_email_store(Request $request)
     {
         $request->validate([
-            'email'=> 'required|exists:users,email',
+            'email' => 'required|exists:users,email',
             'password' => 'required|min:6',
             'token_id' => 'required|exists:users_tokens,id'
-        ],[
+        ], [
             'password.required' => 'A senha é obrigatória',
             'password.min' => 'A senha deve no minimo :min caracteres',
         ]);
@@ -177,7 +254,7 @@ class AuthController extends Controller
         if ($token->last_used_at)
             return redirect()->route('login')->with('error', 'Este link é inválido.');
 
-        $app_desc = "Crie uma conta na ".env('APP_NAME')." e esteja a para de tudo.";
+        $app_desc = "Crie uma conta na " . env('APP_NAME') . " e esteja a para de tudo.";
         $app_keywords = "criar conta, pharmatina, augusto kussema, gestão farmacéutica angola, google ao";
 
         return view('auth.confirmEmail', compact('app_desc', 'app_keywords', 'token'));
@@ -196,6 +273,6 @@ class AuthController extends Controller
         if ($isLoggedIn)
             return response()->json(['status' => 1]);
 
-            return response()->json(['status' => 0]);
+        return response()->json(['status' => 0]);
     }
 }

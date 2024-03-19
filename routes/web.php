@@ -135,6 +135,13 @@ Route::prefix('auth')->middleware('guest')->group(function () {
         Route::post('/confirmar', [ConfirmarController::class, 'concluir'])->name('confirmar.funcionario.concluir');
     });
 
+    Route::prefix('recuperar_senha')->group(function () {
+        Route::get('', [AuthController::class, 'recuperarSenha'])->name('recuperar_senha');
+        Route::post('', [AuthController::class, 'alterar_senha'])->name('alterar_senha');
+        Route::get('password_reset', [AuthController::class, 'password_reset'])->name('password.reset');
+        Route::post('password_reset', [AuthController::class, 'post_password_reset'])->name('post.password.reset');
+    });
+
     Route::prefix('autenticar')->group(function () {
         Route::get('/confirmar/{token}', [ConfirmarController::class, 'funcionario'])->name('confirmar.funcionario');
         Route::post('/usuario', [AutenticarUserController::class, 'gerenteFarmacia'])->name('autenticar.gerenteFarmacia');

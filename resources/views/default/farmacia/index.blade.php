@@ -54,10 +54,10 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             @if (!$farmacia->logo)
-                                                <img src="assets/images/table/product/01.jpg"
+                                                <img src="{{ pharma('assets/images/table/product/01.jpg')}}"
                                                     class="img-fluid rounded avatar-50 mr-3" alt="image">
                                             @else
-                                                <img src="{{ asset('storage/' . $farmacia->logo) }}"
+                                                <img src="{{ pharma('storage/' . $farmacia->logo) }}"
                                                     class="img-fluid rounded avatar-50 mr-3" alt="image">
                                             @endif
                                             <div>

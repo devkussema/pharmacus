@@ -38,7 +38,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
-                                                <a href="#" class="text-primary float-right">Esqueceu a
+                                                <a href="{{ route('recuperar_senha') }}" class="text-primary float-right">Esqueceu a
                                                     senha?</a>
                                             </div>
                                         </div>
