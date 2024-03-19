@@ -139,6 +139,7 @@ Route::prefix('auth')->middleware('guest')->group(function () {
         Route::get('', [AuthController::class, 'recuperarSenha'])->name('recuperar_senha');
         Route::post('', [AuthController::class, 'alterar_senha'])->name('alterar_senha');
         Route::get('password_reset', [AuthController::class, 'password_reset'])->name('password.reset');
+        Route::get('password_reset?token={token}&email={email}', [AuthController::class, 'password_reset'])->name('password.reset.link');
         Route::post('password_reset', [AuthController::class, 'post_password_reset'])->name('post.password.reset');
     });
 

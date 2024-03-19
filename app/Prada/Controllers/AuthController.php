@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\{Auth, Mail, Hash, DB};
-use App\Mail\{AtivarUsuario, SenhaAlterada};
+use App\Mail\{AtivarUsuario, SenhaAlterada, LinkRecuperarSenha};
 use App\Models\{UsersToken as UT, GerenteFarmacia, Farmacia};
 use App\Traits\GenerateTrait;
 use Illuminate\Support\Facades\Password;
@@ -54,15 +54,31 @@ class AuthController extends Controller
         // Agora, você pode gerar um token de redefinição de senha e enviar um e-mail com um link para redefinir a senha
 
         // Gerar um token de redefinição de senha
-        $status = Password::sendResetLink(
+        /*$status = Password::sendResetLink(
             $request->only('email')
-        );
+        );*/
+
+        // Generate a new token
+        $token = Str::random(60);
+
+        // Insert the token into the password_resets table
+        $db = DB::table('password_reset_tokens')->updateOrInsert([
+            'email' => $request->email,
+        ], [
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => now(),
+        ]);
+
+        $link = route('password.reset.link', ['token' => $token, 'email' => $request->email]);
+
+        Mail::to($request->email)->send(new LinkRecuperarSenha($link));
 
         // Verificar o status para determinar a resposta adequada
-        if ($status === Password::RESET_LINK_SENT) {
+        if ($db) {
             return redirect()->route('login')->with('info', "Enviamos por e-mail seu link de redefinição de senha.");
         } else {
-            return redirect()->route('recuperar_senha')->withErrors(['email' => __($status)]);
+            return redirect()->route('recuperar_senha')->withErrors(['email' => "Algo deu errado, atualize a página e tente novamente."]);
         }
     }
 
@@ -73,9 +89,12 @@ class AuthController extends Controller
         $email = $request->input('email');
 
         // Verificar se o token é válido consultando a tabela de resets de senha
-        $reset = DB::table('password_reset_tokens')->where('email', $email)->first();
+        $reset = DB::table('password_reset_tokens')
+            ->where('email', $email)
+            ->where('token', $token)
+            ->first();
 
-        if ($reset && Hash::check($token, $reset->token)) {
+        if ($reset) {
             return view('auth.alterarSenha');
         } else {
             return redirect()->route('login')->with('error', 'Link inválido.');

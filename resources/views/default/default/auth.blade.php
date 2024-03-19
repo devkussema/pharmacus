@@ -124,7 +124,7 @@
     <script src="{{ pharma('assets/js/form.js') }}" async></script>
     <script src="{{ pharma('assets/js/toastr.min.js') }}"></script>
 
-    <script src="{{ pharma('/sw.js') }}"></script>
+    <script src="{{ asset('/sw.js') }}"></script>
     <script>
         if ("serviceWorker" in navigator) {
             // Register a service worker hosted at the root of the

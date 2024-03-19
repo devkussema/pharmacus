@@ -482,7 +482,7 @@
                                             <p>Espero que você esteja bem!</p>
                                             <p>Queríamos informar que sua senha foi atualizada com sucesso na {{ env('APP_NAME') }}. Parabéns por tomar essa medida de segurança para proteger sua conta!</p>
                                             <p>
-                                                Se você não fez essa alteração, por favor, entre em contato conosco imediatamente para que possamos investigar qualquer atividade suspeita.<br>
+                                                Se você não fez essa alteração, por favor, entre em contato conosco imediatamente para que possamos investigar qualquer atividade suspeita.<br><br>
                                                 Se precisar de alguma assistência ou tiver alguma dúvida, não hesite em nos contatar. Estamos sempre aqui para ajudar!
                                             </p>
                                             <p>Para referência, aqui estão suas informações de login:</p>
