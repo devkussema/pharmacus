@@ -10,17 +10,6 @@
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <div>
                         <h4 class="mb-3">Áreas Hospitalares</h4>
-                        @php
-                            $areas_hospitalares_ids = auth()->user()->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
-                            // Convertendo a coleção em um array se necessário
-                            $areas_hospitalares_ids_array = $areas_hospitalares_ids->all();
-                        @endphp
-
-                        {{--@foreach(\App\Models\AreaHospitalar::all() as $ahs)
-                            @if(!in_array($ahs->id, $areas_hospitalares_ids_array))
-                                --}}{{--{{ $ahs->nome  }} <br><br>--}}{{--
-                            @endif
-                        @endforeach--}}
                         <p class="mb-0">Setores hospitalares são componentes fundamentais de hospitais,<br>
                             compreendendo áreas como emergência,
                             terapia intensiva, laboratórios e enfermarias.</p>
@@ -33,7 +22,7 @@
                 </div>
             </div>
             <div class="col-lg-12">
-                <div class="table-responsive rounded mb-3">
+                {{--<div class="table-responsive rounded mb-3">
                     <div class="row justify-content-between">
                         <div class="col-sm-6 col-md-6">
                             <div class="user-list-files d-flex">
@@ -48,7 +37,7 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </div>--}}
                     <table class="data-table table mb-0 tbl-server-info tbl-area_hospitalar">
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
@@ -90,7 +79,7 @@
                                             </a>
                                             <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
                                                 title="Eliminar" href="javascript:void(0)"
-                                                onclick="modalEliminarAH('{{ $a->area_hospitalar->id }}')">
+                                                onclick="modalEliminarAH('{{ $a->area_hospitalar->id }}', '{{ $a->id  }}')">
                                                 <i class="ri-delete-bin-line mr-0"></i>
                                             </a>
                                         </div>

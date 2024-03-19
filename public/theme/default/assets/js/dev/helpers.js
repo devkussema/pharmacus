@@ -761,13 +761,13 @@ function modalBloquearUsr(id, nome, urlBase) {
     $('#modalBloquearUsr').modal('show');
 }
 
-function modalEliminarAH(id) {
+function modalEliminarAH(id, origin_id) {
     // Requisição AJAX para buscar os dados da farmácia
     $.ajax({
         url: 'api/get/area_hospitalar/' + id,
         type: 'GET',
         success: function (response) {
-            $('#deleteFormAH').attr('action', '/areas_hospitalares/apagar/' + id);
+            $('#deleteFormAH').attr('action', '/areas_hospitalares/apagar/' + origin_id);
             $('#deleteFormAH #texto-aviso').html('Tens a certeza que queres eliminar a área ' + response.nome);
 
             // Exibir o modal

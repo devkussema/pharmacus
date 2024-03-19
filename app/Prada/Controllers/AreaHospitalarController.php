@@ -114,7 +114,7 @@ class AreaHospitalarController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $area_hospitalar = AH::find($id);
+        $area_hospitalar = FAH::find($id);
 
         if (!$area_hospitalar) {
             return response()->json(['message' => 'Área hospitalar não encontrada'], 404);
@@ -124,7 +124,7 @@ class AreaHospitalarController extends Controller
 
         if ($request->ajax())
             return response()->json(['message' => 'Área hospitalar excluída com sucesso']);
-        return redirect()->route('a_h.index')->with('success', "{$area_hospitalar->nome} eliminada com sucesso");
+        return redirect()->route('a_h.index')->with('success', "{$area_hospitalar->area_hospitalar->nome} eliminada com sucesso");
     }
 
     public function getAll()
