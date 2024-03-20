@@ -113,6 +113,7 @@
                                 <label class="mb-2">Email *</label>
                                 <input type="email" class="form-control" placeholder="" name="email">
                                 <input type="hidden" id="area_hospitalar_id" class="form-control" placeholder="" name="area_id">
+                                <input type="hidden" value="{{ auth()->user()->isFarmacia->farmacia->id }}" class="form-control" placeholder="" name="farmacia_id">
                             </div>
                             <div class="pb-3">
                                 <label class="mb-2">Cargo *</label>

@@ -16,8 +16,8 @@ class VerifyAreaHospitalar
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->area_hospitalar || auth()->user()->isFarmacia) {
-            if (auth()->user()->isFarmacia or auth()->user()->area_hospitalar->area_hospitalar->farmacia->status == 1) {
+        if (auth()->check() && (auth()->user()->farmacia || auth()->user()->isFarmacia)) {
+            if (auth()->user()->isFarmacia or auth()->user()->farmacia->farmacia->status == 1) {
                 return $next($request);
             }else{
                 Auth::logout();

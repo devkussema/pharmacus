@@ -46,6 +46,7 @@ class AreaHospitalarController extends Controller
             'email' => 'required|unique:users,email',
             'cargo_id' => 'required|exists:cargos,id',
             'area_id' => 'required|exists:areas_hospitalares,id',
+            'farmacia_id' => 'required|exists:farmacias,id',
             'contato' => 'required'
         ],[
             'email.required' => "O email é obrigatório",
@@ -54,6 +55,8 @@ class AreaHospitalarController extends Controller
             'cargo.exists' => "Selecione um cargo válido",
             'area_id' => 'Por favor selecione uma área primeiro',
             'area_id.exists' => "Por favor selecione uma área hospitalar válida",
+            'farmacia_id.required' => "Algo deu errado, recarregue a página e tente de novo",
+            'farmacia_id.exists' => "Algo deu errado, recarregue a página e tente de novo",
             'contato.required' => "Informe um número de telefone válido"
         ]);
 
@@ -73,6 +76,7 @@ class AreaHospitalarController extends Controller
             'user_id' => $user->id,
             'area_hospitalar_id' => $request->area_id,
             'cargo_id' => $request->cargo_id,
+            'farmacia_id' => $request->farmacia_id,
             'contato' => $request->contato
         ]);
 
@@ -81,7 +85,11 @@ class AreaHospitalarController extends Controller
 
         Mail::to($request->email)->send(new CCG($url));
 
-        return response()->json(['message' => "Um email para o {$cargo->nome} foi enviado."]);
+        if ($request->json()){
+            return response()->json(['message' => "Um email para o {$cargo->nome} foi enviado."]);
+        }else{
+            return redirect()->back()->with('info', "Um email para o {$cargo->nome} foi enviado.");
+        }
     }
 
     public function getStatDia()

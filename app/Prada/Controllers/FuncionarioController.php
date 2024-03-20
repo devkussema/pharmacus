@@ -15,8 +15,8 @@ class FuncionarioController extends Controller
         $usrs = [];
         $cfg = 0;
         if (@Auth::user()->isFarmacia->farmacia->id) {
-            $usrs = User::with('area_hospitalar.area_hospitalar')
-                ->whereHas('area_hospitalar.area_hospitalar', function ($query) {
+            $usrs = User::with('farmacia.area_hospitalar')
+                ->whereHas('farmacia', function ($query) {
                     $query->where('farmacia_id', Auth::user()->isFarmacia->farmacia->id);
                 })
                 ->get();

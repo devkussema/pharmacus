@@ -19,6 +19,7 @@ class AHSeeder extends Seeder
             ['nome' => 'Farmácia', 'descricao' => 'Gerenciamento e distribuição de medicamentos.'],
             ['nome' => 'G. Farmácia', 'descricao' => 'Gerenciamento específico de medicamentos.'],
             ['nome' => 'Armazém II', 'descricao' => 'Estoque de suprimentos hospitalares.'],
+            ['nome' => 'Armazém I', 'descricao' => 'Estoque de suprimentos hospitalares.'],
             ['nome' => 'Pediatria internamento', 'descricao' => 'Internamento de pacientes pediátricos.'],
             ['nome' => 'Maternidade internamento', 'descricao' => 'Internamento de pacientes gestantes.'],
             ['nome' => 'Berçário', 'descricao' => 'Local de cuidados para recém-nascidos.'],
