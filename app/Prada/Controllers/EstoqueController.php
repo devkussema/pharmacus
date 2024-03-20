@@ -12,6 +12,7 @@ use App\Models\{
     SaldoEstoque as SE,
     ProdutoEstoque as PE,
     RelatorioEstoqueAlerta as REA,
+    UserAreaHospitalar as UAH
 };
 use Yajra\DataTables\DataTables;
 use App\Traits\{AtividadeTrait, GenerateTrait};
@@ -106,6 +107,7 @@ class EstoqueController extends Controller
             'dosagem' => 'nullable',
             'forma' => 'required',
             'tipo' => 'required',
+            'farmacia_id' => 'required',
             'descritivo' => 'required',
             'qtd_total' => 'required',
             'origem_destino' => 'required',
@@ -119,6 +121,7 @@ class EstoqueController extends Controller
             'qtd' => 'integer|nullable',
         ], [
             'designacao.required' => 'A designação é obrigatória.',
+            'farmacia_id.required' => 'Algo correu mal, atualize a página e tente novamente.',
             'dosagem.required' => 'A dosagem é obrigatória.',
             'forma.required' => 'A forma é obrigatória.',
             'tipo.required' => 'Selecione um tipo.',
@@ -138,6 +141,8 @@ class EstoqueController extends Controller
             'qtd_embalagem.min' => 'A quantidade por embalagem deve ser pelo menos 1.',
         ]);
 
+        $farmacia_id = $request->farmacia_id;
+
         if ($request->tipo == 'medicamento' and !$request->dosagem)
             return response()->json(['message' => "Um medicamento deve ter uma dosagem"], 401);
 
@@ -147,6 +152,7 @@ class EstoqueController extends Controller
             'tipo' => $request->tipo,
             'descritivo' => $request->descritivo,
             'forma' => $request->forma,
+            'confirmado' => 1,
             'origem_destino' => $request->origem_destino,
             'num_lote' => $request->num_lote,
             'data_expiracao' => $request->data_expiracao,
@@ -168,6 +174,7 @@ class EstoqueController extends Controller
 
         Estoque::create([
             'produto_estoque_id' => $pe->id,
+            'farmacia_id' => $farmacia_id,
             'area_hospitalar_id' => $request->area_id
         ]);
 
@@ -237,6 +244,13 @@ class EstoqueController extends Controller
             'qtd.required' => "Informe uma quatidade"
         ]);
 
+        $farmacia_id = "";
+        if (@auth()->user()->isFarmacia){
+            $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
+        }elseif(@auth()->user()->farmacia) {
+            $farmacia_id = auth()->user()->farmacia->farmacia_id;
+        }
+
         $produto = PE::find($request->produto_id);
         $descritivo = $produto->descritivo;
         $qtdBaixar = $request->qtd;
@@ -270,6 +284,7 @@ class EstoqueController extends Controller
             'forma' => $produto->forma,
             'origem_destino' => $produto->origem_destino,
             'num_lote' => $produto->num_lote,
+            'confirmado' => 0,
             'data_expiracao' => $produto->data_expiracao,
             'data_producao' => $produto->data_producao,
             'num_documento' => $produto->num_documento,
@@ -303,19 +318,29 @@ class EstoqueController extends Controller
 
             $estoque = Estoque::create([
                 'produto_estoque_id' => $novoProduto->id,
+                'farmacia_id' => $farmacia_id,
                 'area_hospitalar_id' => $request->area_hospitalar_id
             ]);
         }
         $produto->update([
             'descritivo' => $produtoMasDescr
         ]);
-        
+
         $produto->saldo->update([
             'qtd' => $saldoRestante
         ]);
 
+        $ud = UAH::where('area_hospitalar_id', $area_hospitalar_id)
+            ->where('farmacia_id', $farmacia_id)
+            ->first();
 
-        return response()->json(['message' => 'Baixa concluida'], 201);
+        $caixas = getCaixa($newDescritivo);
+        $unit = getCaixaUnit($newDescritivo);
+
+        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} para {$ud->area_hospitalar->nome}");
+        self::setNotify("Confirmação de entrada de estoque", $ud->user_id);
+
+        return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);
     }
 
     public function calcularNivelAlerta()

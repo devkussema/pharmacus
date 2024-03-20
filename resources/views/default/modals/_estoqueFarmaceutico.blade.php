@@ -5,10 +5,19 @@
                 <div class="popup text-left">
                     <h4 class="mb-3">Adicionar Produto</h4>
                     <div class="content create-workform bg-body">
+                        @php
+                            $farmacia_id = "";
+                            if (@auth()->user()->isFarmacia){
+                                $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
+                            }elseif(@auth()->user()->farmacia) {
+                                $farmacia_id = auth()->user()->farmacia->farmacia_id;
+                            }
+                        @endphp
                         <form id="formProdutoEstoque" method="POST" action="{{ route('estoque.store') }}">
                             @csrf
                             <div class="form-row">
                                 <div class="col pb-3">
+                                    <input type="hidden" name="farmacia_id" value="{{ $farmacia_id }}">
                                     <label class="mb-2">Designação *</label>
                                     <input type="text" id="designacao" class="form-control" placeholder="" name="designacao">
                                 </div>
