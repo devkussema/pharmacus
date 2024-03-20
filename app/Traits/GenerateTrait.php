@@ -8,9 +8,24 @@ use Carbon\Carbon;
 use App\Models\{
     ProdutoEstoque as PE,
     RelatorioEstoqueAlerta as REA,
+    Notificacao
 };
+
 trait GenerateTrait
 {
+    public static function setNotify($titulo, $user_para, $descricao=null)
+    {
+        Notificacao::create([
+            'titulo' => $titulo,
+            'user_de' => auth()->user()->id,
+            'user_para' => $user_para,
+            'visto' => 0,
+            'descricao' => $descricao
+        ]);
+
+        return true;
+    }
+
     public static function calcNivelAlerta()
     {
         $hoje = Carbon::now();

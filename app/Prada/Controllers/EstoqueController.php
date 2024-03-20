@@ -309,6 +309,7 @@ class EstoqueController extends Controller
         $produto->update([
             'descritivo' => $produtoMasDescr
         ]);
+        
         $produto->saldo->update([
             'qtd' => $saldoRestante
         ]);
