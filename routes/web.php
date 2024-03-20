@@ -10,6 +10,7 @@ use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
 use Illuminate\Support\Facades\Artisan;
 use App\Prada\Controllers\{
+    PermissoesController,
     AutenticarUserController,
     UsuarioController, FuncionarioController,
     CargoController, ConfirmarController, EstoqueController,
@@ -62,6 +63,10 @@ Route::middleware(['auth', 'is.status'])->group(function () {
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
         Route::get('/relatorio', [EstoqueController::class, 'calcularNivelAlerta'])->name('estoque.relatorio');
+    });
+
+    Route::prefix('permissoes')->group(function () {
+        Route::post('/', [PermissoesController::class, 'store'])->name('permissoes.store');
     });
 
     Route::prefix('categoria')->group(function () {

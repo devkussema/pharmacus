@@ -28,7 +28,7 @@
     </div>
 @endif
 
-@if (auth()->check() and (auth()->user()->isFarmacia || auth()->user()->farmacia->fun_unica == "Tudo"))
+@if (auth()->check() and @(auth()->user()->isFarmacia || auth()->user()->farmacia->fun_unica == "Tudo"))
     <div class="row">
         <div class="col-md-3">
             <div class="alert text-white bg-dark" role="alert">

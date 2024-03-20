@@ -657,6 +657,39 @@ function modalEditarAH(id) {
     });
 }
 
+$('#formAddPermissoes').submit(function(event) {
+    event.preventDefault(); // Impede o envio do formulário padrão
+    showLoader();
+
+    // Serializa os dados do formulário em JSON
+    var formData = $(this).serializeArray();
+    var jsonData = {};
+    $.map(formData, function(n, i){
+        jsonData[n['name']] = n['value'];
+    });
+
+    // Envie os dados como JSON ao backend
+    $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        dataType: 'json',
+        data: JSON.stringify(jsonData), // Converta o objeto JSON em uma string JSON
+        contentType: 'application/json',
+        success: function(response) {
+            hideLoader();
+            // Lida com a resposta do servidor
+            toastr.success(response.message, response.titulo);
+            console.log('Deu certo' + response);
+        },
+        error: function(xhr, status, error) {
+            hideLoader();
+            console.log('Deu certo' + xhr + " .. "+error);
+            // Lida com erros de requisição
+            toastr.error(xhr.response.message, "Algo deu errado");
+        }
+    });
+});
+
 function modalEditarProdutoEstoque(id) {
     showLoader();
     // Requisição AJAX para buscar os dados da farmácia
@@ -708,6 +741,56 @@ function modalEditarProdutoEstoque(id) {
         $('#formEditProdutoEstoque').trigger('reset');
       });
 }
+
+function addPermissoes(url) {
+    showLoader();
+    // Requisição AJAX para buscar os dados da farmácia
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+            hideLoader();
+            // Preencher o campo de nome da farmácia com os dados retornados
+            $('#formAddPermissoes #user_id_').val(response.id);
+
+            // Exibir o modal
+            $('#addPermissoes').modal('show');
+        },
+        error: function (xhr, status, error) {
+            hideLoader();
+            // Tratar erros, se necessário
+            //console.error(xhr.responseText);
+            alert('Erro ao obter dados da farmácia.');
+        }
+    });
+}
+
+$('#formAddPermissoes').submit(function(event) {
+    event.preventDefault(); // Impede o envio do formulário padrão
+    showLoader();
+
+    // Serializa os dados do formulário em JSON
+    var formData = $(this).serializeArray();
+    var jsonData = {};
+    $.map(formData, function(n, i){
+        jsonData[n['name']] = n['value'];
+    });
+
+    // Envie os dados como JSON ao backend
+    $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        dataType: 'json',
+        data: JSON.stringify(jsonData), // Converta o objeto JSON em uma string JSON
+        contentType: 'application/json',
+        success: function(response) {
+            // Lida com a resposta do servidor
+        },
+        error: function(xhr, status, error) {
+            // Lida com erros de requisição
+        }
+    });
+});
 
 function addCargoGrupo(url) {
     showLoader();

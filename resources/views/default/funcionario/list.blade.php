@@ -69,6 +69,12 @@
                                                     title="Ver perfil de {{ $usr->nome }}" href="{{ route('u.perfil', ['username' => $usr->username]) }}">
                                                     <i class="ri-eye-line"></i>
                                                 </a>--}}
+                                                @if (auth()->user()->isFarmacia)
+                                                    <a class="badge bg-info mr-2" href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Adicionar permissões"
+                                                       onclick="addPermissoes('{{ route('user.get', ['id' => $usr->id]) }}')">
+                                                        <i class="ri-key-line"></i>
+                                                    </a>
+                                                @endif
                                                 @if ($usr->status == 1)
                                                     <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
                                                         title="Bloquear {{ $usr->nome }}" href="javascript:void(0)" onclick="modalBloquearUsr('{{ $usr->id }}', '{{ $usr->nome }}', '{{ route('usuario') }}')">
@@ -130,5 +136,5 @@
             </div>
         </div>
     </div>
-    @include('modals.__funcionario')
+    @include('modals._addPermissoes')
 @endsection
