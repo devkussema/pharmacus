@@ -3,13 +3,13 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="popup text-left">
-                    <h4 class="mb-3">Adicionar Permissões</h4>
+                    <h3 class="mb-3">Adicionar Permissões</h3>
                     <div class="content create-workform bg-body">
                         <form id="formAddPermissoes" action="{{ route('permissoes.store') }}" method="POST">
                             @csrf
                             <input type="hidden" name="user_id" id="user_id_">
                             <div class="header-title">
-                                <h4 class="card-title">Produtos</h4>
+                                <h6 class="card-title">Produtos</h6>
                             </div>
                             <div class="form-group">
                                 <div class="custom-control custom-checkbox custom-control-inline">
@@ -27,7 +27,7 @@
                             </div>
 
                             <div class="header-title">
-                                <h4 class="card-title">Áreas Hospitalares</h4>
+                                <h6 class="card-title">Áreas Hospitalares</h6>
                             </div>
                             <div class="form-group">
                                 <div class="custom-control custom-checkbox custom-control-inline">
@@ -49,7 +49,7 @@
                             </div>
 
                             <div class="header-title">
-                                <h4 class="card-title">Relatórios</h4>
+                                <h6 class="card-title">Relatórios</h6>
                             </div>
                             <div class="form-group">
                                 <div class="custom-control custom-checkbox custom-control-inline">
