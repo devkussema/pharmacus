@@ -49,6 +49,16 @@
                             </div>
 
                             <div class="header-title">
+                                <h6 class="card-title">Cargos</h6>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-checkbox custom-control-inline">
+                                    <input name="cargo[cadastrar]" type="checkbox" class="custom-control-input" id="cadastrar_cargo">
+                                    <label class="custom-control-label" for="cadastrar_cargo">Cadastrar</label>
+                                </div>
+                            </div>
+
+                            <div class="header-title">
                                 <h6 class="card-title">Relatórios</h6>
                             </div>
                             <div class="form-group">

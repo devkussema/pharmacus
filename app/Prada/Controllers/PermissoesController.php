@@ -21,6 +21,7 @@ class PermissoesController extends Controller
         $dados['produtos'] = $request->produtos;
         $dados['area_hospitalar'] = $request->area_hospitalar;
         $dados['relatorio'] = $request->relatorio;
+        $dados['cargo'] = $request->cargo;
 
         $json = json_encode($dados);
 
