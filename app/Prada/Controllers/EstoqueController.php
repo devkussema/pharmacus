@@ -171,7 +171,9 @@ class EstoqueController extends Controller
             'area_hospitalar_id' => $request->area_id
         ]);
 
-        self::startAtv("Adicionou cerca de {$request->qtd_total} {$request->forma} de {$request->designacao}");
+        $caixas = getCaixa($request->descritivo);
+
+        self::startAtv("Adicionou cerca de {$caixas} caixas equivalente {$request->qtd_total} unidades de {$request->designacao}");
 
         return response()->json(['message' => "{$request->designacao} adicionado!"]);
     }
