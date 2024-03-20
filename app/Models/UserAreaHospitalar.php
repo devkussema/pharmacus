@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserAreaHospitalar extends Model
 {
@@ -15,8 +16,15 @@ class UserAreaHospitalar extends Model
         'user_id',
         'area_hospitalar_id',
         'cargo_id',
+        'farmacia_id',
+        'fun_unica',
         'contato'
     ];
+
+    public function farmacia(): BelongsTo
+    {
+        return $this->belongsTo(Farmacia::class, 'farmacia_id');
+    }
 
     public function cargo()
     {

@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="{{ pharma('assets/images/white__logo2.png') }}" />
     <link rel="stylesheet" href="{{ pharma('assets/css/backend-plugin.min.css') }}">
     <link rel="stylesheet" href="{{ pharma('assets/css/backende209.css?v=1.0.0') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{ pharma('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ pharma('assets/vendor/remixicon/fonts/remixicon.css') }}">
     <link rel="stylesheet" href="{{ pharma('assets/css/toastr.min.css') }}">
@@ -255,7 +255,7 @@
                     });
             }
         });
-        
+
     </script>
 
     <script src="{{ pharma('assets/js/dev/helpers.js') }}" async></script>
@@ -265,7 +265,7 @@
     <script async src="{{ pharma('assets/js/dev/chart-custom.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/app.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/toastr.min.js') }}"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/fontawesome.min.js" integrity="sha512-22flhOyPNWzkYE2LbBCEX+m5tw5RBuw0AKCKURp96YgdoPWNtGrWuViceL0Ey0L/sHZyZXPT53ofUlAI6E+u+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
