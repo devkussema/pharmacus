@@ -5,9 +5,9 @@
                 <div class="popup text-left">
                     <h4 class="mb-3">Adicionar Permissões</h4>
                     <div class="content create-workform bg-body">
-                        <form id="formAddPermissoesq" action="{{ route('permissoes.store') }}" method="POST">
+                        <form id="formAddPermissoes" action="{{ route('permissoes.store') }}" method="POST">
                             @csrf
-                            <input type="text" name="user_id" id="user_id_" value="{{ auth()->user()->id  }}">
+                            <input type="hidden" name="user_id" id="user_id_">
                             <div class="header-title">
                                 <h4 class="card-title">Produtos</h4>
                             </div>

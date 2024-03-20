@@ -657,38 +657,32 @@ function modalEditarAH(id) {
     });
 }
 
-$('#formAddPermissoes').submit(function(event) {
+/*$('#formAddPermissoesqq').submit(function(event) {
     event.preventDefault(); // Impede o envio do formulário padrão
     showLoader();
 
-    // Serializa os dados do formulário em JSON
-    var formData = $(this).serializeArray();
-    var jsonData = {};
-    $.map(formData, function(n, i){
-        jsonData[n['name']] = n['value'];
-    });
+    // Obtém os dados do formulário
+    var formData = new FormData(this);
 
-    // Envie os dados como JSON ao backend
+    // Envia a requisição AJAX
     $.ajax({
         type: 'POST',
         url: $(this).attr('action'),
-        dataType: 'json',
-        data: JSON.stringify(jsonData), // Converta o objeto JSON em uma string JSON
-        contentType: 'application/json',
+        data: formData,
+        processData: false,
+        contentType: false,
         success: function(response) {
             hideLoader();
             // Lida com a resposta do servidor
             toastr.success(response.message, response.titulo);
-            console.log('Deu certo' + response);
         },
         error: function(xhr, status, error) {
             hideLoader();
-            console.log('Deu certo' + xhr + " .. "+error);
             // Lida com erros de requisição
             toastr.error(xhr.response.message, "Algo deu errado");
         }
     });
-});
+});*/
 
 function modalEditarProdutoEstoque(id) {
     showLoader();
@@ -765,7 +759,7 @@ function addPermissoes(url) {
     });
 }
 
-$('#formAddPermissoes').submit(function(event) {
+/*$('#formAddPermissoes').submit(function(event) {
     event.preventDefault(); // Impede o envio do formulário padrão
     showLoader();
 
@@ -790,7 +784,7 @@ $('#formAddPermissoes').submit(function(event) {
             // Lida com erros de requisição
         }
     });
-});
+});*/
 
 function addCargoGrupo(url) {
     showLoader();

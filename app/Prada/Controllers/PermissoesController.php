@@ -24,14 +24,24 @@ class PermissoesController extends Controller
 
         $json = json_encode($dados);
 
-        Permissao::create([
-            'conteudo' => $json,
-            'user_id' => $request->user_id,
-        ]);
+        $usr = $request->user_id;
+
+        $isPerm = Permissao::where('user_id', $usr)->first();
+
+        if (!$isPerm) {
+            Permissao::create([
+                'conteudo' => $json,
+                'user_id' => $request->user_id,
+            ]);
+        }else{
+            $isPerm->update([
+                'conteudo' => $json
+            ]);
+        }
 
         // Retorne uma resposta de sucesso
-        return response()->json(['message' => 'Permissões salvas com sucesso'], 200);
-
+        //return response()->json(['message' => 'Permissões salvas com sucesso', 'titulo' => "Concluido"], 200);
+        return redirect()->back()->with('success', 'Permissões atualizadas');
         //return response()->json(['message' => "As coisas deram certos", 'titulo' => "Perfeito"], 200);
     }
 }

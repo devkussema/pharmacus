@@ -6,6 +6,71 @@ use App\Models\{Permissao, Cargo};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function vPerm($modulo, $permissoes) {
+    $jsonPermissoe = \App\Models\Permissao::where('user_id', auth()->user()->id)->first();
+
+    if (!$jsonPermissoe)
+        return 0;
+
+    $jsonPermissoes = $jsonPermissoe->conteudo;
+    $permissoesUsuario = json_decode($jsonPermissoes, true);
+
+    // Verifica se o módulo existe
+    if (!isset($permissoesUsuario[$modulo])) {
+        return 0;
+    }
+
+    // Verifica se o usuário tem todas as permissões necessárias
+    foreach ($permissoes as $permissao) {
+        if (!isset($permissoesUsuario[$modulo][$permissao]) || $permissoesUsuario[$modulo][$permissao] !== 'on') {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+function myPerm($jsonString, $key, $expectedValue)
+{
+    // Decodifica o JSON para um array associativo
+    $jsonData = json_decode($jsonString, true);
+
+    // Verifica se o JSON foi decodificado corretamente
+    if ($jsonData === null) {
+        // Se houver um erro na decodificação JSON, retorna falso
+        return false;
+    }
+
+    // Verifica se a chave fornecida existe no JSON
+    if (!array_key_exists($key, $jsonData)) {
+        // Se a chave não existir, retorna falso
+        return false;
+    }
+
+    // Verifica se o valor da chave é igual ao valor esperado
+    return $jsonData[$key] === $expectedValue;
+}
+
+function isPerm($jsonString, $key, $expectedValue)
+{
+    // Decodifica o JSON para um array associativo
+    $jsonData = json_decode($jsonString, true);
+
+    // Verifica se o JSON foi decodificado corretamente
+    if ($jsonData === null) {
+        // Se houver um erro na decodificação JSON, retorna falso
+        return false;
+    }
+
+    // Verifica se a chave fornecida existe no JSON
+    if (!array_key_exists($key, $jsonData)) {
+        // Se a chave não existir, retorna falso
+        return false;
+    }
+
+    // Verifica se o valor da chave é igual ao valor esperado
+    return $jsonData[$key] === $expectedValue;
+}
 function getCaixa($string) {
     $valores = explode('x', $string);
     $valor = $valores[0];

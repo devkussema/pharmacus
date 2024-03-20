@@ -35,7 +35,7 @@
                 <div class="iq-alert-icon">
                     <i class="fa-solid fa-cubes-stacked fa-fade"></i>
                 </div>
-                <div class="iq-alert-text">58 itens estão no estoque máximo.</div>
+                <div class="iq-alert-text">Os dados do estoque máximo serão atualizados em breve.</div>
             </div>
         </div>
         <div class="col-md-3">
@@ -43,7 +43,7 @@
                 <div class="iq-alert-icon">
                     <i class="fa-solid fa-cubes fa-fade"></i>
                 </div>
-                <div class="iq-alert-text">+86 itens estão no estoque normal</div>
+                <div class="iq-alert-text">Os dados do estoque normal serão atualizados em breve</div>
             </div>
         </div>
         <div class="col-md-3">
@@ -51,7 +51,7 @@
                 <div class="iq-alert-icon">
                     <i class="fa-solid fa-pills fa-beat-fade"></i>
                 </div>
-                <div class="iq-alert-text">+99 itens estão no estoque mínimo.</div>
+                <div class="iq-alert-text">Os dados do estoque mínimo serão atualizados em breve.</div>
             </div>
         </div>
         <div class="col-md-3">
@@ -59,7 +59,7 @@
                 <div class="iq-alert-icon">
                     <i class="fa-regular fa-face-surprise fa-beat"></i>
                 </div>
-                <div class="iq-alert-text">+10 itens estão no estoque crítico!</div>
+                <div class="iq-alert-text">Os dados do estoque crítico serão atualizados em breve</div>
             </div>
         </div>
     </div>

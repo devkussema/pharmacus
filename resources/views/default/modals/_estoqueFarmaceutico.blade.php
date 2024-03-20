@@ -107,12 +107,12 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-row">
+                            {{--<div class="form-row">
                                 <div class="col pb-3">
                                     <label class="mb-2">Quantidade Embalagem</label>
                                     <input type="number" class="form-control" placeholder="" name="qtd_embalagem">
                                 </div>
-                            </div>
+                            </div>--}}
                             <div class="form-row">
                                 <div class="col pb-3">
                                     <label class="mb-2">OBS</label>
