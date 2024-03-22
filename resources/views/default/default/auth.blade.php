@@ -10,7 +10,7 @@
     <meta name="geo.icbm" content="-8.838333; 13.234444">
 
     <!-- Meta tag robots -->
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@yield('titulo') | {{ env('APP_NAME') }} - {{ env('APP_DESCRIPTION') }}</title>
@@ -21,7 +21,7 @@
 
     <meta name="theme-color" content="#6777ef" />
     <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
-    <link rel="manifest" href="{{ pharma('/manifest.json') }}">
+    <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ pharma('assets/images/white__logo2.png') }}" />

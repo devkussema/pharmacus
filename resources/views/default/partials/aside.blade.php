@@ -1,7 +1,7 @@
-<div class="iq-sidebar  sidebar-default ">
+<div class="iq-sidebar sidebar-default ">
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
         <a href="{{ route('home') }}" class="header-logo">
-            <img src="{{ pharma('assets/images/black__logo.png') }}" class="img-fluid rounded-normal" alt="logo">
+            <img src="{{ pharma('assets/images/white__logo2.png') }}" class="img-fluid rounded-normal" alt="logo">
             <h5 class="logo-title ml-3">{{ getConfig('nome_site') ?? env('APP_NAME', 'Pharmacus') }}</h5>
         </a>
         <div class="iq-menu-bt-sidebar ml-0">
