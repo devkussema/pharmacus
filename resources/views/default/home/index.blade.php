@@ -70,8 +70,7 @@
         }
     </style>
 </head>
-
-<body class=" color-light ">
+<body class="color-light dark">
     <!-- loader Start -->
     <div class="loader" id="loaderish" style="display: none">
         <img src="{{ pharma('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">

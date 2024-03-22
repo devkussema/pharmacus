@@ -95,6 +95,7 @@ Route::middleware(['auth', 'is.status'])->group(function () {
     // ConfigController
     Route::prefix('definicoes')->group(function () {
         Route::get('/site', [ConfigController::class, 'index'])->name('config.site');
+        Route::post('/site/set_config', [ConfigController::class, 'set_config'])->name('config.set_config');
     });
 
     Route::prefix('gestor')->group(function () {

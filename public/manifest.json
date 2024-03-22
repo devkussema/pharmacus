@@ -13,25 +13,25 @@
     "theme_color": "#6777ef",
     "icons": [
         {
-            "src": "assets/images/white__logo2.png",
+            "src": "white__logo2.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "assets/images/white__logo2.png",
+            "src": "white__logo2.png",
             "sizes": "256x256",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "assets/images/white__logo2.png",
+            "src": "white__logo2.png",
             "sizes": "384x384",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "assets/images/white__logo2.png",
+            "src": "white__logo2.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
@@ -43,7 +43,7 @@
     "permissions": ["geolocation", "notifications"],
     "splash_pages": [
         {
-            "src": "assets/images/splash/pharmatina.png",
+            "src": "splash/pharmatina.png",
             "sizes": "542x331",
             "type": "image/png"
         }
