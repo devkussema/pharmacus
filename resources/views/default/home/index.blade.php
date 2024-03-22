@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
-    <title>@yield('titulo', 'Página Inicial') - {{ env('APP_NAME') }}</title>
+    <title>@yield('titulo', 'Página Inicial') - {{ getConfig('nome_site') ?? env('APP_NAME') }}</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ pharma('assets/images/white__logo2.png') }}" />
@@ -70,6 +70,7 @@
         }
     </style>
 </head>
+
 <body class="color-light">
     <!-- loader Start -->
     <div class="loader" id="loaderish" style="display: none">
@@ -274,6 +275,37 @@
             }
         });
 
+        function setConfig(chave, valor) {
+            showLoader();
+            $.ajax({
+                url: "{{ route('config.set_config') }}",
+                method: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    chave: chave,
+                    valor: valor
+                },
+                success: function(response) {
+                    hideLoader();
+                    // Sucesso
+                    toastr.success(response.message);
+                },
+                error: function(xhr, status, error) {
+                    hideLoader();
+                    // Trata os erros de validação retornados pelo servidor
+                    var errors = xhr.responseJSON.errors;
+                    var errorMessage = '';
+
+                    // Percorre os erros e os concatena em uma única string
+                    $.each(errors, function(key, value) {
+                        errorMessage += value[0] + '<br>';
+                    });
+
+                    // Exibe a mensagem de erro com Toastr.js
+                    toastr.error(errorMessage, 'Erro');
+                }
+            });
+        }
     </script>
 
     <script src="{{ pharma('assets/js/dev/helpers.js') }}" async></script>
@@ -283,7 +315,9 @@
     <script async src="{{ pharma('assets/js/dev/chart-custom.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/app.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/toastr.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/fontawesome.min.js" integrity="sha512-22flhOyPNWzkYE2LbBCEX+m5tw5RBuw0AKCKURp96YgdoPWNtGrWuViceL0Ey0L/sHZyZXPT53ofUlAI6E+u+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/fontawesome.min.js"
+        integrity="sha512-22flhOyPNWzkYE2LbBCEX+m5tw5RBuw0AKCKURp96YgdoPWNtGrWuViceL0Ey0L/sHZyZXPT53ofUlAI6E+u+g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>

@@ -5,13 +5,13 @@
                 <i class="ri-menu-line wrapper-menu"></i>
                 <a href="{{ route('home') }}" class="header-logo">
                     <img src="{{ pharma('assets/images/black__logo.png') }}" class="img-fluid rounded-normal" alt="logo">
-                    <h5 class="logo-title ml-3">{{ env('APP_NAME', 'Pharmacus') }}</h5>
+                    <h5 class="logo-title ml-3">{{ getConfig('nome_site') ?? env('APP_NAME', 'Pharmacus') }}</h5>
                 </a>
             </div>
             <div class="iq-search-bar device-search">
                 <form action="#" class="searchbox">
-                    <a class="search-link" href="#"><i class="ri-search-line"></i></a>
-                    <input type="text" class="text search-input" placeholder="Procure aqui...">
+                    {{-- <a class="search-link" href="#"><i class="ri-search-line"></i></a>
+                    <input type="text" class="text search-input" placeholder="Procure aqui..."> --}}
                 </form>
             </div>
             <div class="d-flex align-items-center">
@@ -226,7 +226,7 @@
                         {{-- start notificações --}}
                         {{-- <li class="nav-item nav-icon dropdown">
                             <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">                                
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">

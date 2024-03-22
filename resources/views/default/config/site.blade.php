@@ -57,14 +57,15 @@
                                                     ex ac
                                                     venenatis mollis, diam
                                                     nibh finibus leo</p>
-                                                <form>
+                                                <form method="POST" id="info_basica">
                                                     <div class="row">
                                                         <div class="col-lg-12 mb-2">
-                                                            <input type="text" class="form-control"
-                                                                placeholder="Nome do site">
+                                                            <input type="text" class="form-control" name="nome_site" value="{{ getConfig('nome_site') }}" placeholder="Nome do site">
                                                         </div>
                                                         <div class="col-lg-12">
-                                                            <textarea class="form-control" placeholder="Descrição do site"></textarea>
+                                                            <textarea class="form-control" name="descricao_site" placeholder="Descrição do site">
+                                                                {{ getConfig('descricao_site') }}
+                                                            </textarea>
                                                             <button class="btn btn-outline-primary mt-2">Guardar</button>
                                                         </div>
                                                     </div>
@@ -85,7 +86,7 @@
                                                     ex ac
                                                     venenatis mollis, diam
                                                     nibh finibus leo</p>
-                                                <form>
+                                                <form method="POST" id="info_meta_tags">
                                                     <div class="row">
                                                         <div class="col-lg-12 mb-2">
                                                             <div class="input-group mb-4">
@@ -93,7 +94,7 @@
                                                                     <button class="btn btn-primary"
                                                                         type="button">Autor</button>
                                                                 </div>
-                                                                <input type="text" class="form-control">
+                                                                <input type="text" class="form-control" name="meta_autor" value="{{ getConfig('meta_autor') }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-12 mb-2">
@@ -102,17 +103,15 @@
                                                                     <button class="btn btn-primary"
                                                                         type="button">Keywords</button>
                                                                 </div>
-                                                                <input type="text" class="form-control">
+                                                                <input type="text" class="form-control" name="meta_keywords" value="{{ getConfig('meta_keywords') }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-12 mb-2">
                                                             <div class="input-group mb-4">
                                                                 <div class="input-group-prepend">
-                                                                    <button
-                                                                        class="btn btn-primary"type="button">Robots</button>
+                                                                    <button class="btn btn-primary"type="button">Robots</button>
                                                                 </div>
-                                                                <input type="text" class="form-control" name="robots"
-                                                                    value="index, follow">
+                                                                <input type="text" class="form-control" name="meta_robots" value="{{ getConfig('meta_robots') }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-12 mb-2">
@@ -121,8 +120,11 @@
                                                                     <button class="btn btn-primary"
                                                                         type="button">Desc</button>
                                                                 </div>
-                                                                <textarea type="text" class="form-control" rows="2"></textarea>
+                                                                <textarea type="text" class="form-control" rows="2" name="meta_description">
+                                                                    {{ getConfig('meta_description') }}
+                                                                </textarea>
                                                             </div>
+                                                                <button class="btn btn-outline-primary mt-2">Guardar</button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -207,44 +209,45 @@
     </div>
     <script>
         $(document).ready(function() {
+            $('#info_meta_tags').submit(function(e) {
+                e.preventDefault();
+
+                // Serializa os dados do formulário
+                var formData = $('#info_meta_tags').serializeArray();
+
+                // Itera sobre os dados serializados
+                $.each(formData, function(index, field) {
+                    // Envia os dados para a função setConfig
+                    setConfig(field.name, field.value);
+                });
+            });
+
+            $('#info_basica').submit(function(e) {
+                e.preventDefault();
+
+                // Serializa os dados do formulário
+                var formData = $('#info_basica').serializeArray();
+
+                // Itera sobre os dados serializados
+                $.each(formData, function(index, field) {
+                    // Envia os dados para a função setConfig
+                    setConfig(field.name, field.value);
+                });
+            });
+
             $('#swicth_criar_conta').change(function() {
                 var isChecked = $(this).prop('checked'); // Verifica se o checkbox está marcado
 
                 // Envia o estado do checkbox via AJAX para a rota especificada
                 setConfig('criar_conta', isChecked);
             });
-        });
 
-        function setConfig(chave, valor) {
-            showLoader();
-            $.ajax({
-                url: "{{ route('config.set_config') }}",
-                method: 'POST',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    chave: chave,
-                    valor: valor
-                },
-                success: function(response) {
-                    hideLoader();
-                    // Sucesso
-                    toastr.success(response.message);
-                },
-                error: function(xhr, status, error) {
-                    hideLoader();
-                    // Trata os erros de validação retornados pelo servidor
-                    var errors = xhr.responseJSON.errors;
-                    var errorMessage = '';
+            $('#swicth_recuperar_conta').change(function() {
+                var isChecked = $(this).prop('checked'); // Verifica se o checkbox está marcado swicth_recuperar_conta
 
-                    // Percorre os erros e os concatena em uma única string
-                    $.each(errors, function(key, value) {
-                        errorMessage += value[0] + '<br>';
-                    });
-
-                    // Exibe a mensagem de erro com Toastr.js
-                    toastr.error(errorMessage, 'Erro');
-                }
+                // Envia o estado do checkbox via AJAX para a rota especificada
+                setConfig('recuperar_conta', isChecked);
             });
-        }
+        });
     </script>
 @endsection

@@ -2,7 +2,7 @@
 
 use \App\Models\User;
 use App\Models\Grupo;
-use App\Models\{Permissao, Cargo};
+use App\Models\{Permissao, Cargo, Setting};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +28,19 @@ function vPerm($modulo, $permissoes) {
     }
 
     return 1;
+}
+
+function getConfig($chave)
+{
+    $cfg = Setting::where('chave', $chave)->first();
+    if (!$cfg) {
+        return false;
+    }
+
+    if ($cfg->valor == 'false')
+        return false;
+
+    return $cfg->valor;
 }
 
 function myPerm($jsonString, $key, $expectedValue)

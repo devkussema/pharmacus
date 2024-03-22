@@ -2,7 +2,7 @@
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
         <a href="{{ route('home') }}" class="header-logo">
             <img src="{{ pharma('assets/images/black__logo.png') }}" class="img-fluid rounded-normal" alt="logo">
-            <h5 class="logo-title ml-3">{{ env('APP_NAME', 'Pharmacus') }}</h5>
+            <h5 class="logo-title ml-3">{{ getConfig('nome_site') ?? env('APP_NAME', 'Pharmacus') }}</h5>
         </a>
         <div class="iq-menu-bt-sidebar ml-0">
             <i class="ri-menu-2-line wrapper-menu"></i>
@@ -267,7 +267,7 @@
                             </li>
                         </ul>
                     </li>
-                    
+
                     <li class="">
                         <a href="#config_site" class="collapsed" data-toggle="collapse" aria-expanded="false">
                             <i class="ri-settings-4-fill"></i>
