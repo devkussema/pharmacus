@@ -11,6 +11,7 @@ use App\Prada\Controllers\AreaHospitalarController;
 use Illuminate\Support\Facades\Artisan;
 use App\Prada\Controllers\{
     PermissoesController,
+    ConfigController,
     AutenticarUserController,
     UsuarioController, FuncionarioController,
     CargoController, ConfirmarController, EstoqueController,
@@ -90,6 +91,10 @@ Route::middleware(['auth', 'is.status'])->group(function () {
         Route::delete('/apagar/{id}', [AreaHospitalarController::class, 'destroy'])->name('a_h.destroy');
         Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');
         Route::get('/statUs', [AreaHospitalarController::class, 'getStatDia'])->name('a_h.get_stat_dia');
+    });
+    // ConfigController
+    Route::prefix('definicoes')->group(function () {
+        Route::get('/site', [ConfigController::class, 'index'])->name('config.site');
     });
 
     Route::prefix('gestor')->group(function () {

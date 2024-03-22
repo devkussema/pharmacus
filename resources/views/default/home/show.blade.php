@@ -8,10 +8,6 @@
                 <div class="card card-transparent card-block card-stretch card-height border-none">
                     <div class="card-body p-0 mt-lg-2 mt-0">
                         <h3 class="mb-3">Olá {{ printNome(Auth::user()->nome) }}, {{ saudacaoDoDia() }}</h3>
-                        <h4 class="box-title d-block">Left Modal</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-left">
-                            Launch demo modal
-                        </button>
                         <p class="mb-0 mr-4">Seu painel oferece visualizações dos principais desempenhos ou processos de
                             negócios.</p>
                         {{-- {{ auth()->user()->grupo }} --}}
