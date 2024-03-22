@@ -8,9 +8,30 @@
                 <div class="card card-transparent card-block card-stretch card-height border-none">
                     <div class="card-body p-0 mt-lg-2 mt-0">
                         <h3 class="mb-3">Olá {{ printNome(Auth::user()->nome) }}, {{ saudacaoDoDia() }}</h3>
+                        <h4 class="box-title d-block">Left Modal</h4>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-left">
+                            Launch demo modal
+                        </button>
                         <p class="mb-0 mr-4">Seu painel oferece visualizações dos principais desempenhos ou processos de
                             negócios.</p>
                         {{-- {{ auth()->user()->grupo }} --}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal modal-left fade" id="modal-left" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Your content comes here</p>
+                        </div>
+                        <div class="modal-footer modal-footer-uniform">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary float-end">Save changes</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -21,7 +42,8 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
                                     <div class="icon iq-icon-box-2 bg-info-light">
-                                        <img src="{{ pharma('assets/images/product/1.png')}}" class="img-fluid" alt="image">
+                                        <img src="{{ pharma('assets/images/product/1.png') }}" class="img-fluid"
+                                            alt="image">
                                     </div>
                                     <div>
                                         <p class="mb-2">Total de Farmácias</p>
@@ -40,7 +62,8 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
                                     <div class="icon iq-icon-box-2 bg-danger-light">
-                                        <img src="{{ pharma('assets/images/product/2.png')}}" class="img-fluid" alt="image">
+                                        <img src="{{ pharma('assets/images/product/2.png') }}" class="img-fluid"
+                                            alt="image">
                                     </div>
                                     <div>
                                         <p class="mb-2">Total Gestores</p>
@@ -59,7 +82,8 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
                                     <div class="icon iq-icon-box-2 bg-success-light">
-                                        <img src="{{ pharma('assets/images/product/3.png')}}" class="img-fluid" alt="image">
+                                        <img src="{{ pharma('assets/images/product/3.png') }}" class="img-fluid"
+                                            alt="image">
                                     </div>
                                     <div>
                                         <p class="mb-2">Áreas Hospitalares</p>

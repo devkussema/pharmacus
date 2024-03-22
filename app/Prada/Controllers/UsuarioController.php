@@ -27,7 +27,7 @@ class UsuarioController extends Controller
         if (!$u)
             return redirect()->back()->with('warning', 'Ocorreu um erro, usuário não encontrado!');
 
-        return view('perfil.timeline', compact('u'));
+        return view('perfil.config', compact('u'));
     }
 
     public function updatePassword(Request $request)

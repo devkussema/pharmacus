@@ -1,743 +1,15 @@
 @extends('home.index')
 
-@section('titulo', 'Perfil')
+@section('titulo', auth()->user()->nome)
 
 @section('conteudo')
-    <style type="text/css">
-        .apexcharts-canvas {
-            position: relative;
-            user-select: none;
-            /* cannot give overflow: hidden as it will crop tooltips which overflow outside chart area */
-        }
-
-        /* scrollbar is not visible by default for legend, hence forcing the visibility */
-        .apexcharts-canvas ::-webkit-scrollbar {
-            -webkit-appearance: none;
-            width: 6px;
-        }
-
-        .apexcharts-canvas ::-webkit-scrollbar-thumb {
-            border-radius: 4px;
-            background-color: rgba(0, 0, 0, .5);
-            box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-            -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-        }
-
-        .apexcharts-canvas.dark {
-            background: #343F57;
-        }
-
-        .apexcharts-inner {
-            position: relative;
-        }
-
-        .legend-mouseover-inactive {
-            transition: 0.15s ease all;
-            opacity: 0.20;
-        }
-
-        .apexcharts-series-collapsed {
-            opacity: 0;
-        }
-
-        .apexcharts-gridline,
-        .apexcharts-text {
-            pointer-events: none;
-        }
-
-        .apexcharts-tooltip {
-            border-radius: 5px;
-            box-shadow: 2px 2px 6px -4px #999;
-            cursor: default;
-            font-size: 14px;
-            left: 62px;
-            opacity: 0;
-            pointer-events: none;
-            position: absolute;
-            top: 20px;
-            overflow: hidden;
-            white-space: nowrap;
-            z-index: 12;
-            transition: 0.15s ease all;
-        }
-
-        .apexcharts-tooltip.light {
-            border: 1px solid #e3e3e3;
-            background: rgba(255, 255, 255, 0.96);
-        }
-
-        .apexcharts-tooltip.dark {
-            color: #fff;
-            background: rgba(30, 30, 30, 0.8);
-        }
-
-        .apexcharts-tooltip * {
-            font-family: inherit;
-        }
-
-        .apexcharts-tooltip .apexcharts-marker,
-        .apexcharts-area-series .apexcharts-area,
-        .apexcharts-line {
-            pointer-events: none;
-        }
-
-        .apexcharts-tooltip.active {
-            opacity: 1;
-            transition: 0.15s ease all;
-        }
-
-        .apexcharts-tooltip-title {
-            padding: 6px;
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        .apexcharts-tooltip.light .apexcharts-tooltip-title {
-            background: #ECEFF1;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .apexcharts-tooltip.dark .apexcharts-tooltip-title {
-            background: rgba(0, 0, 0, 0.7);
-            border-bottom: 1px solid #333;
-        }
-
-        .apexcharts-tooltip-text-value,
-        .apexcharts-tooltip-text-z-value {
-            display: inline-block;
-            font-weight: 600;
-            margin-left: 5px;
-        }
-
-        .apexcharts-tooltip-text-z-label:empty,
-        .apexcharts-tooltip-text-z-value:empty {
-            display: none;
-        }
-
-        .apexcharts-tooltip-text-value,
-        .apexcharts-tooltip-text-z-value {
-            font-weight: 600;
-        }
-
-        .apexcharts-tooltip-marker {
-            width: 12px;
-            height: 12px;
-            position: relative;
-            top: 0px;
-            margin-right: 10px;
-            border-radius: 50%;
-        }
-
-        .apexcharts-tooltip-series-group {
-            padding: 0 10px;
-            display: none;
-            text-align: left;
-            justify-content: left;
-            align-items: center;
-        }
-
-        .apexcharts-tooltip-series-group.active .apexcharts-tooltip-marker {
-            opacity: 1;
-        }
-
-        .apexcharts-tooltip-series-group.active,
-        .apexcharts-tooltip-series-group:last-child {
-            padding-bottom: 4px;
-        }
-
-        .apexcharts-tooltip-series-group-hidden {
-            opacity: 0;
-            height: 0;
-            line-height: 0;
-            padding: 0 !important;
-        }
-
-        .apexcharts-tooltip-y-group {
-            padding: 6px 0 5px;
-        }
-
-        .apexcharts-tooltip-candlestick {
-            padding: 4px 8px;
-        }
-
-        .apexcharts-tooltip-candlestick>div {
-            margin: 4px 0;
-        }
-
-        .apexcharts-tooltip-candlestick span.value {
-            font-weight: bold;
-        }
-
-        .apexcharts-tooltip-rangebar {
-            padding: 5px 8px;
-        }
-
-        .apexcharts-tooltip-rangebar .category {
-            font-weight: 600;
-            color: #777;
-        }
-
-        .apexcharts-tooltip-rangebar .series-name {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .apexcharts-xaxistooltip {
-            opacity: 0;
-            padding: 9px 10px;
-            pointer-events: none;
-            color: #373d3f;
-            font-size: 13px;
-            text-align: center;
-            border-radius: 2px;
-            position: absolute;
-            z-index: 10;
-            background: #ECEFF1;
-            border: 1px solid #90A4AE;
-            transition: 0.15s ease all;
-        }
-
-        .apexcharts-xaxistooltip.dark {
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(0, 0, 0, 0.5);
-            color: #fff;
-        }
-
-        .apexcharts-xaxistooltip:after,
-        .apexcharts-xaxistooltip:before {
-            left: 50%;
-            border: solid transparent;
-            content: " ";
-            height: 0;
-            width: 0;
-            position: absolute;
-            pointer-events: none;
-        }
-
-        .apexcharts-xaxistooltip:after {
-            border-color: rgba(236, 239, 241, 0);
-            border-width: 6px;
-            margin-left: -6px;
-        }
-
-        .apexcharts-xaxistooltip:before {
-            border-color: rgba(144, 164, 174, 0);
-            border-width: 7px;
-            margin-left: -7px;
-        }
-
-        .apexcharts-xaxistooltip-bottom:after,
-        .apexcharts-xaxistooltip-bottom:before {
-            bottom: 100%;
-        }
-
-        .apexcharts-xaxistooltip-top:after,
-        .apexcharts-xaxistooltip-top:before {
-            top: 100%;
-        }
-
-        .apexcharts-xaxistooltip-bottom:after {
-            border-bottom-color: #ECEFF1;
-        }
-
-        .apexcharts-xaxistooltip-bottom:before {
-            border-bottom-color: #90A4AE;
-        }
-
-        .apexcharts-xaxistooltip-bottom.dark:after {
-            border-bottom-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .apexcharts-xaxistooltip-bottom.dark:before {
-            border-bottom-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .apexcharts-xaxistooltip-top:after {
-            border-top-color: #ECEFF1
-        }
-
-        .apexcharts-xaxistooltip-top:before {
-            border-top-color: #90A4AE;
-        }
-
-        .apexcharts-xaxistooltip-top.dark:after {
-            border-top-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .apexcharts-xaxistooltip-top.dark:before {
-            border-top-color: rgba(0, 0, 0, 0.5);
-        }
-
-
-        .apexcharts-xaxistooltip.active {
-            opacity: 1;
-            transition: 0.15s ease all;
-        }
-
-        .apexcharts-yaxistooltip {
-            opacity: 0;
-            padding: 4px 10px;
-            pointer-events: none;
-            color: #373d3f;
-            font-size: 13px;
-            text-align: center;
-            border-radius: 2px;
-            position: absolute;
-            z-index: 10;
-            background: #ECEFF1;
-            border: 1px solid #90A4AE;
-        }
-
-        .apexcharts-yaxistooltip.dark {
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(0, 0, 0, 0.5);
-            color: #fff;
-        }
-
-        .apexcharts-yaxistooltip:after,
-        .apexcharts-yaxistooltip:before {
-            top: 50%;
-            border: solid transparent;
-            content: " ";
-            height: 0;
-            width: 0;
-            position: absolute;
-            pointer-events: none;
-        }
-
-        .apexcharts-yaxistooltip:after {
-            border-color: rgba(236, 239, 241, 0);
-            border-width: 6px;
-            margin-top: -6px;
-        }
-
-        .apexcharts-yaxistooltip:before {
-            border-color: rgba(144, 164, 174, 0);
-            border-width: 7px;
-            margin-top: -7px;
-        }
-
-        .apexcharts-yaxistooltip-left:after,
-        .apexcharts-yaxistooltip-left:before {
-            left: 100%;
-        }
-
-        .apexcharts-yaxistooltip-right:after,
-        .apexcharts-yaxistooltip-right:before {
-            right: 100%;
-        }
-
-        .apexcharts-yaxistooltip-left:after {
-            border-left-color: #ECEFF1;
-        }
-
-        .apexcharts-yaxistooltip-left:before {
-            border-left-color: #90A4AE;
-        }
-
-        .apexcharts-yaxistooltip-left.dark:after {
-            border-left-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .apexcharts-yaxistooltip-left.dark:before {
-            border-left-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .apexcharts-yaxistooltip-right:after {
-            border-right-color: #ECEFF1;
-        }
-
-        .apexcharts-yaxistooltip-right:before {
-            border-right-color: #90A4AE;
-        }
-
-        .apexcharts-yaxistooltip-right.dark:after {
-            border-right-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .apexcharts-yaxistooltip-right.dark:before {
-            border-right-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .apexcharts-yaxistooltip.active {
-            opacity: 1;
-        }
-
-        .apexcharts-yaxistooltip-hidden {
-            display: none;
-        }
-
-        .apexcharts-xcrosshairs,
-        .apexcharts-ycrosshairs {
-            pointer-events: none;
-            opacity: 0;
-            transition: 0.15s ease all;
-        }
-
-        .apexcharts-xcrosshairs.active,
-        .apexcharts-ycrosshairs.active {
-            opacity: 1;
-            transition: 0.15s ease all;
-        }
-
-        .apexcharts-ycrosshairs-hidden {
-            opacity: 0;
-        }
-
-        .apexcharts-zoom-rect {
-            pointer-events: none;
-        }
-
-        .apexcharts-selection-rect {
-            cursor: move;
-        }
-
-        .svg_select_points,
-        .svg_select_points_rot {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .svg_select_points_l,
-        .svg_select_points_r {
-            cursor: ew-resize;
-            opacity: 1;
-            visibility: visible;
-            fill: #888;
-        }
-
-        .apexcharts-canvas.zoomable .hovering-zoom {
-            cursor: crosshair
-        }
-
-        .apexcharts-canvas.zoomable .hovering-pan {
-            cursor: move
-        }
-
-        .apexcharts-xaxis,
-        .apexcharts-yaxis {
-            pointer-events: none;
-        }
-
-        .apexcharts-zoom-icon,
-        .apexcharts-zoom-in-icon,
-        .apexcharts-zoom-out-icon,
-        .apexcharts-reset-zoom-icon,
-        .apexcharts-pan-icon,
-        .apexcharts-selection-icon,
-        .apexcharts-menu-icon,
-        .apexcharts-toolbar-custom-icon {
-            cursor: pointer;
-            width: 20px;
-            height: 20px;
-            line-height: 24px;
-            color: #6E8192;
-            text-align: center;
-        }
-
-
-        .apexcharts-zoom-icon svg,
-        .apexcharts-zoom-in-icon svg,
-        .apexcharts-zoom-out-icon svg,
-        .apexcharts-reset-zoom-icon svg,
-        .apexcharts-menu-icon svg {
-            fill: #6E8192;
-        }
-
-        .apexcharts-selection-icon svg {
-            fill: #444;
-            transform: scale(0.76)
-        }
-
-        .dark .apexcharts-zoom-icon svg,
-        .dark .apexcharts-zoom-in-icon svg,
-        .dark .apexcharts-zoom-out-icon svg,
-        .dark .apexcharts-reset-zoom-icon svg,
-        .dark .apexcharts-pan-icon svg,
-        .dark .apexcharts-selection-icon svg,
-        .dark .apexcharts-menu-icon svg,
-        .dark .apexcharts-toolbar-custom-icon svg {
-            fill: #f3f4f5;
-        }
-
-        .apexcharts-canvas .apexcharts-zoom-icon.selected svg,
-        .apexcharts-canvas .apexcharts-selection-icon.selected svg,
-        .apexcharts-canvas .apexcharts-reset-zoom-icon.selected svg {
-            fill: #008FFB;
-        }
-
-        .light .apexcharts-selection-icon:not(.selected):hover svg,
-        .light .apexcharts-zoom-icon:not(.selected):hover svg,
-        .light .apexcharts-zoom-in-icon:hover svg,
-        .light .apexcharts-zoom-out-icon:hover svg,
-        .light .apexcharts-reset-zoom-icon:hover svg,
-        .light .apexcharts-menu-icon:hover svg {
-            fill: #333;
-        }
-
-        .apexcharts-selection-icon,
-        .apexcharts-menu-icon {
-            position: relative;
-        }
-
-        .apexcharts-reset-zoom-icon {
-            margin-left: 5px;
-        }
-
-        .apexcharts-zoom-icon,
-        .apexcharts-reset-zoom-icon,
-        .apexcharts-menu-icon {
-            transform: scale(0.85);
-        }
-
-        .apexcharts-zoom-in-icon,
-        .apexcharts-zoom-out-icon {
-            transform: scale(0.7)
-        }
-
-        .apexcharts-zoom-out-icon {
-            margin-right: 3px;
-        }
-
-        .apexcharts-pan-icon {
-            transform: scale(0.62);
-            position: relative;
-            left: 1px;
-            top: 0px;
-        }
-
-        .apexcharts-pan-icon svg {
-            fill: #fff;
-            stroke: #6E8192;
-            stroke-width: 2;
-        }
-
-        .apexcharts-pan-icon.selected svg {
-            stroke: #008FFB;
-        }
-
-        .apexcharts-pan-icon:not(.selected):hover svg {
-            stroke: #333;
-        }
-
-        .apexcharts-toolbar {
-            position: absolute;
-            z-index: 11;
-            top: 0px;
-            right: 3px;
-            max-width: 176px;
-            text-align: right;
-            border-radius: 3px;
-            padding: 0px 6px 2px 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .apexcharts-toolbar svg {
-            pointer-events: none;
-        }
-
-        .apexcharts-menu {
-            background: #fff;
-            position: absolute;
-            top: 100%;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            padding: 3px;
-            right: 10px;
-            opacity: 0;
-            min-width: 110px;
-            transition: 0.15s ease all;
-            pointer-events: none;
-        }
-
-        .apexcharts-menu.open {
-            opacity: 1;
-            pointer-events: all;
-            transition: 0.15s ease all;
-        }
-
-        .apexcharts-menu-item {
-            padding: 6px 7px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .light .apexcharts-menu-item:hover {
-            background: #eee;
-        }
-
-        .dark .apexcharts-menu {
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-        }
-
-        @media screen and (min-width: 768px) {
-            .apexcharts-toolbar {
-                /*opacity: 0;*/
-            }
-
-            .apexcharts-canvas:hover .apexcharts-toolbar {
-                opacity: 1;
-            }
-        }
-
-        .apexcharts-datalabel.hidden {
-            opacity: 0;
-        }
-
-        .apexcharts-pie-label,
-        .apexcharts-datalabel,
-        .apexcharts-datalabel-label,
-        .apexcharts-datalabel-value {
-            cursor: default;
-            pointer-events: none;
-        }
-
-        .apexcharts-pie-label-delay {
-            opacity: 0;
-            animation-name: opaque;
-            animation-duration: 0.3s;
-            animation-fill-mode: forwards;
-            animation-timing-function: ease;
-        }
-
-        .apexcharts-canvas .hidden {
-            opacity: 0;
-        }
-
-        .apexcharts-hide .apexcharts-series-points {
-            opacity: 0;
-        }
-
-        .apexcharts-area-series .apexcharts-series-markers .apexcharts-marker.no-pointer-events,
-        .apexcharts-line-series .apexcharts-series-markers .apexcharts-marker.no-pointer-events,
-        .apexcharts-radar-series path,
-        .apexcharts-radar-series polygon {
-            pointer-events: none;
-        }
-
-        /* markers */
-
-        .apexcharts-marker {
-            transition: 0.15s ease all;
-        }
-
-        @keyframes opaque {
-            0% {
-                opacity: 0;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* Resize generated styles */
-        @keyframes resizeanim {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 0;
-            }
-        }
-
-        .resize-triggers {
-            animation: 1ms resizeanim;
-            visibility: hidden;
-            opacity: 0;
-        }
-
-        .resize-triggers,
-        .resize-triggers>div,
-        .contract-trigger:before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .resize-triggers>div {
-            background: #eee;
-            overflow: auto;
-        }
-
-        .contract-trigger:before {
-            width: 200%;
-            height: 200%;
-        }
-    </style>
-    <style id="smooth-scrollbar-style">
-        [data-scrollbar] {
-            display: block;
-            position: relative;
-        }
-
-        .scroll-content {
-            -webkit-transform: translate3d(0, 0, 0);
-            transform: translate3d(0, 0, 0);
-        }
-
-        .scrollbar-track {
-            position: absolute;
-            opacity: 0;
-            z-index: 1;
-            background: rgba(222, 222, 222, .75);
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-transition: opacity 0.5s 0.5s ease-out;
-            transition: opacity 0.5s 0.5s ease-out;
-        }
-
-        .scrollbar-track.show,
-        .scrollbar-track:hover {
-            opacity: 1;
-            -webkit-transition-delay: 0s;
-            transition-delay: 0s;
-        }
-
-        .scrollbar-track-x {
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 8px;
-        }
-
-        .scrollbar-track-y {
-            top: 0;
-            right: 0;
-            width: 8px;
-            height: 100%;
-        }
-
-        .scrollbar-thumb {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 8px;
-            height: 8px;
-            background: rgba(0, 0, 0, .5);
-            border-radius: 4px;
-        }
-    </style>
-
     <div id="dadoPrincipal">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card car-transparent">
                     <div class="card-body p-0">
                         <div class="profile-image position-relative">
-                            <img src="{{ asset('assets/images/mountain.png') }}" class="img-fluid rounded w-100"
+                            <img src="{{ pharma('assets/images/profile.png') }}" class="img-fluid rounded w-100"
                                 alt="profile-image">
                         </div>
                     </div>
@@ -750,14 +22,13 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="profile-img position-relative">
-                                <img src="{{ asset('assets/images/user/1.png') }}" class="img-fluid rounded avatar-110"
+                                <img src="{{ pharma('assets/images/user/1.png')}}" class="img-fluid rounded avatar-110"
                                     alt="profile-image">
                             </div>
                             <div class="ml-3">
-                                <h4 class="mb-1">{{ $u->nome }}</h4>
-                                <p class="mb-2">{{ @$u->area_hospitalar->cargo->nome }}</p>
-                                <a href="tel:{{ @$u->area_hospitalar->contato }}"
-                                    class="btn btn-primary font-size-14">Telefonar</a>
+                                <h4 class="mb-1">Ruben Dokidis</h4>
+                                <p class="mb-2">UI/UX Designer</p>
+                                <a href="#" class="btn btn-primary font-size-14">Contact</a>
                             </div>
                         </div>
                         <p>
@@ -789,7 +60,7 @@
                                             d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
                                         </path>
                                     </svg>
-                                    <p class="mb-0">{{ @$u->area_hospitalar->area_hospitalar->nome }}</p>
+                                    <p class="mb-0">SMCE Corp. Lead UI/UX Designer</p>
                                 </div>
                             </li>
                             <li class="mb-2">
@@ -801,7 +72,7 @@
                                             d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z">
                                         </path>
                                     </svg>
-                                    <p class="mb-0">{{ calcTempo($u->created_at) }}</p>
+                                    <p class="mb-0">March 25</p>
                                 </div>
                             </li>
                             <li class="mb-2">
@@ -813,7 +84,7 @@
                                             d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
                                         </path>
                                     </svg>
-                                    <p class="mb-0">+244 {{ @$u->area_hospitalar->contato }}</p>
+                                    <p class="mb-0">+91 01234 56789</p>
                                 </div>
                             </li>
                             <li>
@@ -837,8 +108,8 @@
                     <div class="card-body">
                         <ul class="d-flex nav nav-pills mb-3 text-center profile-tab" id="profile-pills-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link show active" data-toggle="pill" href="#profile1" role="tab"
-                                    aria-selected="true">My Skills</a>
+                                <a class="nav-link active show" data-toggle="pill" href="#profile1" role="tab"
+                                    aria-selected="false">My Skills</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="pill" href="#profile2" role="tab"
@@ -860,17 +131,17 @@
                         <div class="profile-content tab-content">
 
                             <div id="profile1" class="tab-pane fade active show">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Turpis viverra
-                                    viverra mollis sed vitae fames
-                                    nunc sollicitudin viverra. Curabitur massa, ultrices diam ipsum faucibus
-                                    risus. Hendrerit justo,
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Turpis viverra viverra mollis
+                                    sed vitae fames
+                                    nunc sollicitudin viverra. Curabitur massa, ultrices diam ipsum faucibus risus.
+                                    Hendrerit justo,
                                     quis massa a elementum. At elementum.</p>
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <ul class="list-inline p-0 m-0">
                                             <li class="mb-4">
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="./POS Dash _ Perfil_files/01.png" class="img-fluid"
+                                                    <img src="{{ pharma('assets/images/profile/service/01.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -887,8 +158,8 @@
                                             </li>
                                             <li class="mb-4">
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="./POS Dash _ Perfil_files/02.png" class="img-fluid mr-3"
-                                                        alt="image">
+                                                    <img src="{{ pharma('assets/images/profile/service/02.png')}}"
+                                                        class="img-fluid mr-3" alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
                                                             <p class="mb-0">Figma</p>
@@ -904,7 +175,7 @@
                                             </li>
                                             <li>
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="./POS Dash _ Perfil_files/03.png" class="img-fluid"
+                                                    <img src="{{ pharma('assets/images/profile/service/03.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -925,7 +196,7 @@
                                         <ul class="list-inline p-0 m-0">
                                             <li class="mb-4">
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="./POS Dash _ Perfil_files/04.png" class="img-fluid"
+                                                    <img src="{{ pharma('assets/images/profile/service/04.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -942,7 +213,7 @@
                                             </li>
                                             <li class="mb-4">
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="./POS Dash _ Perfil_files/05.png" class="img-fluid"
+                                                    <img src="{{ pharma('assets/images/profile/service/05.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -959,7 +230,7 @@
                                             </li>
                                             <li>
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="./POS Dash _ Perfil_files/06.png" class="img-fluid"
+                                                    <img src="{{ pharma('assets/images/profile/service/06.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -1093,8 +364,7 @@
                                                             <li>
                                                                 <div
                                                                     class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <p class="mb-0 font-size-16 mr-3">English
-                                                                    </p>
+                                                                    <p class="mb-0 font-size-16 mr-3">English</p>
                                                                     <h6>78%</h6>
                                                                 </div>
                                                             </li>
@@ -1128,8 +398,7 @@
                                                             <li class="mb-2 d-flex">
                                                                 <span><i
                                                                         class="lab la-facebook-f icon-text-primary font-size-20 mr-3"></i></span>
-                                                                <p class="mb-0 line-height">fb.me/nataliedawson
-                                                                </p>
+                                                                <p class="mb-0 line-height">fb.me/nataliedawson</p>
                                                             </li>
                                                             <li class="mb-2 d-flex">
                                                                 <span><i
@@ -1162,10 +431,8 @@
                                                     <div class="media profile-media align-items-top">
                                                         <div class="profile-dots border-primary mt-1"></div>
                                                         <div class="ml-4">
-                                                            <h6 class=" mb-1">PhD of Science in computer Science
-                                                            </h6>
-                                                            <p class="mb-0 font-size-14">South Kellergrove
-                                                                University</p>
+                                                            <h6 class=" mb-1">PhD of Science in computer Science</h6>
+                                                            <p class="mb-0 font-size-14">South Kellergrove University</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1180,8 +447,7 @@
                                                     <div class="media profile-media align-items-top">
                                                         <div class="profile-dots border-primary mt-1"></div>
                                                         <div class="ml-4">
-                                                            <h6 class=" mb-1">Master of Science in Computer
-                                                                Science</h6>
+                                                            <h6 class=" mb-1">Master of Science in Computer Science</h6>
                                                             <p class="mb-0 font-size-14">Milchuer College</p>
                                                         </div>
                                                     </div>
@@ -1197,10 +463,8 @@
                                                     <div class="media profile-media align-items-top">
                                                         <div class="profile-dots border-primary mt-1"></div>
                                                         <div class="ml-4">
-                                                            <h6 class=" mb-1">Bachelor of Science in Computer
-                                                                Science</h6>
-                                                            <p class="mb-0 font-size-14">Beechtown Universityy
-                                                            </p>
+                                                            <h6 class=" mb-1">Bachelor of Science in Computer Science</h6>
+                                                            <p class="mb-0 font-size-14">Beechtown Universityy</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1216,8 +480,7 @@
                                                         <div class="profile-dots border-primary mt-1"></div>
                                                         <div class="ml-4">
                                                             <h6 class=" mb-1">Senior High School</h6>
-                                                            <p class="mb-0 font-size-14">South Kellergrove High
-                                                            </p>
+                                                            <p class="mb-0 font-size-14">South Kellergrove High</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1239,10 +502,9 @@
                                                     <div class="media profile-media align-items-top">
                                                         <div class="profile-dots border-primary mt-1"></div>
                                                         <div class="ml-4">
-                                                            <h6 class=" mb-1">Software Engineer at Mathica Labs
-                                                            </h6>
-                                                            <p class="mb-0 font-size-14">Total : 02 + years of
-                                                                experience</p>
+                                                            <h6 class=" mb-1">Software Engineer at Mathica Labs</h6>
+                                                            <p class="mb-0 font-size-14">Total : 02 + years of experience
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1257,10 +519,10 @@
                                                     <div class="media profile-media align-items-top">
                                                         <div class="profile-dots border-primary mt-1"></div>
                                                         <div class="ml-4">
-                                                            <h6 class=" mb-1">Junior Software Engineer at
-                                                                Zimcore Solutions</h6>
-                                                            <p class="mb-0 font-size-14">Total : 1.5 + years of
-                                                                experience</p>
+                                                            <h6 class=" mb-1">Junior Software Engineer at Zimcore
+                                                                Solutions</h6>
+                                                            <p class="mb-0 font-size-14">Total : 1.5 + years of experience
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1275,10 +537,10 @@
                                                     <div class="media profile-media align-items-top">
                                                         <div class="profile-dots border-primary mt-1"></div>
                                                         <div class="ml-4">
-                                                            <h6 class=" mb-1">Junior Software Engineer at
-                                                                Skycare Ptv. Ltd</h6>
-                                                            <p class="mb-0 font-size-14">Total : 0.5 + years of
-                                                                experience</p>
+                                                            <h6 class=" mb-1">Junior Software Engineer at Skycare Ptv. Ltd
+                                                            </h6>
+                                                            <p class="mb-0 font-size-14">Total : 0.5 + years of experience
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1293,8 +555,8 @@
                                                     <div class="media profile-media pb-0 align-items-top">
                                                         <div class="profile-dots border-primary mt-1"></div>
                                                         <div class="ml-4">
-                                                            <h6 class=" mb-1">Junior Software Engineer at
-                                                                Infosys Solutions</h6>
+                                                            <h6 class=" mb-1">Junior Software Engineer at Infosys
+                                                                Solutions</h6>
                                                             <p class="mb-0 font-size-14">Total : Freshers</p>
                                                         </div>
                                                     </div>
@@ -1305,22 +567,22 @@
                                 </div>
                             </div>
                             <div id="profile5" class="tab-pane fade">
-                                <p>I'm Web Developer from California. I code and design websites worldwide.
-                                    Mauris variustellus vitae
-                                    tristique sagittis. Sed aliquet, est nec auctor aliquet, orci ex vestibulum
-                                    ex, non pharetra lacus
+                                <p>I'm Web Developer from California. I code and design websites worldwide. Mauris
+                                    variustellus vitae
+                                    tristique sagittis. Sed aliquet, est nec auctor aliquet, orci ex vestibulum ex, non
+                                    pharetra lacus
                                     erat ac nulla.</p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iaculis mattis nam
-                                    ipsum pharetra porttitor eu
-                                    orci, nisi. Magnis elementum vitae eu, dui et. Tempus etiam feugiat sem
-                                    augue sed sed. Tristique
-                                    feugiat mi feugiat integer consectetur sit enim penatibus. Quis sagittis
-                                    proin fermentum tempus
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iaculis mattis nam ipsum
+                                    pharetra porttitor eu
+                                    orci, nisi. Magnis elementum vitae eu, dui et. Tempus etiam feugiat sem augue sed sed.
+                                    Tristique
+                                    feugiat mi feugiat integer consectetur sit enim penatibus. Quis sagittis proin fermentum
+                                    tempus
                                     uspendisse ultricies. Tellus sapien, convallis proin pretium.</p>
-                                <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iaculis
-                                    mattis nam ipsum pharetra porttitor eu.
-                                    Tristique feugiat mi feugiat integer consectetur sit enim penatibus. Quis
-                                    sagittis proin fermentum tempus
+                                <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iaculis mattis
+                                    nam ipsum pharetra porttitor eu.
+                                    Tristique feugiat mi feugiat integer consectetur sit enim penatibus. Quis sagittis proin
+                                    fermentum tempus
                                     uspendisse ultricies. Tellus sapien, convallis proin pretium.</p>
                             </div>
                         </div>

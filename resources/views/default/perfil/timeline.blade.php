@@ -7,7 +7,7 @@
         .timeline {
             list-style: none;
             background-image:
-            background-repeat: repeat-y;
+                background-repeat: repeat-y;
             background-position: center top;
             padding: 0;
             margin: 2em 0;
@@ -276,10 +276,12 @@
         }
 
         @media (min-width:576px) {
+
             .timeline-breaker.timeline-breaker-bottom,
             .timeline-breaker.timeline-breaker-middle {
                 top: 40px
             }
+
             .timeline-item {
                 float: left;
                 width: 48%;
@@ -289,6 +291,7 @@
                 margin-left: 2%;
                 clear: left
             }
+
             .timeline-item:after,
             .timeline-item:before {
                 top: 10%;
@@ -305,6 +308,7 @@
                 width: 30px;
                 text-align: center
             }
+
             .timeline-item.even:before,
             .timeline-item.right:before,
             .timeline-item:before {
@@ -314,12 +318,15 @@
                 font-style: normal;
                 speak: none
             }
+
             .timeline-item:before {
                 content: "\F0DA"
             }
+
             .timeline-item:after {
                 right: -46px
             }
+
             .timeline-item.even,
             .timeline-item.right {
                 float: right;
@@ -330,6 +337,7 @@
                 margin-left: 0;
                 margin-top: 100px
             }
+
             .timeline-item.even:after,
             .timeline-item.even:before,
             .timeline-item.right:after,
@@ -337,28 +345,35 @@
                 left: -20px;
                 top: 10%
             }
+
             .timeline-item.even:before,
             .timeline-item.right:before {
                 content: "\F0D9"
             }
+
             .timeline-item.even:after,
             .timeline-item.right:after {
                 left: -46px
             }
+
             .timeline-item.overlap-off {
                 margin-top: 0
             }
+
             .timeline-item.overlap-pull-large {
                 margin-top: -120px
             }
+
             .timeline-item.overlap-pull-small {
                 margin-top: -30px
             }
+
             .timeline-stacked,
             .timeline.timeline-stacked {
                 padding-left: 0;
                 padding-right: 0
             }
+
             .timeline-stacked .timeline-item,
             .timeline-stacked .timeline-item.even,
             .timeline-stacked .timeline-item.right,
@@ -378,6 +393,7 @@
                 border-bottom: 3px solid #55A79A;
                 text-align: left
             }
+
             .timeline-stacked .timeline-item.even::after,
             .timeline-stacked .timeline-item.right::after,
             .timeline-stacked .timeline-item::after,
@@ -388,6 +404,7 @@
                 clear: both;
                 content: ""
             }
+
             .timeline-stacked .timeline-item.even:after,
             .timeline-stacked .timeline-item.even:before,
             .timeline-stacked .timeline-item.right:after,
@@ -414,6 +431,7 @@
                 margin-top: 0;
                 margin-left: -14px
             }
+
             .timeline-stacked .timeline-item.even:before,
             .timeline-stacked .timeline-item.right:before,
             .timeline-stacked .timeline-item:before,
@@ -428,6 +446,7 @@
                 content: "\F0D8";
                 color: #f6f6f6
             }
+
             .timeline-stacked .timeline-item.even:after,
             .timeline-stacked .timeline-item.right:after,
             .timeline-stacked .timeline-item:after,
@@ -443,6 +462,7 @@
                 top: -39px;
                 background: #fff
             }
+
             .timeline-stacked .timeline-item.even.highlight:after,
             .timeline-stacked .timeline-item.even.marker-highlight:after,
             .timeline-stacked .timeline-item.even.tag-featured:after,
@@ -463,6 +483,7 @@
             .timeline.timeline-stacked .timeline-item.tag-featured:after {
                 color: #65b1a5
             }
+
             .timeline-stacked .timeline-item.even.overlap-push-large,
             .timeline-stacked .timeline-item.overlap-push-large,
             .timeline-stacked .timeline-item.right.overlap-push-large,
@@ -471,6 +492,7 @@
             .timeline.timeline-stacked .timeline-item.right.overlap-push-large {
                 margin-top: 120px
             }
+
             .timeline-stacked .timeline-item.even.overlap-push-medium,
             .timeline-stacked .timeline-item.overlap-push-medium,
             .timeline-stacked .timeline-item.right.overlap-push-medium,
@@ -479,6 +501,7 @@
             .timeline.timeline-stacked .timeline-item.right.overlap-push-medium {
                 margin-top: 60px
             }
+
             .timeline-stacked .timeline-item.even.overlap-push-small,
             .timeline-stacked .timeline-item.overlap-push-small,
             .timeline-stacked .timeline-item.right.overlap-push-small,
@@ -487,14 +510,17 @@
             .timeline.timeline-stacked .timeline-item.right.overlap-push-small {
                 margin-top: 30px
             }
+
             .timeline-stacked.timeline-stacked-down .timeline-item:first-child,
             .timeline.timeline-stacked.timeline-stacked-down .timeline-item:first-child {
                 margin-top: 40px
             }
+
             .timeline-stacked.timeline-stacked-down .timeline-item:last-child,
             .timeline.timeline-stacked.timeline-stacked-down .timeline-item:last-child {
                 margin-bottom: 60px
             }
+
             .timeline-stacked.timeline-stacked-down .timeline-item:after,
             .timeline-stacked.timeline-stacked-down .timeline-item:before,
             .timeline.timeline-stacked.timeline-stacked-down .timeline-item:after,
@@ -502,6 +528,7 @@
                 bottom: -20px;
                 top: auto
             }
+
             .timeline-stacked.timeline-stacked-down .timeline-item:before,
             .timeline.timeline-stacked.timeline-stacked-down .timeline-item:before {
                 font-family: 'Font Awesome 5 Free';
@@ -511,11 +538,13 @@
                 display: inline-block;
                 content: "\F0D7"
             }
+
             .timeline-stacked.timeline-stacked-down .timeline-item:after,
             .timeline.timeline-stacked.timeline-stacked-down .timeline-item:after {
                 bottom: -40px;
                 top: auto
             }
+
             .timeline-stacked.timeline-stacked-down .timeline-item.even.last,
             .timeline-stacked.timeline-stacked-down .timeline-item.last,
             .timeline-stacked.timeline-stacked-down .timeline-item.right.last,
@@ -524,6 +553,7 @@
             .timeline.timeline-stacked.timeline-stacked-down .timeline-item.right.last {
                 margin-bottom: 40px
             }
+
             .timeline-stacked .timeline-breaker.timeline-breaker-bottom,
             .timeline-stacked .timeline-breaker.timeline-breaker-middle,
             .timeline.timeline-stacked .timeline-breaker.timeline-breaker-bottom,
@@ -745,6 +775,7 @@
         }
 
         @media (min-width:576px) {
+
             .timeline.timeline-left .timeline-item,
             .timeline.timeline-left .timeline-item.even,
             .timeline.timeline-left .timeline-item.right,
@@ -1183,54 +1214,54 @@
             border-color: #2ECC71
         }
     </style>
-        <div class="timeline timeline-left mx-lg-10">
-            <div class="timeline-breaker">Monday</div>
-            <!--Timeline item 1-->
-            <div class="timeline-item mt-3 row text-center p-2">
-                <div class="col font-weight-bold text-md-right">West Ham</div>
-                <div class="col-1">vs</div>
-                <div class="col font-weight-bold text-md-left">Chelsea</div>
-                <div class="col-12 text-xs text-muted">Football - English Premier League - 19:45 GMT</div>
-            </div>
-            <!--Timeline item 2 - NOTE: the .right class-->
-            <div class="timeline-item mt-3 row text-center p-2">
-                <div class="col font-weight-bold text-md-right">Man Utd</div>
-                <div class="col-1">vs</div>
-                <div class="col font-weight-bold text-md-left">Liverpool</div>
-                <div class="col-12 text-xs text-muted">Football - English Premier League - 19:45 GMT</div>
-            </div>
-            <div class="timeline-breaker timeline-breaker-middle">Tuesday</div>
-            <div class="timeline-item mt-3 row text-center p-2">
-                <div class="col font-weight-bold text-md-right">England</div>
-                <div class="col-1">vs</div>
-                <div class="col font-weight-bold text-md-left">India</div>
-                <div class="col-12 text-xs text-muted">Cricket - 3rd test - from 10:45 GMT</div>
-            </div>
-            <div class="timeline-item mt-3 row text-center p-2">
-                <div class="col font-weight-bold text-md-right">New Zealand</div>
-                <div class="col-1">vs</div>
-                <div class="col font-weight-bold text-md-left">South Africa</div>
-                <div class="col-12 text-xs text-muted">Cricket - 5th test - from 15:45 GMT</div>
-            </div>
-            <div class="timeline-item mt-3 row text-center p-2">
-                <div class="col font-weight-bold text-md-right">Man Utd</div>
-                <div class="col-1">vs</div>
-                <div class="col font-weight-bold text-md-left">Liverpool</div>
-                <div class="col-12 text-xs text-muted">Football - Europa League - 19:45 GMT</div>
-            </div>
-            <div class="timeline-breaker timeline-breaker-middle">Saturday</div>
-            <div class="timeline-item mt-3 row text-center p-2">
-                <div class="col font-weight-bold text-md-right">England</div>
-                <div class="col-1">vs</div>
-                <div class="col font-weight-bold text-md-left">India</div>
-                <div class="col-12 text-xs text-muted">Cricket - 3rd test - from 10:45 GMT</div>
-            </div>
-            <div class="timeline-item mt-3 row text-center p-2">
-                <div class="col font-weight-bold text-md-right">New Zealand</div>
-                <div class="col-1">vs</div>
-                <div class="col font-weight-bold text-md-left">South Africa</div>
-                <div class="col-12 text-xs text-muted">Cricket - 5th test - from 15:45 GMT</div>
-            </div>
-            <div class="timeline-breaker timeline-breaker-bottom">More next week........</div>
+    <div class="timeline timeline-left mx-lg-10">
+        <div class="timeline-breaker">Monday</div>
+        <!--Timeline item 1-->
+        <div class="timeline-item mt-3 row text-center p-2">
+            <div class="col font-weight-bold text-md-right">West Ham</div>
+            <div class="col-1">vs</div>
+            <div class="col font-weight-bold text-md-left">Chelsea</div>
+            <div class="col-12 text-xs text-muted">Football - English Premier League - 19:45 GMT</div>
         </div>
+        <!--Timeline item 2 - NOTE: the .right class-->
+        <div class="timeline-item mt-3 row text-center p-2">
+            <div class="col font-weight-bold text-md-right">Man Utd</div>
+            <div class="col-1">vs</div>
+            <div class="col font-weight-bold text-md-left">Liverpool</div>
+            <div class="col-12 text-xs text-muted">Football - English Premier League - 19:45 GMT</div>
+        </div>
+        <div class="timeline-breaker timeline-breaker-middle">Tuesday</div>
+        <div class="timeline-item mt-3 row text-center p-2">
+            <div class="col font-weight-bold text-md-right">England</div>
+            <div class="col-1">vs</div>
+            <div class="col font-weight-bold text-md-left">India</div>
+            <div class="col-12 text-xs text-muted">Cricket - 3rd test - from 10:45 GMT</div>
+        </div>
+        <div class="timeline-item mt-3 row text-center p-2">
+            <div class="col font-weight-bold text-md-right">New Zealand</div>
+            <div class="col-1">vs</div>
+            <div class="col font-weight-bold text-md-left">South Africa</div>
+            <div class="col-12 text-xs text-muted">Cricket - 5th test - from 15:45 GMT</div>
+        </div>
+        <div class="timeline-item mt-3 row text-center p-2">
+            <div class="col font-weight-bold text-md-right">Man Utd</div>
+            <div class="col-1">vs</div>
+            <div class="col font-weight-bold text-md-left">Liverpool</div>
+            <div class="col-12 text-xs text-muted">Football - Europa League - 19:45 GMT</div>
+        </div>
+        <div class="timeline-breaker timeline-breaker-middle">Saturday</div>
+        <div class="timeline-item mt-3 row text-center p-2">
+            <div class="col font-weight-bold text-md-right">England</div>
+            <div class="col-1">vs</div>
+            <div class="col font-weight-bold text-md-left">India</div>
+            <div class="col-12 text-xs text-muted">Cricket - 3rd test - from 10:45 GMT</div>
+        </div>
+        <div class="timeline-item mt-3 row text-center p-2">
+            <div class="col font-weight-bold text-md-right">New Zealand</div>
+            <div class="col-1">vs</div>
+            <div class="col font-weight-bold text-md-left">South Africa</div>
+            <div class="col-12 text-xs text-muted">Cricket - 5th test - from 15:45 GMT</div>
+        </div>
+        <div class="timeline-breaker timeline-breaker-bottom">More next week........</div>
+    </div>
 @endsection
