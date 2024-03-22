@@ -23,7 +23,14 @@ class ConfigController extends Controller
             'valor.required' => 'Informe um valor'
         ]);
 
-        $config = Setting::create($request->all());
+        $isChave = Setting::where('chave', $request->chave)->first();
+        if (!$isChave){
+            $config = Setting::create($request->all());
+        }else{
+            $isChave->update([
+                'valor' => $request->valor
+            ]);
+        }
 
         if ($request->ajax()) {
             return response()->json(['message' => 'Definições atualizadas'], 200);

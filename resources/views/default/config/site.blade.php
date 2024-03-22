@@ -216,6 +216,7 @@
         });
 
         function setConfig(chave, valor) {
+            showLoader();
             $.ajax({
                 url: "{{ route('config.set_config') }}",
                 method: 'POST',
@@ -225,12 +226,23 @@
                     valor: valor
                 },
                 success: function(response) {
+                    hideLoader();
                     // Sucesso
-                    alert(response.message);
+                    toastr.success(response.message);
                 },
                 error: function(xhr, status, error) {
-                    // Erro
-                    alert('Erro ao enviar o estado do checkbox:', error);
+                    hideLoader();
+                    // Trata os erros de validação retornados pelo servidor
+                    var errors = xhr.responseJSON.errors;
+                    var errorMessage = '';
+
+                    // Percorre os erros e os concatena em uma única string
+                    $.each(errors, function(key, value) {
+                        errorMessage += value[0] + '<br>';
+                    });
+
+                    // Exibe a mensagem de erro com Toastr.js
+                    toastr.error(errorMessage, 'Erro');
                 }
             });
         }
