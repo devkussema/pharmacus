@@ -26,6 +26,10 @@ class AuthController extends Controller
         return view('auth.login', compact('app_desc', 'app_keywords'));
     }
 
+    public function devver() {
+        return view('devver.show');
+    }
+
     public function registar()
     {
         $app_desc = "Crie uma conta na " . env('APP_NAME') . " e esteja a para de tudo.";

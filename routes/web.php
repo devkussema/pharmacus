@@ -163,6 +163,8 @@ Route::prefix('auth')->middleware('guest')->group(function () {
         Route::get('/confirmar/conta/{token}', [GerenteFarmaciaController::class, 'confirmar'])->name('gestor.token');
     });
 
+    Route::get('/devver', [AuthController::class, 'devver'])->name('devver');
+
     Route::get('/', [AuthController::class, 'index'])->name('login');
     Route::post('/', [AuthController::class, 'login'])->name('entrar');
     Route::get('/registar', [AuthController::class, 'registar'])->name('registar');
