@@ -37,17 +37,21 @@
                                                         for="customCheck1">Lembre-me</label>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <a href="{{ route('recuperar_senha') }}" class="text-primary float-right">Esqueceu a
-                                                    senha?</a>
-                                            </div>
+                                            @if (getConfig('recuperar_conta'))
+                                                <div class="col-lg-6">
+                                                    <a href="{{ route('recuperar_senha') }}" class="text-primary float-right">Esqueceu a
+                                                        senha?</a>
+                                                </div>
+                                            @endif
                                         </div>
                                         <button type="submit" class="btn btn-primary">Entrar</button>
-                                        {{-- <p class="mt-3">
-                                            Criar conta <a href="{{ route('registar') }}"
-                                                onclick="pager('{{ route('registar') }}', event)" class="text-primary">Criar
-                                                conta</a>
-                                        </p> --}}
+                                        @if (getConfig('criar_conta'))
+                                            <p class="mt-3">
+                                                Criar conta <a href="{{ route('registar') }}"
+                                                    onclick="pager('{{ route('registar') }}', event)" class="text-primary">Criar
+                                                    conta</a>
+                                            </p>
+                                        @endif
                                     </form>
                                 </div>
                             </div>
