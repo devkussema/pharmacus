@@ -144,7 +144,7 @@
         </div>
     </footer>
 
-    <script src="{{ asset('/sw.js') }}"></script>
+    <script src="{{ asset('/sw2.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         toastr.options = {
@@ -167,7 +167,7 @@
         if ("serviceWorker" in navigator) {
             // Register a service worker hosted at the root of the
             // site using the default scope.
-            navigator.serviceWorker.register("/sw.js").then(
+            navigator.serviceWorker.register("/sw2.js").then(
                 (registration) => {
                     //console.log("Service worker registration succeeded:", registration);
                 },
@@ -313,6 +313,7 @@
     <script src="{{ pharma('assets/js/dev/table-treeview.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/customizer.js') }}"></script>
     <script async src="{{ pharma('assets/js/dev/chart-custom.js') }}"></script>
+    <script src="{{ pharma('assets/js/notifications/base.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/app.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/toastr.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/fontawesome.min.js"

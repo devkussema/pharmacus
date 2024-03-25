@@ -53,7 +53,7 @@ $(document).ready(function() {
                 toastr.success("Bem-vindo de volta", 'A redirecionar');
                 setTimeout(function() {
                     location.reload();
-                }, 5000);
+                }, 2000);
             },
             error: function(xhr, status, error) {
                 hideLoader();

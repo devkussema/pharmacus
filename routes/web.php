@@ -11,6 +11,7 @@ use App\Prada\Controllers\AreaHospitalarController;
 use Illuminate\Support\Facades\Artisan;
 use App\Prada\Controllers\{
     PermissoesController,
+    GetterController,
     ConfigController,
     AutenticarUserController,
     UsuarioController, FuncionarioController,
@@ -36,6 +37,10 @@ use App\Http\Controllers\Dev\{
 */
 
 Route::middleware(['auth', 'is.status'])->group(function () {
+    Route::prefix('getter')->group(function () {
+        Route::get('/notificacao', [GetterController::class, 'getNoficacoes'])->name('getter.notificacao');
+    });
+
     Route::get('/', [HomeController::class, 'home'])->name('home');
     Route::get('/main', [HomeController::class, 'home'])->name('main');
     Route::get('/produtos', [HomeController::class, 'produto'])->name('produto');

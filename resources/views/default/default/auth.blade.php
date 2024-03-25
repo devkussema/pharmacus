@@ -13,7 +13,7 @@
     <meta name="robots" content="index">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>@yield('titulo') | {{ getConfig('nome_site') ?? env('APP_NAME') }} - {{ env('APP_DESCRIPTION') }}</title>
+    <title>@yield('titulo') | {{ getConfig('nome_site') ?? env('APP_NAME') }}</title>
 
     <meta name="description" content="{{ getConfig('nome_site') ?? $app_desc ?? '' }}">
     <meta name="keywords" content="{{ $app_keywords ?? '' }}">
@@ -124,7 +124,7 @@
     <script src="{{ pharma('assets/js/form.js') }}" async></script>
     <script src="{{ pharma('assets/js/toastr.min.js') }}"></script>
 
-    <script src="{{ asset('/sw.js') }}"></script>
+    <script src="{{ asset('/sw2.js') }}"></script>
     <script>
         if ("serviceWorker" in navigator) {
             // Register a service worker hosted at the root of the
