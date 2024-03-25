@@ -6,6 +6,23 @@ use App\Models\{Permissao, Cargo, Setting};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function isAH($getId=0)
+{
+    if ($getId != 0){
+        if (@auth()->user()->area_hospitalar){
+            return auth()->user()->area_hospitalar->area_hospitalar_id;
+        }else{
+            return false;
+        }
+    }else{
+        if (@auth()->user()->area_hospitalar){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+
 function vPerm($modulo, $permissoes) {
     $jsonPermissoe = \App\Models\Permissao::where('user_id', auth()->user()->id)->first();
 

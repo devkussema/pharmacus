@@ -1,28 +1,34 @@
 $(document).ready(function(){
     function getNotificacao(){
-        $.ajax({
-            url: 'getter/notificacao',
-            method: 'GET',
-            dataType: 'json', // Espera uma resposta JSON
-            success: function(response) {
+        // Verificar se a meta "is_ah" existe
+        if (document.querySelector('meta[name="is_ah"]')) {
+            // Obter o conteúdo da meta
+            var isAhContent = document.querySelector('meta[name="is_ah"]').getAttribute('content');
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'getter/notificacao/' + isAhContent, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+              if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+
                 // Verifica se a resposta é diferente de 0, null ou false
                 if (response && response.status !== 0 && response.status !== null && response.status !== false) {
-                    // Faça algo se a resposta for diferente de 0, null ou false
-                    alert('Notificação encontrada:', response);
-                    // Por exemplo, exibir a notificação para o usuário
-                    alert('Você tem uma nova notificação!');
+                  // Faça algo se a resposta for diferente de 0, null ou false
+                  toastr.info(response.message, response.titulo, {
+                        closeButton: true,
+                        progressBar: false
+                    });
                 } else {
-                    alert('Nenhuma notificação encontrada.');
+                    //toastr.info('Nenhuma notificação encontrada.');
                 }
-            },
-            error: function(xhr, status, error) {
-                // Trata erros de requisição
-                alert('Erro ao obter notificação:', error);
-            }
-        });
+              } else {
+                console.log('Erro ao obter notificação: ' + xhr.statusText);
+              }
+            };
+            xhr.send();
+          }
     }
 
-    setInterval(function() {
-        getNotificacao();
-    }, 2000);
+    setInterval(getNotificacao, 2000);
 });

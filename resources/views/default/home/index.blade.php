@@ -8,6 +8,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <meta name="theme-color" content="#6777ef" />
+    @if (isAH())
+        <meta name="is_ah" content="{{ isAH(1) }}">
+    @endif
     <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
@@ -308,12 +311,12 @@
         }
     </script>
 
+    <script src="{{ pharma('assets/js/notifications/base.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/helpers.js') }}" async></script>
     <script src="{{ pharma('assets/js/dev/backend-bundle.min.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/table-treeview.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/customizer.js') }}"></script>
     <script async src="{{ pharma('assets/js/dev/chart-custom.js') }}"></script>
-    <script src="{{ pharma('assets/js/notifications/base.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/app.js') }}"></script>
     <script src="{{ pharma('assets/js/dev/toastr.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/fontawesome.min.js"

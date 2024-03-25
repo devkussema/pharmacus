@@ -38,7 +38,7 @@ use App\Http\Controllers\Dev\{
 
 Route::middleware(['auth', 'is.status'])->group(function () {
     Route::prefix('getter')->group(function () {
-        Route::get('/notificacao', [GetterController::class, 'getNoficacoes'])->name('getter.notificacao');
+        Route::get('/notificacao/{id_para}', [GetterController::class, 'getNoficacoes'])->name('getter.notificacao');
     });
 
     Route::get('/', [HomeController::class, 'home'])->name('home');
