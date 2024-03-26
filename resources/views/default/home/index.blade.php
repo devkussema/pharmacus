@@ -14,7 +14,11 @@
     <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
-    <title>@yield('titulo', 'Página Inicial') - {{ getConfig('nome_site') ?? env('APP_NAME') }}</title>
+    @if (request()->cookie('pwa_app') === 'true')
+        <title>@yield('titulo', 'Página Inicial')</title>
+    @else
+        <title>@yield('titulo', 'Página Inicial') - {{ getConfig('nome_site') ?? env('APP_NAME') }}</title>
+    @endif
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ pharma('assets/images/white__logo2.png') }}" />
@@ -150,6 +154,13 @@
     <script src="{{ asset('/sw2.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            // O site está sendo executado como PWA
+            document.cookie = "pwa_app=true";
+        } else {
+            // O site está sendo executado em um navegador
+            document.cookie = "pwa_app=false";
+        }
         toastr.options = {
             "closeButton": true,
             "debug": false,

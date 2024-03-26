@@ -13,7 +13,11 @@
     <meta name="robots" content="index">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>@yield('titulo') | {{ getConfig('nome_site') ?? env('APP_NAME') }}</title>
+    @if (request()->cookie('pwa_app') === 'true')
+        <title>@yield('titulo', 'Página Inicial')</title>
+    @else
+        <title>@yield('titulo', 'Página Inicial') - {{ getConfig('nome_site') ?? env('APP_NAME') }}</title>
+    @endif
 
     <meta name="description" content="{{ getConfig('nome_site') ?? $app_desc ?? '' }}">
     <meta name="keywords" content="{{ $app_keywords ?? '' }}">
