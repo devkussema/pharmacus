@@ -65,8 +65,44 @@ class User extends Authenticatable
      */
     protected function generateUsername()
     {
-        $nome = strtolower(trim($this->nome));
-        $this->username = str_replace(' ', '.', $nome);
+        // Remove acentos manualmente
+        $accentedChars = [
+            'á' => 'a', 'à' => 'a', 'â' => 'a', 'ä' => 'a', 'ã' => 'a', 'å' => 'a',
+            'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
+            'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'ö' => 'o', 'õ' => 'o',
+            'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
+            'ç' => 'c',
+            'ñ' => 'n',
+            'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ä' => 'A', 'Ã' => 'A', 'Å' => 'A',
+            'É' => 'E', 'È' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+            'Í' => 'I', 'Ì' => 'I', 'Î' => 'I', 'Ï' => 'I',
+            'Ó' => 'O', 'Ò' => 'O', 'Ô' => 'O', 'Ö' => 'O', 'Õ' => 'O',
+            'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U',
+            'Ç' => 'C',
+            'Ñ' => 'N'
+        ];
+        $baseUsername = strtr($this->nome, $accentedChars);
+
+        // Adiciona pontos entre os espaços
+        $baseUsername = str_replace(' ', '.', $baseUsername);
+
+        // Remove todos os caracteres especiais exceto letras, números e pontos
+        $baseUsername = preg_replace('/[^a-zA-Z0-9.]/', '', $baseUsername);
+
+        // Converte para minúsculas
+        $baseUsername = strtolower($baseUsername);
+
+        // Verifica se o nome de usuário já existe
+        $username = $baseUsername;
+        $count = 1;
+        while (User::where('username', $username)->exists()) {
+            // Se já existe, acrescenta um número ao final
+            $username = $baseUsername . $count;
+            $count++;
+        }
+
+        $this->username = $username;
     }
 
     public function grupos()
