@@ -8,11 +8,24 @@ use Carbon\Carbon;
 use App\Models\{
     ProdutoEstoque as PE,
     RelatorioEstoqueAlerta as REA,
-    Notificacao
+    Notificacao,
+    AreaHospitalar,
+    ConfirmarBaixa as CB
 };
 
 trait GenerateTrait
 {
+    public function confirmarBaixaAlert($texto, $area_hospitalar_para, $produto_id) {
+        $ah = (auth()->user()->isFarmacia ? AreaHospitalar::where('nome', 'Armazém I')->first()->id : auth()->user()->area_hospitalar->area_hospitalar_id);
+        $cb = CB::create([
+            'area_hospitalar_de' => $ah,
+            'area_hospitalar_para' => $area_hospitalar_para,
+            'texto' => $texto,
+            'produto_estoque_id' => $produto_id,
+        ]);
+
+        return true;
+    }
     public static function setNotify($titulo, $user_para, $descricao=null)
     {
         Notificacao::create([
