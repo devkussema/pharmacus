@@ -91,8 +91,13 @@ $(document).ready(function () {
                                     segundo = 1;
                                 }
 
+                                if (idNotifier.length > 2) { // Se o array tiver mais de 2 valores
+                                    idNotifier.shift(); // Remove o primeiro (o mais antigo)
+									segundo = 1;
+                                }
+
                                 var notificationHtml = `
-                                    <div class="col-md-6 col-lg-6">
+                                    <div class="col-md-6 col-lg-6 d-flex flex-column">
                                         <div class="card mb-2">
                                             <div class="row no-gutters">
                                                 <div class="col-md-6 col-lg-4">
@@ -103,8 +108,8 @@ $(document).ready(function () {
                                                         <h4 class="card-title" id="titulo">${notification.titulo}</h4>
                                                         <p class="card-text" id="descricao">${notification.message}</p>
                                                         <p class="card-text"><small class="text-muted">Cerca de ${tempoDecorrido(notification.created_at)}</small>
-                                                        <a href="/estoque/confirmar/${notification.chave}/${isAhContentGerente}" class="btn btn-outline-primary btn-sm ml-2">Confirmar</a>
-                                                        </p>
+														<a href="/estoque/confirmar/${notification.chave}/${isAhContent}" class="btn btn-outline-primary btn-sm ml-2">Confirmar</a>
+														</p>
                                                     </div>
                                                 </div>
                                             </div>
