@@ -16,8 +16,11 @@ class GetterController extends Controller
             ->take(2) // Limita a busca para no máximo dois registros
             ->get();
 
+        if (!$confirmBaixas)
+            return response()->json(['status' => null], 400);
+
         if ($confirmBaixas->isEmpty()) {
-            return response()->json(['status' => null]);
+            return response()->json(['status' => null], 400);
         }
 
         $response = [];
@@ -25,7 +28,7 @@ class GetterController extends Controller
         foreach ($confirmBaixas as $confirmBaixa) {
             $response[] = [
                 'chave' => $confirmBaixa->produto_estoque->id,
-                'message' => $confirmBaixa->texto, // Mensagem genérica 
+                'message' => $confirmBaixa->texto, // Mensagem genérica
                 'titulo' => $confirmBaixa->produto_estoque->designacao, // Título genérico
                 'created_at' => $confirmBaixa->created_at,
                 'status' => 1

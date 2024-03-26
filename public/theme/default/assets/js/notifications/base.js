@@ -5,14 +5,14 @@ $(document).ready(function () {
         if (document.querySelector('meta[name="is_ah"]')) {
             // Obter o conteúdo da meta
             var isAhContent = document.querySelector('meta[name="is_ah"]').getAttribute('content');
-    
+
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'getter/notificacao/' + isAhContent, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     var response = JSON.parse(xhr.responseText);
-    
+
                     // Verifica se a resposta é diferente de 0, null ou false
                     if (response && response.length > 0) {
                         response.forEach(function (notification) {
@@ -23,9 +23,9 @@ $(document).ready(function () {
                                     idNotify.shift(); // Remove o primeiro (o mais antigo)
 									segundo = 1;
                                 }
-    
+
                                 var notificationHtml = `
-                                    <div class="col-md-6 col-lg-6">
+                                    <div class="col-md-6 col-lg-6 d-flex flex-column">
                                         <div class="card mb-2">
                                             <div class="row no-gutters">
                                                 <div class="col-md-6 col-lg-4">
@@ -50,7 +50,7 @@ $(document).ready(function () {
 
                                 // Exibe a div de notificação
                                 $('#notification_content').removeClass('d-none');
-    
+
                                 // Faça algo se a resposta for diferente de 0, null ou false
                                 toastr.info(notification.message, notification.titulo, {
                                     closeButton: true,
@@ -72,57 +72,63 @@ $(document).ready(function () {
         // Verificar se a meta "is_ah" existe
         if (document.querySelector('meta[name="is_ah_gerente"]')) {
             // Obter o conteúdo da meta
-            var isAhContent = document.querySelector('meta[name="is_ah_gerente"]').getAttribute('content');
-    
+            var isAhContentGerente = document.querySelector('meta[name="is_ah_gerente"]').getAttribute('content');
+
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/getter/notificacao/' + isAhContent, true);
+            xhr.open('GET', '/getter/notificacao/' + isAhContentGerente, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = function () {
-                if (response && response.length > 0) {
-					response.forEach(function (notification) {
-						if (!idNotifier.includes(notification.chave)) {
-							idNotifier.push(notification.chave); // Adiciona o valor no array
-							var segundo = 0;
-							if (idNotifier.length > 2) { // Se o array tiver mais de 2 valores
-								idNotifier.shift(); // Remove o primeiro (o mais antigo)
-								segundo = 1;
-							}
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
 
-							var notificationHtml = `
-								<div class="col-md-6 col-lg-6">
-									<div class="card mb-2">
-										<div class="row no-gutters">
-											<div class="col-md-6 col-lg-4">
-												<img src="/theme/default/assets/images/page-img/08.jpg" class="card-img" alt="#">
-											</div>
-											<div class="col-md-6 col-lg-8">
-												<div class="card-body">
-													<h4 class="card-title" id="titulo">${notification.titulo}</h4>
-													<p class="card-text" id="descricao">${notification.message}</p>
-													<p class="card-text"><small class="text-muted">Cerca de ${tempoDecorrido(notification.created_at)}</small>
-													<a href="/estoque/confirmar/${notification.chave}/${isAhContent}" class="btn btn-outline-primary btn-sm ml-2">Confirmar</a>
-													</p>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							`;
+                    if (response && response.length > 0) {
+                        response.forEach(function (notification) {
+                            if (!idNotifier.includes(notification.chave)) {
+                                idNotifier.push(notification.chave); // Adiciona o valor no array
+                                var segundo = 0;
+                                if (idNotifier.length > 2) { // Se o array tiver mais de 2 valores
+                                    idNotifier.shift(); // Remove o primeiro (o mais antigo)
+                                    segundo = 1;
+                                }
 
-							// Adiciona o HTML à div de notificação
-							$('#notification_content').append(notificationHtml);
+                                var notificationHtml = `
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class="card mb-2">
+                                            <div class="row no-gutters">
+                                                <div class="col-md-6 col-lg-4">
+                                                    <img src="/theme/default/assets/images/page-img/08.jpg" class="card-img" alt="#">
+                                                </div>
+                                                <div class="col-md-6 col-lg-8">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title" id="titulo">${notification.titulo}</h4>
+                                                        <p class="card-text" id="descricao">${notification.message}</p>
+                                                        <p class="card-text"><small class="text-muted">Cerca de ${tempoDecorrido(notification.created_at)}</small>
+                                                        <a href="/estoque/confirmar/${notification.chave}/${isAhContentGerente}" class="btn btn-outline-primary btn-sm ml-2">Confirmar</a>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
 
-							// Exibe a div de notificação
-							$('#notification_content').removeClass('d-none');
+                                // Adiciona o HTML à div de notificação
+                                $('#notification_content').append(notificationHtml);
 
-							// Faça algo se a resposta for diferente de 0, null ou false
-							toastr.info(notification.message, notification.titulo, {
-								closeButton: true,
-								progressBar: false
-							});
-						}
-					});
-				}
+                                // Exibe a div de notificação
+                                $('#notification_content').removeClass('d-none');
+
+                                // Faça algo se a resposta for diferente de 0, null ou false
+                                toastr.info(notification.message, notification.titulo, {
+                                    timeOut: 0, // Define o tempo de duração como infinito
+                                    extendedTimeOut: 0, // Define o tempo de duração estendido como infinito
+                                    closeButton: true,
+                                    progressBar: false
+                                });
+                            }
+                        });
+                    }
+                }
             };
             xhr.send();
         }
@@ -158,6 +164,11 @@ $(document).ready(function () {
 		return strTempoDecorrido;
 	}
 
-	setInterval(getNotificacao, 2000);
-	setInterval(getNotificacaoGerente, 2000);
+    if (document.querySelector('meta[name="is_ah"]')) {
+	    setInterval(getNotificacao, 2000);
+    }
+
+    if (document.querySelector('meta[name="is_ah_gerente"]')) {
+	    setInterval(getNotificacaoGerente, 2000);
+    }
 });
