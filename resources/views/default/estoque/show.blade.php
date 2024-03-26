@@ -30,8 +30,8 @@
                     }
                 @endphp
             </div>
-            @include('partials.notifies')
             <div class="col-lg-12">
+            @include('partials.notifies')
             @include('partials.session')
                 <div class="row">
                     @php $gruposImpressos = []; @endphp
