@@ -69,6 +69,11 @@ Route::middleware(['auth', 'is.status'])->group(function () {
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
         Route::get('/relatorio', [EstoqueController::class, 'calcularNivelAlerta'])->name('estoque.relatorio');
+        
+        Route::prefix('confirmar')->group(function () {
+            // nao altere aqui
+            Route::get('/{id_produto}/{id_area}', [EstoqueController::class, 'confirmarProduto'])->name('estoque.confirmar');
+        });
     });
 
     Route::prefix('permissoes')->group(function () {

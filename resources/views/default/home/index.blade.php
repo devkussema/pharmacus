@@ -11,6 +11,10 @@
     @if (isAH())
         <meta name="is_ah" content="{{ isAH(1) }}">
     @endif
+
+    @if (isAHGerente())
+        <meta name="is_ah_gerente" content="{{ isAHGerente() }}">
+    @endif
     <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
