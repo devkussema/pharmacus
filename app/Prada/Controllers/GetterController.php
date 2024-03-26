@@ -24,7 +24,7 @@ class GetterController extends Controller
 
         foreach ($confirmBaixas as $confirmBaixa) {
             $response[] = [
-                'chave' => $confirmBaixa->id,
+                'chave' => $confirmBaixa->produto_estoque->id,
                 'message' => $confirmBaixa->texto, // Mensagem genérica 
                 'titulo' => $confirmBaixa->produto_estoque->designacao, // Título genérico
                 'created_at' => $confirmBaixa->created_at,

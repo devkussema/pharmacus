@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\{
     AreaHospitalar as AH,
     Estoque,
+    ConfirmarBaixa,
     Farmacia,
     FarmaciaAreaHospitalar as FAH,
     SaldoEstoque as SE,
@@ -183,6 +184,37 @@ class EstoqueController extends Controller
         self::startAtv("Adicionou cerca de {$caixas} caixas equivalente {$request->qtd_total} unidades de {$request->designacao}");
 
         return response()->json(['message' => "{$request->designacao} adicionado!"]);
+    }
+
+    public function confirmarProduto($id_produto, $id_area) {
+        $pe = PE::find($id_produto);
+        if (!$pe) {
+            return redirect()->back()->with('error', "Algo deu errado");
+        }
+
+        $cb = ConfirmarBaixa::where('produto_estoque_id', $id_produto)
+            ->where('area_hospitalar_para', $id_area)
+            ->first();
+        
+        if (!$cb)
+            return redirect()->back()->with('error', 'Ocorreu um erro');
+
+        $cb->update([
+            'confirmado' => 1
+        ]);
+
+        $pe->update([
+            'confirmado' => 1,
+        ]);
+
+        $qw = ConfirmarBaixa::create([
+            'area_hospitalar_de' => $id_area,
+            'area_hospitalar_para' => $cb->area_hospitalar_de,
+            'texto' => auth()->user()->nome. " confirmou o estoque",
+            'produto_estoque_id' => $id_produto
+        ]);
+
+        return redirect()->back()->with('info', 'Estoque confirmado');
     }
 
     public function getProduto($id)

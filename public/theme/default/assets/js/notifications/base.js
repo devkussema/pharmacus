@@ -35,7 +35,9 @@ $(document).ready(function () {
                                                     <div class="card-body">
                                                         <h4 class="card-title" id="titulo">${notification.titulo}</h4>
                                                         <p class="card-text" id="descricao">${notification.message}</p>
-                                                        <p class="card-text"><small class="text-muted">${tempoDecorrido(notification.created_at)}</small></p>
+                                                        <p class="card-text"><small class="text-muted">Cerca de ${tempoDecorrido(notification.created_at)}</small>
+														<a href="/estoque/confirmar/${notification.chave}/${isAhContent}" class="btn btn-outline-primary btn-sm ml-2">Confirmar</a>
+														</p>
                                                     </div>
                                                 </div>
                                             </div>
