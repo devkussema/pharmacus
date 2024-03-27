@@ -17,10 +17,10 @@ class GetterController extends Controller
             ->get();
 
         if (!$confirmBaixas)
-            return response()->json(['status' => null], 400);
+            return response()->json(['status' => null], 404);
 
         if ($confirmBaixas->isEmpty()) {
-            return response()->json(['status' => null], 400);
+            return response()->json(['status' => null], 404);
         }
 
         $response = [];
