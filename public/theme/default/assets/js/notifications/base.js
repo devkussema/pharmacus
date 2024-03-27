@@ -170,10 +170,10 @@ $(document).ready(function () {
 	}
 
     if (document.querySelector('meta[name="is_ah"]')) {
-	    setInterval(getNotificacao, 30000);
+	    setInterval(getNotificacao, 15000);
     }
 
     if (document.querySelector('meta[name="is_ah_gerente"]')) {
-	    setInterval(getNotificacaoGerente, 30000);
+	    setInterval(getNotificacaoGerente, 15000);
     }
 });
