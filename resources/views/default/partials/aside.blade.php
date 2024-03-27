@@ -94,7 +94,7 @@
                         <ul id="estoque_farmaceutico" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                             <li class="">
                                 @if (Auth::user()->isFarmacia)
-                                    <a href="{{ route('estoque.gerente') }}">
+                                    <a href="{{ route('estoque.gerente') }}" class="link-loaderish">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
                                             height="18" fill="rgba(52,51,51,1)">
                                             <path
