@@ -29,6 +29,7 @@
 @endif
 
 {{-- @if (auth()->check() and @(auth()->user()->isFarmacia || auth()->user()->farmacia->fun_unica == "Tudo") || vPerm('relatorio', ['ver']) == 1) --}}
+@if (auth()->check())
     <div class="row">
         <div class="col-md-3">
             <div class="alert text-white bg-dark" role="alert">
@@ -64,6 +65,7 @@
         </div>
     </div>
     <hr>
+@endif
 {{-- @endif --}}
 @if (nem('MANUTENCAO_LEVE') and auth()->check())
     <div class="alert alert-warning" role="alert">
