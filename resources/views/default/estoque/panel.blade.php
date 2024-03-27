@@ -11,6 +11,7 @@
                         <h4 class="mb-3">Áreas Hospitalares </h4>
                     </div>
                 </div>
+                @include('partials.notifies')
                 @include('partials.session')
                 @if (count($all_areas) === 0)
                     <div class="alert alert-info text-center" role="alert">
