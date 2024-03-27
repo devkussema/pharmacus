@@ -522,7 +522,7 @@ $(document).ready(function () {
 
     $('form#formProdutoEstoque').submit(function (e) {
         e.preventDefault(); // Evita o comportamento padrão do formulário
-
+        showLoader();
         // Obtém os dados do formulário
         var formData = new FormData(this);
 
@@ -534,6 +534,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                hideLoader();
                 toastr.success(response.message);
 
                 // Limpa o formulário
@@ -544,6 +545,7 @@ $(document).ready(function () {
                 // location.reload();
             },
             error: function (xhr, status, error) {
+                hideLoader();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
