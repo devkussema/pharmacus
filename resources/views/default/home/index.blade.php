@@ -459,7 +459,7 @@
             var valor = $(input).val();
 
             // Valida o valor usando uma expressão regular
-            const regex = /^(\d{1,2})x(\d{1,3})x(\d{1,5})$/; // Aumentamos para até 5 dígitos na terceira parte
+            const regex = /^(\d{1,3})x(\d{1,3})x(\d{1,3})$/; // Aumentamos para até 5 dígitos na terceira parte
             if (!regex.test(valor)) {
                 // Retorna o último valor válido
                 $(input).val(valor.slice(0, -1));
@@ -467,7 +467,7 @@
             }
 
             // Formata o valor
-            $(input).val(valor.replace(/(\d{1,2})x(\d{1,3})x(\d{1,5})/, '$1x$2x$3'));
+            $(input).val(valor.replace(/(\d{1,3})x(\d{1,3})x(\d{1,3})/, '$1x$2x$3'));
 
             // Multiplica os números
             const partes = valor.split('x').map(Number); // Converte cada parte para número
