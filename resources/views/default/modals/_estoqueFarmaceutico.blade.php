@@ -69,7 +69,7 @@
                                     </div>
                                     <div class="col pb-3">
                                         <label class="mb-2">Documento Nº *</label>
-                                        <input type="number" id="cod_barras" class="form-control" placeholder="" name="num_documento">
+                                        <input type="text" id="cod_barras" class="form-control" placeholder="" name="num_documento">
                                     </div>
                                 </div>
                                 <div class="form-row">
