@@ -456,24 +456,25 @@
         const inputQuantidadeTotal = document.getElementById('qtd_total_estoque');
 
         function addQtdTotal(input) {
-            var valor = $(input).val();
-
-            // Valida o valor usando uma expressão regular
-            const regex = /^(\d{1,3})x(\d{1,3})x(\d{1,3})$/; // Aumentamos para até 5 dígitos na terceira parte
-            if (!regex.test(valor)) {
-                // Retorna o último valor válido
-                $(input).val(valor.slice(0, -1));
-                return;
-            }
-
-            // Formata o valor
-            $(input).val(valor.replace(/(\d{1,3})x(\d{1,3})x(\d{1,3})/, '$1x$2x$3'));
-
-            // Multiplica os números
-            const partes = valor.split('x').map(Number); // Converte cada parte para número
-            const quantidadeTotal = partes.reduce((total, valor) => total * valor, 1); // Multiplica todas as partes
-
-            $('#qtd_total_estoque').val(quantidadeTotal);
+          var valor = $(input).val();
+        
+          // Valida o valor usando uma expressão regular
+          const regex = /^(\d{1,3})x(\d{1,3})x(\d{1,5})$/;
+          if (!regex.test(valor)) {
+            // Retorna o último valor válido
+            $(input).val(valor.slice(0, -1));
+            return;
+          }
+        
+          // Formata o valor
+          const partes = valor.split('x').map(Number);
+          const valorFormatado = partes.map(parte => parte.padStart(3, '0')).join('x');
+          $(input).val(valorFormatado);
+        
+          // Multiplica os números
+          const quantidadeTotal = partes.reduce((total, valor) => total * valor, 1);
+        
+          $('#qtd_total_estoque').val(quantidadeTotal);
         }
     </script>
 </body>
