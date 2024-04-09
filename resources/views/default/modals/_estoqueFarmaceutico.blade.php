@@ -53,7 +53,7 @@
                                 <div class="" id="item_descartavelq" style="">
                                     <div class="form-row">
                                         <div class="col pb-3">
-                                            <label class="mb-2">Descritivo *</label>
+                                            <label class="mb-2">Quantidade *</label>
                                             <input type="text" id="descritivo" class="form-control mask" oninput="addQtdTotal(this)" data-mask="99x999x999" name="descritivo">
                                         </div>
                                         <div class="col pb-3">
