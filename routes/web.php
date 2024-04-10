@@ -94,7 +94,7 @@ Route::middleware(['auth', 'is.status'])->group(function () {
         Route::post('alterar-senha', [UsuarioController::class, 'updatePassword'])->name('u.altSenha');
     });
 
-    Route::prefix('areas_hospitalares')->middleware('is.gestor_farmacia')->group(function () {
+    Route::prefix('areas_hospitalares')->group(function () {
         Route::get('', [AreaHospitalarController::class, 'index'])->name('a_h.index');
         Route::post('add/cargo', [AreaHospitalarController::class, 'addCargo'])->name('a_h.addCargo');
         Route::put('/a_h/{id}', [AreaHospitalarController::class, 'update']);
