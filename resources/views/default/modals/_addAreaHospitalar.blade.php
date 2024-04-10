@@ -10,7 +10,15 @@
                             <div class="pb-3">
                                 <label class="mb-2">Nome *</label>
                                 @php
-                                    $areas_hospitalares_ids = auth()->user()->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                                    if (auth()->user()->isFarmacia) {
+                                        // Se o usuário autenticado estiver associado a uma farmácia,
+                                        // obtemos os IDs das áreas hospitalares dessa farmácia
+                                        $areas_hospitalares_ids = auth()->user()->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                                    } else {
+                                        // Se o usuário autenticado não estiver associado a uma farmácia,
+                                        // obtemos o ID da farmácia diretamente do usuário
+                                        $areas_hospitalares_ids = auth()->user()->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                                    }
                                     // Convertendo a coleção em um array se necessário
                                     $areas_hospitalares_ids_array = $areas_hospitalares_ids->all();
                                 @endphp
