@@ -16,7 +16,13 @@ class AreaHospitalarController extends Controller
 
     public function index()
     {
-        $ah = FAH::where('farmacia_id', Auth::user()->isFarmacia->farmacia->id)->get();
+        $ah = "";
+        if (@Auth::user()->isFarmacia->farmacia->id) {
+            $ah = FAH::where('farmacia_id', Auth::user()->isFarmacia->farmacia->id)->get();
+        }elseif (@auth()->user()->farmacia->farmacia_id){
+            $ah = FAH::where('farmacia_id', auth()->user()->farmacia->farmacia_id)->get();
+        }
+        
         return view('area_hospitalar.show', compact('ah'));
     }
 
