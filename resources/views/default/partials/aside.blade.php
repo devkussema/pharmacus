@@ -118,7 +118,7 @@
                         </ul>
                     </li>
                 @endif
-                @if (Auth::user()->isFarmacia or vPerm('area_hospitalar', ['ver']))
+                @if (@Auth::user()->isFarmacia or vPerm('area_hospitalar', ['ver']))
                     <li class="">
                         <a href="#areas_hospitalares" class="collapsed" data-toggle="collapse"
                             aria-expanded="false">
@@ -153,7 +153,7 @@
                     </li>
                 @endif
 
-                @if (Auth::user()->isFarmacia || isAdministrator())
+                @if (@Auth::user()->isFarmacia || @isAdministrator())
                     <li class="">
                         <a href="#ah_funcionarios" class="collapsed" data-toggle="collapse" aria-expanded="false">
                             <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"
