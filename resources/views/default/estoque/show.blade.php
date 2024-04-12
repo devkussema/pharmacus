@@ -11,9 +11,6 @@
                 </div>
                 @php
                     use App\Models\ProdutoEstoque;
-                    if (isset($isAdm)) {
-                        $area_hospitalar_id = 
-                    }
                     $auser = Auth::user()->area_hospitalar->area_hospitalar->id;
 
                     $area_hospitalar_id = isset($isAdm) ? $area_id : $auser;
