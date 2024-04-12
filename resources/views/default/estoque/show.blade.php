@@ -11,23 +11,18 @@
                 </div>
                 @php
                     use App\Models\ProdutoEstoque;
-                    if (!(@$non_)) {
-                        $area_hospitalar_id = Auth::user()->area_hospitalar->area_hospitalar->id;
-                        $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
-                            $query->where('area_hospitalar_id', $area_hospitalar_id);
-                        })
-                            ->with('saldo')
-                            ->get()
-                            ->take(8);
-                    }else{
-                        $area_hospitalar_id = $area_id;
-                        $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
-                            $query->where('area_hospitalar_id', $area_hospitalar_id);
-                        })
-                            ->with('saldo')
-                            ->get()
-                            ->take(4);
+                    if (isset($isAdm)) {
+                        $area_hospitalar_id = 
                     }
+                    $auser = Auth::user()->area_hospitalar->area_hospitalar->id;
+
+                    $area_hospitalar_id = isset($isAdm) ? $area_id : $auser;
+                    $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
+                        $query->where('area_hospitalar_id', $area_hospitalar_id);
+                    })
+                        ->with('saldo')
+                        ->get()
+                        ->take(8);
                 @endphp
             </div>
             <div class="col-lg-12">

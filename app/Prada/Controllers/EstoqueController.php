@@ -68,9 +68,10 @@ class EstoqueController extends Controller
             ->where('estoques.area_hospitalar_id', $id)
             ->orderBy('produto_estoques.designacao', 'asc')
             ->get();*/
+        $isAdm = true;
 
         self::calcNivelAlerta();
-        return view('estoque.show', compact('estoque', 'non_', 'area_id', 'ah'));
+        return view('estoque.show', compact('estoque', 'non_', 'area_id', 'ah', 'isAdm'));
     }
 
     public function getListHome()
@@ -114,7 +115,7 @@ class EstoqueController extends Controller
             'origem_destino' => 'required',
             'num_lote' => 'required|unique:produto_estoques,num_lote',
             'data_producao' => 'required|date|before:today', // Verifica se a data de produção é anterior à data atual
-            'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(1), // Verifica se a data de expiração é pelo menos 10 meses após a data atual
+            'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(4), // Verifica se a data de expiração é pelo menos 10 meses após a data atual
             'num_documento' => 'required|unique:produto_estoques,num_documento',
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
