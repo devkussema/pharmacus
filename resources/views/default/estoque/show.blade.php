@@ -18,7 +18,7 @@
                         })
                             ->with('saldo')
                             ->get()
-                            ->take(4);
+                            ->take(8);
                     }else{
                         $area_hospitalar_id = $area_id;
                         $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
