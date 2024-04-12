@@ -65,7 +65,7 @@
                                 <div class="form-row">
                                     <div class="col pb-3">
                                         <label class="mb-2">Lote *</label>
-                                        <input type="text" class="form-control" name="num_lote">
+                                        <input type="text" class="form-control" name="num_lote" style="text-transform: uppercase;">
                                     </div>
                                     <div class="col pb-3">
                                         <label class="mb-2">Documento Nº *</label>
