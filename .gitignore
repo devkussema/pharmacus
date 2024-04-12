@@ -19,7 +19,5 @@ yarn-error.log
 /.vscode
 
 /resources/views/default/devver
-.env
-.env
 .nem_conf
 .htaccess
