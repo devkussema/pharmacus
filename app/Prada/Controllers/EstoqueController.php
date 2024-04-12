@@ -68,7 +68,7 @@ class EstoqueController extends Controller
             ->where('estoques.area_hospitalar_id', $id)
             ->orderBy('produto_estoques.designacao', 'asc')
             ->get();*/
-        $isAdm = true;
+        $isAdm = $area_id;
 
         self::calcNivelAlerta();
         return view('estoque.show', compact('estoque', 'non_', 'area_id', 'ah', 'isAdm'));
