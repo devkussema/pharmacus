@@ -11,7 +11,7 @@
                 </div>
                 @php
                     use App\Models\ProdutoEstoque;
-                    $auser = Auth::user()->area_hospitalar->area_hospitalar->id;
+                    $auser = @Auth::user()->area_hospitalar->area_hospitalar->id;
 
                     $area_hospitalar_id = isset($isAdm) ? $area_id : $auser;
                     $produtoEstoques = ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
