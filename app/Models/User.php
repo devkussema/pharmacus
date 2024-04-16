@@ -29,6 +29,7 @@ class User extends Authenticatable
         'status',
         'grupo_id',
         'foto_perfil',
+        'online',
         'password',
         'email_verified_at',
     ];
