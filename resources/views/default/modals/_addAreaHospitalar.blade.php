@@ -10,11 +10,11 @@
                             <div class="pb-3">
                                 <label class="mb-2">Nome *</label>
                                 @php
-                                    if (auth()->user()->isFarmacia) {
+                                    if (@auth()->user()->isFarmacia) {
                                         // Se o usuário autenticado estiver associado a uma farmácia,
                                         // obtemos os IDs das áreas hospitalares dessa farmácia
                                         $areas_hospitalares_ids = auth()->user()->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
-                                    } else {
+                                    } elseif (isset(auth()->user()->farmacia)) {
                                         // Se o usuário autenticado não estiver associado a uma farmácia,
                                         // obtemos o ID da farmácia diretamente do usuário
                                         $areas_hospitalares_ids = auth()->user()->farmacia->areas_hospitalares->pluck('area_hospitalar_id');

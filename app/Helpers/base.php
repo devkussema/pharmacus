@@ -6,6 +6,17 @@ use App\Models\{Permissao, Cargo, Setting, AreaHospitalar};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+function updateOnline() {
+    //DB::table('users')->where('id', auth()->id())->update(['online' => now()]);
+    $user = User::find(Auth::user()->id);
+    $user->update([
+        'online' => now()
+    ]);
+    $user->save();
+}
+
+
+
 function isAHGerente() {
     if (@auth()->user()->isFarmacia) {
         $areaHospitalar = AreaHospitalar::where('nome', 'Armazém I')->first();

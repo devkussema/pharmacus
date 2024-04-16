@@ -50,6 +50,7 @@
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
                                 <th>Designação</th>
+                                <th>Dosagem</th>
                                 <th>Quantidade</th>
                                 <th>Área Hospitalar</th>
                                 <th>Lote</th>
@@ -61,6 +62,7 @@
                             @foreach ($niveis as $na)
                                 <tr>
                                     <td><b>{{ $na->produto->designacao }}</b></td>
+                                    <td><b>{{ $na->produto->dosagem }}</b></td>
                                     <td>{{ $na->produto->saldo->qtd }}</td>
                                     <td>{{ $na->produto->estoque->area_hospitalar->nome }}</td>
                                     <td>{{ $na->produto->num_lote }}</td>
