@@ -136,6 +136,6 @@
             </div>
         </div>
     </div>
-    @include('modals._funcionario')
+    @include('modals.__funcionario')
     @include('modals._addPermissoes')
 @endsection
