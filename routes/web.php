@@ -16,7 +16,7 @@ use App\Prada\Controllers\{
     AutenticarUserController,
     UsuarioController, FuncionarioController,
     CargoController, ConfirmarController, EstoqueController,
-    NivelAlertaController
+    NivelAlertaController, GrupoFarmacologicoController as GFC
 };
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
@@ -48,6 +48,10 @@ Route::middleware(['auth', 'is.status'])->group(function () {
 
     Route::prefix('cargos')->group(function () {
         Route::post('/', [CargoController::class, 'store'])->name('cargo.store');
+    });
+    
+    Route::prefix('grupos_farmacologicos')->group(function () {
+        Route::get('/', [GFC::class, 'index'])->name('grupos_farmacologicos.index');
     });
 
     Route::prefix('funcionarios')->group(function () {

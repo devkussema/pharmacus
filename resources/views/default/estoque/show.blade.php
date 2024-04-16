@@ -101,7 +101,9 @@
                         </thead>
                         <tbody class="ligth-body">
                             {{-- Gerado automaticamente --}}
-                            @foreach ($estoque as $est)
+                            @foreach ($estoque->sortBy(function ($item) {
+                                return $item->produto->designacao;
+                            }) as $est)
                                 @if ($est->produto->confirmado != 0)
                                     <tr>
                                         <td>
