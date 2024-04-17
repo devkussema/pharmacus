@@ -611,6 +611,7 @@ class ComposerStaticInit83b1c79363710d4ae57b2e9c2c916a9a
         'App\\Prada\\Controllers\\FuncionarioController' => __DIR__ . '/../..' . '/app/Prada/Controllers/FuncionarioController.php',
         'App\\Prada\\Controllers\\GerenteFarmaciaController' => __DIR__ . '/../..' . '/app/Prada/Controllers/GerenteFarmaciaController.php',
         'App\\Prada\\Controllers\\GetterController' => __DIR__ . '/../..' . '/app/Prada/Controllers/GetterController.php',
+        'App\\Prada\\Controllers\\GrupoFarmacologicoController' => __DIR__ . '/../..' . '/app/Prada/Controllers/GrupoFarmacologicoController.php',
         'App\\Prada\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Prada/Controllers/HomeController.php',
         'App\\Prada\\Controllers\\NivelAlertaController' => __DIR__ . '/../..' . '/app/Prada/Controllers/NivelAlertaController.php',
         'App\\Prada\\Controllers\\PermissoesController' => __DIR__ . '/../..' . '/app/Prada/Controllers/PermissoesController.php',

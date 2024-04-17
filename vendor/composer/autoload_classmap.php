@@ -69,6 +69,7 @@ return array(
     'App\\Prada\\Controllers\\FuncionarioController' => $baseDir . '/app/Prada/Controllers/FuncionarioController.php',
     'App\\Prada\\Controllers\\GerenteFarmaciaController' => $baseDir . '/app/Prada/Controllers/GerenteFarmaciaController.php',
     'App\\Prada\\Controllers\\GetterController' => $baseDir . '/app/Prada/Controllers/GetterController.php',
+    'App\\Prada\\Controllers\\GrupoFarmacologicoController' => $baseDir . '/app/Prada/Controllers/GrupoFarmacologicoController.php',
     'App\\Prada\\Controllers\\HomeController' => $baseDir . '/app/Prada/Controllers/HomeController.php',
     'App\\Prada\\Controllers\\NivelAlertaController' => $baseDir . '/app/Prada/Controllers/NivelAlertaController.php',
     'App\\Prada\\Controllers\\PermissoesController' => $baseDir . '/app/Prada/Controllers/PermissoesController.php',
