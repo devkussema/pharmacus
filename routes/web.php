@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
 
 use App\Http\Controllers\Dev\{
-    VisitanteController
+    VisitanteController, DevController
 };
 
 /*
@@ -37,6 +37,11 @@ use App\Http\Controllers\Dev\{
 */
 
 Route::middleware(['auth', 'is.status'])->group(function () {
+    Route::prefix('dev')->group(function () {
+        Route::get('/levantamento', [DevController::class, 'levantamento'])->name('dev.levantamento');
+        Route::get('/novo_doc', [DevController::class, 'novo_doc'])->name('dev.novo_doc');
+    });
+
     Route::prefix('getter')->group(function () {
         Route::get('/notificacao/{id_para}', [GetterController::class, 'getNoficacoes'])->name('getter.notificacao');
     });
