@@ -15,7 +15,21 @@ function updateOnline() {
     $user->save();
 }
 
+function getEmbalagem($descritivo) {
+    // Extrai o valor da segunda coluna usando uma expressão regular
+    preg_match('/\d{2}x(\d{1,3})x\d{3}/', $descritivo, $matches);
 
+    // Verifica se o valor foi encontrado
+    if (isset($matches[1])) {
+        // Remove os zeros à esquerda, se houver
+        $valor = ltrim($matches[1], '0');
+        // Retorna o valor
+        return $valor;
+    } else {
+        // Retorna null se não encontrou o padrão
+        return null;
+    }
+}
 
 function isAHGerente() {
     if (@auth()->user()->isFarmacia) {

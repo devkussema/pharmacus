@@ -63,7 +63,11 @@
                                 <tr>
                                     <td><b>{{ $na->produto->designacao }}</b></td>
                                     <td><b>{{ $na->produto->dosagem }}</b></td>
-                                    <td>{{ $na->produto->saldo->qtd }}</td>
+                                    @if ($na->produto->tipo == "Liquido")
+                                        <td>{{ getEmbalagem($na->produto->descritivo) }}</td>
+                                    @else
+                                        <td>{{ $na->produto->saldo->qtd }}</td>
+                                    @endif
                                     <td>{{ $na->produto->estoque->area_hospitalar->nome }}</td>
                                     <td>{{ $na->produto->num_lote }}</td>
                                     <td>{{ calcMes($na->produto->data_expiracao) }}</td>
