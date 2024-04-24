@@ -88,7 +88,7 @@
             <h4>REPÚBLICA DE ANGOLA</h4>
             <h4>HOSPITAL GERAL ESPECIALIZADO DE LUANDA</h4>
             <h4>FICHA DE CONTROLO DE MEDICAMENTOS</h4>
-            <h4>DATA: {{ date('dd') }} / {{ date('mm') }}/ {{ date('yyyy') }}</h4>
+            <h4>DATA: {{ date('d') }} / {{ date('m') }}/ {{ date('Y') }}</h4>
         </div>
 
         <div class="tbl-container">
@@ -106,12 +106,14 @@
                 </thead>
                 <tbody>
                     @php $i = 1; @endphp
-                    @foreach ($niveis as $na)
+                    @foreach ($niveis->sortBy(function ($item) {
+                        return $item->produto->designacao;
+                    }) as $na)
                         <tr>
                             <td>{{ $i }}</td>
                             <td><b>{{ $na->produto->designacao }}</b></td>
                             <td><b>{{ $na->produto->dosagem }}</b></td>
-                            @if ($na->produto->tipo == "Liquido")
+                            @if ($na->produto->tipo == "Liquido" or $na->produto->tipo == "liquido")
                                 <td>{{ getEmbalagem($na->produto->descritivo) }}</td>
                             @else
                                 <td>{{ $na->produto->saldo->qtd }}</td>
