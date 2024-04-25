@@ -124,6 +124,7 @@
                                     <td>{{ $na->produto->num_lote }}</td>
                                     <td>{{ calcMes($na->produto->data_expiracao) }}</td>
                                 </tr>
+                                @php $i++; @endphp
                             @endif
                         @else
                             <tr>
@@ -139,8 +140,8 @@
                                 <td>{{ $na->produto->num_lote }}</td>
                                 <td>{{ calcMes($na->produto->data_expiracao) }}</td>
                             </tr>
+                            @php $i++; @endphp
                         @endif
-                        @php $i++; @endphp
                     @endforeach
                 </tbody>
             </table>
