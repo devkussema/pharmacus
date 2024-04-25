@@ -246,7 +246,7 @@ function translate($texto, $lang)
     }
 }
 
-function calcMes($dataAlvo)
+function calcMes($dataAlvo, $getString=1)
 {
     // Converte a data alvo para um objeto DateTime
     $dataAlvo = new DateTime($dataAlvo);
@@ -281,10 +281,18 @@ function calcMes($dataAlvo)
         if ($mesesRestantes < 1) {
             // Se faltar menos de 1 mês, retorna o número de dias restantes
             $diasRestantes = $intervalo->days;
-            return "$diasRestantes dias";
+            if ($getString==1){
+                return "$diasRestantes dias";
+            }else{
+                return $diasRestantes;
+            }
         } else {
             // Caso contrário, retorna o número de meses restantes
-            return "$mesesRestantes meses";
+            if ($getString==1){
+                return "$mesesRestantes meses";
+            }else{
+                return $mesesRestantes;
+            }
         }
     }
 }
