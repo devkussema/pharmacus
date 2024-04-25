@@ -109,8 +109,8 @@
                     @foreach ($niveis->sortBy(function ($item) {
                         return $item->produto->designacao;
                     }) as $na)
-                        @if (isset($areaH) and calcMes($na->produto->data_expiracao, 0) <= 6)
-                            @if ($na->produto->estoque->area_hospitalar->nome == $areaH)
+                        @if (isset($areaH))
+                            @if ($na->produto->estoque->area_hospitalar->nome == $areaH and calcMes($na->produto->data_expiracao, 0) <= 6)
                                 <tr>
                                     <td>{{ $i }}</td>
                                     <td>{{ $na->produto->designacao }}</td>
