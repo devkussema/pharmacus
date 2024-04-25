@@ -16,7 +16,7 @@ class DevController extends Controller
         return view('doc_generate.levantamentoEGato');
     }
 
-    public function getFichaControlo($area)
+    public function getFichaControlo($area=false)
     {
         $areaH = $area;
         $niveis = REA::all();

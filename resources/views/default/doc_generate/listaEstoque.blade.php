@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha de Levantamento e Gasto de Medicamentos</title>
+    <title>Ficha de Controlo de Medicamentos</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -88,7 +88,7 @@
             <h4>REPÚBLICA DE ANGOLA</h4>
             <h4>HOSPITAL GERAL ESPECIALIZADO DE LUANDA</h4>
             <h4>FICHA DE CONTROLO DE MEDICAMENTOS</h4>
-            <h4>DATA: {{ date('d') }} / {{ date('m') }}/ {{ date('Y') }}</h4>
+            <h4>DATA: {{ date('d') }} / {{ date('m') }} / {{ date('Y') }}</h4>
         </div>
 
         <div class="tbl-container">
@@ -109,19 +109,37 @@
                     @foreach ($niveis->sortBy(function ($item) {
                         return $item->produto->designacao;
                     }) as $na)
-                        <tr>
-                            <td>{{ $i }}</td>
-                            <td><b>{{ $na->produto->designacao }}</b></td>
-                            <td><b>{{ $na->produto->dosagem }}</b></td>
-                            @if ($na->produto->tipo == "Liquido" or $na->produto->tipo == "liquido")
-                                <td>{{ getEmbalagem($na->produto->descritivo) }}</td>
-                            @else
-                                <td>{{ $na->produto->saldo->qtd }}</td>
+                        @if (isset($areaH))
+                            @if ($na->produto->estoque->area_hospitalar->nome == $areaH)
+                                <tr>
+                                    <td>{{ $i }}</td>
+                                    <td>{{ $na->produto->designacao }}</td>
+                                    <td>{{ $na->produto->dosagem }}</td>
+                                    @if ($na->produto->tipo == "Liquido" or $na->produto->tipo == "liquido")
+                                        <td>{{ getEmbalagem($na->produto->descritivo) }}</td>
+                                    @else
+                                        <td>{{ $na->produto->saldo->qtd }}</td>
+                                    @endif
+                                    <td>{{ $na->produto->estoque->area_hospitalar->nome }}</td>
+                                    <td>{{ $na->produto->num_lote }}</td>
+                                    <td>{{ calcMes($na->produto->data_expiracao) }}</td>
+                                </tr>
                             @endif
-                            <td>{{ $na->produto->estoque->area_hospitalar->nome }}</td>
-                            <td>{{ $na->produto->num_lote }}</td>
-                            <td>{{ calcMes($na->produto->data_expiracao) }}</td>
-                        </tr>
+                        @else
+                            <tr>
+                                <td>{{ $i }}</td>
+                                <td>{{ $na->produto->designacao }}</td>
+                                <td>{{ $na->produto->dosagem }}</td>
+                                @if ($na->produto->tipo == "Liquido" or $na->produto->tipo == "liquido")
+                                    <td>{{ getEmbalagem($na->produto->descritivo) }}</td>
+                                @else
+                                    <td>{{ $na->produto->saldo->qtd }}</td>
+                                @endif
+                                <td>{{ $na->produto->estoque->area_hospitalar->nome }}</td>
+                                <td>{{ $na->produto->num_lote }}</td>
+                                <td>{{ calcMes($na->produto->data_expiracao) }}</td>
+                            </tr>
+                        @endif
                         @php $i++; @endphp
                     @endforeach
                 </tbody>
