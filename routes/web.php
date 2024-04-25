@@ -40,7 +40,7 @@ Route::middleware(['auth', 'is.status'])->group(function () {
     Route::prefix('dev')->group(function () {
         Route::get('/levantamento', [DevController::class, 'levantamento'])->name('dev.levantamento');
         Route::get('/novo_doc', [DevController::class, 'novo_doc'])->name('dev.novo_doc');
-        Route::get('/listaEstoque', [DevController::class, 'getFichaControlo']);
+        Route::get('/listaEstoque', [DevController::class, 'getFichaControloLimite']);
         Route::get('/listaEstoque/{area}', [DevController::class, 'getFichaControlo'])->name('dev.listaEstoque');
     });
 

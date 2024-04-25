@@ -16,6 +16,13 @@ class DevController extends Controller
         return view('doc_generate.levantamentoEGato');
     }
 
+    public function getFichaControloLimite()
+    {
+        $niveis = REA::all();
+
+        return view('doc_generate.listaEstoque', compact('niveis'));
+    }
+
     public function getFichaControlo($area=false)
     {
         $areaH = $area;
