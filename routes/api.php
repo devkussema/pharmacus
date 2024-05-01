@@ -23,6 +23,7 @@ Route::prefix('')->namespace('App\Http\Controllers\Api\v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get/users', 'GetUserController@getAllUsers');
         Route::get('/get/user/{id}', 'GetUserController@getUserWithId');
+        Route::get('/isLogged', 'AuthController@isLogged');
 
         Route::post('/logout', 'AuthController@logout');
     });

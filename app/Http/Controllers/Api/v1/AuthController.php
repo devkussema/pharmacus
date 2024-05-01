@@ -53,6 +53,12 @@ class AuthController extends Controller
         return redirect()->back()->withInput()->withErrors(['message' => 'Credenciais inválidas, tente novamente'], 422);
     }
 
+    public function isLogged()
+    {
+        $r = auth();
+        return response()->json($r, 200);
+    }
+
     public function entrar(Request $request)
     {
         if (Auth::attempt($request->only('email', 'password'))) {
@@ -66,7 +72,7 @@ class AuthController extends Controller
             ]);
         }
 
-        return response()->json('Não Autorizado', 401);
+        return response()->json(['mensagem' => 'Não Autorizado'], 401);
     }
 
     public function logout(Request $request)
