@@ -217,7 +217,7 @@ Route::prefix('api')->group(function () {
     Route::get('/check-session-expiration', [AuthController::class, 'checkSessionExpiration']);
     Route::get('/check-user-status', [AuthController::class, 'checkUserStatus']);
 
-    Route::get('/login', [ApiAuth::class, 'then']);
+    //Route::get('/login', [ApiAuth::class, 'then']);
 });
 
 Route::get('/execute-migrate', function () {

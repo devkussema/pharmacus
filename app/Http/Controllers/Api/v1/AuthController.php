@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -55,6 +55,29 @@ class AuthController extends Controller
 
     public function entrar(Request $request)
     {
-        return response()->json('Authorized', 200);
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $token = $request->user()->createToken('login.luze');
+            //return response()->json('Autorizado', 200);
+            return response()->json([
+                'mensagem' => 'Autorizado',
+                'token' => $token->plainTextToken, // Extrai o token JWT do objeto Token
+            ], 200, [
+                'Authorization' => 'Bearer ' . $token->accessToken // Define o header 'Authorization'
+            ]);
+        }
+
+        return response()->json('Não Autorizado', 401);
+    }
+
+    public function logout(Request $request)
+    {
+        $user = Auth::user();
+        # $user->tokens()->delete(); // elimina todos os tokens
+        $request->user()->currentAccessToken()->delete();
+
+        // Remova o token do cliente (envie resposta sem o token)
+        #@Auth::logout(); // Esqueça a sessão (opcional)
+        #return redirect()->route('login');
+        return response()->json('Logout realizado com sucesso', 200);
     }
 }

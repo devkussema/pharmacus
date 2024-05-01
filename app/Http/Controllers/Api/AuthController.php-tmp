@@ -1,8 +1,0 @@
-
-Fatal error: Uncaught Error: Call to undefined function each() in C:\Users\Diamante CFS - PC2\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php:54
-Stack trace:
-#0 C:\Users\Diamante CFS - PC2\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php(41): AddMissingCurlyBraces->addBraces('<?php\n\nnamespac...')
-#1 C:\Users\Diamante CFS - PC2\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php(326): AddMissingCurlyBraces->format('<?php\n\nnamespac...')
-#2 C:\Users\Diamante CFS - PC2\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php(1736): CodeFormatter->formatCode('<?php\n\nnamespac...')
-#3 {main}
-  thrown in C:\Users\Diamante CFS - PC2\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php on line 54
