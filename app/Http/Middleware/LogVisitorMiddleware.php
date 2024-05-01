@@ -35,8 +35,8 @@ class LogVisitorMiddleware
             // Criar um novo registro para o visitante
             Visitor::create([
                 'ip' => $request->ip(),
-                'country' => $geoLocation['country'], // obter país se necessário
-                'state' => $geoLocation['city'], // obter estado se necessário
+                'country' => $geoLocation['country'] ?? '127.0.0.1', // obter país se necessário
+                'state' => $geoLocation['city'] ?? '127.0.0.1', // obter estado se necessário
                 'browser' => $request->header('User-Agent'),
                 'referrer' => $request->header('referer'), // referência do site
                 'device' => $request->header('User-Agent'),

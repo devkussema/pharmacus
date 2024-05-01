@@ -24,6 +24,9 @@ use Symfony\Component\Process\Process;
 use App\Http\Controllers\Dev\{
     VisitanteController, DevController
 };
+use App\Http\Controllers\Api\{
+    AuthController as ApiAuth
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -56,7 +59,7 @@ Route::middleware(['auth', 'is.status'])->group(function () {
     Route::prefix('cargos')->group(function () {
         Route::post('/', [CargoController::class, 'store'])->name('cargo.store');
     });
-    
+
     Route::prefix('grupos_farmacologicos')->group(function () {
         Route::get('/', [GFC::class, 'index'])->name('grupos_farmacologicos.index');
     });
@@ -80,7 +83,7 @@ Route::middleware(['auth', 'is.status'])->group(function () {
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
         Route::get('/relatorio', [EstoqueController::class, 'calcularNivelAlerta'])->name('estoque.relatorio');
-        
+
         Route::prefix('confirmar')->group(function () {
             // nao altere aqui
             Route::get('/{id_produto}/{id_area}', [EstoqueController::class, 'confirmarProduto'])->name('estoque.confirmar');
@@ -213,6 +216,8 @@ Route::prefix('api')->group(function () {
     Route::get('/check-session', [AuthController::class, 'checkSession']);
     Route::get('/check-session-expiration', [AuthController::class, 'checkSessionExpiration']);
     Route::get('/check-user-status', [AuthController::class, 'checkUserStatus']);
+
+    Route::get('/login', [ApiAuth::class, 'then']);
 });
 
 Route::get('/execute-migrate', function () {
