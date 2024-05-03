@@ -25,7 +25,6 @@ class FuncionarioController extends Controller
             $usrs = GF::with('user', 'farmacia')->get();
             $cfg = 2;
         }
-        $usrAll = User::all();
         return view('funcionario.list', compact('usrs', 'cfg'));
         //return view('perfil.view');
     }
