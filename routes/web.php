@@ -39,7 +39,7 @@ use App\Http\Controllers\Api\{
 |
 */
 
-Route::middleware(['auth', 'is.status'])->group(function () {
+Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('dev')->group(function () {
         Route::get('/levantamento', [DevController::class, 'levantamento'])->name('dev.levantamento');
         Route::get('/novo_doc', [DevController::class, 'novo_doc'])->name('dev.novo_doc');
