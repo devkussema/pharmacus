@@ -5,6 +5,27 @@ use App\Models\Grupo;
 use App\Models\{Permissao, Cargo, Setting, AreaHospitalar};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
+function statusOnline($lastSeen)
+{
+    $lastSeenTime = Carbon::parse($lastSeen);
+    $currentTime = Carbon::now();
+    $difference = $currentTime->diffInSeconds($lastSeenTime);
+
+    if ($difference < 30) {
+        return "Online";
+    } else {
+        $diffInMinutes = $currentTime->diffInMinutes($lastSeenTime);
+
+        if ($diffInMinutes < 60) {
+            return "há $diffInMinutes min";
+        } else {
+            $diffInHours = $currentTime->diffInHours($lastSeenTime);
+            return "há $diffInHours h";
+        }
+    }
+}
 
 function enviarDadosUsuario($nome, $idade)
 {
