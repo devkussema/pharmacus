@@ -9,6 +9,9 @@ use Carbon\Carbon;
 
 function statusOnline($lastSeen)
 {
+    if (empty($lastSeen)) {
+        return "Indefinido";
+    }
     $lastSeenTime = Carbon::parse($lastSeen);
     $currentTime = Carbon::now();
     $difference = $currentTime->diffInSeconds($lastSeenTime);
