@@ -29,7 +29,7 @@ $(document).ready(function () {
                                         <div class="card mb-2">
                                             <div class="row no-gutters">
                                                 <div class="col-md-6 col-lg-4">
-                                                    <img src="/theme/default/assets/images/page-img/08.jpg" class="card-img" alt="#">
+                                                    <img src="/theme/default/assets/images/white__logo.png" class="card-img" alt="#">
                                                 </div>
                                                 <div class="col-md-6 col-lg-8">
                                                     <div class="card-body">
