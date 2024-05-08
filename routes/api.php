@@ -24,6 +24,7 @@ Route::prefix('')->namespace('App\Http\Controllers\Api\v1')->group(function () {
         Route::get('/get/users', 'GetUserController@getAllUsers');
         Route::get('/get/user/{id}', 'GetUserController@getUserWithId');
         Route::get('/isLogged', 'AuthController@isLogged');
+        Route::get('/get/atividade', 'GetAtividadeController@getAllAtividade');
 
         Route::post('/logout', 'AuthController@logout');
     });

@@ -10,7 +10,8 @@ class GetUserController extends Controller
 {
     public function getAllUsers()
     {
-        return User::all();
+        //return User::all();
+        return response()->json(User::all(), 200);
     }
 
     public function getUserWithId(Request $request, $id)

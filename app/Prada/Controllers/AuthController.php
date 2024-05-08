@@ -18,12 +18,20 @@ class AuthController extends Controller
 {
     use GenerateTrait;
 
+    private string $theme;
+
+    public function __construct()
+    {
+        $this->theme = "dark";
+    }
+
     public function index()
     {
+        $theme = $this->theme;
         $app_desc = "Inicie sessão e esteja a par de tudo na " . env('APP_NAME');
         $app_keywords = "entrar, pharmatina, pharmatina angola, google angola, pharmatino, farmatina, farmácia ao, farmacia angola, augusto kussema, kussema";
 
-        return view('auth.login', compact('app_desc', 'app_keywords'));
+        return view('auth.v2.login', compact('theme', 'app_desc', 'app_keywords'));
     }
 
     public function devver() {
@@ -41,7 +49,8 @@ class AuthController extends Controller
 
     public function recuperarSenha()
     {
-        return view('auth.recuperarSenha');
+        $theme = $this->theme;
+        return view('auth.v2.recuperarSenha', compact('theme'));
     }
 
     public function alterar_senha(Request $request)
