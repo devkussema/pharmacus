@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+function formatarData($data)
+{
+    return Carbon::parse($data)->format('d/m/Y');
+}
+
 function statusOnline($lastSeen)
 {
     if (empty($lastSeen)) {
