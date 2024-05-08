@@ -14,9 +14,9 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     @if (request()->cookie('pwa_app') === 'true')
-        <title>@yield('titulo', 'Página Inicial')</title>
+        <title>@yield('titulo', 'Entrar')</title>
     @else
-        <title>@yield('titulo', 'Página Inicial') - {{ getConfig('nome_site') ?? env('APP_NAME') }}</title>
+        <title>@yield('titulo', 'Entrar') - {{ getConfig('nome_site') ?? env('APP_NAME') }}</title>
     @endif
 
     <meta name="description" content="{{ getConfig('nome_site') ?? ($app_desc ?? '') }}">
