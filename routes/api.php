@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Prada\Controllers\AuthController;
+use App\Http\Controllers\Api\v1\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +15,19 @@ use App\Prada\Controllers\AuthController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::prefix('')->namespace('App\Http\Controllers\Api\v1')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/get/users', 'GetUserController@getAllUsers');
+        Route::get('/get/user/{id}', 'GetUserController@getUserWithId');
+        Route::get('/isLogged', 'AuthController@isLogged');
+        Route::get('/get/atividade', 'GetAtividadeController@getAllAtividade');
+
+        Route::post('/logout', 'AuthController@logout');
+    });
+
+    Route::post('/login', 'AuthController@entrar');
 });
-
-

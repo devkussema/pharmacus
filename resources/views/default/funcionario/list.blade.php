@@ -36,6 +36,7 @@
                                         Farmácia
                                     @endif
                                 </th>
+                                <th>Online</th>
                                 <th>Estado</th>
                                 <th class="hide-on-print">Ação</th>
                             </tr>
@@ -56,6 +57,7 @@
                                         <td>
                                             {{ $usr->area_hospitalar->area_hospitalar->nome }}
                                         </td>
+                                        <td>{{ statusOnline($usr->online) }}</td>
                                         <td>
                                             @if ($usr->status == 0)
                                                 Inativo
@@ -101,6 +103,7 @@
                                         </td>
                                         <td>{{ $usr->user->nome }}</td>
                                         <td>{{ @$usr->farmacia->nome }}</td>
+                                        <td>{{ statusOnline($usr->online) }}</td>
                                         <td>
                                             @if ($usr->user->status == 0)
                                                 Inativo

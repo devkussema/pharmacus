@@ -5,8 +5,82 @@ use App\Models\Grupo;
 use App\Models\{Permissao, Cargo, Setting, AreaHospitalar};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
-function updateOnline() {
+function formatarData($data)
+{
+    return Carbon::parse($data)->format('d/m/Y');
+}
+
+function statusOnline($lastSeen)
+{
+    if (empty($lastSeen)) {
+        return "Indefinido";
+    }
+    $lastSeenTime = Carbon::parse($lastSeen);
+    $currentTime = Carbon::now();
+    $difference = $currentTime->diffInSeconds($lastSeenTime);
+
+    if ($difference < 30) {
+        return "Online";
+    } else {
+        $diffInMinutes = $currentTime->diffInMinutes($lastSeenTime);
+
+        if ($diffInMinutes < 60) {
+            return "há $diffInMinutes min";
+        } else {
+            $diffInHours = $currentTime->diffInHours($lastSeenTime);
+            return "há $diffInHours h";
+        }
+    }
+}
+
+function enviarDadosUsuario($nome, $idade)
+{
+    // Definir a URL da API
+    $url = 'https://luze.me/api/set_user';
+
+    // Criar um objeto cURL
+    $ch = curl_init($url);
+
+    // Configurar opções de requisição POST
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['nome' => $nome, 'idade' => $idade])); // Dados a serem enviados
+    // Desativa a verificação do certificado SSL (não recomendado em produção)
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']); // Cabeçalho HTTP
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Retornar a resposta como string
+
+    // Executar a requisição
+    $response = curl_exec($ch);
+
+    // Verificar se houve erro
+    if (curl_errno($ch)) {
+        echo 'Erro ao enviar dados: ' . curl_error($ch);
+        return false;
+    }
+
+    // Fechar o cURL
+    curl_close($ch);
+
+    // Converter a resposta JSON para array PHP
+    $responseData = json_decode($response, true);
+
+    var_dump($responseData);
+
+    // Verificar se a requisição foi bem sucedida
+    // if ($responseData['status'] === 'success') {
+    //     echo 'Dados do usuário enviados com sucesso.';
+    //     return true;
+    // } else {
+    //     echo 'Erro ao enviar dados: ' . $responseData['message'];
+    //     return false;
+    // }
+}
+
+
+function updateOnline()
+{
     //DB::table('users')->where('id', auth()->id())->update(['online' => now()]);
     $user = User::find(Auth::user()->id);
     $user->update([
@@ -15,7 +89,8 @@ function updateOnline() {
     $user->save();
 }
 
-function getEmbalagem($descritivo) {
+function getEmbalagem($descritivo)
+{
     // Extrai o valor da segunda coluna usando uma expressão regular
     preg_match('/\d{2}x(\d{1,3})x\d{3}/', $descritivo, $matches);
 
@@ -31,31 +106,33 @@ function getEmbalagem($descritivo) {
     }
 }
 
-function isAHGerente() {
+function isAHGerente()
+{
     if (@auth()->user()->isFarmacia) {
         $areaHospitalar = AreaHospitalar::where('nome', 'Armazém I')->first();
         return $areaHospitalar->id;
     }
 }
 
-function isAH($getId=0)
+function isAH($getId = 0)
 {
-    if ($getId != 0){
-        if (@auth()->user()->area_hospitalar){
+    if ($getId != 0) {
+        if (@auth()->user()->area_hospitalar) {
             return auth()->user()->area_hospitalar->area_hospitalar_id;
-        }else{
+        } else {
             return false;
         }
-    }else{
-        if (@auth()->user()->area_hospitalar){
+    } else {
+        if (@auth()->user()->area_hospitalar) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 }
 
-function vPerm($modulo, $permissoes) {
+function vPerm($modulo, $permissoes)
+{
     $jsonPermissoe = \App\Models\Permissao::where('user_id', auth()->user()->id)->first();
 
     if (!$jsonPermissoe)
@@ -133,7 +210,8 @@ function isPerm($jsonString, $key, $expectedValue)
     // Verifica se o valor da chave é igual ao valor esperado
     return $jsonData[$key] === $expectedValue;
 }
-function getCaixa($string) {
+function getCaixa($string)
+{
     $valores = explode('x', $string);
     $valor = $valores[0];
 
@@ -144,7 +222,8 @@ function getCaixa($string) {
     return $valor;
 }
 
-function downCaixa($formato, $caixasASubtrair) {
+function downCaixa($formato, $caixasASubtrair)
+{
     // Separar os valores do formato
     $valores = explode('x', $formato);
 
@@ -160,7 +239,8 @@ function downCaixa($formato, $caixasASubtrair) {
     return $novoFormato;
 }
 
-function newCaixa($formato, $novaQuantidadeCaixas) {
+function newCaixa($formato, $novaQuantidadeCaixas)
+{
     // Separar os valores do formato
     $valores = explode('x', $formato);
 
@@ -173,7 +253,8 @@ function newCaixa($formato, $novaQuantidadeCaixas) {
     return $novoFormato;
 }
 
-function getCaixaUnit($formato) {
+function getCaixaUnit($formato)
+{
     // Separar os valores do formato
     $valores = explode('x', $formato);
 
@@ -189,12 +270,13 @@ function getCaixaUnit($formato) {
 function pharma($path)
 {
     $theme = (nem('APP_THEME') ? nem('APP_THEME') : env('APP_THEME'));
-    $dir = "theme/". $theme . '/' .$path;
+    $dir = "theme/" . $theme . '/' . $path;
 
     return asset($dir);
 }
 
-function higienizarEmail($email) {
+function higienizarEmail($email)
+{
     // Remove espaços em branco no início e no final do email
     $email = trim($email);
 
@@ -246,7 +328,7 @@ function translate($texto, $lang)
     }
 }
 
-function calcMes($dataAlvo, $getString=1)
+function calcMes($dataAlvo, $getString = 1)
 {
     // Converte a data alvo para um objeto DateTime
     $dataAlvo = new DateTime($dataAlvo);
@@ -281,16 +363,16 @@ function calcMes($dataAlvo, $getString=1)
         if ($mesesRestantes < 1) {
             // Se faltar menos de 1 mês, retorna o número de dias restantes
             $diasRestantes = $intervalo->days;
-            if ($getString==1){
+            if ($getString == 1) {
                 return "$diasRestantes dias";
-            }else{
+            } else {
                 return $diasRestantes;
             }
         } else {
             // Caso contrário, retorna o número de meses restantes
-            if ($getString==1){
+            if ($getString == 1) {
                 return "$mesesRestantes meses";
-            }else{
+            } else {
                 return $mesesRestantes;
             }
         }

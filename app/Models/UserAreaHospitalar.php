@@ -16,7 +16,7 @@ class UserAreaHospitalar extends Model
         'user_id',
         'area_hospitalar_id',
         'cargo_id',
-        'farmacia_id',
+        'farmacia_id', 
         'fun_unica',
         'contato'
     ];

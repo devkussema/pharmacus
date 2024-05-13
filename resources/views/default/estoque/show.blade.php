@@ -95,6 +95,7 @@
                                 <th>Qtd. Caixa</th>
                                 <th>Qtd. Unit.</th>
                                 <th>Documento nº</th>
+                                <th>Inserido em</th>
                                 <th>Data Expiração</th>
                                 <th>Ação</th>
                             </tr>
@@ -121,6 +122,7 @@
                                         <td>{{ getCaixa($est->produto->descritivo) }}</td>
                                         <td>{{ $est->produto->saldo->qtd }}</td>
                                         <td>{{ $est->produto->num_documento }}</td>
+                                        <td>{{ formatarData($est->produto->created_at) }}</td>
                                         <td>{{ $est->produto->data_expiracao }}</td>
                                         <td>
                                             <div class="d-flex align-items-center list-action">

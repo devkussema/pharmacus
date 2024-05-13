@@ -153,7 +153,7 @@
                     </li>
                 @endif
 
-                @if (@Auth::user()->isFarmacia || @isAdministrator())
+                @if (@Auth::user()->isFarmacia || vPerm('funcionarios', ['ver']))
                     <li class="">
                         <a href="#ah_funcionarios" class="collapsed" data-toggle="collapse" aria-expanded="false">
                             <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"

@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'is.area_hospitalar' => \App\Http\Middleware\VerifyAreaHospitalar::class,
         'is.gestor_farmacia' => \App\Http\Middleware\VerifyGestorFarmacia::class,
         'is.status' => \App\Http\Middleware\CheckStatusUser::class,
+        'is.online' => \App\Http\Middleware\UpdateUserOnlineStatus::class,
     ];
 }

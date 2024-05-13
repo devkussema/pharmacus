@@ -40,7 +40,7 @@ $(document).ready(function () {
 $(document).ready(function() {
     $('#login-form').submit(function(e) {
         e.preventDefault(); // Impede o envio padrão do formulário
-        showLoader();
+        preloadering();
 
         var formData = $(this).serialize(); // Serializa os dados do formulário
 
@@ -49,19 +49,19 @@ $(document).ready(function() {
             url: $(this).attr('action'),
             data: formData,
             success: function(response) {
-                hideLoader();
+                unPreloadering();
                 toastr.success("Bem-vindo de volta", 'A redirecionar');
                 setTimeout(function() {
                     location.reload();
                 }, 2000);
             },
             error: function(xhr, status, error) {
-                hideLoader();
+                unPreloadering();
                 // Trata os erros de validação retornados pelo servidor
                 var errors = xhr.responseJSON.errors;
                 var errorMessage = '';
 
-                console.log(xhr);
+                //console.log(xhr);
 
                 if (errors) {
                     // Percorre os erros e os concatena em uma única string
