@@ -1,5 +1,6 @@
 <?php
 
+# git bundle create meu_bundle.bundle dev // **dev** o nome do branch alvo
 class Translator
 {
     public function translate($texto, $lang)
