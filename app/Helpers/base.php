@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-function assets($file)
+function assetr($file)
 {
     $default_url = env('APP_URL_ASSET', 'default') . $file;
     return $default_url;
