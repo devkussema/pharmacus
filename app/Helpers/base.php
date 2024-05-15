@@ -9,15 +9,16 @@ use Carbon\Carbon;
 
 function assets($file)
 {
-    $default_url = env('APP_URL_ASSET', 'default');
+    $default_url = env('APP_URL_ASSET', 'default') . $file;
+    return $default_url;
     
     // Verifica se o $default_url começa com http:// ou https://
-    if (strpos($default_url, 'http://') === 0 || strpos($default_url, 'https://') === 0) {
-        return $path = $default_url . $file;
-    } else {
-        // Se não começar com http:// ou https://, então assume-se que é um protocolo local
-        return asset($default_url . $file);
-    }
+    // if (strpos($default_url, 'http://') === 0 || strpos($default_url, 'https://') === 0) {
+    //     return $default_url . $file;
+    // } else {
+    //     // Se não começar com http:// ou https://, então assume-se que é um protocolo local
+    //     return asset($default_url . $file);
+    // }
 }
 
 function formatarData($data)
