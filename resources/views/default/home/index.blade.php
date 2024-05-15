@@ -15,7 +15,7 @@
     @if (isAHGerente())
         <meta name="is_ah_gerente" content="{{ isAHGerente() }}">
     @endif
-    <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
+    <link rel="apple-touch-icon" href="{{ assetr('assets/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     @if (request()->cookie('pwa_app') === 'true')
@@ -29,10 +29,10 @@
     <link rel="stylesheet" href="{{ assetr('assets/css/backend-plugin.min.css') }}">
     <link rel="stylesheet" href="{{ assetr('assets/css/backende209.css?v=1.0.0') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/remixicon/fonts/remixicon.css') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/css/toastr.min.css') }}">
-    <link rel="stylesheet" href={{ pharma('src/css/manual.css') }}>
+    <link rel="stylesheet" href="{{ assetr('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ assetr('assets/vendor/remixicon/fonts/remixicon.css') }}">
+    <link rel="stylesheet" href="{{ assetr('assets/css/toastr.min.css') }}">
+    <link rel="stylesheet" href={{ assetr('src/css/manual.css') }}>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap4.min.css">
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -85,7 +85,7 @@
 <body class="color-light">
     <!-- loader Start -->
     <div class="loader" id="loaderish" style="display: none">
-        <img src="{{ pharma('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">
+        <img src="{{ assetr('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">
     </div>
 
     <div class="wrapper">
@@ -326,14 +326,14 @@
         }
     </script>
 
-    <script src="{{ pharma('assets/js/notifications/base.js') }}"></script>
-    <script src="{{ pharma('assets/js/dev/helpers.js') }}" async></script>
-    <script src="{{ pharma('assets/js/dev/backend-bundle.min.js') }}"></script>
-    <script src="{{ pharma('assets/js/dev/table-treeview.js') }}"></script>
-    <script src="{{ pharma('assets/js/dev/customizer.js') }}"></script>
-    <script async src="{{ pharma('assets/js/dev/chart-custom.js') }}"></script>
-    <script src="{{ pharma('assets/js/dev/app.js') }}"></script>
-    <script src="{{ pharma('assets/js/dev/toastr.min.js') }}"></script>
+    <script src="{{ assetr('assets/js/notifications/base.js') }}"></script>
+    <script src="{{ assetr('assets/js/dev/helpers.js') }}" async></script>
+    <script src="{{ assetr('assets/js/dev/backend-bundle.min.js') }}"></script>
+    <script src="{{ assetr('assets/js/dev/table-treeview.js') }}"></script>
+    <script src="{{ assetr('assets/js/dev/customizer.js') }}"></script>
+    <script async src="{{ assetr('assets/js/dev/chart-custom.js') }}"></script>
+    <script src="{{ assetr('assets/js/dev/app.js') }}"></script>
+    <script src="{{ assetr('assets/js/dev/toastr.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/fontawesome.min.js"
         integrity="sha512-22flhOyPNWzkYE2LbBCEX+m5tw5RBuw0AKCKURp96YgdoPWNtGrWuViceL0Ey0L/sHZyZXPT53ofUlAI6E+u+g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
