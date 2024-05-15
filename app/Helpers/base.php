@@ -7,6 +7,19 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+function assets($file)
+{
+    $default_url = env('APP_URL_ASSET', 'default');
+    
+    // Verifica se o $default_url começa com http:// ou https://
+    if (strpos($default_url, 'http://') === 0 || strpos($default_url, 'https://') === 0) {
+        return $path = $default_url . $file;
+    } else {
+        // Se não começar com http:// ou https://, então assume-se que é um protocolo local
+        return asset($default_url . $file);
+    }
+}
+
 function formatarData($data)
 {
     return Carbon::parse($data)->format('d/m/Y');

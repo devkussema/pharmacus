@@ -15,7 +15,7 @@
     @if (isAHGerente())
         <meta name="is_ah_gerente" content="{{ isAHGerente() }}">
     @endif
-    <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
+    <link rel="apple-touch-icon" href="{{ assets('assets/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     @if (request()->cookie('pwa_app') === 'true')
@@ -25,14 +25,14 @@
     @endif
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ pharma('assets/images/white__logo2.png') }}" />
-    <link rel="stylesheet" href="{{ pharma('assets/css/backend-plugin.min.css') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/css/backende209.css?v=1.0.0') }}">
+    <link rel="shortcut icon" href="{{ assets('assets/images/white__logo2.png') }}" />
+    <link rel="stylesheet" href="{{ assets('assets/css/backend-plugin.min.css') }}">
+    <link rel="stylesheet" href="{{ assets('assets/css/backende209.css?v=1.0.0') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/remixicon/fonts/remixicon.css') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/css/toastr.min.css') }}">
-    <link rel="stylesheet" href={{ pharma('src/css/manual.css') }}>
+    <link rel="stylesheet" href="{{ assets('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ assets('assets/vendor/remixicon/fonts/remixicon.css') }}">
+    <link rel="stylesheet" href="{{ assets('assets/css/toastr.min.css') }}">
+    <link rel="stylesheet" href={{ assets('src/css/manual.css') }}>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap4.min.css">
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
