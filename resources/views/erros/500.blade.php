@@ -8,11 +8,11 @@
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="assets/images/favicon.ico">
-    <link rel="stylesheet" href="{{ pharma('assets/css/backend-plugin.min.css')}}">
-    <link rel="stylesheet" href="{{ pharma('assets/css/backende209.css?v=1.0.0')}}">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/%40fortawesome/fontawesome-free/css/all.min.css')}}">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css')}}">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/remixicon/fonts/remixicon.css')}}">
+    <link rel="stylesheet" href="{{ assetr('assets/css/backend-plugin.min.css')}}">
+    <link rel="stylesheet" href="{{ assetr('assets/css/backende209.css?v=1.0.0')}}">
+    <link rel="stylesheet" href="{{ assetr('assets/vendor/%40fortawesome/fontawesome-free/css/all.min.css')}}">
+    <link rel="stylesheet" href="{{ assetr('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{ assetr('assets/vendor/remixicon/fonts/remixicon.css')}}">
     <style type="text/css">
         .apexcharts-canvas {
             position: relative;
@@ -700,7 +700,7 @@
             <div class="row no-gutters height-self-center">
                 <div class="col-sm-12 text-center align-self-center">
                     <div class="iq-error position-relative">
-                        <img src="{{ pharma('assets/images/error/500.png') }}" class="img-fluid iq-error-img" alt="">
+                        <img src="{{ assetr('assets/images/error/500.png') }}" class="img-fluid iq-error-img" alt="">
                         <h2 class="mb-0">Oops! Algo deu errado.</h2>
                         <p>Ocorreu um erro interno do servidor.</p>
                         <a class="btn btn-primary d-inline-flex align-items-center mt-3" href="{{ route('home') }}"><i
@@ -713,19 +713,19 @@
     </div>
 
     <!-- Backend Bundle JavaScript -->
-    <script src="{{ pharma('assets/js/backend-bundle.min.js')}}"></script>
+    <script src="{{ assetr('assets/js/backend-bundle.min.js')}}"></script>
 
     <!-- Table Treeview JavaScript -->
-    <script src="{{ pharma('assets/js/table-treeview.js')}}"></script>
+    <script src="{{ assetr('assets/js/table-treeview.js')}}"></script>
 
     <!-- Chart Custom JavaScript -->
-    <script src="{{ pharma('assets/js/customizer.js')}}"></script>
+    <script src="{{ assetr('assets/js/customizer.js')}}"></script>
 
     <!-- Chart Custom JavaScript -->
-    <script async="" src="{{ pharma('assets/js/chart-custom.js')}}"></script>
+    <script async="" src="{{ assetr('assets/js/chart-custom.js')}}"></script>
 
     <!-- app JavaScript -->
-    <script src="{{ pharma('assets/js/app.js')}}"></script>
+    <script src="{{ assetr('assets/js/app.js')}}"></script>
 
     <svg id="SvgjsSvg1001" width="2" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1"
         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs"

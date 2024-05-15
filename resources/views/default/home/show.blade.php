@@ -38,7 +38,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
                                     <div class="icon iq-icon-box-2 bg-info-light">
-                                        <img src="{{ pharma('assets/images/product/1.png') }}" class="img-fluid"
+                                        <img src="{{ assetr('assets/images/product/1.png') }}" class="img-fluid"
                                             alt="image">
                                     </div>
                                     <div>
@@ -58,7 +58,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
                                     <div class="icon iq-icon-box-2 bg-danger-light">
-                                        <img src="{{ pharma('assets/images/product/2.png') }}" class="img-fluid"
+                                        <img src="{{ assetr('assets/images/product/2.png') }}" class="img-fluid"
                                             alt="image">
                                     </div>
                                     <div>
@@ -78,7 +78,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
                                     <div class="icon iq-icon-box-2 bg-success-light">
-                                        <img src="{{ pharma('assets/images/product/3.png') }}" class="img-fluid"
+                                        <img src="{{ assetr('assets/images/product/3.png') }}" class="img-fluid"
                                             alt="image">
                                     </div>
                                     <div>

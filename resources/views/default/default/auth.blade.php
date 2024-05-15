@@ -24,17 +24,17 @@
     <meta name="author" content="Augusto Kussema">
 
     <meta name="theme-color" content="#6777ef" />
-    <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
+    <link rel="apple-touch-icon" href="{{ assetr('assets/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ pharma('assets/images/white__logo2.png') }}" />
-    <link rel="stylesheet" href="{{ pharma('assets/css/backend-plugin.min.css') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/css/backende209.css?v=1.0.0') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/%40fortawesome/fontawesome-free/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/vendor/remixicon/fonts/remixicon.css') }}">
-    <link rel="stylesheet" href="{{ pharma('assets/css/toastr.min.css') }}">
+    <link rel="shortcut icon" href="{{ assetr('assets/images/white__logo2.png') }}" />
+    <link rel="stylesheet" href="{{ assetr('assets/css/backend-plugin.min.css') }}">
+    <link rel="stylesheet" href="{{ assetr('assets/css/backende209.css?v=1.0.0') }}">
+    <link rel="stylesheet" href="{{ assetr('assets/vendor/%40fortawesome/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ assetr('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ assetr('assets/vendor/remixicon/fonts/remixicon.css') }}">
+    <link rel="stylesheet" href="{{ assetr('assets/css/toastr.min.css') }}">
 
     <style>
         .loader {
@@ -74,7 +74,7 @@
 
 <body class=" ">
     <div class="loader" id="loaderish" style="display: none">
-        <img src="{{ pharma('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">
+        <img src="{{ assetr('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">
     </div>
 
     <div class="wrapper">
@@ -111,22 +111,22 @@
 
     {{-- <script src="{{ asset('assets/js/helpers.js') }}" async></script> --}}
     <!-- Backend Bundle JavaScript -->
-    <script src="{{ pharma('assets/js/backend-bundle.min.js') }}"></script>
+    <script src="{{ assetr('assets/js/backend-bundle.min.js') }}"></script>
 
     <!-- Table Treeview JavaScript -->
-    <script src="{{ pharma('assets/js/table-treeview.js') }}"></script>
+    <script src="{{ assetr('assets/js/table-treeview.js') }}"></script>
 
     <!-- Chart Custom JavaScript -->
-    <script src="{{ pharma('assets/js/customizer.js') }}"></script>
+    <script src="{{ assetr('assets/js/customizer.js') }}"></script>
 
     <!-- Chart Custom JavaScript -->
-    <script async src="{{ pharma('assets/js/chart-custom.js') }}"></script>
+    <script async src="{{ assetr('assets/js/chart-custom.js') }}"></script>
 
     <!-- app JavaScript -->
-    <script src="{{ pharma('assets/js/app.js') }}"></script>
+    <script src="{{ assetr('assets/js/app.js') }}"></script>
 
-    <script src="{{ pharma('assets/js/form.js') }}" async></script>
-    <script src="{{ pharma('assets/js/toastr.min.js') }}"></script>
+    <script src="{{ assetr('assets/js/form.js') }}" async></script>
+    <script src="{{ assetr('assets/js/toastr.min.js') }}"></script>
 
     <script src="{{ asset('/sw2.js') }}"></script>
     <script>

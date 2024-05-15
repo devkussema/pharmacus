@@ -1,7 +1,7 @@
 <div class="iq-sidebar sidebar-default ">
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
         <a href="{{ route('home') }}" class="header-logo">
-            <img src="{{ pharma('assets/images/white__logo2.png') }}" class="img-fluid rounded-normal" alt="logo">
+            <img src="{{ assetr('assets/images/white__logo2.png') }}" class="img-fluid rounded-normal" alt="logo">
             <h5 class="logo-title ml-3">{{ getConfig('nome_site') ?? env('APP_NAME', 'Pharmacus') }}</h5>
         </a>
         <div class="iq-menu-bt-sidebar ml-0">
@@ -333,7 +333,7 @@
             <div class="card border-none">
                 <div class="card-body p-0">
                     <div class="sidebarbottom-content">
-                        <div class="image"><img src="{{ pharma('assets/images/layouts/side-bkg.png') }}"
+                        <div class="image"><img src="{{ assetr('assets/images/layouts/side-bkg.png') }}"
                                 class="img-fluid" alt="side-bkg"></div>
                         <h6 class="mt-4 px-4 body-title">Get More Feature by Upgrading</h6>
                         <button type="button" class="btn sidebar-bottom-btn mt-4">Go Premium</button>

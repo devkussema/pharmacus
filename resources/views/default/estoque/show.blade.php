@@ -45,7 +45,7 @@
                                         <div class="card-body">
                                             <div class="d-flex align-items-center mb-4 card-total-sale">
                                                 <div class="icon iq-icon-box-2 {{ $colors[$colorIndex] }}">
-                                                    <img src="{{ pharma('assets/images/white__logo.png') }}" class="img-fluid" alt="image">
+                                                    <img src="{{ assetr('assets/images/white__logo.png') }}" class="img-fluid" alt="image">
                                                 </div>
                                                 <div>
                                                     <p class="mb-2">{{ $p->grupo_farmaco->nome }}</p>

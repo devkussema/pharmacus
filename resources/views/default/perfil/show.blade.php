@@ -9,7 +9,7 @@
                 <div class="card car-transparent">
                     <div class="card-body p-0">
                         <div class="profile-image position-relative">
-                            <img src="{{ pharma('assets/images/profile.png') }}" class="img-fluid rounded w-100"
+                            <img src="{{ assetr('assets/images/profile.png') }}" class="img-fluid rounded w-100"
                                 alt="profile-image">
                         </div>
                     </div>
@@ -22,7 +22,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="profile-img position-relative">
-                                <img src="{{ pharma('assets/images/user/1.png')}}" class="img-fluid rounded avatar-110"
+                                <img src="{{ assetr('assets/images/user/1.png')}}" class="img-fluid rounded avatar-110"
                                     alt="profile-image">
                             </div>
                             <div class="ml-3">
@@ -141,7 +141,7 @@
                                         <ul class="list-inline p-0 m-0">
                                             <li class="mb-4">
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="{{ pharma('assets/images/profile/service/01.png')}}" class="img-fluid"
+                                                    <img src="{{ assetr('assets/images/profile/service/01.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -158,7 +158,7 @@
                                             </li>
                                             <li class="mb-4">
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="{{ pharma('assets/images/profile/service/02.png')}}"
+                                                    <img src="{{ assetr('assets/images/profile/service/02.png')}}"
                                                         class="img-fluid mr-3" alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -175,7 +175,7 @@
                                             </li>
                                             <li>
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="{{ pharma('assets/images/profile/service/03.png')}}" class="img-fluid"
+                                                    <img src="{{ assetr('assets/images/profile/service/03.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -196,7 +196,7 @@
                                         <ul class="list-inline p-0 m-0">
                                             <li class="mb-4">
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="{{ pharma('assets/images/profile/service/04.png')}}" class="img-fluid"
+                                                    <img src="{{ assetr('assets/images/profile/service/04.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -213,7 +213,7 @@
                                             </li>
                                             <li class="mb-4">
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="{{ pharma('assets/images/profile/service/05.png')}}" class="img-fluid"
+                                                    <img src="{{ assetr('assets/images/profile/service/05.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">
@@ -230,7 +230,7 @@
                                             </li>
                                             <li>
                                                 <div class="d-flex align-items-center pt-2">
-                                                    <img src="{{ pharma('assets/images/profile/service/06.png')}}" class="img-fluid"
+                                                    <img src="{{ assetr('assets/images/profile/service/06.png')}}" class="img-fluid"
                                                         alt="image">
                                                     <div class="ml-3 w-100">
                                                         <div class="media align-items-center justify-content-between">

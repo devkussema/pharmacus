@@ -11,7 +11,7 @@
                         <div class="d-flex align-items-center auth-content">
                             <div class="col-lg-7 align-self-center">
                                 <div class="p-3">
-                                    <img src="{{ pharma('assets/images/user/1.png') }}" class="rounded avatar-80 mb-3"
+                                    <img src="{{ assetr('assets/images/user/1.png') }}" class="rounded avatar-80 mb-3"
                                         alt="">
                                     <h2 class="mb-2">Olá!</h2>
                                     <p>Conclua o cadastro e comece.</p>
@@ -52,7 +52,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-5 content-right">
-                                <img src="{{ pharma('assets/images/login/01.png')}}" class="img-fluid image-right" alt="">
+                                <img src="{{ assetr('assets/images/login/01.png')}}" class="img-fluid image-right" alt="">
                             </div>
                         </div>
                     </div>

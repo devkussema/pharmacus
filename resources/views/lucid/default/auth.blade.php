@@ -8,10 +8,10 @@
     <meta name="description" content="Lucid HR & Project Admin Dashboard Template with Bootstrap 5x">
     <meta name="author" content="WrapTheme, design by: ThemeMakker.com">
 
-    <link rel="icon" href="{{ pharma('favicon.ico')}}" type="image/x-icon">
+    <link rel="icon" href="{{ assetr('favicon.ico')}}" type="image/x-icon">
 
     <!-- MAIN CSS -->
-    <link rel="stylesheet" href="{{ pharma('assets/css/main.css')}}">
+    <link rel="stylesheet" href="{{ assetr('assets/css/main.css')}}">
 </head>
 <body>
     <div id="layout" class="theme-cyan">
@@ -30,7 +30,7 @@
                                 V4.5h4.3c2.2,0,3.9,0.6,5.1,1.8S82.5,9.2,82.5,11.3z M80.8,11.4c0-1.8-0.5-3.2-1.4-4.1s-2.3-1.4-4.1-1.4h-2.4v11.2h2
                                 c1.9,0,3.4-0.5,4.4-1.4S80.8,13.3,80.8,11.4z" />
                             </svg> --}}
-                            <img src="{{ pharma('logo_white.png') }}" alt="" style="object-fit: contain; width: 200px;height: 180px;margin-bottom: -50px;">
+                            <img src="{{ assetr('logo_white.png') }}" alt="" style="object-fit: contain; width: 200px;height: 180px;margin-bottom: -50px;">
                         </div>
                     </div>
                     @yield('content')

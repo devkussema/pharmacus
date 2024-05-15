@@ -56,7 +56,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-5 content-right">
-                                <img src="{{ pharma('assets/images/login/login_bg.png')}}" class="img-fluid image-right" alt="">
+                                <img src="{{ assetr('assets/images/login/login_bg.png')}}" class="img-fluid image-right" alt="">
                             </div>
                         </div>
                     </div>

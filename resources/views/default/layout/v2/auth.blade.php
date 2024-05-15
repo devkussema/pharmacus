@@ -78,7 +78,7 @@
                                                 style="text-decoration: none; color: {{ $theme == 'dark' ? '#fff' : '#343a40' }}"
                                                 title="{{ getConfig('nome_site') ?? env('APP_NAME') }}">
                                                 <img width="30" height="30"
-                                                    src="{{ pharma('assets/images/white__logo2.png') }}"
+                                                    src="{{ assetr('assets/images/white__logo2.png') }}"
                                                     alt="{{ getConfig('nome_site') ?? env('APP_NAME') }}">
                                                 <h4 style="margin-left: 10px">Pharmatina</h4>
                                             </a>

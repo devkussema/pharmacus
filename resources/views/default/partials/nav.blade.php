@@ -4,7 +4,7 @@
             <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                 <i class="ri-menu-line wrapper-menu"></i>
                 <a href="{{ route('home') }}" class="header-logo">
-                    <img src="{{ pharma('assets/images/black__logo.png') }}" class="img-fluid rounded-normal" alt="logo">
+                    <img src="{{ assetr('assets/images/black__logo.png') }}" class="img-fluid rounded-normal" alt="logo">
                     <h5 class="logo-title ml-3">{{ getConfig('nome_site') ?? env('APP_NAME', 'Pharmacus') }}</h5>
                 </a>
             </div>
@@ -304,15 +304,15 @@
                         <li class="nav-item nav-icon dropdown caption-content">
                             <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton4"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{ pharma('assets/images/user/1.png')}}" class="img-fluid rounded" alt="user">
+                                <img src="{{ assetr('assets/images/user/1.png')}}" class="img-fluid rounded" alt="user">
                             </a>
                             <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <div class="card shadow-none m-0">
                                     <div class="card-body p-0 text-center">
                                         <div class="media-body profile-detail text-center">
-                                            <img src="{{ pharma('assets/images/page-img/profile-bg.jpg')}}" alt="profile-bg"
+                                            <img src="{{ assetr('assets/images/page-img/profile-bg.jpg')}}" alt="profile-bg"
                                                 class="rounded-top img-fluid mb-4">
-                                            <img src="{{ pharma('assets/images/user/1.png')}}" alt="profile-img"
+                                            <img src="{{ assetr('assets/images/user/1.png')}}" alt="profile-img"
                                                 class="rounded profile-img img-fluid avatar-70">
                                         </div>
                                         <form style="display: none" id="logout-form" action="{{ route('logout') }}"

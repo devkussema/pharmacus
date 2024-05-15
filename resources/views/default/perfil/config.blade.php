@@ -16,7 +16,7 @@
                         <form>
                            <div class="form-group">
                               <div class="crm-profile-img-edit position-relative">
-                                 <img class="crm-profile-pic rounded avatar-100" src="{{ pharma('assets/images/user/11.png')}}" alt="profile-pic">
+                                 <img class="crm-profile-pic rounded avatar-100" src="{{ assetr('assets/images/user/11.png')}}" alt="profile-pic">
                                  <div class="crm-p-image bg-primary">
                                     <i class="las la-pen upload-button"></i>
                                     <input class="file-upload" type="file" accept="image/*">
