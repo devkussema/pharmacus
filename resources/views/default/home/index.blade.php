@@ -332,7 +332,7 @@
     <script src="{{ assetr('assets/js/dev/customizer.js') }}"></script>
     <script async src="{{ assetr('assets/js/dev/chart-custom.js') }}"></script>
     <script src="{{ assetr('assets/js/dev/app.js') }}"></script>
-    <script src="{{ assetr('assets/js/dev/toastr.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/fontawesome.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>

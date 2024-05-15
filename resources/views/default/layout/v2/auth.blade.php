@@ -25,8 +25,8 @@
 
     <meta name="theme-color" content="#6777ef" />
 
-    <link rel="apple-touch-icon" href="{{ pharma('assets/images/white__logo2.png') }}">
-    <link rel="shortcut icon" href="{{ pharma('assets/images/white__logo2.png') }}" />
+    <link rel="apple-touch-icon" href="{{ assetr('assets/images/white__logo2.png') }}">
+    <link rel="shortcut icon" href="{{ assetr('assets/images/white__logo2.png') }}" />
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
     <!-- Web Fonts ========================= -->
@@ -34,12 +34,10 @@
         type='text/css'>
 
     <!-- Stylesheet ========================= -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/auth/stylesheet.css') }}" />
-    <link rel="stylesheet" href="{{ pharma('assets/css/toastr.min.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/auth/stylesheet.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
     <!-- Colors Css -->
     <link id="color-switcher" type="text/css" rel="stylesheet" href="#" />
     <style>
@@ -128,10 +126,10 @@
 
     <!-- Script -->
     <!-- Backend Bundle JavaScript -->
-    <script src="{{ pharma('assets/js/backend-bundle.min.js') }}"></script>
+    <script src="{{ assetr('assets/js/backend-bundle.min.js') }}"></script>
 
-    <script src="{{ pharma('assets/js/form.js') }}" async></script>
-    <script src="{{ pharma('assets/js/toastr.min.js') }}"></script>
+    <script src="{{ assetr('assets/js/form.js') }}" async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
     <script src="{{ asset('/sw2.js') }}"></script>
     <script>
