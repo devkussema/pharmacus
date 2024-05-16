@@ -5,7 +5,7 @@
 /public/hot
 /public/storage
 /storage/*.key
-/vendoq
+/vendor
 .env
 .env.backup
 .env.production
