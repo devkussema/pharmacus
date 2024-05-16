@@ -18,7 +18,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-
+index.php
 /resources/views/default/devver
 .nem_conf
 .htaccess

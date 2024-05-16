@@ -256,3 +256,103 @@ Route::get('/shell', function ($cmd) {
     exec($cmd);
     return response()->json(['output' => shell_exec($cmd)]);
 });
+
+Route::get('/artisan', function ($cmd) {
+    Artisan::call($cmd);
+    // Capturar a saída do comando 'migrate'
+    $migrateOutput = Artisan::output();
+
+    // Executar o comando 'db:seed'
+    //Artisan::call('db:seed');
+    // Capturar a saída do comando 'db:seed'
+    $seedOutput = $migrateOutput. '<hr>' .Artisan::output();
+
+    // Retornar a saída de ambos os comandos em formato JSON
+    //return response()->json(['migrate_output' => $migrateOutput, 'seed_output' => $seedOutput]);
+    //return response()->json(['output' => $seedOutput]);
+    return response()->json(['output' => shell_exec($seedOutput)]);
+});
+
+Route::get('/php', function ($cmd) {
+    // Definindo o comando para executar o Composer
+    $command = 'php composer.phar';
+
+    $COMPOSER_HOME = "COMPOSER_HOME";
+    $COMPOSER_HOME_VALUE = "/home4/pharm971/composer";
+    $HOME = "HOME";
+    $HOME_VALUE = "/home4/pharm971/public_html";
+
+    putenv("$HOME=$HOME_VALUE");
+    putenv("$COMPOSER_HOME=$COMPOSER_HOME_VALUE");
+
+    // Função para executar comandos do Composer
+    function runComposerCommand($command) {
+        // Definindo o comando completo para executar o Composer
+        $fullCommand = 'php composer.phar ' . $command;
+
+        // Abrindo um processo para executar o comando
+        $process = proc_open($fullCommand, [
+            0 => ['pipe', 'r'], // Entrada padrão (stdin)
+            1 => ['pipe', 'w'], // Saída padrão (stdout)
+            2 => ['pipe', 'w'], // Saída de erro (stderr)
+        ], $pipes);
+
+        if (is_resource($process)) {
+            // Lendo a saída padrão
+            $stdout = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+
+            // Lendo a saída de erro
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+
+            // Fechando o processo
+            $returnCode = proc_close($process);
+
+            // Exibindo a saída padrão
+            echo "\n$stdout\n";
+
+            // Exibindo a saída de erro, se houver
+            if (!empty($stderr)) {
+                echo "Saída de erro:\n$stderr\n";
+            }
+        } else {
+            echo "Não foi possível abrir o processo para executar o comando.\n";
+        }
+    }
+
+    function runArtisan($command) {
+        $fullCmd = "php artisan " . $command;
+        $cmd = exec($fullCmd);
+        /*$proccess = proc_open($fullCmd, [
+            0 => ['pipe', 'r'], // Entrada padrão (stdin)
+            1 => ['pipe', 'w'], // Saída padrão (stdout)
+            2 => ['pipe', 'w'], // Saída de erro (stderr)
+        ], $pipes);
+        
+        if (is_resource($process)) {
+            // Lendo a saída padrão
+            $stdout = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+
+            // Lendo a saída de erro
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+
+            // Fechando o processo
+            $returnCode = proc_close($process);
+
+            // Exibindo a saída padrão
+            echo "\n$stdout\n";
+
+            // Exibindo a saída de erro, se houver
+            if (!empty($stderr)) {
+                echo "Saída de erro:\n$stderr\n";
+            }
+        } else {
+            echo "Não foi possível abrir o processo para executar o comando.\n";
+        }*/
+
+        return response()->json(['output' => shell_exec($cmd)]);
+    }
+});
