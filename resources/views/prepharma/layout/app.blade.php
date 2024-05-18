@@ -19,9 +19,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/select2.min.css') }}">
 
     <link rel="stylesheet" href="{{ assetr('assets/plugins/datatables/datatables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/select2.min.css') }}">
 
     <link rel="stylesheet" href="{{ assetr('assets/css/feather.css') }}">
 
@@ -49,7 +49,8 @@
 
     <script src="{{ assetr('assets/js/jquery.slimscroll.js')}}" type="be6558ccd95e077c3366a663-text/javascript"></script>
 
-    <script src="{{ assetr('assets/js/select2.min.js')}}" type="be6558ccd95e077c3366a663-text/javascript"></script>
+    <script src="{{ assetr('assets/plugins/select2/js/select2.min.js')}}" type="9137142106e3c9dc1463738a-text/javascript"></script>
+    <script src="{{ assetr('assets/plugins/select2/js/custom-select.js')}}" type="9137142106e3c9dc1463738a-text/javascript"></script>
 
     <script src="{{ assetr('assets/plugins/datatables/jquery.dataTables.min.js')}}" type="be6558ccd95e077c3366a663-text/javascript"></script>
     <script src="{{ assetr('assets/plugins/datatables/datatables.min.js')}}" type="be6558ccd95e077c3366a663-text/javascript"></script>

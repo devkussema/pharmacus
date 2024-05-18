@@ -31,26 +31,30 @@
                                             <div class="top-nav-search table-search-blk">
                                                 <form>
                                                     <input type="text" class="form-control" placeholder="Procure aqui">
-                                                    <a class="btn"><img src="{{ assetr('assets/img/icons/search-normal.svg')}}" alt></a>
+                                                    <a class="btn"><img
+                                                            src="{{ assetr('assets/img/icons/search-normal.svg') }}"
+                                                            alt></a>
                                                 </form>
                                             </div>
                                             <div class="add-group">
-                                                <a href="add-department.html" class="btn btn-primary add-pluss ms-2"><img
-                                                        src="{{ assetr('assets/img/icons/plus.svg')}}" alt></a>
+                                                <a data-bs-toggle="modal" data-bs-target="#AddAH" href="javascript:void(0)" class="btn btn-primary add-pluss ms-2">
+                                                    <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
+                                                </a>
                                                 <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2"><img
-                                                        src="{{ assetr('assets/img/icons/re-fresh.svg')}}" alt></a>
+                                                        src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt></a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-auto text-end float-end ms-auto download-grp">
-                                    <a href="javascript:;" class=" me-2"><img src="{{ assetr('assets/img/icons/pdf-icon-01.svg')}}"
+                                    <a href="javascript:;" class=" me-2"><img
+                                            src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt></a>
+                                    <a href="javascript:;" class=" me-2"><img
+                                            src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt></a>
+                                    <a href="javascript:;" class=" me-2"><img
+                                            src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt></a>
+                                    <a href="javascript:;"><img src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}"
                                             alt></a>
-                                    <a href="javascript:;" class=" me-2"><img src="{{ assetr('assets/img/icons/pdf-icon-02.svg')}}"
-                                            alt></a>
-                                    <a href="javascript:;" class=" me-2"><img src="{{ assetr('assets/img/icons/pdf-icon-03.svg')}}"
-                                            alt></a>
-                                    <a href="javascript:;"><img src="{{ assetr('assets/img/icons/pdf-icon-04.svg')}}" alt></a>
                                 </div>
                             </div>
                         </div>
@@ -71,69 +75,42 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($ah as $a)
-                                <tr>
-                                    <td>
-                                        <div class="checkbox d-inline-block">
-                                            <input type="checkbox" class="checkbox-input" id="checkbox2">
-                                            <label for="checkbox2" class="mb-0"></label>
-                                        </div>
-                                    </td>
-                                    <td>{{ $a->area_hospitalar->nome }}</td>
-                                    <td>{{ $a->area_hospitalar->descricao }}</td>
-                                    <td class="text-end">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle"
-                                                data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                    class="fa fa-ellipsis-v"></i></a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                @if (isCargo('Gerente'))
-                                                    <a class="dropdown-item" href="javascript:void(0)" onclick="modalAddCargoAH('{{ $a->area_hospitalar->id }}')">
-                                                        <i class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                        Adicionar Responsável
-                                                    </a>
-                                                @endif
-                                                <a class="dropdown-item" href="edit-department.html">
-                                                    <i class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#delete_patient">
-                                                    <i class="fa fa-trash-alt m-r-5"></i>
-                                                    Delete
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                                        {{-- <tr>
+                                        <tr>
                                             <td>
-                                                <div class="form-check check-tables">
-                                                    <input class="form-check-input" type="checkbox" value="something">
+                                                <div class="checkbox d-inline-block">
+                                                    <input type="checkbox" class="checkbox-input" id="checkbox2">
+                                                    <label for="checkbox2" class="mb-0"></label>
                                                 </div>
                                             </td>
-                                            <td>Cardiology</td>
-                                            <td class="profile-image"><a href="profile.html"><img width="28" height="28"
-                                                        src="{{ assetr('assets/img/profiles/avatar-01.jpg')}}" class="rounded-circle m-r-5"
-                                                        alt> Dr.Andrea Lalema</a></td>
-                                            <td>Investigates and treats proble...</td>
-                                            <td>01.10.2022</td>
-                                            <td><button class="custom-badge status-green ">Active</button></td>
+                                            <td>
+                                                <a href="{{ route('estoque.getEstoque', ['id' => $a->area_hospitalar->id]) }}">
+                                                    {{ $a->area_hospitalar->nome }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $a->area_hospitalar->descricao }}</td>
                                             <td class="text-end">
                                                 <div class="dropdown dropdown-action">
                                                     <a href="#" class="action-icon dropdown-toggle"
                                                         data-bs-toggle="dropdown" aria-expanded="false"><i
                                                             class="fa fa-ellipsis-v"></i></a>
                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="edit-department.html"><i
-                                                                class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                            Edit</a>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                            data-bs-target="#delete_patient"><i
-                                                                class="fa fa-trash-alt m-r-5"></i> Delete</a>
+                                                        @if (isCargo('Gerente'))
+                                                            <a class="dropdown-item" href="javascript:void(0)"
+                                                                onclick="modalAddCargoAH('{{ $a->area_hospitalar->id }}')">
+                                                                <i class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                                Adicionar Responsável
+                                                            </a>
+                                                        @endif
+                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                            onclick="modalEditarAH('{{ $a->area_hospitalar->id }}')">
+                                                            <i class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                            Editar
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </td>
-                                        </tr> --}}
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -141,13 +118,63 @@
                 </div>
             </div>
         </div>
+
+        {{-- Modal para add área --}}
+        <div class="modal fade" id="AddAH" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="tituloModal">Adicionar Cargo</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formAddAH" method="POST" action="{{ route('a_h.index.store') }}">
+                            @csrf
+                            <div class="pb-3">
+                                <label class="mb-2">Nome *</label>
+                                @php
+                                    if (@auth()->user()->isFarmacia) {
+                                        // Se o usuário autenticado estiver associado a uma farmácia,
+                                        // obtemos os IDs das áreas hospitalares dessa farmácia
+                                        $areas_hospitalares_ids = auth()->user()->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                                    } elseif (isset(auth()->user()->farmacia)) {
+                                        // Se o usuário autenticado não estiver associado a uma farmácia,
+                                        // obtemos o ID da farmácia diretamente do usuário
+                                        $areas_hospitalares_ids = auth()->user()->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                                    }
+                                    // Convertendo a coleção em um array se necessário
+                                    $areas_hospitalares_ids_array = $areas_hospitalares_ids->all();
+                                @endphp
+                                <select name="area_id" style="width: 100%" class="js-example-basic-single select2">
+                                    @foreach(\App\Models\AreaHospitalar::all() as $ahs)
+                                        @if(!in_array($ahs->id, $areas_hospitalares_ids_array))
+                                            <option value="{{ $ahs->id }}">{{ $ahs->nome }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                <input type="hidden" name="farmacia_id" value="{{ auth()->user()->isFarmacia->farmacia->id }}">
+                            </div>
+                            {{-- <div class="pb-3">
+                                <label class="mb-2">Descrição (opcional)</label>
+                                <textarea class="form-control" placeholder="Descrição da área" name="descricao"></textarea>
+                            </div> --}}
+                            <div class="col-lg-12 mt-4">
+                                <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                    <button class="btn rounded-pill btn-primary" type="submit">Enviar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- Modal para add responsável --}}
         <div class="modal fade" id="AddCargoAH" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="tituloModal">Adicionar Cargo</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="formAddCargoAH" method="POST" action="{{ route('a_h.addCargo') }}">
@@ -155,8 +182,10 @@
                             <div class="pb-3">
                                 <label class="mb-2" for="email_">Email *</label>
                                 <input type="email" id="email_" class="form-control" placeholder="" name="email">
-                                <input type="hidden" id="area_hospitalar_id" class="form-control" placeholder="" name="area_id">
-                                <input type="hidden" value="{{ auth()->user()->isFarmacia->farmacia->id }}" class="form-control" placeholder="" name="farmacia_id">
+                                <input type="hidden" id="area_hospitalar_id" class="form-control" placeholder=""
+                                    name="area_id">
+                                <input type="hidden" value="{{ auth()->user()->isFarmacia->farmacia->id }}"
+                                    class="form-control" placeholder="" name="farmacia_id">
                             </div>
                             <div class="pb-3">
                                 <label class="mb-2" for="cargo_">Cargo *</label>
@@ -168,7 +197,40 @@
                             </div>
                             <div class="pb-3">
                                 <label class="mb-2" for="telefone_">Telefone *</label>
-                                <input type="text" id="telefone_" class="form-control" placeholder="" name="contato">
+                                <input type="text" id="telefone_" class="form-control" placeholder=""
+                                    name="contato">
+                            </div>
+                            <div class="col-lg-12 mt-4">
+                                <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                    <button class="btn rounded-pill btn-primary" type="submit">Enviar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- Modal para editar área h --}}
+        <div class="modal fade" id="EditarAH" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="tituloModal">Editar Área Hospitalar</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formEditarAH" method="POST" action="#" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <div class="pb-3">
+                                <label class="mb-2">Nome *</label>
+                                <input type="text" class="form-control" id="nome" placeholder="Nome da área"
+                                    name="nome">
+
+                            </div>
+                            <div class="pb-3">
+                                <label class="mb-2">Descrição (opcional)</label>
+                                <textarea class="form-control" id="descricao" placeholder="Descrição da área" name="descricao"></textarea>
                             </div>
                             <div class="col-lg-12 mt-4">
                                 <div class="d-flex flex-wrap align-items-ceter justify-content-center">
@@ -187,6 +249,28 @@
             $('#AddCargoAH h4#tituloModal').val(area_id);
             $('#AddCargoAH #area_hospitalar_id').val(area_id);
             $('#AddCargoAH').modal('show');
+        }
+
+        function modalEditarAH(id) {
+            // RequisiÃ§Ã£o AJAX para buscar os dados da farmÃ¡cia
+            $.ajax({
+                url: 'api/get/area_hospitalar/' + id,
+                type: 'GET',
+                success: function(response) {
+                    $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/' + id);
+                    $('h4#nome_area').val(response.nome);
+                    $('#formEditarAH #nome').val(response.nome);
+                    $('#formEditarAH #descricao').val(response.descricao);
+
+                    // Exibir o modal
+                    $('#EditarAH').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    // Tratar erros, se necessÃ¡rio
+                    //console.error(xhr.responseText);
+                    toastr.error("Erro ao obter dados da Ãrea Hospitalar", 'Erro');
+                }
+            });
         }
     </script>
 @endsection
