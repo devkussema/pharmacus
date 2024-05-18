@@ -17,6 +17,8 @@ class HomeController extends Controller
 
     public function home()
     {
+        if (env('APP_THEME') != "default")
+            return view('home.show');
         $grupoo = Grupo::where('nome', 'Funcionário AH')->first();
         $grupooGerente = Grupo::where('nome', 'Gerente')->first();
         if (Auth::user()->grupo_id == $grupoo->id)
