@@ -9,9 +9,9 @@
             <div class="row">
                 <div class="col-sm-12">
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Dashboard </a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard </a></li>
                         <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                        <li class="breadcrumb-item active">Admin Dashboard</li>
+                        <li class="breadcrumb-item active">Página Inicial</li>
                     </ul>
                 </div>
             </div>
@@ -190,8 +190,8 @@
             <div class="col-12 col-xl-12">
                 <div class="card">
                     <div class="card-header pb-0">
-                        <h4 class="card-title d-inline-block">Recent Patients </h4> <a href="patients.html"
-                            class="float-end patient-views">Show all</a>
+                        <h4 class="card-title d-inline-block">Acessos recentes </h4> <a href="#"
+                            class="float-end patient-views">Mostrar todos</a>
                     </div>
                     <div class="card-block table-dash">
                         <div class="table-responsive">
@@ -203,144 +203,33 @@
                                                 <input class="form-check-input" type="checkbox" value="something">
                                             </div>
                                         </th>
-                                        <th>No</th>
-                                        <th>Patient name</th>
-                                        <th>Age</th>
-                                        <th>Date of Birth</th>
-                                        <th>Diagnosis</th>
-                                        <th>Triage</th>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Online</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check check-tables">
-                                                <input class="form-check-input" type="checkbox" value="something">
-                                            </div>
-                                        </td>
-                                        <td>R00001</td>
-                                        <td class="table-image">
-                                            <img width="28" height="28" class="rounded-circle"
-                                                src="{{ assetr('assets/img/profiles/avatar-02.jpg')}}" alt>
-                                            <h2>Andrea Lalema</h2>
-                                        </td>
-                                        <td>21</td>
-                                        <td>07 January 2002</td>
-                                        <td>Heart attack</td>
-                                        <td><button class="custom-badge status-green ">Non Urgent</button></td>
-                                        <td class="text-end">
-                                            <div class="dropdown dropdown-action">
-                                                <a href="#" class="action-icon dropdown-toggle"
-                                                    data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                        class="fa fa-ellipsis-v"></i></a>
-                                                <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="edit-patient.html"><i
-                                                            class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                        Edit</a>
-                                                    <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                        data-bs-target="#delete_appointment"><i
-                                                            class="fa fa-trash-alt m-r-5"></i> Delete</a>
+                                    @foreach (\App\Models\User::orderBy('online', 'desc')->take(5)->get() as $usr)
+                                        <tr>
+                                            <td>
+                                                <div class="form-check check-tables">
+                                                    <input class="form-check-input" type="checkbox" value="something">
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check check-tables">
-                                                <input class="form-check-input" type="checkbox" value="something">
-                                            </div>
-                                        </td>
-                                        <td>R00002</td>
-                                        <td class="table-image">
-                                            <img width="28" height="28" class="rounded-circle"
-                                                src="{{ assetr('assets/img/profiles/avatar-03.jpg')}}" alt>
-                                            <h2>Mark Hay Smith</h2>
-                                        </td>
-                                        <td>23</td>
-                                        <td>06 January 2002</td>
-                                        <td>Jaundice</td>
-                                        <td><button class="custom-badge status-pink">Emergency</button></td>
-                                        <td class="text-end">
-                                            <div class="dropdown dropdown-action">
-                                                <a href="#" class="action-icon dropdown-toggle"
-                                                    data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                        class="fa fa-ellipsis-v"></i></a>
-                                                <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="edit-patient.html"><i
-                                                            class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                        Edit</a>
-                                                    <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                        data-bs-target="#delete_appointment"><i
-                                                            class="fa fa-trash-alt m-r-5"></i> Delete</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check check-tables">
-                                                <input class="form-check-input" type="checkbox" value="something">
-                                            </div>
-                                        </td>
-                                        <td>R00003</td>
-                                        <td class="table-image">
-                                            <img width="28" height="28" class="rounded-circle"
-                                                src="{{ assetr('assets/img/profiles/avatar-04.jpg')}}" alt>
-                                            <h2>Cristina Groves</h2>
-                                        </td>
-                                        <td>25</td>
-                                        <td>10 January 2002</td>
-                                        <td>Malaria</td>
-                                        <td><button class="custom-badge status-gray">Out Patient</button></td>
-                                        <td class="text-end">
-                                            <div class="dropdown dropdown-action">
-                                                <a href="#" class="action-icon dropdown-toggle"
-                                                    data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                        class="fa fa-ellipsis-v"></i></a>
-                                                <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="edit-patient.html"><i
-                                                            class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                        Edit</a>
-                                                    <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                        data-bs-target="#delete_appointment"><i
-                                                            class="fa fa-trash-alt m-r-5"></i> Delete</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check check-tables">
-                                                <input class="form-check-input" type="checkbox" value="something">
-                                            </div>
-                                        </td>
-                                        <td>R00004</td>
-                                        <td class="table-image">
-                                            <img width="28" height="28" class="rounded-circle"
-                                                src="{{ assetr('assets/img/profiles/avatar-05.jpg')}}" alt>
-                                            <h2>Galaviz Lalema</h2>
-                                        </td>
-                                        <td>21</td>
-                                        <td>09 January 2002</td>
-                                        <td>Typhoid</td>
-                                        <td><button class="custom-badge status-orange">Non Urgent</button></td>
-                                        <td class="text-end">
-                                            <div class="dropdown dropdown-action">
-                                                <a href="#" class="action-icon dropdown-toggle"
-                                                    data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                        class="fa fa-ellipsis-v"></i></a>
-                                                <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="edit-patient.html"><i
-                                                            class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                        Edit</a>
-                                                    <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                        data-bs-target="#delete_appointment"><i
-                                                            class="fa fa-trash-alt m-r-5"></i> Delete</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                            <td class="table-image">
+                                                {{-- <img width="28" height="28" class="rounded-circle"
+                                                    src="{{ assetr('assets/img/profiles/avatar-02.jpg')}}" alt> --}}
+                                                <h2>{{ $usr->nome }}</h2>
+                                            </td>
+                                            <td>
+                                                <a href="mailto:{{ $usr->email }}">
+                                                    {{ $usr->email }}
+                                                </a>
+                                            </td>
+                                            <td>{{ statusOnline($usr->online) }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

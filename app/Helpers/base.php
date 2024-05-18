@@ -7,6 +7,32 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+function formatDataAtv($data) {
+    // Converte a string de data para um objeto DateTime
+    $data_obj = new DateTime($data);
+
+    // Array com os nomes dos meses em português
+    $meses = array(
+        1 => 'Jan', 
+        2 => 'Fev', 
+        3 => 'Mar', 
+        4 => 'Abr', 
+        5 => 'Mai', 
+        6 => 'Jun', 
+        7 => 'Jul', 
+        8 => 'Ago', 
+        9 => 'Set', 
+        10 => 'Out', 
+        11 => 'Nov', 
+        12 => 'Dez'
+    );
+
+    // Formata a data no formato desejado
+    $data_formatada = $data_obj->format('d') . ' ' . $meses[$data_obj->format('n')] . ' ' . $data_obj->format('Y');
+    
+    return $data_formatada;
+}
+
 function assetr($file)
 {
     $default_url = env('APP_URL_ASSET', 'default') . $file;
@@ -31,22 +57,48 @@ function statusOnline($lastSeen)
     if (empty($lastSeen)) {
         return "Indefinido";
     }
+    
     $lastSeenTime = Carbon::parse($lastSeen);
     $currentTime = Carbon::now();
     $difference = $currentTime->diffInSeconds($lastSeenTime);
-
+    
     if ($difference < 30) {
         return "Online";
     } else {
         $diffInMinutes = $currentTime->diffInMinutes($lastSeenTime);
-
+    
         if ($diffInMinutes < 60) {
             return "há $diffInMinutes min";
         } else {
             $diffInHours = $currentTime->diffInHours($lastSeenTime);
-            return "há $diffInHours h";
+    
+            if ($diffInHours < 24) {
+                return "há $diffInHours h";
+            } else {
+                $diffInDays = $currentTime->diffInDays($lastSeenTime);
+    
+                if ($diffInDays < 7) {
+                    return "há $diffInDays dia(s)";
+                } else {
+                    $diffInWeeks = $currentTime->diffInWeeks($lastSeenTime);
+    
+                    if ($diffInWeeks < 4) {
+                        return "há $diffInWeeks semana(s)";
+                    } else {
+                        $diffInMonths = $currentTime->diffInMonths($lastSeenTime);
+    
+                        if ($diffInMonths < 12) {
+                            return "há $diffInMonths mês(es)";
+                        } else {
+                            $diffInYears = $currentTime->diffInYears($lastSeenTime);
+                            return "há $diffInYears ano(s)";
+                        }
+                    }
+                }
+            }
         }
     }
+    
 }
 
 function enviarDadosUsuario($nome, $idade)

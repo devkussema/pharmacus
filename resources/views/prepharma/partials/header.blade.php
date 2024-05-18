@@ -8,7 +8,7 @@
     <a id="mobile_btn" class="mobile_btn float-start" href="#sidebar"><img src="{{ assetr('assets/img/icons/bar-icon.svg')}}" alt></a>
     <div class="top-nav-search mob-view">
         <form>
-            <input type="text" class="form-control" placeholder="Search here">
+            <input type="text" class="form-control" placeholder="Procurar aqui...">
             <a class="btn"><img src="{{ assetr('assets/img/icons/search-normal.svg')}}" alt></a>
         </form>
     </div>

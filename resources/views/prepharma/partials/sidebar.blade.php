@@ -19,6 +19,18 @@
                         <span> Áreas Hospitalares </span> 
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('atividade.show') }}" class="{{ Route::currentRouteName() == 'atividade.show' ? 'active' : '' }}">
+                        <i class="fa fa-edit"></i>
+                        <span> Atividades </span> 
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('grupos_farmacologicos.index') }}" class="{{ Route::currentRouteName() == 'grupos_farmacologicos.index' ? 'active' : '' }}">
+                        <i class="fa fa-table"></i>
+                        <span> G. Fármacos </span> 
+                    </a>
+                </li>
             </ul>
             <div class="logout-btn">
                 <a href="login.html">
