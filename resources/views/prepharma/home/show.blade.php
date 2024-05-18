@@ -32,60 +32,30 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="row">
-            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                <div class="dash-widget">
-                    <div class="dash-boxs comman-flex-center">
-                        <img src="{{ assetr('assets/img/icons/calendar.svg')}}" alt>
+        <div class="row">
+            @php
+                use App\Models\RelatorioEstoqueAlerta as REA;
+                $id_niv = [];
+            @endphp
+            @foreach (REA::all() as $n)
+                @if (!in_array($n->nivel_alerta->id, $id_niv))
+                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                        <div class="dash-widget">
+                            <div class="dash-boxs comman-flex-center">
+                                <img src="{{ assetr('assets/img/white__logo2.png') }}" width="24" height="24" alt>
+                            </div>
+                            <div class="dash-content dash-count">
+                                <h4>{{ $n->nivel_alerta->nome }}</h4>
+                                <h2><span class="counter-up">{{ $n->nivel_alerta->relatorios->count() }}</span></h2>
+                                {{-- <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>40%</span> vs
+                                    last month</p> --}}
+                            </div>
+                        </div>
                     </div>
-                    <div class="dash-content dash-count">
-                        <h4>Appointments</h4>
-                        <h2><span class="counter-up">250</span></h2>
-                        <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>40%</span> vs
-                            last month</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                <div class="dash-widget">
-                    <div class="dash-boxs comman-flex-center">
-                        <img src="{{ assetr('assets/img/icons/profile-add.svg')}}" alt>
-                    </div>
-                    <div class="dash-content dash-count">
-                        <h4>New Patients</h4>
-                        <h2><span class="counter-up">140</span></h2>
-                        <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>20%</span> vs
-                            last month</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                <div class="dash-widget">
-                    <div class="dash-boxs comman-flex-center">
-                        <img src="{{ assetr('assets/img/icons/scissor.svg')}}" alt>
-                    </div>
-                    <div class="dash-content dash-count">
-                        <h4>Operations</h4>
-                        <h2><span class="counter-up">56</span></h2>
-                        <p><span class="negative-view"><i class="feather-arrow-down-right me-1"></i>15%</span>
-                            vs last month</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                <div class="dash-widget">
-                    <div class="dash-boxs comman-flex-center">
-                        <img src="{{ assetr('assets/img/icons/empty-wallet.svg')}}" alt>
-                    </div>
-                    <div class="dash-content dash-count">
-                        <h4>Earnings</h4>
-                        <h2>$<span class="counter-up"> 20,250</span></h2>
-                        <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>30%</span> vs
-                            last month</p>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
+                    @php $id_niv[] = $n->nivel_alerta->id; @endphp
+                @endif
+            @endforeach
+        </div>
         {{-- <div class="row">
             <div class="col-12 col-md-12 col-lg-6 col-xl-9">
                 <div class="card">
@@ -139,7 +109,11 @@
                                     <img src="{{ assetr('assets/img/icons/dep-icon-01.svg')}}" alt>
                                 </div>
                                 <div class="departments-list">
-                                    <h4>{{ $fah->area_hospitalar->nome }}</h4>
+                                    <h4>
+                                        <a href="{{ route('estoque.getEstoque', ['id' => $fah->area_hospitalar->id]) }}">
+                                            {{ $fah->area_hospitalar->nome }}
+                                        </a>
+                                    </h4>
                                     {{-- <p>35%</p> --}}
                                 </div>
                             </div>
@@ -163,9 +137,9 @@
                                                 <input class="form-check-input" type="checkbox" value="something">
                                             </div>
                                         </th>
-                                        <th>No</th>
+                                        <th>Usuário</th>
                                         <th>Texto</th>
-                                        <th>Doctor</th>
+                                        <th>Dosagem</th>
                                         <th>Time</th>
                                         <th>Disease</th>
                                         <th></th>
@@ -179,13 +153,13 @@
                                                     <input class="form-check-input" type="checkbox" value="something">
                                                 </div>
                                             </td>
-                                            <td>R00001</td>
-                                            <td>{{ $at->texto }}</td>
                                             <td class="table-image appoint-doctor">
-                                                <img width="28" height="28" class="rounded-circle"
-                                                    src="{{ assetr('assets/img/profiles/avatar-02.jpg')}}" alt>
+                                                {{-- <img width="28" height="28" class="rounded-circle"
+                                                    src="{{ assetr('assets/img/profiles/avatar-02.jpg')}}" alt> --}}
                                                 <h2>{{ $at->user->nome }}</h2>
                                             </td>
+                                            <td>{{ $at->texto }}</td>
+                                            <td>{{ $at }}</td>
                                             <td class="appoint-time"><span>12.05.2022 at </span>7.00 PM</td>
                                             <td><button class="custom-badge status-green ">Fracture</button></td>
                                             <td class="text-end">
