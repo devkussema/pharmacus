@@ -27,9 +27,9 @@
                                     @foreach (\App\Models\Atividade::take(12)->orderByDesc('created_at')->get() as $at)
                                         <li>
                                             <div class="activity-user">
-                                                <a href="profile.html" title="{{ $at->user->nome }}" data-bs-toggle="tooltip"
+                                                <a href="javascript:void(0)" title="{{ $at->user->nome }}" data-bs-toggle="tooltip"
                                                     class="avatar">
-                                                    <img alt="{{ $at->user->nome }}" src="{{ assetr('assets/img/user-02.jpg')}}"
+                                                    <img alt="{{ $at->user->nome }}" src="{{ assetr('assets/img/white__logo2.png') }}"
                                                         class="img-fluid rounded-circle">
                                                 </a>
                                             </div>
