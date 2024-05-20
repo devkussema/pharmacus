@@ -14,8 +14,9 @@
     </div>
     <ul class="nav user-menu float-end">
         <li class="nav-item dropdown d-none d-md-block">
-            <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown"><img
-                    src="{{ assetr('assets/img/icons/note-icon-02.svg')}}" alt><span class="pulse"></span> </a>
+            <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                <img src="{{ assetr('assets/img/icons/note-icon-02.svg')}}" alt><span class="pulse"></span>
+            </a>
             <div class="dropdown-menu notifications">
                 <div class="topnav-dropdown-header">
                     <span>Notifications</span>

@@ -16,28 +16,28 @@
                         <span class="menu-side">
                             <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
                         </span>
-                        <span> Áreas Hospitalares </span> 
+                        <span> Áreas Hospitalares </span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('atividade.show') }}" class="{{ Route::currentRouteName() == 'atividade.show' ? 'active' : '' }}">
                         <i class="fa fa-edit"></i>
-                        <span> Atividades </span> 
+                        <span> Atividades </span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('grupos_farmacologicos.index') }}" class="{{ Route::currentRouteName() == 'grupos_farmacologicos.index' ? 'active' : '' }}">
                         <i class="fa fa-table"></i>
-                        <span> G. Fármacos </span> 
+                        <span> G. Fármacos </span>
                     </a>
                 </li>
             </ul>
             <div class="logout-btn">
-                <a href="login.html">
+                <a href="{{ route('logout') }}">
                     <span class="menu-side">
                         <img src="{{ assetr('assets/img/icons/logout.svg')}}" alt>
                     </span>
-                    <span>Logout</span>
+                    <span>Sair</span>
                 </a>
             </div>
         </div>

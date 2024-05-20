@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('titulo', "Estoque " .$ah->nome)
+@section('titulo', 'Estoque ' . $ah->nome)
 
 @section('content')
     <div class="content">
@@ -37,8 +37,8 @@
                                                 </form>
                                             </div>
                                             <div class="add-group">
-                                                <a data-bs-toggle="modal" data-bs-target="#AddAH" href="javascript:void(0)"
-                                                    class="btn btn-primary add-pluss ms-2">
+                                                <a data-bs-toggle="modal" data-bs-target="#modalAddProduto"
+                                                    href="javascript:void(0)" class="btn btn-primary add-pluss ms-2">
                                                     <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
                                                 </a>
                                                 <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2"><img
@@ -46,15 +46,18 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @include('estoque.modalAddProduto')
                                 </div>
                                 <div class="col-auto text-end float-end ms-auto download-grp">
+                                    <a href="javascript: void(0);" id="alert"
+                                    class="btn btn-primary waves-effect waves-light">Click me</a>
                                     <a href="javascript:;" class=" me-2"><img
                                             src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt></a>
                                     <a href="javascript:;" class=" me-2"><img
                                             src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt></a>
                                     <a href="javascript:;" class=" me-2"><img
                                             src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt></a>
-                                    <a href="javascript:;"><img src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}"
+                                    <a href="javascript:;" id="alert"><img src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}"
                                             alt></a>
                                 </div>
                             </div>
@@ -85,8 +88,8 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($estoque->sortBy(function ($item) {
-                                        return $item->produto->designacao;
-                                    }) as $est)
+            return $item->produto->designacao;
+        }) as $est)
                                         @if ($est->produto->confirmado != 0)
                                             <tr>
                                                 <td>
@@ -162,7 +165,9 @@
                             @csrf
                             @php
                                 $area_h_id = @$area_id;
-                                $farmacia_id = (@auth()->user()->isFarmacia->farmacia_id ? auth()->user()->isFarmacia->farmacia_id : @auth()->user()->area_hospitalar->area_hospitalar->farmacia_id);
+                                $farmacia_id = @auth()->user()->isFarmacia->farmacia_id
+                                    ? auth()->user()->isFarmacia->farmacia_id
+                                    : @auth()->user()->area_hospitalar->area_hospitalar->farmacia_id;
                             @endphp
                             <div class="form-group">
                                 <label for="endereco">Área *</label>
@@ -170,7 +175,8 @@
                                 <select name="area_hospitalar_id" id="" class="form-control">
                                     @foreach (\App\Models\FarmaciaAreaHospitalar::where('farmacia_id', $farmacia_id)->get() as $ahw)
                                         @if ($ahw->area_hospitalar->id != $area_h_id)
-                                            <option value="{{ $ahw->area_hospitalar->id }}">{{ $ahw->area_hospitalar->nome }}</option>
+                                            <option value="{{ $ahw->area_hospitalar->id }}">
+                                                {{ $ahw->area_hospitalar->nome }}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -178,14 +184,16 @@
 
                             <div class="form-group">
                                 <label for="qtd_">Total de Caixas</label>
-                                <input type="text" name="descritivo" class="form-control" id="descritivo_" min="1">
+                                <input type="text" name="descritivo" class="form-control" id="descritivo_"
+                                    min="1">
                             </div>
 
                             <div class="form-group">
                                 <input type="hidden" name="produto_id" id="id_produto">
                                 <label for="qtd_">Quantidade a transferir</label>
                                 <input type="number" name="qtd" class="form-control" id="qtd_"
-                                    placeholder="Quantidade a transferir" min="1" max="{{ @getCaixa($est->produto->descritivo) }}">
+                                    placeholder="Quantidade a transferir" min="1"
+                                    max="{{ @getCaixa($est->produto->descritivo) }}">
                             </div>
                             <button type="submit" class="btn btn-primary">Enviar</button>
                         </form>
@@ -201,5 +209,74 @@
             $('#DarBaixa #formBaixaEstoque #descritivo_').prop("disabled", true);
             $('#DarBaixa').modal('show');
         }
+
+        document.querySelector('form#formProdutoEstoque').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita o comportamento padrão do formulário
+            //showLoader();
+
+            // Obtém os dados do formulário
+            var formData = new FormData(this);
+
+            // Envia a requisição AJAX
+            fetch(this.getAttribute('action'), {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // hideLoader();
+                    if (data.message) {
+                        alertify.alert("Produto inserido com sucesso!", data.message, function() {
+                            alertify.success("Ok");
+                        });
+                        // alert(data.message);
+
+                        // Limpa o formulário
+                        document.querySelector('#formProdutoEstoque').reset();
+
+                        // Oculta o modal
+                        document.querySelector('#modalAddProdutoEstoque').classList.remove('show');
+                        document.querySelector('#modalAddProduto').style.display = 'none';
+                    } else {
+                        // Trata caso a resposta não contenha a mensagem esperada
+                        alertify.alert("Erro", "Resposta inesperada do servidor!", function() {
+                            alertify.success("Ok");
+                        });
+                        // alert("Resposta inesperada do servidor");
+                    }
+                })
+                .catch(error => {
+                    // hideLoader();
+                    // Trata os erros de validação retornados pelo servidor
+                    if (error.response && error.response.json) {
+                        error.response.json().then(data => {
+                            var errors = data.errors;
+                            var errorMessage = '';
+
+                            if (errors) {
+                                // Percorre os erros e os concatena em uma única string
+                                for (var key in errors) {
+                                    if (errors.hasOwnProperty(key)) {
+                                        errorMessage += errors[key][0] + '<br>';
+                                    }
+                                }
+                            } else if (data.error) {
+                                errorMessage = data.error;
+                            } else {
+                                errorMessage = data.message;
+                            }
+                            alertify.alert("Erro", errorMessage, function() {
+                                alertify.success("Ok");
+                            });
+                            // alert(errorMessage);
+                        });
+                    } else {
+                        alertify.alert("Erro", "Ocorreu um erro inesperado", function() {
+                            alertify.success("Ok");
+                        });
+                        // alert('Ocorreu um erro inesperado');
+                    }
+                });
+        });
     </script>
 @endsection

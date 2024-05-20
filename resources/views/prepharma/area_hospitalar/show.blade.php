@@ -30,14 +30,16 @@
                                         <div class="doctor-search-blk">
                                             <div class="top-nav-search table-search-blk">
                                                 <form>
-                                                    <input type="text" class="form-control" placeholder="Procure aqui">
-                                                    <a class="btn"><img
-                                                            src="{{ assetr('assets/img/icons/search-normal.svg') }}"
-                                                            alt></a>
+                                                    <input type="text" id="area_dt" class="form-control"
+                                                        placeholder="Procure aqui">
+                                                    <a class="btn">
+                                                        <img src="{{ assetr('assets/img/icons/search-normal.svg') }}" alt>
+                                                    </a>
                                                 </form>
                                             </div>
                                             <div class="add-group">
-                                                <a data-bs-toggle="modal" data-bs-target="#AddAH" href="javascript:void(0)" class="btn btn-primary add-pluss ms-2">
+                                                <a data-bs-toggle="modal" data-bs-target="#AddAH" href="javascript:void(0)"
+                                                    class="btn btn-primary add-pluss ms-2">
                                                     <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
                                                 </a>
                                                 <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2"><img
@@ -60,7 +62,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table border-0 custom-table comman-table datatable mb-0">
+                            <table id="dt_areas_h" class="table border-0 custom-table comman-table datatable mb-0">
                                 <thead>
                                     <tr>
                                         <th>
@@ -83,7 +85,8 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="{{ route('estoque.getEstoque', ['id' => $a->area_hospitalar->id]) }}">
+                                                <a
+                                                    href="{{ route('estoque.getEstoque', ['id' => $a->area_hospitalar->id]) }}">
                                                     {{ $a->area_hospitalar->nome }}
                                                 </a>
                                             </td>
@@ -136,23 +139,28 @@
                                     if (@auth()->user()->isFarmacia) {
                                         // Se o usuário autenticado estiver associado a uma farmácia,
                                         // obtemos os IDs das áreas hospitalares dessa farmácia
-                                        $areas_hospitalares_ids = auth()->user()->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                                        $areas_hospitalares_ids = auth()
+                                            ->user()
+                                            ->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
                                     } elseif (isset(auth()->user()->farmacia)) {
                                         // Se o usuário autenticado não estiver associado a uma farmácia,
                                         // obtemos o ID da farmácia diretamente do usuário
-                                        $areas_hospitalares_ids = auth()->user()->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                                        $areas_hospitalares_ids = auth()
+                                            ->user()
+                                            ->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
                                     }
                                     // Convertendo a coleção em um array se necessário
                                     $areas_hospitalares_ids_array = $areas_hospitalares_ids->all();
                                 @endphp
                                 <select name="area_id" style="width: 100%" class="js-example-basic-single select2">
-                                    @foreach(\App\Models\AreaHospitalar::all() as $ahs)
-                                        @if(!in_array($ahs->id, $areas_hospitalares_ids_array))
+                                    @foreach (\App\Models\AreaHospitalar::all() as $ahs)
+                                        @if (!in_array($ahs->id, $areas_hospitalares_ids_array))
                                             <option value="{{ $ahs->id }}">{{ $ahs->nome }}</option>
                                         @endif
                                     @endforeach
                                 </select>
-                                <input type="hidden" name="farmacia_id" value="{{ auth()->user()->isFarmacia->farmacia->id }}">
+                                <input type="hidden" name="farmacia_id"
+                                    value="{{ auth()->user()->isFarmacia->farmacia->id }}">
                             </div>
                             {{-- <div class="pb-3">
                                 <label class="mb-2">Descrição (opcional)</label>
@@ -181,7 +189,8 @@
                             @csrf
                             <div class="pb-3">
                                 <label class="mb-2" for="email_">Email *</label>
-                                <input type="email" id="email_" class="form-control" placeholder="" name="email">
+                                <input type="email" id="email_" class="form-control" placeholder=""
+                                    name="email">
                                 <input type="hidden" id="area_hospitalar_id" class="form-control" placeholder=""
                                     name="area_id">
                                 <input type="hidden" value="{{ auth()->user()->isFarmacia->farmacia->id }}"
@@ -245,6 +254,21 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var table = document.getElementById('dt_areas_h').DataTable({
+                searching: true,
+                language: {
+                    search: ''
+                }
+            });
+
+            // Adicione o evento de digitação no input
+            var areaDtInput = document.getElementById('area_dt');
+            areaDtInput.addEventListener('keyup', function() {
+                table.search(this.value).draw();
+            });
+        });
+
         function modalAddCargoAH(area_id) {
             $('#AddCargoAH h4#tituloModal').val(area_id);
             $('#AddCargoAH #area_hospitalar_id').val(area_id);
