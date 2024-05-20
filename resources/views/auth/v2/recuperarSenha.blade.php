@@ -10,7 +10,7 @@
                     <p class="text-2 text-light">Voltar para <a class="fw-500" href="{{ route('login') }}">Login</a></p>
                     <h3 class="text-white mb-4">Esqueceu sua senha?</h3>
                     <p class="text-white-50 mb-4">Digite o endereço de e-mail ou número de celular associado à sua conta.</p>
-                    @include('partials.session')
+                    @include('auth.session')
                     <form class="form-dark" method="POST" action="{{ route('alterar_senha') }}">
                         @csrf
                         <div class="mb-3">

@@ -25,8 +25,8 @@
 
     <meta name="theme-color" content="#6777ef" />
 
-    <link rel="apple-touch-icon" href="{{ assetr('assets/images/white__logo2.png') }}">
-    <link rel="shortcut icon" href="{{ assetr('assets/images/white__logo2.png') }}" />
+    <link rel="apple-touch-icon" href="https://static.pharmatina.com/pharmatina/default/assets/images/white__logo2.png">
+    <link rel="shortcut icon" href="https://static.pharmatina.com/pharmatina/default/assets/images/white__logo2.png">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
     <!-- Web Fonts ========================= -->
@@ -67,7 +67,7 @@
                     <div class="hero-wrap d-flex align-items-center h-100">
                         <div class="hero-mask opacity-4 bg-{{ $theme ?? 'light' }}"></div>
                         <div class="hero-bg hero-bg-scroll"
-                            style="background-image:url({{ asset('assets/images/auth_bg.png') }});">
+                            style="background-image:url({{ asset('assets/images/auth_bg.png')}});">
                         </div>
                         <div class="hero-content mx-auto w-100 h-100">
                             <div class="container d-flex flex-column h-100">
@@ -78,7 +78,7 @@
                                                 style="text-decoration: none; color: {{ $theme == 'dark' ? '#fff' : '#343a40' }}"
                                                 title="{{ getConfig('nome_site') ?? env('APP_NAME') }}">
                                                 <img width="30" height="30"
-                                                    src="{{ assetr('assets/images/white__logo2.png') }}"
+                                                    src="{{ asset('assets/images/white__logo2.png')}}"
                                                     alt="{{ getConfig('nome_site') ?? env('APP_NAME') }}">
                                                 <h4 style="margin-left: 10px">Pharmatina</h4>
                                             </a>
@@ -126,9 +126,9 @@
 
     <!-- Script -->
     <!-- Backend Bundle JavaScript -->
-    <script src="{{ assetr('assets/js/backend-bundle.min.js') }}"></script>
+    <script src="https://static.pharmatina.com/pharmatina/default/assets/js/backend-bundle.min.js"></script>
 
-    <script src="{{ assetr('assets/js/form.js') }}" async></script>
+    <script src="https://static.pharmatina.com/pharmatina/default/assets/js/form.js" async></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
     <script src="{{ asset('/sw2.js') }}"></script>

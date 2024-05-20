@@ -34,7 +34,7 @@
                     </div>
                     <form id="login-form" method="POST" action="{{ route('login') }}" class="form-{{ isset($theme) == 'dark' ? 'light' : 'dark' }}">
                         @csrf
-                        @include('partials.session')
+                        @include('auth.session')
                         <div class="mb-3">
                             <label class="form-label text-{{ isset($theme) ? $theme : 'white' }}" for="emailAddress">Email</label>
                             <input name="email" type="email" class="form-control" id="emailAddress" required
