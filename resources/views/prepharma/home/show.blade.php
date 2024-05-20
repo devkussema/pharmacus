@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="morning-user">
-                        <h2>Olá <span>{{ printNome(Auth::user()->nome) }}</span>, {{ saudacaoDoDia() }}</h2>
+                        <h2>Olá <span>Dr(a){{ printNome(Auth::user()->nome) }}</span>, {{ saudacaoDoDia() }}</h2>
                         <p>Tenha um bom dia no trabalho</p>
                     </div>
                 </div>

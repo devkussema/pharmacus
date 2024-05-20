@@ -108,7 +108,7 @@
                     src="{{ assetr('assets/img/icons/note-icon-01.svg')}}" alt><span class="pulse"></span> </a>
         </li>
         <li class="nav-item dropdown has-arrow user-profile-list">
-            <a href="#" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
+            <a href="javascript:void(0)" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
                 <div class="user-names">
                     <h5>{{ Auth::user()->nome }}</h5>
                     <span>Admin</span>
@@ -118,10 +118,14 @@
                 </span>
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="profile.html">My Profile</a>
-                <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
-                <a class="dropdown-item" href="settings.html">Settings</a>
-                <a class="dropdown-item" href="login.html">Logout</a>
+                <a class="dropdown-item" href="{{ route('u.perfil', ['username' => Auth::user()->username]) }}">Meu Perfil</a>
+                <a class="dropdown-item" href="edit-profile.html">Editar Perfil</a>
+                <a class="dropdown-item" href="settings.html">Definições</a>
+                <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <label class="dropdown-item" for="logout-btn" style="cursor: pointer">Sair</label>
+                    <input type="submit" name="logout" id="logout-btn" hidden>
+                </form>
             </div>
         </li>
         <li class="nav-item ">
@@ -134,10 +138,10 @@
         <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
                 class="fa-solid fa-ellipsis-vertical"></i></a>
         <div class="dropdown-menu dropdown-menu-end">
-            <a class="dropdown-item" href="profile.html">My Profile</a>
-            <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
-            <a class="dropdown-item" href="settings.html">Settings</a>
-            <a class="dropdown-item" href="login.html">Logout</a>
+            <a class="dropdown-item" href="{{ route('u.perfil', ['username' => Auth::user()->username]) }}">Meu Perfil</a>
+            <a class="dropdown-item" href="edit-profile.html">Editar Perfil</a>
+            <a class="dropdown-item" href="settings.html">Definições</a>
+            <a class="dropdown-item" href="{{ route('logout') }}">Sair</a>
         </div>
     </div>
 </div>
