@@ -49,16 +49,16 @@
                                     @include('estoque.modalAddProduto')
                                 </div>
                                 <div class="col-auto text-end float-end ms-auto download-grp">
-                                    <a href="javascript: void(0);" id="alert"
-                                    class="btn btn-primary waves-effect waves-light">Click me</a>
-                                    <a href="javascript:;" class=" me-2"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt></a>
+                                    <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}" id="imprimir-pagina"
+                                        target="_blank" class=" me-2">
+                                        <img src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt>
+                                    </a>
                                     <a href="javascript:;" class=" me-2"><img
                                             src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt></a>
                                     <a href="javascript:;" class=" me-2"><img
                                             src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt></a>
-                                    <a href="javascript:;" id="alert"><img src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}"
-                                            alt></a>
+                                    <a href="javascript:;" id="alert"><img
+                                            src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}" alt></a>
                                 </div>
                             </div>
                         </div>
@@ -110,23 +110,6 @@
                                                 <td>{{ formatarData($est->produto->created_at) }}</td>
                                                 <td>{{ $est->produto->data_expiracao }}</td>
                                                 <td>
-                                                    {{-- <div class="d-flex align-items-center list-action">
-                                                        @if (vPerm('produtos', ['dar_baixa']) or Auth::user()->isFarmacia)
-                                                            <a class="badge bg-success mr-2" title="Dar baixa" href="javascript:void(0)"
-                                                                onclick="modalDarBaixa({{ $est->produto->id }}, '{{ getCaixa($est->produto->descritivo) }}')">
-                                                                <i class="ri-install-line mr-0"></i>
-                                                            </a>
-                                                    @endif
-                                                        <a class="badge bg-info mr-2" data-toggle="tooltip" data-placement="top"
-                                                            title="Editar" href="javascript:void(0)" onclick="modalEditarProdutoEstoque({{ $est->produto->id }})">
-                                                            <i class="ri-pencil-line mr-0"></i>
-                                                        </a>
-                                                        <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top"
-                                                            title="Eliminar" href="javascript:void(0)" onclick="">
-                                                            <i class="ri-delete-bin-line mr-0"></i>
-                                                        </a>
-                                                    </div> --}}
-
                                                     <div class="dropdown dropdown-action">
                                                         <a href="#" class="action-icon dropdown-toggle"
                                                             data-bs-toggle="dropdown" aria-expanded="false"><i
@@ -203,6 +186,19 @@
         </div>
     </div>
     <script>
+        document.getElementById('imprimir-pagina').addEventListener('click', function(e) {
+            e.preventDefault(); // Evita que o link seja seguido imediatamente
+
+            // Redireciona para a página específica em uma nova aba
+            var novaAba = window.open(this.href, '_blank');
+
+            // Espera até que a página seja completamente carregada na nova aba
+            novaAba.onload = function() {
+                // Imprime a página
+                novaAba.print();
+            };
+        });
+
         function modalDarBaixa(id_produto, descritivo) { //formBaixaEstoque
             $('#DarBaixa #formBaixaEstoque #id_produto').val(id_produto);
             $('#DarBaixa #formBaixaEstoque #descritivo_').val(descritivo);

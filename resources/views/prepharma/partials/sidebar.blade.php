@@ -11,26 +11,48 @@
                         <span> Dashboard </span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('a_h.index') }}" class="{{ Route::currentRouteName() == 'a_h.index' ? 'active' : '' }}">
-                        <span class="menu-side">
-                            <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
-                        </span>
-                        <span> Áreas Hospitalares </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('atividade.show') }}" class="{{ Route::currentRouteName() == 'atividade.show' ? 'active' : '' }}">
-                        <i class="fa fa-edit"></i>
-                        <span> Atividades </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('grupos_farmacologicos.index') }}" class="{{ Route::currentRouteName() == 'grupos_farmacologicos.index' ? 'active' : '' }}">
-                        <i class="fa fa-table"></i>
-                        <span> G. Fármacos </span>
-                    </a>
-                </li>
+                @if (isAdministrator())
+                    <li>
+                        <a href="{{ route('farmacia') }}" class="{{ Route::currentRouteName() == 'farmacia' ? 'active' : '' }}">
+                            <span class="menu-side">
+                                <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
+                            </span>
+                            <span> Farmácias </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('usuario') }}" class="{{ Route::currentRouteName() == 'usuario' ? 'active' : '' }}">
+                            <span class="menu-side">
+                                <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
+                            </span>
+                            <span> Farmácias </span>
+                        </a>
+                    </li>
+                @endif
+                @if (@Auth::user()->isFarmacia or vPerm('area_hospitalar', ['ver']))
+                    <li>
+                        <a href="{{ route('a_h.index') }}" class="{{ Route::currentRouteName() == 'a_h.index' ? 'active' : '' }}">
+                            <span class="menu-side">
+                                <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
+                            </span>
+                            <span> Áreas Hospitalares </span>
+                        </a>
+                    </li>
+                @endif
+                @if (Auth::user()->area_hospitalar || Auth::user()->isFarmacia)
+                    <li>
+                        <a href="{{ route('atividade.show') }}" class="{{ Route::currentRouteName() == 'atividade.show' ? 'active' : '' }}">
+                            <i class="fa fa-edit"></i>
+                            <span> Atividades </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('grupos_farmacologicos.index') }}" class="{{ Route::currentRouteName() == 'grupos_farmacologicos.index' ? 'active' : '' }}">
+                            <i class="fa fa-table"></i>
+                            <span> G. Fármacos </span>
+                        </a>
+                    </li>
+                @endif
             </ul>
             <div class="logout-btn">
                 <a href="{{ route('logout') }}">

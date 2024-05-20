@@ -17,7 +17,7 @@ use App\Prada\Controllers\{
     UsuarioController, FuncionarioController,
     CargoController, ConfirmarController, EstoqueController,
     NivelAlertaController, GrupoFarmacologicoController as GFC,
-    AtividadeController
+    AtividadeController, PrintController
 };
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
@@ -50,6 +50,11 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
 
     Route::prefix('getter')->group(function () {
         Route::get('/notificacao/{id_para}', [GetterController::class, 'getNoficacoes'])->name('getter.notificacao');
+    });
+    
+    Route::prefix('print')->group(function () {
+        Route::get('/estoque', [PrintController::class, 'index'])->name('print.estoque');
+        Route::get('/estoque/{estoque_id}', [PrintController::class, 'view'])->name('print.view');
     });
 
     Route::get('/', [HomeController::class, 'home'])->name('home');

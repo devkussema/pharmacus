@@ -56,10 +56,10 @@ class EstoqueController extends Controller
             return redirect()->back()->with('warning', 'Algo deu errado e não podemos acessar esta página.');
 
         $area_hospitalar_id = $area_id;
-        $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
+        $farmacia_id = (auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id);
 
         $estoque = Estoque::where('area_hospitalar_id', $area_hospitalar_id)
-            ->where('farmacia_id', auth()->user()->isFarmacia->farmacia->id)
+            ->where('farmacia_id', $farmacia_id)
             ->with(['produto' => function ($query) {
                 $query->orderBy('designacao', 'ASC');
             }])
