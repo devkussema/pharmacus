@@ -13,6 +13,7 @@
     @endif
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/bootstrap.min.css') }}">
 
@@ -110,6 +111,7 @@
 
             // Verifica se todos os campos estão preenchidos
             if (caixa && caixinha && unidade) {
+                document.getElementById('qtd_total_estoque').disabled = false;
                 // Concatena os valores com 'x' no meio
                 var concatenatedValue = caixa + 'x' + caixinha + 'x' + unidade;
 
@@ -124,6 +126,7 @@
 
                 // Adiciona o resultado da multiplicação no input 'qtd_total_estoque'
                 document.getElementById('qtd_total_estoque').value = product;
+                document.getElementById('qtd_total_estoque').disabled = true;
             } else {
                 alertify.alert('Ocorreu um erro', 'Por favor, preencha todos os campos.', function() {
                     alertify.success("Ok");

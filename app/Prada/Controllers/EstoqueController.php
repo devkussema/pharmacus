@@ -72,6 +72,19 @@ class EstoqueController extends Controller
         ]);
     }
 
+    public function apiEstoque(Request $request, $id) {
+        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+        $produtos = Estoque::where('area_hospitalar_id', $id)
+            ->where('farmacia_id', $farmacia_id)
+            ->with('produto.saldo')
+            ->with(['produto' => function ($query) {
+                $query->orderBy('designacao', 'ASC');
+            }])
+            ->get();
+
+        return response()->json(["data" => $produtos]);
+    }
+
     public function getListHome()
     {
         if (!auth()->user()->isFarmacia)
@@ -114,6 +127,7 @@ class EstoqueController extends Controller
             'num_lote' => 'required',
             'data_producao' => 'required|date|before:today', // Verifica se a data de produção é anterior à data atual
             'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(4), // Verifica se a data de expiração é pelo menos 10 meses após a data atual
+            'data_recepcao' => 'nullable|date|before:today',
             'num_documento' => 'required',
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
@@ -123,6 +137,7 @@ class EstoqueController extends Controller
             'designacao.required' => 'A designação é obrigatória.',
             'farmacia_id.required' => 'Algo correu mal, atualize a página e tente novamente.',
             'dosagem.required' => 'A dosagem é obrigatória.',
+            'descritivo.required' => 'Informe as quantidades das Caixas, Caixinhas e Unidades.',
             'forma.required' => 'A forma é obrigatória.',
             'tipo.required' => 'Selecione um tipo.',
             'origem_destino.required' => 'A origem ou destino é obrigatório.',
@@ -132,6 +147,11 @@ class EstoqueController extends Controller
             'data_producao.required' => 'A data de produção é obrigatória.',
             'data_producao.date' => 'A data de produção deve ser uma data válida.',
             'data_producao.before' => 'A data de produção deve ser anterior à data atual.',
+
+            'data_recepcao.required' => 'A data de recepção é obrigatória.',
+            'data_recepcao.date' => 'A data de recepção deve ser uma data válida.',
+            'data_recepcao.before' => 'A data de recepção deve ser anterior à data atual.',
+
             'data_expiracao.after_or_equal' => 'A data de caducidade deve ser pelo menos 4 meses após a data atual.',
             'num_documento.required' => 'O número do documento é obrigatório.',
             'num_documento.unique' => 'Já existe um item com este número de produto.',

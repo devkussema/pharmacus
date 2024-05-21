@@ -17,6 +17,7 @@ class ProdutoEstoque extends Model
         'num_lote',
         'data_expiracao',
         'data_producao',
+        'data_recepcao',
         'num_documento',
         'obs',
         'qtd_embalagem',

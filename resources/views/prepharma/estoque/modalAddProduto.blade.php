@@ -49,20 +49,20 @@
                             <div class="row">
                                 <div class="col pb-3">
                                     <label class="mb-2">Caixa *</label>
-                                    <input type="text" id="caixa" class="form-control">
+                                    <input type="number" id="caixa" class="form-control">
                                 </div>
                                 <div class="col pb-3">
                                     <label class="mb-2">Caixinha *</label>
-                                    <input type="text" id="caxinha" class="form-control">
+                                    <input type="number" id="caxinha" class="form-control">
                                 </div>
                                 <div class="col pb-3">
                                     <label class="mb-2">Unidade *</label>
-                                    <input type="text" id="unidade" class="form-control" onkeyup="setDescritivo()">
+                                    <input type="number" id="unidade" class="form-control" onblur="setDescritivo()">
                                 </div>
                                 <input type="text" id="descritivo" name="descritivo" hidden>
                                 <div class="col pb-3">
                                     <label class="mb-2">Total</label>
-                                    <input type="number" id="qtd_total_estoque" class="form-control" name="qtd_total">
+                                    <input type="number" id="qtd_total_estoque" class="form-control" name="qtd_total" disabled="true">
                                 </div>
                             </div>
                         </div>
@@ -86,6 +86,10 @@
                             <div class="col pb-3">
                                 <label class="mb-2">Data Expiração *</label>
                                 <input type="date" class="form-control" placeholder="" name="data_expiracao">
+                            </div>
+                            <div class="col pb-3">
+                                <label class="mb-2">Data Recepção</label>
+                                <input type="date" class="form-control" placeholder="" name="data_recepcao">
                             </div>
                         </div>
                         <hr>

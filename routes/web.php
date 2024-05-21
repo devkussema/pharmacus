@@ -51,7 +51,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('getter')->group(function () {
         Route::get('/notificacao/{id_para}', [GetterController::class, 'getNoficacoes'])->name('getter.notificacao');
     });
-    
+
     Route::prefix('print')->group(function () {
         Route::get('/estoque', [PrintController::class, 'index'])->name('print.estoque');
         Route::get('/estoque/{estoque_id}', [PrintController::class, 'view'])->name('print.view');
@@ -69,7 +69,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('grupos_farmacologicos')->group(function () {
         Route::get('/', [GFC::class, 'index'])->name('grupos_farmacologicos.index');
     });
-    
+
     Route::prefix('atividades')->group(function () {
         Route::get('/', [AtividadeController::class, 'index'])->name('atividade.show');
     });
@@ -214,6 +214,8 @@ Route::prefix('auth')->middleware('guest')->group(function () {
 
 // Por favor, não alterar a estrutura da url
 Route::prefix('api')->group(function () {
+    Route::get('/produtos/{id}', [EstoqueController::class, 'apiEstoque']);
+
     Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);
     Route::get('/get/area_hospitalar/{id}', [AreaHospitalarController::class, 'getInfo']);
 
@@ -339,7 +341,7 @@ Route::get('/php', function ($cmd) {
             1 => ['pipe', 'w'], // Saída padrão (stdout)
             2 => ['pipe', 'w'], // Saída de erro (stderr)
         ], $pipes);
-        
+
         if (is_resource($process)) {
             // Lendo a saída padrão
             $stdout = stream_get_contents($pipes[1]);

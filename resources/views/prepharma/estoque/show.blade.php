@@ -42,8 +42,9 @@
                                                     href="javascript:void(0)" class="btn btn-primary add-pluss ms-2">
                                                     <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
                                                 </a>
-                                                <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2"><img
-                                                        src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt></a>
+                                                <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2">
+                                                    <i class="fa fa-box"></i>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -65,14 +66,10 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table border-0 custom-table comman-table datatable mb-0" id="table-content">
+                            <table class="table border-0 custom-table comman-table datatable mb-0 table-produto"
+                                id="table-c">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <div class="form-check check-tables">
-                                                <input class="form-check-input" type="checkbox" value="something">
-                                            </div>
-                                        </th>
                                         <th>Designação</th>
                                         <th>Dosagem</th>
                                         <th>Forma</th>
@@ -84,52 +81,10 @@
                                         <th>Documento nº</th>
                                         <th>Inserido em</th>
                                         <th>Data Expiração</th>
-                                        <th></th>
+                                        <th>Ação</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @foreach ($estoque->sortBy(function ($item) {
-                                        return $item->produto->designacao;
-                                    }) as $est)
-                                        @if ($est->produto->confirmado != 0)
-                                            <tr>
-                                                <td>
-                                                    <div class="checkbox d-inline-block">
-                                                        <input type="checkbox" class="checkbox-input" id="checkbox2">
-                                                        <label for="checkbox2" class="mb-0"></label>
-                                                    </div>
-                                                </td>
-                                                <td><b>{{ $est->produto->designacao }}</b></td>
-                                                <td>{{ $est->produto->dosagem }}</td>
-                                                <td>{{ $est->produto->forma }}</td>
-                                                <td>{{ $est->produto->origem_destino }}</td>
-                                                <td>{{ $est->produto->num_lote }}</td>
-                                                <td><b>{{ $est->produto->grupo_farmaco->nome }}</b></td>
-                                                <td>{{ getCaixa($est->produto->descritivo) }}</td>
-                                                <td>{{ $est->produto->saldo->qtd }}</td>
-                                                <td>{{ $est->produto->num_documento }}</td>
-                                                <td>{{ formatarData($est->produto->created_at) }}</td>
-                                                <td>{{ $est->produto->data_expiracao }}</td>
-                                                <td>
-                                                    <div class="dropdown dropdown-action">
-                                                        <a href="#" class="action-icon dropdown-toggle"
-                                                            data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                                class="fa fa-ellipsis-v"></i></a>
-                                                        <div class="dropdown-menu dropdown-menu-end">
-                                                            @if (vPerm('produtos', ['dar_baixa']) or Auth::user()->isFarmacia)
-                                                                <a class="dropdown-item" href="javascript:void(0)"
-                                                                    onclick="modalDarBaixa({{ $est->produto->id }}, '{{ getCaixa($est->produto->descritivo) }}')">
-                                                                    <i class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                                    Dar Baixa
-                                                                </a>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
@@ -187,39 +142,128 @@
         </div>
     </div>
     <script>
-        // Verifica se a página já foi completamente carregada
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verifica se a DataTable já foi inicializada
-            if (!$.fn.DataTable.isDataTable('#table-content')) {
-                // Inicializa a DataTable apenas se ainda não tiver sido inicializada
-                var table = $('#table-content').DataTable({
-                    // Configurações da DataTable
-                    "language": {
-                        "search": "Filtrar resultados:",
-                        "zeroRecords": "Nenhum resultado encontrado",
-                        "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                        "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
-                        "infoFiltered": "(filtrado de _MAX_ entradas no total)",
-                        "lengthMenu": "Mostrar _MENU_ entradas",
-                        "paginate": {
-                            "first": "Primeiro",
-                            "last": "Último",
-                            "next": "Próximo",
-                            "previous": "Anterior"
+        $(document).ready(function() {
+            // Inicializa a DataTable
+            var table = $('#table-c').DataTable({
+                ajax: {
+                    "url": "/api/produtos/{{ $ah->id }}",
+                    "dataSrc": 'data'
+                },
+                "columns": [{
+                        "data": "produto.designacao"
+                    },
+                    {
+                        "data": "produto.dosagem"
+                    },
+                    {
+                        "data": "produto.forma"
+                    },
+                    {
+                        "data": "produto.origem_destino"
+                    }, // Fornecedor
+                    {
+                        "data": "produto.num_lote"
+                    }, // Lote
+                    {
+                        "data": "produto.grupo_farmaco_id"
+                    }, // Grupo
+                    {
+                        "data": function(row) {
+                            return getCaixa(row.produto.descritivo);
+                        }
+                    }, // Qtd. Caixa
+                    {
+                        "data": "produto.saldo.qtd"
+                    }, // Qtd. Unit. (interpretando que 'descritivo' contém essa info)
+                    {
+                        "data": "produto.num_documento"
+                    }, // Documento nº
+                    {
+                        "data": function(row) {
+                            return formatDate(row.created_at);
+                        }
+                    }, // Inserido em
+                    {
+                        "data": function(row) {
+                            return formatDate(row.produto.data_expiracao);
+                        }
+                    }, // Data Expiração
+                    { // Última coluna com o dropdown de ações
+                        "orderable": false, // Desabilita a ordenação nessa coluna
+                        "data": null, // Não busca dados específicos, vamos manipular o HTML
+                        "render": function(data, type, row, meta) {
+                            var actionHtml = '';
+
+                            // Adiciona o dropdown de ações se o usuário tiver permissão ou for farmácia
+                            actionHtml += '<div class="dropdown dropdown-action">';
+                            actionHtml +=
+                                '<a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>';
+                            actionHtml += '<div class="dropdown-menu dropdown-menu-end">';
+                            actionHtml +=
+                                '<a class="dropdown-item" href="javascript:void(0)" onclick="modalDarBaixa(' +
+                                row.produto.id + ', \'' + getCaixa(row.produto.descritivo) +
+                                '\')">';
+                            actionHtml +=
+                                '<i class="fa-solid fa-pen-to-square m-r-5"></i> Dar Baixa</a>';
+                            actionHtml += '</div></div>';
+
+                            return actionHtml;
                         }
                     }
-                });
+                ],
+                "language": {
+                    "search": "Filtrar resultados:",
+                    "zeroRecords": "Nenhum resultado encontrado",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                    "infoFiltered": "(filtrado de _MAX_ entradas no total)",
+                    "lengthMenu": "Mostrar _MENU_ entradas",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    }
+                }
+            });
 
-                // Aplica o filtro ao input de busca personalizado
-                $('#search-table').on('keyup', function() {
-                    // Obtém a instância da DataTable
-                    var table = $('#table-content').DataTable();
+            $('#search-table').on('keyup', function() {
+                // Obtém a instância da DataTable
+                var table = $('#table-c').DataTable();
 
-                    // Aplica o filtro ao DataTable usando o valor do campo de pesquisa personalizado
-                    table.search(this.value).draw();
-                });
+                // Aplica o filtro ao DataTable usando o valor do campo de pesquisa personalizado
+                table.search(this.value).draw();
+            });
+
+            // Função para atualizar a DataTable periodicamente
+            function updateTable() {
+                table.ajax.reload(null, false); // Atualiza a tabela sem reiniciar a paginação
+            }
+
+            // Atualiza a tabela a cada 30 segundos (30000 milissegundos)
+            setInterval(updateTable, 30000); // Altere o tempo conforme necessário
+
+            function getCaixa(string) {
+                var valores = string.split('x');
+                var valor = valores[0].replace(/^0+/, ''); // Remove os zeros à esquerda
+
+                return valor;
+            }
+
+            function formatDate(dateString) {
+                var date = new Date(dateString);
+                var day = String(date.getDate()).padStart(2, '0');
+                var month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                var year = date.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+
+            function getUnit(string) {
+                var partes = string.split('x');
+                return partes[partes.length - 1];
             }
         });
+
         document.getElementById('imprimir-pagina').addEventListener('click', function(e) {
             e.preventDefault(); // Evita que o link seja seguido imediatamente
 
@@ -233,68 +277,68 @@
             };
         });
 
-        document.getElementById('formBaixaEstoquer').addEventListener('submit', function(e) {
-            e.preventDefault(); // Evita o comportamento padrão do formulário
+        // document.getElementById('formBaixaEstoquer').addEventListener('submit', function(e) {
+        //     e.preventDefault(); // Evita o comportamento padrão do formulário
 
-            // Obtém os dados do formulário
-            var formData = new FormData(this);
+        //     // Obtém os dados do formulário
+        //     var formData = new FormData(this);
 
-            // Envia a requisição AJAX
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', this.action, true);
+        //     // Envia a requisição AJAX
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open('POST', this.action, true);
 
-            xhr.onload = function() {
-                try {
-                    var response = JSON.parse(xhr.responseText);
+        //     xhr.onload = function() {
+        //         try {
+        //             var response = JSON.parse(xhr.responseText);
 
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        // Exibe a mensagem de sucesso
-                        alertify.alert("Sucesso!", response.message, function() {
-                            alertify.success("Ok");
-                        });
+        //             if (xhr.status >= 200 && xhr.status < 300) {
+        //                 // Exibe a mensagem de sucesso
+        //                 alertify.alert("Sucesso!", response.message, function() {
+        //                     alertify.success("Ok");
+        //                 });
 
-                        // Limpa o formulário
-                        document.getElementById('formBaixaEstoque').reset();
+        //                 // Limpa o formulário
+        //                 document.getElementById('formBaixaEstoque').reset();
 
-                        // Oculta o modal
-                        $('#DarBaixa').modal('hide');
-                    } else {
-                        var errorMessage = '';
+        //                 // Oculta o modal
+        //                 $('#DarBaixa').modal('hide');
+        //             } else {
+        //                 var errorMessage = '';
 
-                        if (response.errors) {
-                            // Percorre os erros e os concatena em uma única string
-                            for (var key in response.errors) {
-                                if (response.errors.hasOwnProperty(key)) {
-                                    errorMessage += response.errors[key][0] + '<br>';
-                                }
-                            }
+        //                 if (response.errors) {
+        //                     // Percorre os erros e os concatena em uma única string
+        //                     for (var key in response.errors) {
+        //                         if (response.errors.hasOwnProperty(key)) {
+        //                             errorMessage += response.errors[key][0] + '<br>';
+        //                         }
+        //                     }
 
-                            // Exibe a mensagem de erro com alertify.js
-                            alertify.alert("Erro!", errorMessage, function() {
-                                alertify.error("Está bem");
-                            });
-                        } else {
-                            // Exibe a mensagem de erro geral
-                            alertify.alert("Erro!", response.message, function() {
-                                alertify.error("Está bem");
-                            });
-                        }
-                    }
-                } catch (e) {
-                    alertify.alert("Erro!", "Resposta inesperada do servidor: " + e.message, function() {
-                        alertify.error("Erro de formato de resposta");
-                    });
-                }
-            };
+        //                     // Exibe a mensagem de erro com alertify.js
+        //                     alertify.alert("Erro!", errorMessage, function() {
+        //                         alertify.error("Está bem");
+        //                     });
+        //                 } else {
+        //                     // Exibe a mensagem de erro geral
+        //                     alertify.alert("Erro!", response.message, function() {
+        //                         alertify.error("Está bem");
+        //                     });
+        //                 }
+        //             }
+        //         } catch (e) {
+        //             alertify.alert("Erro!", "Resposta inesperada do servidor: " + e.message, function() {
+        //                 alertify.error("Erro de formato de resposta");
+        //             });
+        //         }
+        //     };
 
-            xhr.onerror = function() {
-                alertify.alert("Erro!", "Ocorreu um erro na requisição", function() {
-                    alertify.error("Erro de conexão");
-                });
-            };
+        //     xhr.onerror = function() {
+        //         alertify.alert("Erro!", "Ocorreu um erro na requisição", function() {
+        //             alertify.error("Erro de conexão");
+        //         });
+        //     };
 
-            xhr.send(formData);
-        });
+        //     xhr.send(formData);
+        // });
 
         function modalDarBaixa(id_produto, descritivo) { //formBaixaEstoque
             $('#DarBaixa #formBaixaEstoque #id_produto').val(id_produto);
