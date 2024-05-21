@@ -17,12 +17,12 @@
                 <form id="formProdutoEstoque" method="POST" action="{{ route('estoque.store') }}">
                     @csrf
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 pb-3">
                             <input type="hidden" name="farmacia_id" value="{{ $farmacia_id }}">
                             <label class="mb-2">Designação *</label>
                             <input type="text" id="designacao" class="form-control" placeholder="" name="designacao">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 pb-3">
                             <label class="mb-2">Tipo *</label>
                             <select name="tipo" style="width: 100%" id="tipo_produto_estoque" class="form-control">
                                 <option selected disabled>Selecionar tipo</option>

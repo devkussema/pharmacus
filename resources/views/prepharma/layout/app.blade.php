@@ -19,15 +19,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-
-    <link rel="stylesheet" href="{{ assetr('assets/plugins/datatables/datatables.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/select2.min.css') }}">
 
     <link rel="stylesheet" href="{{ assetr('assets/css/feather.css') }}">
     <link rel="stylesheet" href="{{ assetr('assets/plugins/alertify/alertify.min.css') }}">
 
+    <link rel="stylesheet" href="{{ assetr('assets/plugins/datatables/datatables.min.css') }}">
+
     <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/style.css') }}">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{{ assetr('assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ assetr('assets/plugins/datatables/datatables.min.js')}}"></script>
+    <style>
+        /* Oculta a barra de pesquisa padrão do DataTables */
+        .dataTables_wrapper .dataTables_filter {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -55,10 +63,6 @@
     <script src="{{ assetr('assets/plugins/select2/js/select2.min.js')}}" type="9137142106e3c9dc1463738a-text/javascript"></script>
     <script src="{{ assetr('assets/plugins/select2/js/custom-select.js')}}" type="9137142106e3c9dc1463738a-text/javascript"></script>
 
-
-    <script src="{{ assetr('assets/plugins/datatables/jquery.dataTables.min.js')}}" type="be6558ccd95e077c3366a663-text/javascript"></script>
-    <script src="{{ assetr('assets/plugins/datatables/datatables.min.js')}}" type="be6558ccd95e077c3366a663-text/javascript"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
     <script src="{{ assetr('assets/plugins/alertify/custom-alertify.min.js')}}" type="b8abefe4dfcd6d5a94855793-text/javascript"></script>
 
@@ -66,6 +70,38 @@
     <script src="{{ assetr('assets/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
         data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verifica se a DataTable já foi inicializada
+            if (!$.fn.DataTable.isDataTable('#table-content')) {
+                // Inicializa a DataTable apenas se ainda não tiver sido inicializada
+                var table = $('#table-content').DataTable({
+                    // Configurações da DataTable
+                    "language": {
+                        "search": "Filtrar resultados:",
+                        "zeroRecords": "Nenhum resultado encontrado",
+                        "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                        "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                        "infoFiltered": "(filtrado de _MAX_ entradas no total)",
+                        "lengthMenu": "Mostrar _MENU_ entradas",
+                        "paginate": {
+                            "first": "Primeiro",
+                            "last": "Último",
+                            "next": "Próximo",
+                            "previous": "Anterior"
+                        }
+                    }
+                });
+
+                // Aplica o filtro ao input de busca personalizado
+                $('#search-table').on('keyup', function() {
+                    // Obtém a instância da DataTable
+                    var table = $('#table-content').DataTable();
+
+                    // Aplica o filtro ao DataTable usando o valor do campo de pesquisa personalizado
+                    table.search(this.value).draw();
+                });
+            }
+        });
         function setDescritivo() {
             // Captura os valores dos inputs
             var caixa = document.getElementById('caixa').value;

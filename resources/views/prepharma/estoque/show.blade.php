@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="content">
-
+        @include('partials.session')
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
@@ -30,10 +30,11 @@
                                         <div class="doctor-search-blk">
                                             <div class="top-nav-search table-search-blk">
                                                 <form>
-                                                    <input type="text" class="form-control" placeholder="Procure aqui">
-                                                    <a class="btn"><img
-                                                            src="{{ assetr('assets/img/icons/search-normal.svg') }}"
-                                                            alt></a>
+                                                    <input type="text" id="search-table" class="form-control"
+                                                        placeholder="Procure aqui">
+                                                    <a class="btn">
+                                                        <img src="{{ assetr('assets/img/icons/search-normal.svg') }}" alt>
+                                                    </a>
                                                 </form>
                                             </div>
                                             <div class="add-group">
@@ -64,7 +65,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table border-0 custom-table comman-table datatable mb-0">
+                            <table class="table border-0 custom-table comman-table datatable mb-0" id="table-content">
                                 <thead>
                                     <tr>
                                         <th>
@@ -88,8 +89,8 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($estoque->sortBy(function ($item) {
-            return $item->produto->designacao;
-        }) as $est)
+                                        return $item->produto->designacao;
+                                    }) as $est)
                                         @if ($est->produto->confirmado != 0)
                                             <tr>
                                                 <td>
@@ -152,7 +153,7 @@
                                     ? auth()->user()->isFarmacia->farmacia_id
                                     : @auth()->user()->area_hospitalar->area_hospitalar->farmacia_id;
                             @endphp
-                            <div class="form-group">
+                            <div class="form-group pb-3">
                                 <label for="endereco">Área *</label>
                                 <input type="hidden" name="user_id" id="user_id">
                                 <select name="area_hospitalar_id" id="" class="form-control">
@@ -165,13 +166,13 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group pb-3">
                                 <label for="qtd_">Total de Caixas</label>
                                 <input type="text" name="descritivo" class="form-control" id="descritivo_"
                                     min="1">
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group pb-3">
                                 <input type="hidden" name="produto_id" id="id_produto">
                                 <label for="qtd_">Quantidade a transferir</label>
                                 <input type="number" name="qtd" class="form-control" id="qtd_"
@@ -186,6 +187,39 @@
         </div>
     </div>
     <script>
+        // Verifica se a página já foi completamente carregada
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verifica se a DataTable já foi inicializada
+            if (!$.fn.DataTable.isDataTable('#table-content')) {
+                // Inicializa a DataTable apenas se ainda não tiver sido inicializada
+                var table = $('#table-content').DataTable({
+                    // Configurações da DataTable
+                    "language": {
+                        "search": "Filtrar resultados:",
+                        "zeroRecords": "Nenhum resultado encontrado",
+                        "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                        "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                        "infoFiltered": "(filtrado de _MAX_ entradas no total)",
+                        "lengthMenu": "Mostrar _MENU_ entradas",
+                        "paginate": {
+                            "first": "Primeiro",
+                            "last": "Último",
+                            "next": "Próximo",
+                            "previous": "Anterior"
+                        }
+                    }
+                });
+
+                // Aplica o filtro ao input de busca personalizado
+                $('#search-table').on('keyup', function() {
+                    // Obtém a instância da DataTable
+                    var table = $('#table-content').DataTable();
+
+                    // Aplica o filtro ao DataTable usando o valor do campo de pesquisa personalizado
+                    table.search(this.value).draw();
+                });
+            }
+        });
         document.getElementById('imprimir-pagina').addEventListener('click', function(e) {
             e.preventDefault(); // Evita que o link seja seguido imediatamente
 
@@ -197,6 +231,69 @@
                 // Imprime a página
                 novaAba.print();
             };
+        });
+
+        document.getElementById('formBaixaEstoquer').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita o comportamento padrão do formulário
+
+            // Obtém os dados do formulário
+            var formData = new FormData(this);
+
+            // Envia a requisição AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', this.action, true);
+
+            xhr.onload = function() {
+                try {
+                    var response = JSON.parse(xhr.responseText);
+
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        // Exibe a mensagem de sucesso
+                        alertify.alert("Sucesso!", response.message, function() {
+                            alertify.success("Ok");
+                        });
+
+                        // Limpa o formulário
+                        document.getElementById('formBaixaEstoque').reset();
+
+                        // Oculta o modal
+                        $('#DarBaixa').modal('hide');
+                    } else {
+                        var errorMessage = '';
+
+                        if (response.errors) {
+                            // Percorre os erros e os concatena em uma única string
+                            for (var key in response.errors) {
+                                if (response.errors.hasOwnProperty(key)) {
+                                    errorMessage += response.errors[key][0] + '<br>';
+                                }
+                            }
+
+                            // Exibe a mensagem de erro com alertify.js
+                            alertify.alert("Erro!", errorMessage, function() {
+                                alertify.error("Está bem");
+                            });
+                        } else {
+                            // Exibe a mensagem de erro geral
+                            alertify.alert("Erro!", response.message, function() {
+                                alertify.error("Está bem");
+                            });
+                        }
+                    }
+                } catch (e) {
+                    alertify.alert("Erro!", "Resposta inesperada do servidor: " + e.message, function() {
+                        alertify.error("Erro de formato de resposta");
+                    });
+                }
+            };
+
+            xhr.onerror = function() {
+                alertify.alert("Erro!", "Ocorreu um erro na requisição", function() {
+                    alertify.error("Erro de conexão");
+                });
+            };
+
+            xhr.send(formData);
         });
 
         function modalDarBaixa(id_produto, descritivo) { //formBaixaEstoque

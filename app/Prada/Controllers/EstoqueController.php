@@ -50,30 +50,26 @@ class EstoqueController extends Controller
     public function getEstoque(Request $request, $id)
     {
         $ah = AH::find($id);
-        $area_id = $id;
-        $non_ = true;
-        if (!$ah)
+        if (!$ah) {
             return redirect()->back()->with('warning', 'Algo deu errado e não podemos acessar esta página.');
+        }
 
-        $area_hospitalar_id = $area_id;
-        $farmacia_id = (auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id);
-
-        $estoque = Estoque::where('area_hospitalar_id', $area_hospitalar_id)
+        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+        $estoque = Estoque::where('area_hospitalar_id', $id)
             ->where('farmacia_id', $farmacia_id)
             ->with(['produto' => function ($query) {
                 $query->orderBy('designacao', 'ASC');
             }])
             ->get();
 
-        /*$estoque = Estoque::join('produto_estoques', 'estoques.produto_estoque_id', '=', 'produto_estoques.id')
-            ->select('estoques.*')
-            ->where('estoques.area_hospitalar_id', $id)
-            ->orderBy('produto_estoques.designacao', 'asc')
-            ->get();*/
-        $isAdm = $area_id;
-
         self::calcNivelAlerta();
-        return view('estoque.show', compact('estoque', 'non_', 'area_id', 'ah', 'isAdm'));
+        return view('estoque.show', [
+            'estoque' => $estoque,
+            'non_' => true,
+            'area_id' => $id,
+            'ah' => $ah,
+            'isAdm' => $id
+        ]);
     }
 
     public function getListHome()
@@ -293,8 +289,15 @@ class EstoqueController extends Controller
         $produtoMasDescr = downCaixa($descritivo, $qtdBaixar);
 
         if ($produtoMasDescr == 0) {
-            return response()->json(['message' => "Não restará nada depois desta operação."], 400);
+            $message = "Não restará nada depois desta operação.";
+
+            if (request()->wantsJson()) {
+                return response()->json(['message' => $message], 400);
+            } else {
+                return back()->withErrors(['message' => $message]);
+            }
         }
+
 
         $newDescritivo = newCaixa($descritivo, $qtdBaixar);
         $newQtdUnit = getCaixaUnit($newDescritivo);

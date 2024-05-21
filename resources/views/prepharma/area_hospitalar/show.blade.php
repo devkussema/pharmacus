@@ -30,7 +30,7 @@
                                         <div class="doctor-search-blk">
                                             <div class="top-nav-search table-search-blk">
                                                 <form>
-                                                    <input type="text" id="area_dt" class="form-control"
+                                                    <input type="text" id="search-table" class="form-control"
                                                         placeholder="Procure aqui">
                                                     <a class="btn">
                                                         <img src="{{ assetr('assets/img/icons/search-normal.svg') }}" alt>
@@ -62,7 +62,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table id="dt_areas_h" class="table border-0 custom-table comman-table datatable mb-0">
+                            <table class="table border-0 custom-table comman-table datatable mb-0" id="table-content">
                                 <thead>
                                     <tr>
                                         <th>
