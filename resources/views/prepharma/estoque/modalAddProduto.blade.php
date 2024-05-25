@@ -18,7 +18,7 @@
                     @csrf
                     <div class="row">
                         <div class="col-md-6 pb-3">
-                            <input type="hidden" name="farmacia_id" value="{{ $farmacia_id }}">
+                            <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="{{ $farmacia_id }}">
                             <label class="mb-2">Designação *</label>
                             <input type="text" id="designacao" class="form-control" placeholder="" name="designacao">
                         </div>
@@ -62,7 +62,8 @@
                                 <input type="text" id="descritivo" name="descritivo" hidden>
                                 <div class="col pb-3">
                                     <label class="mb-2">Total</label>
-                                    <input type="number" id="qtd_total_estoque" class="form-control" name="qtd_total" disabled="true">
+                                    <input type="number" id="qtd_total_estoque" class="form-control" name="qtd_total"
+                                        disabled="true">
                                 </div>
                             </div>
                         </div>
@@ -102,7 +103,7 @@
                             </div>
                             <div class="col pb-3">
                                 <label class="mb-2">G. Farmacológico *</label>
-                                <select name="grupo_farmaco_id" style="width: 100%" id=""
+                                <select name="grupo_farmaco_id" style="width: 100%" id="grupo_farmaco_id_"
                                     class="form-control selectr2">
                                     @foreach (\App\Models\GrupoFarmacologico::all() as $gf)
                                         <option value="{{ $gf->id }}">{{ $gf->nome }}</option>
@@ -118,7 +119,7 @@
                     <div class="row">
                         <div class="col pb-3">
                             <label class="mb-2">Área Hospitalar</label>
-                            <select name="area_id" style="width: 100%" id="" class="form-control select2">
+                            <select name="area_id" style="width: 100%" id="area_id_" class="form-control select2">
                                 @foreach (\App\Models\AreaHospitalar::all() as $ah)
                                     @if ($ah->nome == 'Armazém I' or $ah->nome == 'Direcção clínica')
                                         <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
@@ -140,3 +141,54 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="solicitar-produto" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="text-center mt-2 mb-4">
+                    <div class="auth-logo">
+                        <a href="index.html" class="logo logo-dark">
+                            <span class="logo-lg">
+                                <img src="{{ assetr('assets/img/white__logo2.png')}}" alt="Logo" height="42">
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <form class="px-3" action="#">
+                    <div class="col mb-3 select-multiplo">
+                        <label for="username" class="form-label">Nome do Item</label>
+                        <select class="js-example-basic-multiple" name="states[]" multiple="multiple">
+                            <option value="AL">Alabama</option>
+                            ...
+                            <option value="WY">Wyoming</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailaddress" class="form-label">Email
+                            address</label>
+                        <input class="form-control" type="email" id="emailaddress" required
+                            placeholder="john@deo.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input class="form-control" type="password" required id="password"
+                            placeholder="Enter your password">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="customCheck1">
+                            <label class="form-check-label" for="customCheck1">I accept
+                                <a href="#">Terms and Conditions</a></label>
+                        </div>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <button class="btn btn-primary" type="submit">Sign Up
+                            Free</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -22,7 +22,7 @@ class AreaHospitalarController extends Controller
         }elseif (@auth()->user()->farmacia->farmacia_id){
             $ah = FAH::where('farmacia_id', auth()->user()->farmacia->farmacia_id)->get();
         }
-        
+
         return view('area_hospitalar.show', compact('ah'));
     }
 
@@ -147,6 +147,14 @@ class AreaHospitalarController extends Controller
     public function getAll()
     {
         $all = AH::all();
+
+        return response()->json($all);
+    }
+
+    public function getAllMy()
+    {
+        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+        $all = FAH::where('farmacia_id', $farmacia_id)->with('area_hospitalar')->get();
 
         return response()->json($all);
     }

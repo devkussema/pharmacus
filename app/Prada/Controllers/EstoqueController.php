@@ -4,6 +4,7 @@ namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\{
     AreaHospitalar as AH,
     Estoque,
@@ -47,14 +48,24 @@ class EstoqueController extends Controller
         return view('estoque.panel');
     }
 
-    public function getEstoque(Request $request, $id)
+    public function solicitar(Request $request, $area_id)
     {
-        $ah = AH::find($id);
+        return view('estoque.solicitar-item');
+    }
+
+    public function myEstoque(Request $request, $id)
+    {
+        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+
+        $ah = FAH::with('area_hospitalar')
+            ->where('area_hospitalar_id', $id)
+            ->where('farmacia_id', $farmacia_id)
+            ->get();
+
         if (!$ah) {
-            return redirect()->back()->with('warning', 'Algo deu errado e não podemos acessar esta página.');
+            return redirect()->route('home')->with('warning', 'Algo deu errado e não podemos acessar esta página.');
         }
 
-        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
         $estoque = Estoque::where('area_hospitalar_id', $id)
             ->where('farmacia_id', $farmacia_id)
             ->with(['produto' => function ($query) {
@@ -63,11 +74,49 @@ class EstoqueController extends Controller
             ->get();
 
         self::calcNivelAlerta();
+
         return view('estoque.show', [
             'estoque' => $estoque,
             'non_' => true,
             'area_id' => $id,
-            'ah' => $ah,
+            'ah' => $ah[0]['area_hospitalar'],
+            'isAdm' => $id
+        ]);
+    }
+
+    public function getEstoque(Request $request, $id)
+    {
+        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+        $isPerm = vPerm('area_hospitalar', ['ver']);
+
+        $ah = FAH::with('area_hospitalar')
+            ->where('area_hospitalar_id', $id)
+            ->where('farmacia_id', $farmacia_id)
+            ->get();
+
+        if (!$ah) {
+            return redirect()->route('home')->with('warning', 'Algo deu errado e não podemos acessar esta página.');
+        }
+
+        $estoque = Estoque::where('area_hospitalar_id', $id)
+            ->where('farmacia_id', $farmacia_id)
+            ->with(['produto' => function ($query) {
+                $query->orderBy('designacao', 'ASC');
+            }])
+            ->get();
+
+        self::calcNivelAlerta();
+
+        $myAreaId = @auth()->user()->area_hospitalar->area_hospitalar->id;
+        if (!$isPerm and !auth()->user()->isFarmacia and ($myAreaId != $id)) {
+            return redirect()->route('estoque.myEstoque', ['id' => $myAreaId])->with('danger', 'Não tens permissão para aceder a página pretendida');
+        }
+
+        return view('estoque.show', [
+            'estoque' => $estoque,
+            'non_' => true,
+            'area_id' => $id,
+            'ah' => $ah[0]['area_hospitalar'],
             'isAdm' => $id
         ]);
     }
@@ -280,6 +329,33 @@ class EstoqueController extends Controller
             echo "Tradução: " . htmlspecialchars_decode($traducao[1]);
         } else {
             echo "Erro ao traduzir o texto.";
+        }
+    }
+
+    public function dar_baixa(Request $request)
+    {
+        $request->validate([
+            'itens' => [
+                'required',
+                'array',
+                'min:1',
+                // Adicionando a regra exists para verificar se os itens selecionados existem na tabela produto_estoque
+                Rule::exists('produto_estoques', 'id')->where(function ($query) {
+                    // Condição adicional para verificar se os IDs dos itens selecionados existem na tabela produto_estoque
+                    $query->whereIn('id', request()->itens);
+                }),
+            ],
+            'area_id' => 'required',
+            'id_user' => 'required|exists:users,id',
+        ], [
+            'itens.required' => 'Nenhum item selecionado, selecione pelo menos um item',
+            'area_id.required' => 'Nenhuma área selecionada, selecione pelo menos uma área',
+        ]);
+
+        $itensSelecionados = $request->input('itens');
+        foreach ($itensSelecionados as $item) {
+            // Faça o que desejar com cada item selecionado
+            echo $item."<hr>";
         }
     }
 

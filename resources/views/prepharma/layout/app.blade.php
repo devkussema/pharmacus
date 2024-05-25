@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/select2.min.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="{{ assetr('assets/css/feather.css') }}">
     <link rel="stylesheet" href="{{ assetr('assets/plugins/alertify/alertify.min.css') }}">
@@ -29,8 +29,8 @@
 
     <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/style.css') }}">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="{{ assetr('assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{ assetr('assets/plugins/datatables/datatables.min.js')}}"></script>
+    <script src="{{ assetr('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ assetr('assets/plugins/datatables/datatables.min.js') }}"></script>
     <style>
         /* Oculta a barra de pesquisa padrão do DataTables */
         .dataTables_wrapper .dataTables_filter {
@@ -61,8 +61,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="{{ assetr('assets/js/jquery.slimscroll.js')}}" type="be6558ccd95e077c3366a663-text/javascript"></script>
 
-    <script src="{{ assetr('assets/plugins/select2/js/select2.min.js')}}" type="9137142106e3c9dc1463738a-text/javascript"></script>
-    <script src="{{ assetr('assets/plugins/select2/js/custom-select.js')}}" type="9137142106e3c9dc1463738a-text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
     <script src="{{ assetr('assets/plugins/alertify/custom-alertify.min.js')}}" type="b8abefe4dfcd6d5a94855793-text/javascript"></script>
@@ -102,7 +101,17 @@
                     table.search(this.value).draw();
                 });
             }
+
+            // Seleciona todos os elementos input com a classe "form-control"
+            var inputs = document.querySelectorAll('.form-control');
+
+            // Itera sobre cada elemento e aplica o estilo desejado
+            inputs.forEach(function(input) {
+                input.style.borderRadius = '5px'; // Define o raio da borda
+                input.style.borderColor = '#2E37A4'; // Define a cor da borda
+            });
         });
+
         function setDescritivo() {
             // Captura os valores dos inputs
             var caixa = document.getElementById('caixa').value;

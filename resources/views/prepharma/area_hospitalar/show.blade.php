@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="content">
-
+        @include('partials.session')
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
@@ -136,18 +136,11 @@
                             <div class="pb-3">
                                 <label class="mb-2">Nome *</label>
                                 @php
-                                    if (@auth()->user()->isFarmacia) {
+                                $farmacia_ = auth()->user()->isFarmacia->farmacia ?? auth()->user()->farmacia->farmacia;
+                                    if ($farmacia_) {
                                         // Se o usuário autenticado estiver associado a uma farmácia,
                                         // obtemos os IDs das áreas hospitalares dessa farmácia
-                                        $areas_hospitalares_ids = auth()
-                                            ->user()
-                                            ->isFarmacia->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
-                                    } elseif (isset(auth()->user()->farmacia)) {
-                                        // Se o usuário autenticado não estiver associado a uma farmácia,
-                                        // obtemos o ID da farmácia diretamente do usuário
-                                        $areas_hospitalares_ids = auth()
-                                            ->user()
-                                            ->farmacia->areas_hospitalares->pluck('area_hospitalar_id');
+                                        $areas_hospitalares_ids = $farmacia_->areas_hospitalares->pluck('area_hospitalar_id');
                                     }
                                     // Convertendo a coleção em um array se necessário
                                     $areas_hospitalares_ids_array = $areas_hospitalares_ids->all();
@@ -160,7 +153,7 @@
                                     @endforeach
                                 </select>
                                 <input type="hidden" name="farmacia_id"
-                                    value="{{ auth()->user()->isFarmacia->farmacia->id }}">
+                                    value="{{ $farmacia_->id }}">
                             </div>
                             {{-- <div class="pb-3">
                                 <label class="mb-2">Descrição (opcional)</label>
@@ -181,7 +174,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="tituloModal">Adicionar Cargo</h4>
+                        <h4 class="modal-title" id="tituloModal">Adicionar Área Hospitalar</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -193,7 +186,7 @@
                                     name="email">
                                 <input type="hidden" id="area_hospitalar_id" class="form-control" placeholder=""
                                     name="area_id">
-                                <input type="hidden" value="{{ auth()->user()->isFarmacia->farmacia->id }}"
+                                <input type="hidden" value="{{ $farmacia_->id }}"
                                     class="form-control" placeholder="" name="farmacia_id">
                             </div>
                             <div class="pb-3">

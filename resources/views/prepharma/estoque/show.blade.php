@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Áreas Hospitalares</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('a_h.index') }}">Áreas Hospitalares</a></li>
                         <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
                         <li class="breadcrumb-item active">Ver todas</li>
                     </ul>
@@ -30,7 +30,7 @@
                                         <div class="doctor-search-blk">
                                             <div class="top-nav-search table-search-blk">
                                                 <form>
-                                                    <input type="text" id="search-table" class="form-control"
+                                                    <input type="text" id="search-table" class="form-control outline-success"
                                                         placeholder="Procure aqui">
                                                     <a class="btn">
                                                         <img src="{{ assetr('assets/img/icons/search-normal.svg') }}" alt>
@@ -38,13 +38,16 @@
                                                 </form>
                                             </div>
                                             <div class="add-group">
-                                                <a data-bs-toggle="modal" data-bs-target="#modalAddProduto"
-                                                    href="javascript:void(0)" class="btn btn-primary add-pluss ms-2">
+                                                <button data-bs-toggle="modal" data-bs-target="#modalAddProduto"
+                                                    class="btn btn-rounded btn-outline-primary ms-2">
                                                     <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
-                                                </a>
-                                                <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2">
+                                                    Adicionar Produto
+                                                </button>
+                                                <button onclick="location.href = '{{ route('estoque.solicitar', ['id' => $ah->id]) }}';"
+                                                     class="btn btn-rounded btn-outline-success ms-2">
                                                     <i class="fa fa-box"></i>
-                                                </a>
+                                                    Solicitar
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -143,6 +146,9 @@
     </div>
     <script>
         $(document).ready(function() {
+
+            $('.solicitar-produto .js-example-basic-multiple').select2();
+
             // Inicializa a DataTable
             var table = $('#table-c').DataTable({
                 ajax: {

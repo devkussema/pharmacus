@@ -85,13 +85,16 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('estoque')->middleware('is.area_hospitalar')->group(function () {
         Route::get('/', [EstoqueController::class, 'index'])->name('estoque');
         Route::get('/home', [EstoqueController::class, 'getListHome'])->name('estoque.gerente');
+        Route::get('/solicitar/{id}', [EstoqueController::class, 'solicitar'])->name('estoque.solicitar');
         Route::get('/{id}', [EstoqueController::class, 'getEstoque'])->name('estoque.getEstoque');
+        Route::get('obter/{id}', [EstoqueController::class, 'myEstoque'])->name('estoque.myEstoque');
         Route::get('/aa', [EstoqueController::class, 'aa']);
         Route::get('/produto/{id}', [EstoqueController::class, 'getProduto']);
         Route::put('/produto/{id}', [EstoqueController::class, 'editarProduto']);
         Route::get('estoque/ajax', [EstoqueController::class, 'ajaxEstoque'])->name('estoque.ajax');
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
+        Route::post('/dar_baixa', [EstoqueController::class, 'dar_baixa'])->name('estoque.dar_baixa');
         Route::get('/relatorio', [EstoqueController::class, 'calcularNivelAlerta'])->name('estoque.relatorio');
 
         Route::prefix('confirmar')->group(function () {
@@ -125,6 +128,12 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::delete('/apagar/{id}', [AreaHospitalarController::class, 'destroy'])->name('a_h.destroy');
         Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');
         Route::get('/statUs', [AreaHospitalarController::class, 'getStatDia'])->name('a_h.get_stat_dia');
+
+        Route::get("/get/areas", function(){
+            $AllAreas = \App\Models\FarmaciaAreaHospitalar::all();
+
+            return response()->json(['data' => $AllAreas], 200);
+        });
     });
     // ConfigController
     Route::prefix('definicoes')->group(function () {
@@ -217,6 +226,7 @@ Route::prefix('api')->group(function () {
     Route::get('/produtos/{id}', [EstoqueController::class, 'apiEstoque']);
 
     Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);
+    Route::get('/get/areas_hospitalares', [AreaHospitalarController::class, 'getAllMy']);
     Route::get('/get/area_hospitalar/{id}', [AreaHospitalarController::class, 'getInfo']);
 
     Route::get('/get/farmacia', [FarmaciaController::class, 'getAll']);
