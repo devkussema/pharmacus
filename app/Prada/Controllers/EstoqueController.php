@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use App\Models\{
     AreaHospitalar as AH,
     Estoque,
+    PedidoItem,
     ConfirmarBaixa,
     Farmacia,
     FarmaciaAreaHospitalar as FAH,
@@ -50,7 +51,7 @@ class EstoqueController extends Controller
 
     public function solicitar(Request $request, $area_id)
     {
-        return view('estoque.solicitar-item');
+        return view('estoque.solicitar-item', ['area' => $area_id]);
     }
 
     public function myEstoque(Request $request, $id)
@@ -332,7 +333,7 @@ class EstoqueController extends Controller
         }
     }
 
-    public function dar_baixa(Request $request)
+    public function dar_baixa(Request $request, $area_de)
     {
         $request->validate([
             'itens' => [
@@ -345,18 +346,26 @@ class EstoqueController extends Controller
                     $query->whereIn('id', request()->itens);
                 }),
             ],
-            'area_id' => 'required',
+            'area_para' => 'required',
             'id_user' => 'required|exists:users,id',
         ], [
             'itens.required' => 'Nenhum item selecionado, selecione pelo menos um item',
-            'area_id.required' => 'Nenhuma área selecionada, selecione pelo menos uma área',
+            'area_para.required' => 'Nenhuma área selecionada, selecione pelo menos uma área',
         ]);
 
         $itensSelecionados = $request->input('itens');
-        foreach ($itensSelecionados as $item) {
-            // Faça o que desejar com cada item selecionado
-            echo $item."<hr>";
-        }
+        $item['itens'] = $request->itens;
+        $json = json_encode($item);
+
+        PedidoItem::create([
+            'user_id' => auth()->user()->id,
+            'area_de' => $area_de,
+            'area_para' => $request->input('area_para'),
+            'confirmado' => 0,
+            'itens' => $json
+        ]);
+
+        return redirect()->route('estoque.solicitar', ['id' => $area_de])->with('success', 'Solicitação enviada, quando atendida receberás uma notificação.');
     }
 
     public function baixa(Request $request)

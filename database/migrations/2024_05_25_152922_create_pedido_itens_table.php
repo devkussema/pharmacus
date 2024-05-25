@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('area_de')->constrained('farmacia_areas_hospitalares')->onDelete('cascade');
             $table->foreignId('area_para')->constrained('farmacia_areas_hospitalares')->onDelete('cascade');
             $table->boolean('confirmado')->default(false);
-            $table->json('itens');
+            $table->text('itens');
             $table->timestamps();
         });
     }

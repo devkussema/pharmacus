@@ -94,7 +94,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('estoque/ajax', [EstoqueController::class, 'ajaxEstoque'])->name('estoque.ajax');
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
-        Route::post('/dar_baixa', [EstoqueController::class, 'dar_baixa'])->name('estoque.dar_baixa');
+        Route::post('/dar_baixa/{area_de}', [EstoqueController::class, 'dar_baixa'])->name('estoque.dar_baixa');
         Route::get('/relatorio', [EstoqueController::class, 'calcularNivelAlerta'])->name('estoque.relatorio');
 
         Route::prefix('confirmar')->group(function () {

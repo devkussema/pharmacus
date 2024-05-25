@@ -9,7 +9,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <form method="POST" action="{{ route('estoque.dar_baixa') }}">
+                        <form method="POST" action="{{ route('estoque.dar_baixa', ['area_de' => $area]) }}">
                             @csrf
                             <div class="row">
                                 <div class="col-12">
@@ -30,7 +30,7 @@
                                     <div class="input-block local-forms">
                                         <label for="area_id_">Selecionar Área <span class="login-danger">*</span></label>
                                         <select class="js-example-basic-single form-control" id="area_id_"
-                                            name="area_id">
+                                            name="area_para">
                                             <option selected disabled>Selecionar Área Hospitalar</option>
                                         </select>
                                     </div>
