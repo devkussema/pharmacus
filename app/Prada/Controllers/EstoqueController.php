@@ -122,7 +122,8 @@ class EstoqueController extends Controller
         ]);
     }
 
-    public function apiEstoque(Request $request, $id) {
+    public function apiEstoque(Request $request, $id)
+    {
         $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
         $produtos = Estoque::where('area_hospitalar_id', $id)
             ->where('farmacia_id', $farmacia_id)
@@ -255,7 +256,8 @@ class EstoqueController extends Controller
         return response()->json(['message' => "{$request->designacao} adicionado!"]);
     }
 
-    public function confirmarProduto($id_produto, $id_area) {
+    public function confirmarProduto($id_produto, $id_area)
+    {
         $pe = PE::find($id_produto);
         if (!$pe) {
             return redirect()->back()->with('error', "Algo deu errado");
@@ -279,7 +281,7 @@ class EstoqueController extends Controller
         $qw = ConfirmarBaixa::create([
             'area_hospitalar_de' => $id_area,
             'area_hospitalar_para' => $cb->area_hospitalar_de,
-            'texto' => auth()->user()->nome. " confirmou o estoque",
+            'texto' => auth()->user()->nome . " confirmou o estoque",
             'produto_estoque_id' => $id_produto
         ]);
 
@@ -336,16 +338,7 @@ class EstoqueController extends Controller
     public function dar_baixa(Request $request, $area_de)
     {
         $request->validate([
-            'itens' => [
-                'required',
-                'array',
-                'min:1',
-                // Adicionando a regra exists para verificar se os itens selecionados existem na tabela produto_estoque
-                Rule::exists('produto_estoques', 'id')->where(function ($query) {
-                    // Condição adicional para verificar se os IDs dos itens selecionados existem na tabela produto_estoque
-                    $query->whereIn('id', request()->itens);
-                }),
-            ],
+            'itens' => 'required|array|min:1',
             'area_para' => 'required',
             'id_user' => 'required|exists:users,id',
         ], [
@@ -354,16 +347,16 @@ class EstoqueController extends Controller
         ]);
 
         $itensSelecionados = $request->input('itens');
-        $item['itens'] = $request->itens;
-        $json = json_encode($item);
 
-        PedidoItem::create([
-            'user_id' => auth()->user()->id,
-            'area_de' => $area_de,
-            'area_para' => $request->input('area_para'),
-            'confirmado' => 0,
-            'itens' => $json
-        ]);
+        foreach ($itensSelecionados as $item_id) {
+            PedidoItem::create([
+                'item_id' => $item_id,
+                'user_de' => auth()->user()->id,
+                'area_de' => $area_de,
+                'area_para' => $request->input('area_para'),
+                'confirmado' => 0,
+            ]);
+        }
 
         return redirect()->route('estoque.solicitar', ['id' => $area_de])->with('success', 'Solicitação enviada, quando atendida receberás uma notificação.');
     }
@@ -381,9 +374,9 @@ class EstoqueController extends Controller
         ]);
 
         $farmacia_id = "";
-        if (@auth()->user()->isFarmacia){
+        if (@auth()->user()->isFarmacia) {
             $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
-        }elseif(@auth()->user()->farmacia) {
+        } elseif (@auth()->user()->farmacia) {
             $farmacia_id = auth()->user()->farmacia->farmacia_id;
         }
 
@@ -439,7 +432,7 @@ class EstoqueController extends Controller
         $isEstoque = Estoque::whereHas('produto', function ($query) use ($dataProduto, $area_hospitalar_id) {
             $query->where('num_lote', $dataProduto['num_lote'])
                 ->where('num_documento', $dataProduto['num_documento']);
-            })
+        })
             ->where('area_hospitalar_id', $area_hospitalar_id)
             ->first();
 
@@ -482,7 +475,7 @@ class EstoqueController extends Controller
 
         self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades para {$ud->area_hospitalar->nome}");
         self::setNotify("Confirmação de entrada de estoque", $ud->user_id);
-        $texto = auth()->user()->nome." deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
+        $texto = auth()->user()->nome . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
         self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
 
         return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);

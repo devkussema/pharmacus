@@ -26,7 +26,7 @@
                             <div class="row align-items-center">
                                 <div class="col">
                                     <div class="doctor-table-blk">
-                                        <h3>Todas Áreas Hospitalares</h3>
+                                        <h3>Todas Áreas Hospitalares </h3>
                                         <div class="doctor-search-blk">
                                             <div class="top-nav-search table-search-blk">
                                                 <form>
@@ -42,7 +42,8 @@
                                                     class="btn btn-primary add-pluss ms-2">
                                                     <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
                                                 </a>
-                                                <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2"><img
+                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#ver-pedido"
+                                                    class="btn btn-primary doctor-refresh ms-2"><img
                                                         src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt></a>
                                             </div>
                                         </div>
@@ -127,7 +128,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="tituloModal">Adicionar Cargo</h4>
+                        <h4 class="modal-title" id="tituloModal">Adicionar Área Hospitalar</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -136,11 +137,14 @@
                             <div class="pb-3">
                                 <label class="mb-2">Nome *</label>
                                 @php
-                                $farmacia_ = auth()->user()->isFarmacia->farmacia ?? auth()->user()->farmacia->farmacia;
+                                    $farmacia_ =
+                                        auth()->user()->isFarmacia->farmacia ?? auth()->user()->farmacia->farmacia;
                                     if ($farmacia_) {
                                         // Se o usuário autenticado estiver associado a uma farmácia,
                                         // obtemos os IDs das áreas hospitalares dessa farmácia
-                                        $areas_hospitalares_ids = $farmacia_->areas_hospitalares->pluck('area_hospitalar_id');
+                                        $areas_hospitalares_ids = $farmacia_->areas_hospitalares->pluck(
+                                            'area_hospitalar_id',
+                                        );
                                     }
                                     // Convertendo a coleção em um array se necessário
                                     $areas_hospitalares_ids_array = $areas_hospitalares_ids->all();
@@ -152,8 +156,7 @@
                                         @endif
                                     @endforeach
                                 </select>
-                                <input type="hidden" name="farmacia_id"
-                                    value="{{ $farmacia_->id }}">
+                                <input type="hidden" name="farmacia_id" value="{{ $farmacia_->id }}">
                             </div>
                             {{-- <div class="pb-3">
                                 <label class="mb-2">Descrição (opcional)</label>
@@ -186,8 +189,8 @@
                                     name="email">
                                 <input type="hidden" id="area_hospitalar_id" class="form-control" placeholder=""
                                     name="area_id">
-                                <input type="hidden" value="{{ $farmacia_->id }}"
-                                    class="form-control" placeholder="" name="farmacia_id">
+                                <input type="hidden" value="{{ $farmacia_->id }}" class="form-control" placeholder=""
+                                    name="farmacia_id">
                             </div>
                             <div class="pb-3">
                                 <label class="mb-2" for="cargo_">Cargo *</label>
@@ -244,10 +247,133 @@
                 </div>
             </div>
         </div>
+
+        {{-- Modal para ver a solicitação --}}
+        <div class="modal fade" id="ver-pedido" tabindex="-1" aria-hidden="true" role="dialog"
+            data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="scrollableModalTitle">Lista de Solicitação</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="lista-itens">
+                        <p><span>Adriano</span>, a dra Rosa pediu os seguintes itens:</p>
+
+                        <p>
+                        <ul>
+                            <li>2 Caixas de Ampicilina</li>
+                            <li>2 Caixas de Amoxicilina</li>
+                        </ul>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ignorar</button>
+                        <button type="button" class="btn btn-primary">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Moda 2 --}}
+        <div class="modal fade" id="exampleModalToggle2" aria-hidden="true"
+            aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalToggleLabel2">Modal 2</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5 id="exampleModalToggle2Designacao"></h5>
+                        Hide this modal and show the first with the button below.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle"
+                            data-bs-toggle="modal" data-bs-dismiss="modal">Back to
+                            first</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            function showModalAlerta() {
+                // Fazer a requisição AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/alertas/obter', true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Converter a resposta JSON para um objeto JavaScript
+                            var data = JSON.parse(xhr.responseText);
+
+                            // Verificar se há itens retornados
+                            if (data.length > 0) {
+                                // Construir uma lista com os itens
+                                var itemList = '<p><span>' + data[0].user_de.nome + '</span>, a dra Rosa pediu os seguintes itens:</p>';
+                                itemList += '<ul>';
+                                data.forEach(function(item) {
+                                    itemList += '<li>';
+                                    itemList += '<div style="overflow: hidden;">';
+                                    itemList += '<span style="float: left;">' + item.item.designacao + '</span>';
+                                    itemList += '<button type="button" class="btn btn-icon btn-secondary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal" data-item-designacao="' + item.item.designacao + '"  style="float: right; background-color: transparent;"><img src="https://static.pharmatina.com/prepharma/assets/img/icons/search-normal.svg" alt=""></button>';
+                                    itemList += '</div>';
+                                    itemList += '</li>';
+                                    itemList += '<hr>';
+                                });
+                                itemList += '</ul>';
+
+                                // Adicionar evento de clique ao botão de ícone
+                                var iconButtons = document.querySelectorAll('.btn-icon');
+                                iconButtons.forEach(function(button) {
+                                    button.addEventListener('click', function() {
+                                        // Configurar a modal exampleModalToggle2 para exibir as informações corretas
+                                        var designacao = button.getAttribute('data-item-designacao');
+                                        document.getElementById('exampleModalToggle2Designacao').textContent = designacao;
+                                    });
+                                });
+
+                                // Inserir a lista de itens na modal
+                                document.getElementById('lista-itens').innerHTML = itemList;
+
+                                // Abrir a modal
+                                var modal = new bootstrap.Modal(document.getElementById('ver-pedido'));
+                                modal.show();
+                            } else {
+                                alert('Nenhum item encontrado.');
+                            }
+                        } else {
+                            // Se houver erro na requisição, exibir uma mensagem de erro
+                            alert('Erro ao obter os itens. Código de status: ' + xhr.status);
+                        }
+                    }
+                };
+                xhr.send();
+            }
+
+            // setInterval(() => {
+            //     showModalAlerta()
+            // }, 25000);
+            showModalAlerta()
+
+            // Adicionar evento de clique aos botões dentro da modal
+            var dismissButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
+            dismissButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var modal = new bootstrap.Modal(document.getElementById('ver-pedido'));
+                    modal.close();
+                    // Remover a classe "show" da backdrop
+                    // var backdrop = document.querySelector('.modal-backdrop');
+                    // // backdrop.classList.remove('show');
+                    // backdrop.classList.remove('modal-backdrop');
+                });
+            });
+
+
             var table = document.getElementById('dt_areas_h').DataTable({
                 searching: true,
                 language: {

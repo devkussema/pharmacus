@@ -14,16 +14,22 @@ use App\Prada\Controllers\{
     GetterController,
     ConfigController,
     AutenticarUserController,
-    UsuarioController, FuncionarioController,
-    CargoController, ConfirmarController, EstoqueController,
-    NivelAlertaController, GrupoFarmacologicoController as GFC,
-    AtividadeController, PrintController
+    UsuarioController,
+    FuncionarioController,
+    CargoController,
+    ConfirmarController,
+    EstoqueController,
+    NivelAlertaController,
+    GrupoFarmacologicoController as GFC,
+    AtividadeController,
+    PrintController
 };
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
 
 use App\Http\Controllers\Dev\{
-    VisitanteController, DevController
+    VisitanteController,
+    DevController
 };
 use App\Http\Controllers\Api\{
     AuthController as ApiAuth
@@ -129,7 +135,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');
         Route::get('/statUs', [AreaHospitalarController::class, 'getStatDia'])->name('a_h.get_stat_dia');
 
-        Route::get("/get/areas", function(){
+        Route::get("/get/areas", function () {
             $AllAreas = \App\Models\FarmaciaAreaHospitalar::all();
 
             return response()->json(['data' => $AllAreas], 200);
@@ -251,7 +257,7 @@ Route::get('/execute-migrate', function () {
     // Executar o comando 'db:seed'
     //Artisan::call('db:seed');
     // Capturar a saída do comando 'db:seed'
-    $seedOutput = $migrateOutput. '<hr>' .Artisan::output();
+    $seedOutput = $migrateOutput . '<hr>' . Artisan::output();
 
     // Retornar a saída de ambos os comandos em formato JSON
     //return response()->json(['migrate_output' => $migrateOutput, 'seed_output' => $seedOutput]);
@@ -274,9 +280,24 @@ Route::get('/execute-migrater', function () {
     //return response()->json(['output' => Artisan::output()]);
 });
 
-Route::get('/shell', function ($cmd) {
-    exec($cmd);
-    return response()->json(['output' => shell_exec($cmd)]);
+
+Route::prefix('alertas')->group(function () {
+    Route::get('/obter', function () {
+        $farmacia_id = @auth()->user()->isFarmacia->farmacia_id;
+        $isArea = @auth()->user()->area_hospitalar->area_hospitalar_id;
+        if ($farmacia_id) {
+            $allAreaIds = \App\Models\FarmaciaAreaHospitalar::where('farmacia_id', @$farmacia_id)->pluck('area_hospitalar_id');
+            $pedidos = \App\Models\PedidoItem::whereIn('area_para', $allAreaIds)
+                ->where('confirmado', 0)->with('user_de', 'item')->get();
+
+            return $pedidos;
+        }else if ($isArea) {
+            $pedidos = \App\Models\PedidoItem::where('area_para', $isArea)
+                ->where('confirmado', 0)->with('user_de', 'item')->get();
+
+                return $pedidos;
+        }
+    });
 });
 
 Route::get('/artisan', function ($cmd) {
@@ -287,7 +308,7 @@ Route::get('/artisan', function ($cmd) {
     // Executar o comando 'db:seed'
     //Artisan::call('db:seed');
     // Capturar a saída do comando 'db:seed'
-    $seedOutput = $migrateOutput. '<hr>' .Artisan::output();
+    $seedOutput = $migrateOutput . '<hr>' . Artisan::output();
 
     // Retornar a saída de ambos os comandos em formato JSON
     //return response()->json(['migrate_output' => $migrateOutput, 'seed_output' => $seedOutput]);
@@ -308,7 +329,8 @@ Route::get('/php', function ($cmd) {
     putenv("$COMPOSER_HOME=$COMPOSER_HOME_VALUE");
 
     // Função para executar comandos do Composer
-    function runComposerCommand($command) {
+    function runComposerCommand($command)
+    {
         // Definindo o comando completo para executar o Composer
         $fullCommand = 'php composer.phar ' . $command;
 
@@ -343,7 +365,8 @@ Route::get('/php', function ($cmd) {
         }
     }
 
-    function runArtisan($command) {
+    function runArtisan($command)
+    {
         $fullCmd = "php artisan " . $command;
         $cmd = exec($fullCmd);
         /*$proccess = proc_open($fullCmd, [

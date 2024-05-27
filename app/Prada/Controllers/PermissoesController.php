@@ -10,13 +10,6 @@ class PermissoesController extends Controller
 {
     public function store(Request $request)
     {
-        /*$request->validate([
-            'user_id' => 'required|exists:users,id',
-        ],[
-            'user_id.required' => "Algo deu errado, atualize a página e tente novamente.",
-            'user_id.exists' => 'Algo deu errado, atualize a página e tente novamente.'
-        ]);*/
-
         // Converta os dados JSON em um array associativo
         $dados['produtos'] = $request->produtos;
         $dados['area_hospitalar'] = $request->area_hospitalar;
@@ -40,9 +33,6 @@ class PermissoesController extends Controller
             ]);
         }
 
-        // Retorne uma resposta de sucesso
-        //return response()->json(['message' => 'Permissões salvas com sucesso', 'titulo' => "Concluido"], 200);
         return redirect()->back()->with('success', 'Permissões atualizadas');
-        //return response()->json(['message' => "As coisas deram certos", 'titulo' => "Perfeito"], 200);
     }
 }
