@@ -26,7 +26,9 @@ use App\Prada\Controllers\{
 };
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
-
+use App\Http\Controllers\{
+    PedidoController,
+};
 use App\Http\Controllers\Dev\{
     VisitanteController,
     DevController
@@ -52,6 +54,12 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('/novo_doc', [DevController::class, 'novo_doc'])->name('dev.novo_doc');
         Route::get('/listaEstoque', [DevController::class, 'getFichaControloLimite']);
         Route::get('/listaEstoque/{area}', [DevController::class, 'getFichaControlo'])->name('dev.listaEstoque');
+    });
+
+    Route::prefix('pedidos')->group(function () {
+        Route::get('/', [PedidoController::class, 'index'])->name('pedido');
+        Route::get('/atender/{id}', [PedidoController::class, 'atender'])->name('pedido.atender');
+        Route::get('/info/{id}', [PedidoController::class, 'getPE'])->name('pedido.info');
     });
 
     Route::prefix('getter')->group(function () {

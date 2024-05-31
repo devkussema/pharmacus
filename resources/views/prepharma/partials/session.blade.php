@@ -35,6 +35,14 @@
     </div>
 @endif
 
+@if (Route::currentRouteName() != "pedido")
+    <div class="alert alert-info alert-dismissible fade show d-flex align-items-center justify-content-between" role="alert">
+        Existe uma solicitação
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <a href="{{ route('pedido') }}" class="btn btn-primary">Ver</a>
+    </div>
+@endif
+
 {{-- Mensagens de Aviso --}}
 @if (session()->has('warning'))
     <div class="alert alert-warning alert-dismissible fade show" role="alert">

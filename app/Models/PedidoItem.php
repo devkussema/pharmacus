@@ -18,24 +18,28 @@ class PedidoItem extends Model
         'area_para',
         'confirmado',
         'item_id',
+        'gastos',
+        'existencia',
+        'qtd_pedida',
+        'qtd_disponibilizada'
     ];
 
-    public function user_de()
+    public function user_a()
     {
         return $this->belongsTo(User::class, 'user_de');
     }
 
-    public function user_para()
+    public function user_b()
     {
         return $this->belongsTo(User::class, 'user_para');
     }
 
-    public function area_de()
+    public function area_a()
     {
-        return $this->belongsTo(FarmaciaAreaHospitalar::class, 'area_de');
+        return $this->belongsTo(AreaHospitalar::class, 'area_de');
     }
 
-    public function area_para()
+    public function area_b()
     {
         return $this->belongsTo(FarmaciaAreaHospitalar::class, 'area_para');
     }

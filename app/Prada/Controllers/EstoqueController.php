@@ -340,10 +340,25 @@ class EstoqueController extends Controller
         $request->validate([
             'itens' => 'required|array|min:1',
             'area_para' => 'required',
+            'gastos' => 'nullable',
+            'existencia' => 'nullable',
+            'qtd_pedida' => 'required',
+            'qtd_disponibilizada' => 'nullable',
             'id_user' => 'required|exists:users,id',
         ], [
             'itens.required' => 'Nenhum item selecionado, selecione pelo menos um item',
+            'itens.array' => 'Os itens devem estar em formato de array',
+            'itens.min' => 'Selecione pelo menos um item',
             'area_para.required' => 'Nenhuma área selecionada, selecione pelo menos uma área',
+            'gastos.numeric' => 'O campo "Gastos" deve ser um número',
+            //'existencia.nullable' => 'O campo "Existência" é obrigatório',
+            'existencia.integer' => 'O campo "Existência" deve ser um número inteiro',
+            'qtd_pedida.required' => 'O campo "Quantidade Pedida" é obrigatório',
+            'qtd_pedida.integer' => 'O campo "Quantidade Pedida" deve ser um número inteiro',
+            //'qtd_disponibilizada.nullable' => 'O campo "Quantidade Disponibilizada" é obrigatório',
+            'qtd_disponibilizada.integer' => 'O campo "Quantidade Disponibilizada" deve ser um número inteiro',
+            'id_user.required' => 'Algo deu errado, atualize a página e tente novamente',
+            'id_user.exists' => 'Algo deu errado, atualize a página e tente novamente',
         ]);
 
         $itensSelecionados = $request->input('itens');
@@ -355,6 +370,10 @@ class EstoqueController extends Controller
                 'area_de' => $area_de,
                 'area_para' => $request->input('area_para'),
                 'confirmado' => 0,
+                'gastos' => $request->input('gastos'),
+                'existencia' => $request->input('existencia'),
+                'qtd_pedida' => $request->input('qtd_pedida'),
+                'qtd_disponibilizada' => $request->input('qtd_disponibilizada'),
             ]);
         }
 

@@ -53,7 +53,6 @@
                                                         <th>Existência</th>
                                                         <th>Quantidade Pedida</th>
                                                         <th>Qualidade Disponibilizada</th>
-                                                        <th>Data de Expiração</th>
                                                         <th>Ações</th>
                                                     </tr>
                                                 </thead>
@@ -66,19 +65,16 @@
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <input type="text" class="form-control">
+                                                            <input type="number" name="gastos" class="form-control">
                                                         </td>
                                                         <td>
-                                                            <input type="text" class="form-control">
+                                                            <input type="number" name="existencia" class="form-control">
                                                         </td>
                                                         <td>
-                                                            <input type="text" class="form-control">
+                                                           <input type="number" name="qtd_pedida" class="form-control">
                                                         </td>
                                                         <td>
-                                                            <input type="text" class="form-control">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control">
+                                                            <input type="number" name="qtd_disponibilizada" class="form-control">
                                                         </td>
                                                         <td class="add-remove text-end">
                                                             <a href="javascript:void(0);" class="btn-add-inp me-2">
