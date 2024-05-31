@@ -32,10 +32,32 @@ class PedidoController extends Controller
         return view('pedido.atender', ['pedido' => $pi]);
     }
 
+    public function storeAtender(Request $request, $id)
+    {
+        $ref = $request->input('item_id');
+        $qtd_dip = $request->input('qtd_disponibilizada');
+        $pe = PE::where('num_documento', $ref)->orWhere('num_lote', $ref)->first();
+
+        if ($pe) {
+            $pi = PedidoItem::find($ref);
+            $pi->user_para = auth()->user()->id;
+            $pi->confirmado = 1;
+            $pi->qtd_disponibilizada = $qtd_dip;
+            $pi->save();
+        }else{
+            return redirect()->back()->with('error', 'Algo deu errado, tente novamente.');
+        }
+
+        return redirect()->back()->with('success', "Produto enviado");
+    }
+
     public function getPE($ref)
     {
         $get = PE::where('num_documento', $ref)->orWhere('num_lote', $ref)->first();
 
-        return $get;
+        if ($get)
+            return $get;
+
+        return response()->json(["O produto não existe"], 404);
     }
 }

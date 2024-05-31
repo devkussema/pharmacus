@@ -68,6 +68,7 @@
                                     <tr>
                                         <th>Nome</th>
                                         <th>Área</th>
+                                        <th>Produto</th>
                                         <th>Gastos</th>
                                         <th>Existência</th>
                                         <th>Qtd Pedida</th>
@@ -84,6 +85,7 @@
                                                 </a>
                                             </td>
                                             <td>{{ $p->area_a->nome }}</td>
+                                            <td><b>{{ $p->item->designacao }}</b></td>
                                             <td>{{ $p->gastos }}</td>
                                             <td>{{ $p->existencia }}</td>
                                             <td>{{ $p->qtd_pedida }}</td>

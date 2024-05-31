@@ -59,6 +59,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('pedidos')->group(function () {
         Route::get('/', [PedidoController::class, 'index'])->name('pedido');
         Route::get('/atender/{id}', [PedidoController::class, 'atender'])->name('pedido.atender');
+        Route::post('/atender/{id}', [PedidoController::class, 'storeAtender'])->name('pedido.storeAtender');
         Route::get('/info/{id}', [PedidoController::class, 'getPE'])->name('pedido.info');
     });
 
