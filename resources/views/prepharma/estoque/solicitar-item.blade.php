@@ -154,9 +154,9 @@
             $('.js-example-basic-single').select2();
         });
 
-        function fetchAndPopulateSelectArea() {
+        function fetchAndPopulateSelectArea(id_def) {
             $.ajax({
-                url: '/api/get/areas_hospitalares',
+                url: '/api/get/areas_hospitalares/def/' + id_def,
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
@@ -203,8 +203,9 @@
         }
 
         $(document).ready(function() {
+            var areaId = $('meta[name="area_id_"]').attr('content');
             // Chama a função para buscar os itens e popular o select
-            fetchAndPopulateSelectArea();
+            fetchAndPopulateSelectArea(areaId);
 
             // Adiciona um ouvinte de evento para o evento de mudança no select
             $('#area_id_').on('change', function() {

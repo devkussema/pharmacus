@@ -232,7 +232,7 @@ Route::prefix('api')->group(function () {
     Route::get('/produtos/{id}', [EstoqueController::class, 'apiEstoque']);
 
     Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);
-    Route::get('/get/areas_hospitalares', [AreaHospitalarController::class, 'getAllMy']);
+    Route::get('/get/areas_hospitalares/def/{id}', [AreaHospitalarController::class, 'getAllMy']);
     Route::get('/get/area_hospitalar/{id}', [AreaHospitalarController::class, 'getInfo']);
 
     Route::get('/get/farmacia', [FarmaciaController::class, 'getAll']);

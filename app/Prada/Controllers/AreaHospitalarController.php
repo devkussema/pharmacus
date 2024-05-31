@@ -151,10 +151,13 @@ class AreaHospitalarController extends Controller
         return response()->json($all);
     }
 
-    public function getAllMy()
+    public function getAllMy($id_def)
     {
         $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
-        $all = FAH::where('farmacia_id', $farmacia_id)->with('area_hospitalar')->get();
+        $all = FAH::where('farmacia_id', $farmacia_id)
+          ->where('area_hospitalar_id', '!=', $id_def)
+          ->with('area_hospitalar', 'farmacia')
+          ->get();
 
         return response()->json($all);
     }
