@@ -23,7 +23,7 @@
                                                 class="login-danger">*</span></label>
                                         <input id="nome_requisitante_id" class="form-control"
                                             value="{{ Auth::user()->nome }}" type="text" disabled>
-                                            <input type="hidden" name="id_user" hidden value="{{ Auth::user()->id }}">
+                                        <input type="hidden" name="id_user" hidden value="{{ Auth::user()->id }}">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-xl-6">
@@ -36,11 +36,65 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-12 col-xl-12">
-                                    <div class="input-block local-forms">
+                                    {{-- <div class="input-block local-forms">
                                         <label for="select-itens">Escolher Itens <span class="login-danger">*</span></label>
-                                        <select id="select-itens" class="js-example-basic-multiple form-control"
+                                        <select id="select-itensa" class="js-example-basic-multiple form-control"
                                             name="itens[]" multiple="multiple">
                                         </select>
+                                    </div> --}}
+                                    <div class="invoice-add-table">
+                                        <h4>Escolher Itens</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-nowrap  mb-0 no-footer add-table-items">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Medicamento e Material Gastável</th>
+                                                        <th>Gastos</th>
+                                                        <th>Existência</th>
+                                                        <th>Quantidade Pedida</th>
+                                                        <th>Qualidade Disponibilizada</th>
+                                                        <th>Data de Expiração</th>
+                                                        <th>Ações</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="add-row">
+                                                        <td>
+                                                            <select id="select-itens"
+                                                                class="js-example-basic-single form-control"
+                                                                name="itens[]">
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control">
+                                                        </td>
+                                                        <td class="add-remove text-end">
+                                                            <a href="javascript:void(0);" class="btn-add-inp me-2">
+                                                                <i class="fas fa-plus-circle"></i>
+                                                            </a>
+                                                            <a href="#" class="copy-btn me-2">
+                                                                <i class="fas fa-copy"></i>
+                                                            </a>
+                                                            <a href="javascript:void(0);" class="remove-btn">
+                                                                <i class="fa fa-trash-alt"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 mt-4">
@@ -58,6 +112,42 @@
 
     <script>
         $(document).ready(function() {
+            function generateUniqueId() {
+                return 'select-' + Math.random().toString(36).substr(2, 9);
+            }
+            $(document).on("click", ".btn-add-inp", function() {
+                var uniqueId = generateUniqueId();
+                var newRow = '<tr class="add-row">' +
+                    '<td>' +
+                    '<select id="' + uniqueId +
+                    '" class="js-example-basic-single form-control" name="itens[]"></select>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" class="form-control">' +
+                    '</td>' +
+                    '<td><input type="text" class="form-control"></td>' +
+                    '<td><input type="text" class="form-control"></td>' +
+                    '<td><input type="text" class="form-control"></td>' +
+                    '<td><input type="text" class="form-control"></td>' +
+                    '<td class="add-remove text-end">' +
+                    '<a href="javascript:void(0);" class="btn-add-inp me-2"><i class="fas fa-plus-circle"></i></a> ' +
+                    '<a href="#" class="copy-btn me-2"><i class="fas fa-copy"></i></a>' +
+                    '<a href="javascript:void(0);" class="remove-btn"><i class="fa fa-trash-alt"></i></a>' +
+                    '</td>' +
+                    '</tr>';
+
+                $(".add-table-items tbody").append(newRow);
+
+                var newSelect = $("#" + uniqueId);
+                newSelect.select2();
+
+                var selectedArea = $('#area_id_').val();
+                if (selectedArea) {
+                    fetchAndPopulateSelect(selectedArea, newSelect);
+                }
+
+                return false;
+            });
             $('.js-example-basic-multiple').select2({
                 theme: "classic"
             });
@@ -86,7 +176,8 @@
             });
         }
 
-        function fetchAndPopulateSelect(id) {
+        // Função para popular o select de itens
+        function fetchAndPopulateSelect(id, targetSelect) {
             var endpoint = '/api/produtos/' + id;
 
             $.ajax({
@@ -94,16 +185,12 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    var select = $('#select-itens'); // Seleciona o elemento select
-                    // Limpa as options existentes antes de adicionar novas
-                    select.empty();
-                    // Ordena os itens alfabeticamente
+                    targetSelect.empty();
                     var sortedData = data.data.sort(function(a, b) {
                         return a.produto.designacao.localeCompare(b.produto.designacao);
                     });
-                    // Itera sobre os itens ordenados e adiciona as options ao select
                     $.each(sortedData, function(index, item) {
-                        select.append($('<option>', {
+                        targetSelect.append($('<option>', {
                             value: item.id,
                             text: item.produto.designacao
                         }));
@@ -122,7 +209,7 @@
             // Adiciona um ouvinte de evento para o evento de mudança no select
             $('#area_id_').on('change', function() {
                 var selectedValue = $(this).val();
-                fetchAndPopulateSelect(selectedValue);
+                fetchAndPopulateSelect(selectedValue, $('#select-itens'));
             });
         });
     </script>

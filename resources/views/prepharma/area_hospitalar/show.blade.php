@@ -358,7 +358,7 @@
             // setInterval(() => {
             //     showModalAlerta()
             // }, 25000);
-            showModalAlerta()
+            //showModalAlerta()
 
             // Adicionar evento de clique aos botões dentro da modal
             var dismissButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
