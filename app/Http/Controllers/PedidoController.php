@@ -34,21 +34,27 @@ class PedidoController extends Controller
 
     public function storeAtender(Request $request, $id)
     {
-        $ref = $request->input('item_id');
+        $request->validate([
+            'qtd_disponibilizada' => "required|numeric"
+        ]);
+        $ref = $request->input('ref_id');
         $qtd_dip = $request->input('qtd_disponibilizada');
-        $pe = PE::where('num_documento', $ref)->orWhere('num_lote', $ref)->first();
+        $doc_num = $request->input('doc_num');
+        $pe = PE::where('num_documento', $doc_num)->orWhere('num_lote', $doc_num)->first();
 
         if ($pe) {
             $pi = PedidoItem::find($ref);
-            $pi->user_para = auth()->user()->id;
-            $pi->confirmado = 1;
-            $pi->qtd_disponibilizada = $qtd_dip;
-            $pi->save();
+            if ($pi) {
+                $pi->update([
+                    "user_para" => auth()->user()->id,
+                    "confirmado" => 1,
+                    "qtd_disponibilizada" => $qtd_dip,
+                ]);
+                return redirect()->back()->with('success', "Produto enviado");
+            }
         }else{
             return redirect()->back()->with('error', 'Algo deu errado, tente novamente.');
         }
-
-        return redirect()->back()->with('success', "Produto enviado");
     }
 
     public function getPE($ref)

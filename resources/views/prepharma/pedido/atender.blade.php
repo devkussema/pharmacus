@@ -9,7 +9,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <form action="#" id="atenderPedido" action="{{ route('pedido.storeAtender', ['id' => $pedido->id]) }}">
+                        <form action="#" id="atenderPedido" action="{{ route('pedido.storeAtender', ['id' => $pedido->id]) }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-12">
@@ -32,6 +32,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Medicamento e Material Gastável</th>
+                                                        <th>Quantidade Disponivel</th>
                                                         <th>Quantidade Disponibilizada</th>
                                                         <th>Lote, Código QR ou Barras</th>,
                                                     </tr>
@@ -43,8 +44,12 @@
                                                                 disabled>
                                                         </td>
                                                         <td>
+                                                            <input type="text" disabled name="max_item" value="{{ $pedido->item->saldo->qtd }}" class="form-control">
+                                                        </td>
+                                                        <td>
                                                             <input type="number" name="qtd_disponibilizada"
-                                                                class="form-control">
+                                                                class="form-control" max="{{ $pedido->item->saldo->qtd }}">
+                                                            <input type="hidden" name="ref_id" value="{{ $pedido->id }}">
                                                         </td>
                                                         <td>
                                                             <input type="text" id="doc_num" name="doc_num"
@@ -69,7 +74,7 @@
                                 </div>
                                 <div class="col-lg-12 mt-4">
                                     <div class="d-flex flex-wrap align-items-ceter justify-content-center">
-                                        <button type="submit" class="btn rounded-pill btn-primary" type="submit">Enviar</button>
+                                        <button id="btn-atenderPedido" type="submit" class="btn rounded-pill btn-primary" type="submit">Enviar</button>
                                     </div>
                                 </div>
                             </div>
@@ -94,8 +99,8 @@
                         var newRow = $('.add-row:last');
 
                         // Preencher os campos de entrada com os dados recebidos
-                        newRow.find('input[name="itens[]"]').val(data.designacao);
-                        newRow.find('input[name="qtd_disonibilizada"]').val(data.qtd_disponibilizada);
+                        newRow.find('input[name="item_id"]').val(data.designacao);
+                        newRow.find('input[name="qtd_disponibilizada"]').val(data.qtd_disponibilizada);
 
                         // Continuar o envio do formulário após obter os dados do produto
                         $('#atenderPedido').off('submit').submit();
@@ -119,7 +124,6 @@
         $('#atenderPedido').on('submit', function(e) {
             e.preventDefault();
             setItem();
-
         });
     </script>
 @endsection
