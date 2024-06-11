@@ -53,6 +53,22 @@
                         </a>
                     </li>
                 @endif
+                @if (vPerm('relatorio', ['ver']) or Auth::user()->isFarmacia)
+                <li class="submenu">
+                    <a href="#">
+                        <span class="menu-side">
+                            <img src="{{ assetr('assets/img/icons/menu-icon-15.svg') }}" alt>
+                        </span>
+                        <span>Relatorios </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li>
+                            <a href="{{ route('nivel_alerta') }}"> Niveis de alerta </a>
+                        </li>
+                    </ul>
+                </li>
+                @endif
             </ul>
             <div class="logout-btn">
                 <a href="{{ route('logout') }}">

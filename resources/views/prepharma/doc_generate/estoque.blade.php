@@ -132,15 +132,6 @@
                                     <div class="dropdown dropdown-action">
                                         <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
                                             aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            @if (vPerm('produtos', ['dar_baixa']) or Auth::user()->isFarmacia)
-                                                <a class="dropdown-item" href="javascript:void(0)"
-                                                    onclick="modalDarBaixa({{ $est->produto->id }}, '{{ getCaixa($est->produto->descritivo) }}')">
-                                                    <i class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                    Dar Baixa
-                                                </a>
-                                            @endif
-                                        </div>
                                     </div>
                                 </td>
                             </tr>
