@@ -61,26 +61,19 @@
                                         <div class="doctor-search-blk">
                                             <div class="top-nav-search table-search-blk">
                                                 <form>
-                                                    <input type="text" id="search-table" class="form-control" placeholder="Procure aqui">
+                                                    <input type="text" id="search-tableq" class="form-control" placeholder="Procure aqui">
                                                     <a class="btn"><img
                                                             src="{{ assetr('assets/img/icons/search-normal.svg') }}"
                                                             alt></a>
                                                 </form>
                                             </div>
-                                            <div class="add-group">
-                                                <a data-bs-toggle="modal" data-bs-target="#AddAH" href="javascript:void(0)"
-                                                    class="btn btn-primary add-pluss ms-2">
-                                                    <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
-                                                </a>
-                                                <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2"><img
-                                                        src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt></a>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-auto text-end float-end ms-auto download-grp">
-                                    <a href="javascript:;" class=" me-2"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt></a>
+                                    <a href="{{ route('print.nivel_alerta') }}" id="imprimir-pagina" target="_blank" class=" me-2">
+                                        <img src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt>
+                                    </a>
                                     <a href="javascript:;" class=" me-2"><img
                                             src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt></a>
                                     <a href="javascript:;" class=" me-2"><img
@@ -92,7 +85,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table border-0 custom-table comman-table datatable mb-0" id="table-content">
+                            <table class="table border-0 custom-table comman-table datatable mb-0" id="table-cd">
                                 <thead>
                                     <tr>
                                         <th>Designação</th>
@@ -101,7 +94,6 @@
                                         <th>Área Hospitalar</th>
                                         <th>Lote</th>
                                         <th>Tempo restante</th>
-                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -127,4 +119,25 @@
             </div>
         </div>
     </div>
+    <script>
+        $('#search-tableq').on('keyup', function() {
+            // Obtém a instância da DataTable
+            var table = $('#table-cd').DataTable();
+
+            // Aplica o filtro ao DataTable usando o valor do campo de pesquisa personalizado
+            table.search(this.value).draw();
+        });
+        document.getElementById('imprimir-pagina').addEventListener('click', function(e) {
+            e.preventDefault(); // Evita que o link seja seguido imediatamente
+
+            // Redireciona para a página específica em uma nova aba
+            var novaAba = window.open(this.href, '_blank');
+
+            // Espera até que a página seja completamente carregada na nova aba
+            novaAba.onload = function() {
+                // Imprime a página
+                novaAba.print();
+            };
+        });
+    </script>
 @endsection

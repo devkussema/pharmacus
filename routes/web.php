@@ -70,6 +70,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('print')->group(function () {
         Route::get('/estoque', [PrintController::class, 'index'])->name('print.estoque');
         Route::get('/estoque/{estoque_id}', [PrintController::class, 'view'])->name('print.view');
+        Route::get('/nivel_alerta', [PrintController::class, 'nivel_alerta'])->name('print.nivel_alerta');
     });
 
     Route::get('/', [HomeController::class, 'home'])->name('home');

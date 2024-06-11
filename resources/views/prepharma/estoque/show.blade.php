@@ -54,8 +54,7 @@
                                     @include('estoque.modalAddProduto')
                                 </div>
                                 <div class="col-auto text-end float-end ms-auto download-grp">
-                                    <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}" id="imprimir-pagina"
-                                        target="_blank" class=" me-2">
+                                    <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}" id="imprimir-pagina" target="_blank" class=" me-2">
                                         <img src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt>
                                     </a>
                                     <a href="javascript:;" class=" me-2"><img

@@ -38,4 +38,10 @@ class PrintController extends Controller
 
         return view('doc_generate.estoque', compact('estoque'));
     }
+
+    public function nivel_alerta(Request $request)
+    {
+        $all = REA::where('nivel_alerta_id', 1)->get();
+        return view('doc_generate.nivel_alerta', compact('all'));
+    }
 }

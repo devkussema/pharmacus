@@ -70,14 +70,14 @@
                 </li>
                 @endif
             </ul>
-            <div class="logout-btn">
+            {{-- <div class="logout-btn">
                 <a href="{{ route('logout') }}">
                     <span class="menu-side">
                         <img src="{{ assetr('assets/img/icons/logout.svg')}}" alt>
                     </span>
                     <span>Sair</span>
                 </a>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
