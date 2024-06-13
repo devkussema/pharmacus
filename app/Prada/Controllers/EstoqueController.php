@@ -49,6 +49,60 @@ class EstoqueController extends Controller
         return view('estoque.panel');
     }
 
+    public function edit(Request $request, $id, $returnID)
+    {
+        $pe = PE::find($id);
+        return view('estoque.edit', compact('pe', 'returnID'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validar os dados do formulário
+        $request->validate([
+            'designacao' => 'required',
+            'tipo' => 'required',
+            'dosagem' => 'nullable', // Pode ser nullable dependendo da lógica do seu sistema
+            'caixa' => 'required',
+            'caxinha' => 'required',
+            'unidade' => 'required',
+            'num_lote' => 'required',
+            'num_documento' => 'required',
+            'data_producao' => 'required',
+            'data_expiracao' => 'required',
+            'forma' => 'required',
+            'grupo_farmaco_id' => 'required',
+            'origem_destino' => 'required',
+        ]);
+
+        // Encontrar o registro do Estoque pelo ID
+        $estoque = PE::findOrFail($id);
+
+        $ID = $request->input('returnID');
+
+        // Atualizar os dados com base nos dados do formulário
+        $estoque->designacao = $request->input('designacao');
+        $estoque->tipo = $request->input('tipo');
+        $estoque->dosagem = $request->input('dosagem');
+        $estoque->descritivo = $request->input('caixa') . 'x' . $request->input('caxinha') . 'x' . $request->input('unidade');
+        $estoque->saldo->qtd = $request->input('qtd_total'); // Certifique-se de que esse campo é atualizado corretamente
+        $estoque->num_lote = $request->input('num_lote');
+        $estoque->num_documento = $request->input('num_documento');
+        $estoque->data_producao = $request->input('data_producao');
+        $estoque->data_expiracao = $request->input('data_expiracao');
+        $estoque->data_recepcao = $request->input('data_recepcao');
+        $estoque->forma = $request->input('forma');
+        $estoque->grupo_farmaco_id = $request->input('grupo_farmaco_id');
+        $estoque->origem_destino = $request->input('origem_destino');
+        // $estoque->area_id = $request->input('area_id');
+        $estoque->obs = $request->input('obs');
+
+        // Salvar as alterações no banco de dados
+        $estoque->save();
+
+        // Redirecionar de volta com uma mensagem de sucesso
+        return redirect()->route('estoque.getEstoque', ['id' => $ID])->with('success', 'Produto de estoque atualizado com sucesso.');
+    }
+
     public function solicitar(Request $request, $area_id)
     {
         return view('estoque.solicitar-item', ['area' => $area_id]);

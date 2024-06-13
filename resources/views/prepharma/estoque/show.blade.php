@@ -29,7 +29,7 @@
                                         <h3>Estoque {{ $ah->nome }}</h3>
                                         <div class="doctor-search-blk">
                                             <div class="top-nav-search table-search-blk">
-                                                <form>
+                                                <form id="form_search" method="POST">
                                                     <input type="text" id="search-table" class="form-control outline-success"
                                                         placeholder="Procure aqui">
                                                     <a class="btn">
@@ -197,20 +197,21 @@
                         "orderable": false, // Desabilita a ordenação nessa coluna
                         "data": null, // Não busca dados específicos, vamos manipular o HTML
                         "render": function(data, type, row, meta) {
-                            var actionHtml = '';
-
                             // Adiciona o dropdown de ações se o usuário tiver permissão ou for farmácia
-                            actionHtml += '<div class="dropdown dropdown-action">';
-                            actionHtml +=
-                                '<a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>';
-                            actionHtml += '<div class="dropdown-menu dropdown-menu-end">';
-                            actionHtml +=
-                                '<a class="dropdown-item" href="javascript:void(0)" onclick="modalDarBaixa(' +
-                                row.produto.id + ', \'' + getCaixa(row.produto.descritivo) +
-                                '\')">';
-                            actionHtml +=
-                                '<i class="fa-solid fa-pen-to-square m-r-5"></i> Dar Baixa</a>';
-                            actionHtml += '</div></div>';
+                            let actionHtml = `
+                                <div class="dropdown dropdown-action">
+                                    <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-v"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="modalDarBaixa(${row.produto.id}, '${getCaixa(row.produto.descritivo)}')">
+                                            <i class="fa-solid fa-pen-to-square m-r-5"></i> Dar Baixa
+                                        </a>
+                                        <a class="dropdown-item" href="/estoque/editar/${row.produto.id}/{{ $ah->id }}">
+                                            <i class="fa-solid fa-pen-to-square m-r-5"></i> Editar
+                                        </a>
+                                    </div>
+                                </div>`;
 
                             return actionHtml;
                         }
@@ -232,6 +233,9 @@
                 }
             });
 
+            $('form#form_search').on('submit', function(e){
+                e.preventDefault();
+            });
             $('#search-table').on('keyup', function() {
                 // Obtém a instância da DataTable
                 var table = $('#table-c').DataTable();

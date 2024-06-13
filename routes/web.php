@@ -100,6 +100,8 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
 
     Route::prefix('estoque')->middleware('is.area_hospitalar')->group(function () {
         Route::get('/', [EstoqueController::class, 'index'])->name('estoque');
+        Route::get('/editar/{id}/{returnID}', [EstoqueController::class, 'edit'])->name('estoque.editar');
+        Route::post('/editar/{id}', [EstoqueController::class, 'update'])->name('estoque.update');
         Route::get('/home', [EstoqueController::class, 'getListHome'])->name('estoque.gerente');
         Route::get('/solicitar/{id}', [EstoqueController::class, 'solicitar'])->name('estoque.solicitar');
         Route::get('/{id}', [EstoqueController::class, 'getEstoque'])->name('estoque.getEstoque');

@@ -288,6 +288,34 @@ function getCaixa($string)
     return $valor;
 }
 
+function getCaixinha($string) {
+    // Explode a string usando 'x' como separador
+    $parts = explode('x', $string);
+    
+    // Verifica se existem pelo menos duas partes
+    if (count($parts) >= 2) {
+        // Retorna a segunda parte (a primeira coluna é indexada em 0)
+        return ltrim($parts[1], '0');
+    } else {
+        // Retorna um valor padrão ou lança uma exceção, dependendo do seu caso
+        return null; // ou lançar uma exceção ou mensagem de erro, se a estrutura for diferente
+    }
+}
+
+function getUnit($string) {
+    // Explode a string usando 'x' como separador
+    $parts = explode('x', $string);
+    
+    // Verifica se existem pelo menos duas partes
+    if (count($parts) >= 2) {
+        // Retorna a segunda parte (a primeira coluna é indexada em 0)
+        return ltrim($parts[2], '0');
+    } else {
+        // Retorna um valor padrão ou lança uma exceção, dependendo do seu caso
+        return null; // ou lançar uma exceção ou mensagem de erro, se a estrutura for diferente
+    }
+}
+
 function downCaixa($formato, $caixasASubtrair)
 {
     // Separar os valores do formato
