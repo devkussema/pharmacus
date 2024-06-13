@@ -43,6 +43,14 @@
     </div>
 @endif
 
+@if (\App\Models\ConfirmarBaixa::where('area_hospitalar_para', session('id_area_'))->where('confirmado', 0)->get())
+    <div class="alert alert-info alert-dismissible fade show d-flex align-items-center justify-content-between" role="alert">
+        Existem produtos que precisas confirmar a entrega
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <a href="{{ route('pedido') }}" class="btn btn-primary">Ver</a>
+    </div>
+@endif
+
 {{-- Mensagens de Aviso --}}
 @if (session()->has('warning'))
     <div class="alert alert-warning alert-dismissible fade show" role="alert">

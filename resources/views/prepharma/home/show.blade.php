@@ -47,8 +47,10 @@
                             <div class="dash-content dash-count">
                                 <h4>{{ $n->nivel_alerta->nome }}</h4>
                                 <h2><span class="counter-up">{{ $n->nivel_alerta->relatorios->count() }}</span></h2>
-                                {{-- <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>40%</span> vs
-                                    last month</p> --}}
+                                @if ($n->nivel_alerta->regra == '3') até 3 meses @endif
+                                @if ($n->nivel_alerta->regra == '6') até 6 meses @endif
+                                @if ($n->nivel_alerta->regra == '10') até 10 meses @endif
+                                @if ($n->nivel_alerta->regra == '12') até 12 meses @endif
                             </div>
                         </div>
                     </div>

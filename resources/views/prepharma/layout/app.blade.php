@@ -5,13 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     @php
-        $id_area_ = 0;
-        if (@auth()->user()->isFarmacia) {
-            $a = \App\Models\AreaHospitalar::where('nome', 'Armazém I')->first();
-            $id_area_ = $a->id;
-        }else if (@auth()->user()->farmacia->area_hospitalar) {
-            $id_area_ = auth()->user()->farmacia->area_hospitalar_id;
-        }
+        $id_area_ = auth()->user()->isFarmacia
+            ? optional(\App\Models\AreaHospitalar::where('nome', 'Armazém I')->first())->id
+            : optional(auth()->user()->farmacia->area_hospitalar)->id ?? 0;
     @endphp
     <meta name="area_id_" content="{{ $id_area_ }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ assetr('assets/img/white__logo2.png') }}">

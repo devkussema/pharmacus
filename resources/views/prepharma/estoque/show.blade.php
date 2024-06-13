@@ -77,7 +77,6 @@
                                         <th>Forma</th>
                                         <th>Fornecedor</th>
                                         <th>Lote</th>
-                                        <th>Grupo</th>
                                         <th>Qtd. Caixa</th>
                                         <th>Qtd. Unit.</th>
                                         <th>Documento nº</th>
@@ -169,9 +168,6 @@
                     {
                         "data": "produto.num_lote"
                     }, // Lote
-                    {
-                        "data": "produto.grupo_farmaco_id"
-                    }, // Grupo
                     {
                         "data": function(row) {
                             return getCaixa(row.produto.descritivo);

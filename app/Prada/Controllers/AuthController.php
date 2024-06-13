@@ -185,6 +185,13 @@ class AuthController extends Controller
                 return redirect()->route('login')->with('error', 'A tua conta não está ativada');
             }
 
+            $user = auth()->user();
+            $id_area_ = @$user->isFarmacia
+                ? optional(\App\Models\AreaHospitalar::where('nome', 'Armazém I')->first())->id
+                : optional($user->farmacia->area_hospitalar)->id ?? 0;
+
+            session(['id_area_' => $id_area_]);
+
             if ($request->ajax()) {
                 return response()->json(['message' => 'Cadastro efetuado', 'success' => true], 201);
             }
