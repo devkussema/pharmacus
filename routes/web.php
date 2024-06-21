@@ -110,6 +110,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('/produto/{id}', [EstoqueController::class, 'getProduto']);
         Route::put('/produto/{id}', [EstoqueController::class, 'editarProduto']);
         Route::get('estoque/ajax', [EstoqueController::class, 'ajaxEstoque'])->name('estoque.ajax');
+        Route::get('/adicionar/{area_id}', [EstoqueController::class, 'cadastrar'])->name('estoque.cadastrar');
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
         Route::post('/dar_baixa/{area_de}', [EstoqueController::class, 'dar_baixa'])->name('estoque.dar_baixa');

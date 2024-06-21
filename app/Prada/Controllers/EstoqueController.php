@@ -108,6 +108,11 @@ class EstoqueController extends Controller
         return view('estoque.solicitar-item', ['area' => $area_id]);
     }
 
+    public function cadastrar(Request $request, $area_id)
+    {
+        return view('estoque.adicionar-item', ['area' => $area_id]);
+    }
+
     public function myEstoque(Request $request, $id)
     {
         $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
@@ -220,13 +225,16 @@ class EstoqueController extends Controller
 
     public function store(Request $request)
     {
+        dd($request); exit;
         $request->validate([
             'designacao' => 'required',
             'dosagem' => 'nullable',
             'forma' => 'required',
             'tipo' => 'required',
             'farmacia_id' => 'required',
-            'descritivo' => 'required',
+            'caixa' => 'required',
+            'caxinha' => 'required',
+            'unidade' => 'required',
             'qtd_total' => 'required',
             'origem_destino' => 'required',
             'num_lote' => 'required',
@@ -266,6 +274,12 @@ class EstoqueController extends Controller
             'qtd_embalagem.min' => 'A quantidade por embalagem deve ser pelo menos 1.',
         ]);
 
+        $caixa = $request->input('caixa');
+        $caxinha = $request->input('caxinha');
+        $unidade = $request->input('unidade');
+
+        $descritivo = $caixa."x".$caxinha."x".$unidade;
+
         $farmacia_id = $request->farmacia_id;
 
         if ($request->tipo == 'medicamento' and !$request->dosagem)
@@ -275,7 +289,7 @@ class EstoqueController extends Controller
             'designacao' => $request->designacao,
             'dosagem' => ($request->dosagem ? $request->dosagem : ''),
             'tipo' => $request->tipo,
-            'descritivo' => $request->descritivo,
+            'descritivo' => $descritivo,
             'forma' => $request->forma,
             'confirmado' => 1,
             'origem_destino' => $request->origem_destino,

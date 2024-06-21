@@ -38,8 +38,7 @@
                                                 </form>
                                             </div>
                                             <div class="add-group">
-                                                <button data-bs-toggle="modal" data-bs-target="#modalAddProduto"
-                                                    class="btn btn-rounded btn-outline-primary ms-2">
+                                                <button  onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'" class="btn btn-rounded btn-outline-primary ms-2">
                                                     <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
                                                     Adicionar Produto
                                                 </button>
