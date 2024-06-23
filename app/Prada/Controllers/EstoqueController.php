@@ -225,7 +225,7 @@ class EstoqueController extends Controller
 
     public function store(Request $request)
     {
-        dd($request); exit;
+        // dd($request); exit;
         $request->validate([
             'designacao' => 'required',
             'dosagem' => 'nullable',
@@ -235,7 +235,7 @@ class EstoqueController extends Controller
             'caixa' => 'required',
             'caxinha' => 'required',
             'unidade' => 'required',
-            'qtd_total' => 'required',
+            'qtd_total' => 'nullable',
             'origem_destino' => 'required',
             'num_lote' => 'required',
             'data_producao' => 'required|date|before:today', // Verifica se a data de produção é anterior à data atual
@@ -268,7 +268,6 @@ class EstoqueController extends Controller
             'data_expiracao.after_or_equal' => 'A data de caducidade deve ser pelo menos 4 meses após a data atual.',
             'num_documento.required' => 'O número do documento é obrigatório.',
             'num_documento.unique' => 'Já existe um item com este número de produto.',
-            'qtd_total.required' => 'Preencha o descritivo.',
             'qtd_embalagem.required' => 'A quantidade por embalagem é obrigatória.',
             'qtd_embalagem.integer' => 'A quantidade por embalagem deve ser um número inteiro.',
             'qtd_embalagem.min' => 'A quantidade por embalagem deve ser pelo menos 1.',
@@ -278,7 +277,8 @@ class EstoqueController extends Controller
         $caxinha = $request->input('caxinha');
         $unidade = $request->input('unidade');
 
-        $descritivo = $caixa."x".$caxinha."x".$unidade;
+        $descritivo_ = $caixa."x".$caxinha."x".$unidade;
+        $descritivo = $request->input('unidade') ?? $descritivo_;
 
         $farmacia_id = $request->farmacia_id;
 
@@ -304,7 +304,11 @@ class EstoqueController extends Controller
 
         $tipo = $request->tipo;
         $pe = PE::create($dadosPE);
-        $qtd = $request->qtd_total;
+        if (!$request->qtd_total) {
+            $qtd = intval($caixa) * intval($caxinha) * intval($unidade);
+        }else{
+            $qtd = $request->qtd_total;
+        }
 
         SE::create([
             'produto_estoque_id' => $pe->id,
@@ -321,7 +325,9 @@ class EstoqueController extends Controller
 
         self::startAtv("Adicionou cerca de {$caixas} caixas equivalente {$request->qtd_total} unidades de {$request->designacao}");
 
-        return response()->json(['message' => "{$request->designacao} adicionado!"]);
+        if ($request->ajax())
+            return response()->json(['message' => "{$request->designacao} adicionado!"]);
+        return redirect()->route("estoque.cadastrar", ['area_id' => $request->area_id])->with("success", "{$caixas} caixas de {$request->designacao} adicionadas.");
     }
 
     public function confirmarProduto($id_produto, $id_area)

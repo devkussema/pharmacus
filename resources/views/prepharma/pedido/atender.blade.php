@@ -33,6 +33,7 @@
                                                     <tr>
                                                         <th>Medicamento e Material Gastável</th>
                                                         <th>Quantidade Disponivel</th>
+                                                        <th>Quantidade Solicitada</th>
                                                         <th>Quantidade Disponibilizada</th>
                                                         <th>Lote, Código QR ou Barras</th>,
                                                     </tr>
@@ -40,11 +41,15 @@
                                                 <tbody>
                                                     <tr class="add-row">
                                                         <td>
-                                                            <input type="text" name="item_id" class="form-control"
+                                                            <input type="hidden" name="item_id" class="form-control"
                                                                 disabled>
+                                                            <input type="text" name="designacao" class="form-control" disabled id="nome-item">
                                                         </td>
                                                         <td>
                                                             <input type="text" disabled name="max_item" value="{{ $pedido->item->saldo->qtd }}" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" disabled name="qtd_pedida" value="{{ $pedido->qtd_pedida }}" class="form-control">
                                                         </td>
                                                         <td>
                                                             <input type="number" name="qtd_disponibilizada"
@@ -53,19 +58,8 @@
                                                         </td>
                                                         <td>
                                                             <input type="text" id="doc_num" name="doc_num"
-                                                                class="form-control">
+                                                                class="form-control" onkeyup="getData()">
                                                         </td>
-                                                        {{-- <td class="add-remove text-end">
-                                                            <a href="javascript:void(0);" class="btn-add-inp me-2">
-                                                                <i class="fas fa-plus-circle"></i>
-                                                            </a>
-                                                            <a href="#" class="copy-btn me-2">
-                                                                <i class="fas fa-copy"></i>
-                                                            </a>
-                                                            <a href="javascript:void(0);" class="remove-btn">
-                                                                <i class="fa fa-trash-alt"></i>
-                                                            </a>
-                                                        </td> --}}
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -86,6 +80,24 @@
     </div>
 
     <script>
+        function getData() {
+            var docNumValue = $('#doc_num').val();
+            $.ajax({
+                url: "/pedidos/info/" + docNumValue,
+                type: 'GET',
+                success: function(data) {
+                    if (data) {
+                        var novaLinha = $(".add-row:last");
+
+                        novaLinha.find('input[name="item_id"]').val(data.id);
+                        novaLinha.find('input#nome-item').val(data.designacao);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    ///
+                }
+            });
+        }
         function setItem() {
             // Obter o valor do campo doc_num
             var docNumValue = $('#doc_num').val();
@@ -100,7 +112,7 @@
 
                         // Preencher os campos de entrada com os dados recebidos
                         newRow.find('input[name="item_id"]').val(data.designacao);
-                        newRow.find('input[name="qtd_disponibilizada"]').val(data.qtd_disponibilizada);
+                        //newRow.find('input[name="qtd_disponibilizada"]').val(data.qtd_disponibilizada);
 
                         // Continuar o envio do formulário após obter os dados do produto
                         $('#atenderPedido').off('submit').submit();

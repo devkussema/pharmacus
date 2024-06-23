@@ -13,12 +13,7 @@ class PedidoController extends Controller
 {
     public function index()
     {
-        if (@auth()->user()->isFarmacia) {
-            $area_idr = AreaHospitalar::where('nome', 'Armazém I')->first();
-            $area_id = $area_idr->id;
-        } elseif (@auth()->user()->farmacia) {
-            $area_id = auth()->user()->farmacia->area_hospitalar_id;
-        }
+        $area_id = session("id_area_");
 
         $pi = PedidoItem::with('user_a')->where('area_para', $area_id)->where('confirmado', 0)->get();
 
@@ -36,6 +31,8 @@ class PedidoController extends Controller
     {
         $request->validate([
             'qtd_disponibilizada' => "required|numeric"
+        ],[
+            'qtd_disponibilizada.required' => "Deves informar a quantidade disponibilizada"
         ]);
         $ref = $request->input('ref_id');
         $qtd_dip = $request->input('qtd_disponibilizada');
@@ -59,7 +56,7 @@ class PedidoController extends Controller
 
     public function getPE($ref)
     {
-        $get = PE::where('num_documento', $ref)->orWhere('num_lote', $ref)->first();
+        $get = PE::where('num_documento', $ref)->orWhere('num_lote', $ref)->where('')->first();
 
         if ($get)
             return $get;

@@ -21,13 +21,16 @@
             <div class="col-sm-12">
                 <div class="card card-table show-entire">
                     <div class="card-body">
-
+                        @php
+                            $r = \App\Models\ConfirmarBaixa::where('area_hospitalar_para', session('id_area_'))->where('confirmado', 0)->get();
+                            echo $r;
+                        @endphp
                         <div class="page-table-header mb-2">
                             <div class="row align-items-center">
                                 <div class="col">
                                     <div class="doctor-table-blk">
                                         <h3>Estoque {{ $ah->nome }}</h3>
-                                        <div class="doctor-search-blk">
+                                        <div class="doctor-search-blk mt-2">
                                             <div class="top-nav-search table-search-blk">
                                                 <form id="form_search" method="POST">
                                                     <input type="text" id="search-table" class="form-control outline-success"
