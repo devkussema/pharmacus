@@ -21,10 +21,6 @@
             <div class="col-sm-12">
                 <div class="card card-table show-entire">
                     <div class="card-body">
-                        @php
-                            $r = \App\Models\ConfirmarBaixa::where('area_hospitalar_para', session('id_area_'))->where('confirmado', 0)->get();
-                            echo $r;
-                        @endphp
                         <div class="page-table-header mb-2">
                             <div class="row align-items-center">
                                 <div class="col">
@@ -41,10 +37,12 @@
                                                 </form>
                                             </div>
                                             <div class="add-group">
-                                                <button  onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'" class="btn btn-rounded btn-outline-primary ms-2">
-                                                    <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
-                                                    Adicionar Produto
-                                                </button>
+                                                @if (isAdministrator())
+                                                    <button  onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'" class="btn btn-rounded btn-outline-primary ms-2">
+                                                        <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
+                                                        Adicionar Produto
+                                                    </button>
+                                                @endif
                                                 <button onclick="location.href = '{{ route('estoque.solicitar', ['id' => $ah->id]) }}';"
                                                      class="btn btn-rounded btn-outline-success ms-2">
                                                     <i class="fa fa-box"></i>
