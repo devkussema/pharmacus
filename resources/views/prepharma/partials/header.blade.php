@@ -119,9 +119,9 @@
                 </span>
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="{{ route('u.perfil', ['username' => Auth::user()->username]) }}">Meu Perfil</a>
-                <a class="dropdown-item" href="javascript:void(0)">Editar Perfil</a>
-                <a class="dropdown-item" href="javascript:void(0)">Definições</a>
+                {{-- <a class="dropdown-item" href="{{ route('u.perfil', ['username' => Auth::user()->username]) }}">Meu Perfil</a> --}}
+                {{-- <a class="dropdown-item" href="javascript:void(0)">Editar Perfil</a> --}}
+                {{-- <a class="dropdown-item" href="javascript:void(0)">Definições</a> --}}
                 <form action="{{ route('logout') }}" method="post">
                     @csrf
                     <label class="dropdown-item" for="logout-btn" style="cursor: pointer">Sair</label>
