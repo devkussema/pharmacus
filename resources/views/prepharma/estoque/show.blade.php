@@ -37,7 +37,7 @@
                                                 </form>
                                             </div>
                                             <div class="add-group">
-                                                @if (isAdministrator())
+                                                @if (isAdministrator() or vPerm('produtos', ['cadastrar']))
                                                     <button  onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'" class="btn btn-rounded btn-outline-primary ms-2">
                                                         <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
                                                         Adicionar Produto
