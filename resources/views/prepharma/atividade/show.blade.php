@@ -37,7 +37,7 @@
                                             <div class="activity-content timeline-group-blk">
                                                 <div class="timeline-group flex-shrink-0">
                                                     <h4>{{ formatDataAtv($at->created_at) }}</h4>
-                                                    <span class="time">5.50 PM</span>
+                                                    <span class="time">{{ formatar_horas($at->created_at); }}</span>
                                                 </div>
                                                 <div class="comman-activitys flex-grow-1">
                                                     <h3>{{ $at->user->nome }}</h3>
