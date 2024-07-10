@@ -145,7 +145,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (\App\Models\Atividade::take(6)->get() as $at)
+                                    @foreach (\App\Models\Atividade::orderBy('created_at', 'desc')->take(6)->get() as $at)
                                         <tr>
                                             <td>
                                                 <div class="form-check check-tables">

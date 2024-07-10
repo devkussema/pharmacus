@@ -566,7 +566,7 @@ class EstoqueController extends Controller
         $caixas = getCaixa($newDescritivo);
         $unit = getCaixaUnit($newDescritivo);
 
-        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades para {$ud->area_hospitalar->nome}");
+        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$ud->area_hospitalar->nome}");
         self::setNotify("Confirmação de entrada de estoque", $ud->user_id);
         $texto = auth()->user()->nome . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
         self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
