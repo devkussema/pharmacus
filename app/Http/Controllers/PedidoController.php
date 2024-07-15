@@ -54,13 +54,14 @@ class PedidoController extends Controller
         }
     }
 
-    public function getPE($ref)
+    public function getPE(Request $request, $ref)
     {
-        $get = PE::where('num_documento', $ref)->orWhere('num_lote', $ref)->where('')->first();
+        $get = PE::where('num_documento', $ref)->orWhere('num_lote', $ref)->first();
 
-        if ($get)
+        if ($get){
             return $get;
-
-        return response()->json(["O produto não existe"], 404);
+        }else{
+            return response()->json(["Este produto não existe!"], 404);
+        }
     }
 }

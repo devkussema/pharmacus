@@ -52,8 +52,7 @@
                                                             <input type="text" disabled name="qtd_pedida" value="{{ $pedido->qtd_pedida }}" class="form-control">
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="qtd_disponibilizada"
-                                                                class="form-control" max="{{ $pedido->item->saldo->qtd }}">
+                                                            <input type="number" name="qtd_disponibilizada" class="form-control">
                                                             <input type="hidden" name="ref_id" value="{{ $pedido->id }}">
                                                         </td>
                                                         <td>
@@ -82,21 +81,27 @@
     <script>
         function getData() {
             var docNumValue = $('#doc_num').val();
-            $.ajax({
-                url: "/pedidos/info/" + docNumValue,
-                type: 'GET',
-                success: function(data) {
-                    if (data) {
-                        var novaLinha = $(".add-row:last");
+            if (docNumValue != ""){
+                $.ajax({
+                    url: "/pedidos/info/" + docNumValue,
+                    type: 'GET',
+                    success: function(data) {
+                        if (data) {
+                            var novaLinha = $(".add-row:last");
 
-                        novaLinha.find('input[name="item_id"]').val(data.id);
-                        novaLinha.find('input#nome-item').val(data.designacao);
+                            novaLinha.find('input[name="item_id"]').val(data.id);
+                            novaLinha.find('input#nome-item').val(data.designacao);
+                        }else{
+                            document.querySelector('input[name="item_id"]').value = "";
+                            document.querySelector('input#nome-item').value = "";
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        document.querySelector('input[name="item_id"]').value = "";
+                        document.querySelector('input#nome-item').value = "";
                     }
-                },
-                error: function(xhr, status, error) {
-                    ///
-                }
-            });
+                });
+            }
         }
         function setItem() {
             // Obter o valor do campo doc_num
