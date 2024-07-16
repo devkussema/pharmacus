@@ -21,8 +21,10 @@
                                     <div class="input-block local-forms">
                                         <label for="nome_requisitante_id">Nome Requisitante <span
                                                 class="login-danger">*</span></label>
-                                        <input id="nome_requisitante_id" class="form-control"
-                                            value="{{ $pedido->user_a->nome }}" type="text" disabled>
+                                        <input id="nome_requisitante_id" class="form-control" value="{{ $pedido->user_a->nome }}" type="text" disabled>
+                                        <input type="hidden" name="area_de" value="{{ $pedido->area_de }}">
+                                        <input type="hidden" name="area_para" value="{{ $pedido->area_para }}">
+                                        <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="11a2d86a-c885-44e4-9162-14215ef75b95">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-12 col-xl-12">
@@ -46,7 +48,7 @@
                                                             <input type="text" name="designacao" class="form-control" disabled id="nome-item">
                                                         </td>
                                                         <td>
-                                                            <input type="text" disabled name="max_item" value="{{ $pedido->item->saldo->qtd }}" class="form-control">
+                                                            <input type="text" disabled name="max_item" value="{{ getCaixa($pedido->item->descritivo) }}cxs - ({{ $pedido->item->saldo->qtd }}) unid" class="form-control">
                                                         </td>
                                                         <td>
                                                             <input type="text" disabled name="qtd_pedida" value="{{ $pedido->qtd_pedida }}" class="form-control">

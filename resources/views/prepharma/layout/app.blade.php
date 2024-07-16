@@ -141,7 +141,7 @@
 
                 // Adiciona o resultado da multiplicação no input 'qtd_total_estoque'
                 document.getElementById('qtd_total_estoque').value = product;
-                document.getElementById('qtd_total_estoque').disabled = true;
+                document.getElementById('qtd_total_estoque').style.display = 'block';
             } else {
                 alertify.alert('Ocorreu um erro', 'Por favor, preencha todos os campos.', function() {
                     alertify.success("Ok");

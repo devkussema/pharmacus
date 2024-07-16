@@ -282,69 +282,6 @@
             };
         });
 
-        // document.getElementById('formBaixaEstoquer').addEventListener('submit', function(e) {
-        //     e.preventDefault(); // Evita o comportamento padrão do formulário
-
-        //     // Obtém os dados do formulário
-        //     var formData = new FormData(this);
-
-        //     // Envia a requisição AJAX
-        //     var xhr = new XMLHttpRequest();
-        //     xhr.open('POST', this.action, true);
-
-        //     xhr.onload = function() {
-        //         try {
-        //             var response = JSON.parse(xhr.responseText);
-
-        //             if (xhr.status >= 200 && xhr.status < 300) {
-        //                 // Exibe a mensagem de sucesso
-        //                 alertify.alert("Sucesso!", response.message, function() {
-        //                     alertify.success("Ok");
-        //                 });
-
-        //                 // Limpa o formulário
-        //                 document.getElementById('formBaixaEstoque').reset();
-
-        //                 // Oculta o modal
-        //                 $('#DarBaixa').modal('hide');
-        //             } else {
-        //                 var errorMessage = '';
-
-        //                 if (response.errors) {
-        //                     // Percorre os erros e os concatena em uma única string
-        //                     for (var key in response.errors) {
-        //                         if (response.errors.hasOwnProperty(key)) {
-        //                             errorMessage += response.errors[key][0] + '<br>';
-        //                         }
-        //                     }
-
-        //                     // Exibe a mensagem de erro com alertify.js
-        //                     alertify.alert("Erro!", errorMessage, function() {
-        //                         alertify.error("Está bem");
-        //                     });
-        //                 } else {
-        //                     // Exibe a mensagem de erro geral
-        //                     alertify.alert("Erro!", response.message, function() {
-        //                         alertify.error("Está bem");
-        //                     });
-        //                 }
-        //             }
-        //         } catch (e) {
-        //             alertify.alert("Erro!", "Resposta inesperada do servidor: " + e.message, function() {
-        //                 alertify.error("Erro de formato de resposta");
-        //             });
-        //         }
-        //     };
-
-        //     xhr.onerror = function() {
-        //         alertify.alert("Erro!", "Ocorreu um erro na requisição", function() {
-        //             alertify.error("Erro de conexão");
-        //         });
-        //     };
-
-        //     xhr.send(formData);
-        // });
-
         function modalDarBaixa(id_produto, descritivo) { //formBaixaEstoque
             $('#DarBaixa #formBaixaEstoque #id_produto').val(id_produto);
             $('#DarBaixa #formBaixaEstoque #descritivo_').val(descritivo);

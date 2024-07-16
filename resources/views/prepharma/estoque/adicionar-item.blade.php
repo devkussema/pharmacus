@@ -64,8 +64,7 @@
                                         <input type="text" id="descritivo" name="descritivo" hidden>
                                         <div class="col pb-3">
                                             <label class="mb-2">Total</label>
-                                            <input type="number" id="qtd_total_estoque" value="{{ old('qtd_total') ?? old('qtd_total') }}" class="form-control" name="qtd_total"
-                                                disabled="true">
+                                            <input style="display: none" type="number" id="qtd_total_estoque" value="{{ old('qtd_total') ?? old('qtd_total') }}" class="form-control" name="qtd_total">
                                         </div>
                                     </div>
                                 </div>

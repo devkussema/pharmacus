@@ -48,6 +48,8 @@ use App\Http\Controllers\Api\{
 |
 */
 
+Route::post('estoque/adder', [EstoqueController::class, 'store'])->name('estoque.storer');
+
 Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('dev')->group(function () {
         Route::get('/levantamento', [DevController::class, 'levantamento'])->name('dev.levantamento');
@@ -104,7 +106,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::post('/editar/{id}', [EstoqueController::class, 'update'])->name('estoque.update');
         Route::get('/home', [EstoqueController::class, 'getListHome'])->name('estoque.gerente');
         Route::get('/solicitar/{id}', [EstoqueController::class, 'solicitar'])->name('estoque.solicitar');
-        Route::get('/{id}', [EstoqueController::class, 'getEstoque'])->name('estoque.getEstoque');
+        Route::get('/ver/{id}', [EstoqueController::class, 'getEstoque'])->name('estoque.getEstoque');
         Route::get('obter/{id}', [EstoqueController::class, 'myEstoque'])->name('estoque.myEstoque');
         Route::get('/aa', [EstoqueController::class, 'aa']);
         Route::get('/produto/{id}', [EstoqueController::class, 'getProduto']);

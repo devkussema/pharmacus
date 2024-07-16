@@ -176,7 +176,7 @@ class EstoqueController extends Controller
             'estoque' => $estoque,
             'non_' => true,
             'area_id' => $id,
-            'ah' => $ah[0]['area_hospitalar'],
+            'ah' => @$ah[0]['area_hospitalar'],
             'isAdm' => $id
         ]);
     }
@@ -225,7 +225,7 @@ class EstoqueController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request); exit;
+        //dd($request); exit;
         $request->validate([
             'designacao' => 'required',
             'dosagem' => 'nullable',
@@ -278,7 +278,7 @@ class EstoqueController extends Controller
         $unidade = $request->input('unidade');
 
         $descritivo_ = $caixa."x".$caxinha."x".$unidade;
-        $descritivo = $request->input('unidade') ?? $descritivo_;
+        $descritivo = $request->input('descritivo') ?? $descritivo_;
 
         $farmacia_id = $request->farmacia_id;
 
