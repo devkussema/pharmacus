@@ -11,7 +11,7 @@
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard </a></li>
                         <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                        <li class="breadcrumb-item active">Página Inicial</li>
+                        <li class="breadcrumb-item active" onclick="playAudio()">Página Inicial</li>
                     </ul>
                 </div>
             </div>

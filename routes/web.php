@@ -253,6 +253,17 @@ Route::prefix('api')->group(function () {
     Route::get('/get/farmacia', [FarmaciaController::class, 'getAll']);
     Route::get('/get/farmacia/{id}', [FarmaciaController::class, 'getInfo']);
 
+    Route::get('/get/pedidos', function () {
+        $confirmacoes = \App\Models\PedidoItem::where('area_para', session('id_area_'))
+            ->where('confirmado', 0)
+            ->get();
+
+        if ($confirmacoes->count() > 0) {
+            return $confirmacoes->count();
+        }
+
+        return 0;
+    });
 
     Route::get('/get/usuario/{id}', [UsuarioController::class, 'getUser'])->name('user.get');
 

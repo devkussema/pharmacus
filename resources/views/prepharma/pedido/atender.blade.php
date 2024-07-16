@@ -37,7 +37,7 @@
                                                         <th>Quantidade Disponivel</th>
                                                         <th>Quantidade Solicitada</th>
                                                         <th>Quantidade Disponibilizada</th>
-                                                        <th>Lote, Código QR ou Barras</th>,
+                                                        <th>Lote, Código QR ou Barras</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

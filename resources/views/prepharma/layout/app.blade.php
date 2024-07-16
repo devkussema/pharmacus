@@ -58,7 +58,10 @@
         </div>
     </div>
 
-
+    <audio id="audioPlayer" style="display: none">
+        <source src="{{ asset('assets/audio/sound_notify.mp3') }}" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
     <script src="{{ asset('/sw2.js') }}"></script>
 
     <script src="{{ assetr('assets/js/bootstrap.bundle.min.js') }}" type="be6558ccd95e077c3366a663-text/javascript"></script>
@@ -76,6 +79,73 @@
     <script src="{{ assetr('assets/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
         data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
     <script>
+        function playAudio() {
+            var audio = document.getElementById('audioPlayer');
+            audio.play();
+        }
+
+        var audioPlayed = false;
+        var alertActive = false;
+        var mouseMoved = false;
+        var userInteracted = false;
+        function buscarPedidos() {
+            if (alertActive) {
+                return; // Não faz a solicitação se a modal estiver ativa
+            }
+
+            $.ajax({
+                url: '/api/get/pedidos', // URL da rota no Laravel
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response > 0 && !audioPlayed) { // Acessando corretamente a contagem de pedidos
+                        alertActive = false;
+                        var msg1 = "Um pedido";
+                        var msg2 = response+" pedidos";
+                        if (response == 1) {
+                            alertify.alert(msg1, 'Por favor, atenda-os.', function(){
+                                alertActive = false;
+                                window.location.href = '/pedidos';
+                            });
+                        }else if (response > 1) {
+                            alertify.alert(msg2, 'Por favor, atenda-os.', function(){
+                                alertActive = false;
+                                window.location.href = '/pedidos';
+                            });
+                        }
+
+                        playAudio();
+                        audioPlayed = 0;
+
+                        // Reinicia a variável audioPlayed após 2 segundos se o cursor não se mover
+                        setTimeout(function() {
+                            if (!mouseMoved) {
+                                audioPlayed = false; // Reinicia a variável se o cursor não se mover
+                            }
+                        }, 2000);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Erro ao buscar pedidos:', error);
+                }
+            });
+        }
+        function startRequestingPedidos() {
+            buscarPedidos(); // Chama a função uma vez ao carregar a página
+            setInterval(buscarPedidos, 5000); // Chama a função a cada 5 segundos (5000 milissegundos)
+        }
+        @if (Route::currentRouteName() != "pedido" and Route::currentRouteName() != "pedido.atender")
+            $(document).ready(function() {
+                startRequestingPedidos();
+
+                // Evento para detectar movimento do cursor
+                $(document).mousemove(function() {
+                    mouseMoved = true;
+                });
+            });
+        @endif
+
+
         document.addEventListener('DOMContentLoaded', function() {
             // Verifica se a DataTable já foi inicializada
             if (!$.fn.DataTable.isDataTable('#table-content')) {
