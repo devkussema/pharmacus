@@ -477,15 +477,15 @@ class EstoqueController extends Controller
 
         $produtoMasDescr = downCaixa($descritivo, $qtdBaixar);
 
-        if ($produtoMasDescr == 0) {
-            $message = "Não restará nada depois desta operação.";
+        // if ($produtoMasDescr == 0) {
+        //     $message = "Não restará nada depois desta operação.";
 
-            if (request()->wantsJson()) {
-                return response()->json(['message' => $message], 400);
-            } else {
-                return back()->withErrors(['message' => $message]);
-            }
-        }
+        //     if (request()->wantsJson()) {
+        //         return response()->json(['message' => $message], 400);
+        //     } else {
+        //         return back()->withErrors(['message' => $message]);
+        //     }
+        // }
 
 
         $newDescritivo = newCaixa($descritivo, $qtdBaixar);
@@ -569,7 +569,8 @@ class EstoqueController extends Controller
         $texto = auth()->user()->nome . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
         self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
 
-        return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);
+        // return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);
+        return redirect()->back()->with('success', 'Baixa concluida, a aguardar confirmação.');
     }
 
     public function calcularNivelAlerta()
