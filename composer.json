@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.8",
         "mobiledetect/mobiledetectlib": "^4.8",
         "ramsey/uuid": "^4.7",
+        "spatie/laravel-backup": "^9.1",
         "yajra/laravel-datatables-oracle": "^10.11"
     },
     "require-dev": {
