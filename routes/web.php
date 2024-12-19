@@ -345,6 +345,12 @@ Route::get('/artisan', function() {
 
 Route::post('/run-command', [TerminalController::class,'runCommand'])->name('runCommand');
 
+Route::get('/get-artisan-commands', function () {
+    // Obtém todos os comandos Artisan registrados
+    $commands = Artisan::all();
+    return response()->json(['commands' => array_keys($commands)]);
+});
+
 Route::get('/artisan/backend/{cmd}', function($cmd) {
     try {
         // Executa o comando Artisan
