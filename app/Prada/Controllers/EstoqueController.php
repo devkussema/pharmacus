@@ -186,6 +186,7 @@ class EstoqueController extends Controller
         $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
         $produtos = Estoque::where('area_hospitalar_id', $id)
             ->where('farmacia_id', $farmacia_id)
+            ->with('produto.prateleira')
             ->with('produto.saldo')
             ->with(['produto' => function ($query) {
                 $query->orderBy('designacao', 'ASC');

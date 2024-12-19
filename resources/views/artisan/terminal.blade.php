@@ -107,9 +107,30 @@
             executeCommand(input);
         }
 
+        function getCsrfToken() {
+            return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        }
+
         function executeCommand(input) {
-            let output = `Comando: ${input} executado com sucesso!`;
-            document.getElementById('terminal-output').innerHTML += output + "<br>";
+            fetch('/run-command', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCsrfToken()
+                },
+                body: JSON.stringify({ command: input })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const output = data.output;
+                // Adiciona a saída do comando na tela
+                const terminalOutput = document.getElementById('terminal-output');
+                terminalOutput.innerHTML += "<pre>" + output + "</pre>"; // Exibe a saída exatamente como está
+                terminalOutput.scrollTop = terminalOutput.scrollHeight; // Auto scroll
+            })
+            .catch(error => {
+                console.error('Erro ao executar o comando:', error);
+            });
         }
 
         document.getElementById('command-input').addEventListener('keydown', function(e) {

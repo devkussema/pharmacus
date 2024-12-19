@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
 use App\Http\Controllers\{
     PedidoController,
+    TerminalController,
 };
 use App\Http\Controllers\Dev\{
     VisitanteController,
@@ -341,6 +342,8 @@ Route::prefix('alertas')->group(function () {
 Route::get('/artisan', function() {
     return view('artisan.terminal');
 })->name('artisan.terminal');
+
+Route::post('/run-command', [TerminalController::class,'runCommand'])->name('runCommand');
 
 Route::get('/artisan/backend/{cmd}', function($cmd) {
     try {

@@ -75,11 +75,10 @@
                                         <th>Designação</th>
                                         <th>Dosagem</th>
                                         <th>Forma</th>
-                                        <th>Fornecedor</th>
+                                        <th>Prateleira</th>
                                         <th>Lote</th>
                                         <th>Qtd. Caixa</th>
                                         <th>Qtd. Unit.</th>
-                                        <th>Documento nº</th>
                                         <th>Inserido em</th>
                                         <th>Data Expiração</th>
                                         <th>Ação</th>
@@ -163,7 +162,9 @@
                         "data": "produto.forma"
                     },
                     {
-                        "data": "produto.origem_destino"
+                        "data": function(row) {
+                            return getCaixa(row.produto.prateleira.nome);
+                        }
                     }, // Fornecedor
                     {
                         "data": "produto.num_lote"
@@ -176,9 +177,6 @@
                     {
                         "data": "produto.saldo.qtd"
                     }, // Qtd. Unit. (interpretando que 'descritivo' contém essa info)
-                    {
-                        "data": "produto.num_documento"
-                    }, // Documento nº
                     {
                         "data": function(row) {
                             return formatDate(row.created_at);
