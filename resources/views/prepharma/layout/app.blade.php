@@ -11,6 +11,7 @@
     @endphp
     <meta name="area_id_" content="{{ $id_area_ }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ assetr('assets/img/white__logo2.png') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @if (request()->cookie('pwa_app') === 'true')
         <title>@yield('titulo', 'Página Inicial')</title>

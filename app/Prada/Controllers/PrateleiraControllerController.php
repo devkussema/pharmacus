@@ -21,23 +21,45 @@ class PrateleiraControllerController extends Controller
 
     public function store(Request $request)
     {
-        // Validação dos dados recebidos
-        $validatedData = $request->validate([
-            'designacao' => 'required|string|max:255',
-            // 'tipo' => 'required|in:descartável,medicamento,liquido',
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
+            'status' => 'required|string|in:1,0'
         ]);
 
-        // Criação do registro na tabela `prateleiras`
-        $prateleira = Prateleira::create([
-            'nome' => $validatedData['designacao'],
-            // 'tipo' => $validatedData['tipo'],
-            'descricao' => $validatedData['descricao'] ?? null,
-        ]);
+        Prateleira::create($validated);
 
-        // Retorno de resposta (redirecionar ou exibir mensagem)
-        return redirect()->route('prateleira.show') // Substitua pela rota desejada
-            ->with('success', 'Prateleira criada com sucesso!');
+        return response()->json(['message' => 'Prateleira adicionada com sucesso!']);
+    }
+
+    public function destroy($id)
+    {
+        try {
+            // Busca a prateleira pelo ID
+            $prateleira = Prateleira::findOrFail($id);
+
+            // Exclui a prateleira
+            $prateleira->delete();
+
+            // Retorna resposta de sucesso
+            return response()->json(['message' => 'Prateleira excluída com sucesso!'], 200);
+        } catch (\Exception $e) {
+            // Tratamento de erro e retorno de mensagem
+            return response()->json(['message' => 'Erro ao excluir a prateleira.'], 500);
+        }
+    }
+
+    public function toggleStatus($id)
+    {
+        $prateleira = Prateleira::findOrFail($id);
+
+        // Alterna entre 'ativo' e 'inativo'
+        $prateleira->status = ($prateleira->status == 1) ? 0 : 1;
+
+        // Salva a mudança no banco de dados
+        $prateleira->save();
+
+        return response()->json(['message' => 'Status da prateleira alterado com sucesso!']);
     }
 
     public function getPrateleiras(Request $request)

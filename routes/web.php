@@ -64,6 +64,9 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('/add', [PratControllers::class, 'add'])->name('prateleira.add');
 
         Route::post('/add', [PratControllers::class, 'store'])->name('prateleira.store');
+        Route::delete('/delete/{id}', [PratControllers::class, 'destroy'])->name('prateleira.destroy');
+        Route::post('/toggle-status/{id}', [PratControllers::class, 'toggleStatus']);
+
         Route::get('/get/all', [PratControllers::class, 'getPrateleiras'])->name('prateleira.all');
     });
 

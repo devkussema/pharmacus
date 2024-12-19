@@ -74,6 +74,7 @@
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
+                                        <th>Status</th>
                                         <th>Descrição</th>
                                         <th>Ação</th>
                                     </tr>
@@ -98,6 +99,12 @@
                             "data": "nome" // Coluna Nome
                         },
                         {
+                            "data": "status",
+                            "render": function(data, type, row) {
+                                return data == 1 ? 'Ativo' : 'Inativo';
+                            }
+                        },
+                        {
                             "data": "descricao", // Coluna Descrição
                             "defaultContent": "-" // Substitui valores nulos ou indefinidos por "-"
                         },
@@ -115,8 +122,8 @@
                                     <a class="dropdown-item" href="javascript:void(0)" onclick="editarPrateleira(${row.id})">
                                         <i class="fa-solid fa-pen-to-square m-r-5"></i> Editar
                                     </a>
-                                    <a class="dropdown-item" href="javascript:void(0)" onclick="deletarPrateleira(${row.id})">
-                                        <i class="fa-solid fa-trash m-r-5"></i> Excluir
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="toggleStatus(${row.id})">
+                                        <i class="fa-solid fa-trash m-r-5"></i> Alterar Status
                                     </a>
                                 </div>
                             </div>`;
@@ -140,16 +147,58 @@
                     }
                 });
 
+                // Atualiza a tabela automaticamente a cada 2 minutos (120.000 ms)
+                setInterval(function() {
+                    table.ajax.reload(null, false); // Recarrega os dados sem reiniciar a tabela
+                }, 120000);
+
                 // Funções para ações nos botões
                 window.editarPrateleira = function(id) {
                     alert(`Editar prateleira com ID: ${id}`);
                     // Adicione lógica para editar
                 };
 
+                // Função para confirmar e excluir prateleira
                 window.deletarPrateleira = function(id) {
-                    alert(`Deletar prateleira com ID: ${id}`);
-                    // Adicione lógica para deletar
+                    if (confirm("Tem certeza que deseja excluir esta prateleira?")) {
+                        // Se confirmado, faz a requisição para o backend
+                        $.ajax({
+                            url: `/prateleira/delete/${id}`,
+                            type: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                alert(response.message); // Mensagem de sucesso do backend
+                                $('#table-p').DataTable().ajax.reload(); // Atualiza a tabela
+                            },
+                            error: function(xhr) {
+                                alert(
+                                    "Erro ao tentar excluir a prateleira. Tente novamente."
+                                    ); // Tratamento de erro
+                            }
+                        });
+                    }
                 };
+
             });
+            function toggleStatus(id) {
+                if (confirm("Você tem certeza que deseja alterar o status desta prateleira?")) {
+                    $.ajax({
+                        url: '/prateleira/toggle-status/' + id,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            alert(response.message); // Exibe a mensagem de sucesso
+                            $('#table-p').DataTable().ajax.reload(); // Atualiza a tabela
+                        },
+                        error: function(error) {
+                            alert('Erro ao alterar o status. Tente novamente.');
+                        }
+                    });
+                }
+            }
         </script>
     @endsection
