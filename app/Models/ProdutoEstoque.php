@@ -24,7 +24,8 @@ class ProdutoEstoque extends Model
         'confirmado',
         'descritivo',
         'tipo',
-        'grupo_farmaco_id'
+        'grupo_farmaco_id',
+        'prateleira_id'
     ];
 
     public function grupo_farmaco()
@@ -40,5 +41,10 @@ class ProdutoEstoque extends Model
     public function saldo()
     {
         return $this->hasOne(SaldoEstoque::class, 'produto_estoque_id');
+    }
+
+    public function prateleira()
+    {
+        return $this->belongsTo(Prateleira::class);
     }
 }

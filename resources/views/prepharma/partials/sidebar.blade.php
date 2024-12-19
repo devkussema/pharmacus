@@ -56,7 +56,7 @@
                 <li>
                     <a href="{{ route('prateleira.show') }}" class="{{ Route::currentRouteName() == 'prateleira.show' ? 'active' : '' }}">
                         <i class="fa fa-table"></i>
-                        <span> Prateleira </span>
+                        <span> Prateleiras </span>
                     </a>
                 </li>
                 @if (vPerm('relatorio', ['ver']) or Auth::user()->isFarmacia)

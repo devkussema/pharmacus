@@ -246,6 +246,7 @@ class EstoqueController extends Controller
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
             'obs' => 'nullable',
             'qtd' => 'integer|nullable',
+            'prateleira_id' => 'nullable|exists:prateleiras,id',
         ], [
             'designacao.required' => 'A designação é obrigatória.',
             'farmacia_id.required' => 'Algo correu mal, atualize a página e tente novamente.',
@@ -299,7 +300,8 @@ class EstoqueController extends Controller
             'num_documento' => $request->num_documento,
             'obs' => $request->obs,
             'qtd_embalagem' => ($request->qtd_embalagem ? $request->qtd_embalagem : null),
-            'grupo_farmaco_id' => $request->grupo_farmaco_id
+            'grupo_farmaco_id' => $request->grupo_farmaco_id,
+            'prateleira_id' => $request->prateleira_id,
         ];
 
         $tipo = $request->tipo;

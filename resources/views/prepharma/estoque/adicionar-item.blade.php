@@ -118,13 +118,21 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col pb-3">
+                                <div class="col-md-6 pb-3">
                                     <label class="mb-2">Área Hospitalar</label>
                                     <select name="area_id" style="width: 100%" id="area_id_" class="form-control select2">
                                         @foreach (\App\Models\AreaHospitalar::all() as $ah)
                                             @if ($ah->nome == 'Armazém I' or $ah->nome == 'Direcção clínica')
                                                 <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
                                             @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6 pb-3">
+                                    <label class="mb-2">Prateleira</label>
+                                    <select name="prateleira_id" style="width: 100%" id="area_id_" class="form-control">
+                                        @foreach (\App\Models\Prateleira::all() as $prat)
+                                            <option value="{{ $prat->id }}">{{ $prat->nome }} [{{ $prat->descricao }}]</option>
                                         @endforeach
                                     </select>
                                 </div>
