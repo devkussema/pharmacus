@@ -12,7 +12,7 @@ class ClearTables extends Command
      *
      * @var string
      */
-    protected $signature = 'db:clear-tables';
+    protected $signature = 'db:clear-tables {--confirm}';
 
     /**
      * The console command description.
@@ -32,6 +32,8 @@ class ClearTables extends Command
             'pedido_itens', 'produto_estoques', 'relatorio_estoque_alerta',
             'saldo_estoques',
         ];
+
+        $confirm = $this->option('confirm');
 
         // Pergunta de confirmação
         if (!$this->confirm('Tem certeza de que deseja limpar os dados das tabelas: ' . implode(', ', $tables) . '?')) {

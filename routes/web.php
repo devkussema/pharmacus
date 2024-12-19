@@ -338,20 +338,44 @@ Route::prefix('alertas')->group(function () {
     });
 });
 
-Route::get('/artisan', function ($cmd) {
-    Artisan::call($cmd);
-    // Capturar a saída do comando 'migrate'
-    $migrateOutput = Artisan::output();
+Route::get('/artisan', function() {
+    return view('artisan.terminal');
+})->name('artisan.terminal');
 
-    // Executar o comando 'db:seed'
-    //Artisan::call('db:seed');
-    // Capturar a saída do comando 'db:seed'
-    $seedOutput = $migrateOutput . '<hr>' . Artisan::output();
+Route::get('/artisan/backend/{cmd}', function($cmd) {
+    try {
+        // Executa o comando Artisan
+        Artisan::call($cmd);
 
-    // Retornar a saída de ambos os comandos em formato JSON
-    //return response()->json(['migrate_output' => $migrateOutput, 'seed_output' => $seedOutput]);
-    //return response()->json(['output' => $seedOutput]);
-    return response()->json(['output' => shell_exec($seedOutput)]);
+        // Captura a saída do comando
+        $output = Artisan::output();
+
+        // Retorna a saída como uma resposta JSON
+        return response()->json(['output' => nl2br($output)]);
+    } catch (\Exception $e) {
+        // Em caso de erro, retorna a mensagem de erro
+        return response()->json(['output' => 'Erro ao executar o comando: ' . $e->getMessage()]);
+    }
+})->name('artisan.terminal');
+
+Route::get('/artisan/{command}', function ($command) {
+    // Limitar comandos permitidos
+    $allowedCommands = [
+        'cache:clear', 'config:clear', 'route:clear', 'view:clear', 'event:clear',
+        'config:cache', 'route:cache', 'db:seed', 'optimize:clear', 'queue:restart',
+        'migrate', 'migrate:rollback', 'migrate:fresh', 'migrate:refresh',
+        'make:model', 'make:controller', 'make:migration', 'make:seeder', 'make:command',
+        'composer:dump-autoload', 'optimize', 'session:clear', 'package:discover',
+        'backup:run', 'db:backup', 'db:restore'
+    ];
+
+    if (in_array($command, $allowedCommands)) {
+        Artisan::call($command);
+        $output = nl2br(Artisan::output()); // Formatar a saída com quebras de linha
+        return view('artisan.output', compact('output', 'command'));
+    }
+
+    return response()->view('artisan.error', ['error' => 'Comando não permitido ou inválido'], 400);
 });
 
 Route::get('/php', function ($cmd) {
