@@ -22,7 +22,8 @@ use App\Prada\Controllers\{
     NivelAlertaController,
     GrupoFarmacologicoController as GFC,
     AtividadeController,
-    PrintController
+    PrintController,
+    PrateleiraControllerController as PratControllers,
 };
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
@@ -56,6 +57,14 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('/novo_doc', [DevController::class, 'novo_doc'])->name('dev.novo_doc');
         Route::get('/listaEstoque', [DevController::class, 'getFichaControloLimite']);
         Route::get('/listaEstoque/{area}', [DevController::class, 'getFichaControlo'])->name('dev.listaEstoque');
+    });
+
+    Route::prefix('prateleira')->group(function () {
+        Route::get('/', [PratControllers::class, 'index'])->name('prateleira.show');
+        Route::get('/add', [PratControllers::class, 'add'])->name('prateleira.add');
+
+        Route::post('/add', [PratControllers::class, 'store'])->name('prateleira.store');
+        Route::get('/get/all', [PratControllers::class, 'getPrateleiras'])->name('prateleira.all');
     });
 
     Route::prefix('pedidos')->group(function () {

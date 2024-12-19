@@ -8,11 +8,11 @@ define('LARAVEL_START', microtime(true));
 $dominio = $_SERVER['HTTP_HOST'];
 
 // Verifica se a URL atual não começa com "https://www."
-if ($dominio == "pharmatina.com" and strpos($_SERVER['HTTP_HOST'], 'www.') === false || strpos($_SERVER['HTTPS'], 'https://') === false) {
-    // Redireciona para a versão correta da URL com "https://www."
-    header('Location: https://www.' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    exit();
-}
+    $dominio = $_SERVER['HTTP_HOST'];
+    if ($dominio == "pharmatina.com" && strpos($dominio, 'www.') === false && strpos($_SERVER['HTTPS'], 'https') !== false) {
+        header('Location: https://www.' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+        exit();
+    }
 
 /*
 |--------------------------------------------------------------------------
