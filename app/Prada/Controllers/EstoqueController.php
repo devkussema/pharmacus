@@ -236,17 +236,17 @@ class EstoqueController extends Controller
             'caxinha' => 'required',
             'unidade' => 'required',
             'qtd_total' => 'nullable',
-            'origem_destino' => 'required',
+            'origem_destino' => 'nullable',
             'num_lote' => 'required',
-            'data_producao' => 'required|date|before:today', // Verifica se a data de produção é anterior à data atual
+            'data_producao' => 'nullable|date|before:today', // Verifica se a data de produção é anterior à data atual
             'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(4), // Verifica se a data de expiração é pelo menos 10 meses após a data atual
             'data_recepcao' => 'nullable|date|before:today',
-            'num_documento' => 'required',
+            'num_documento' => 'nullable',
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
             'obs' => 'nullable',
             'qtd' => 'integer|nullable',
-            'prateleira_id' => 'nullable|exists:prateleiras,id',
+            'prateleira_id' => 'required|exists:prateleiras,id',
         ], [
             'designacao.required' => 'A designação é obrigatória.',
             'farmacia_id.required' => 'Algo correu mal, atualize a página e tente novamente.',

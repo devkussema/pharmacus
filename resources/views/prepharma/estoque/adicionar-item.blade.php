@@ -130,7 +130,7 @@
                                 </div>
                                 <div class="col-md-6 pb-3">
                                     <label class="mb-2">Prateleira</label>
-                                    <select name="prateleira_id" style="width: 100%" id="area_id_" class="form-control">
+                                    <select name="prateleira_id" style="width: 100%" id="prateleira_id_" class="form-control">
                                         @foreach (\App\Models\Prateleira::all() as $prat)
                                             <option value="{{ $prat->id }}">{{ $prat->nome }} [{{ $prat->descricao }}]</option>
                                         @endforeach
