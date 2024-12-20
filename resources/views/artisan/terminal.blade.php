@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -29,50 +30,41 @@
             border: 2px solid #00ff00;
         }
 
+        /* Terminal principal */
         #terminal {
-            width: 70%;
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 15px 0 0 15px;
-            color: #00ff00;
-            font-size: 16px;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
-            height: 100%;
+            padding: 10px;
         }
 
         #terminal-output {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 15px;
-            background-color: #1e1e1e;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #333;
+            margin-bottom: 10px;
         }
 
         #terminal-input-container {
             display: flex;
-            width: 100%;
             align-items: center;
+            gap: 10px;
         }
 
         #terminal-input {
             flex-grow: 1;
-            padding: 15px;
-            background-color: #333;
+            padding: 5px;
+            font-size: 14px;
+            background: #252525;
             color: #00ff00;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            outline: none;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            border: 1px solid #333;
         }
 
-        #execute-button, #clear-button {
-            padding: 15px;
+        #execute-button,
+        #clear-button {
+            padding: 5px;
             background-color: #444;
             color: #00ff00;
             border: none;
@@ -83,38 +75,40 @@
             transition: background-color 0.3s, transform 0.2s ease;
         }
 
-        #execute-button:hover, #clear-button:hover {
+        #execute-button:hover,
+        #clear-button:hover {
             background-color: #555;
             transform: scale(1.05);
         }
 
+        /* Lista de comandos */
         #commands-list {
-            width: 30%;
-            background-color: #222;
-            color: #fff;
-            padding: 20px;
-            border-radius: 0 15px 15px 0;
+            width: 20%;
+            background: #252525;
+            padding: 10px;
+            border-right: 1px solid #333;
             overflow-y: auto;
-            height: 100%;
-            border-left: 2px solid #00ff00;
-            box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.1);
+        }
+
+        #commands-list h3 {
+            color: #fff;
+            margin-bottom: 10px;
         }
 
         #commands-list ul {
-            list-style-type: none;
+            list-style: none;
             padding: 0;
+            margin: 0;
         }
 
         #commands-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid #333;
-            transition: background-color 0.3s, transform 0.2s ease;
+            padding: 5px 0;
+            color: #ccc;
+            cursor: pointer;
         }
 
         #commands-list li:hover {
-            background-color: #444;
-            cursor: pointer;
-            transform: scale(1.05);
+            color: #00ff00;
         }
 
         pre {
@@ -134,6 +128,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -146,13 +141,38 @@
         #terminal-input:focus {
             box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
         }
+
+        #command-type {
+            background: #252525;
+            color: #00ff00;
+            border: 1px solid #333;
+            padding: 5px;
+        }
+
+        button {
+            background: #333;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #444;
+        }
     </style>
 </head>
+
 <body>
     <div id="terminal-container">
         <!-- Terminal -->
         <div id="terminal">
             <div id="terminal-input-container">
+                <select id="command-type">
+                    <option value="artisan">Artisan</option>
+                    <option value="composer">Composer</option>
+                    <option value="terminal">Terminal</option>
+                </select>
                 <input type="text" id="terminal-input" placeholder="Digite o comando..." />
                 <button id="execute-button">Executar</button>
                 <button id="clear-button">Limpar</button>
@@ -194,42 +214,87 @@
 
         // Lógica de enviar comando
         function sendCommand() {
-            const input = terminalInput.value;
-            if (!input) return;
+            const terminalInput = document.getElementById('terminal-input');
+            const commandType = document.getElementById('command-type')
+            .value; // Pega o tipo de comando (artisan, composer ou terminal)
+            const command = terminalInput.value;
+            const endpointMap = {
+                artisan: '/run-command',
+                composer: '/run-composer',
+                terminal: '/run-terminal',
+            };
 
-            // Exibe o comando que foi digitado
-            terminalOutput.innerHTML += "<pre>Comando: " + input + "</pre>";
+            if (!command) return;
 
-            // Se o comando for 'clear', limpa o terminal
-            if (input.toLowerCase() === 'clear' || input.toLowerCase() === 'cls') {
-                terminalOutput.innerHTML = '';  // Limpa a saída
-                return;
+            // Exibe o comando digitado no terminal
+            const terminalOutput = document.getElementById('terminal-output');
+            terminalOutput.innerHTML += `<pre><strong>${commandType}:</strong> ${command}</pre>`;
+
+            // Determina o endpoint baseado no tipo de comando
+            const endpoint = endpointMap[commandType];
+
+            // Cria o comando completo com base no tipo de comando
+            let fullCommand;
+            if (commandType === 'artisan') {
+                fullCommand = `php artisan ${command}`;
+            } else if (commandType === 'composer') {
+                fullCommand = `composer ${command}`;
+            } else if (commandType === 'terminal') {
+                fullCommand = command; // No terminal, o comando é passado diretamente
             }
 
-            fetch('/run-command', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify({ command: input })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const output = data.output;
-                // Exibe a saída do comando
-                terminalOutput.innerHTML += "<pre>" + output + "</pre>";
-                terminalOutput.scrollTop = terminalOutput.scrollHeight; // Garante que sempre role até o fim
-            })
-            .catch(error => {
-                console.error('Erro ao executar o comando:', error);
-            });
+            // Faz a requisição para o backend
+            fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({
+                        command: fullCommand
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let done = false;
+
+                    const stream = async () => {
+                        while (!done) {
+                            const {
+                                value,
+                                done: readerDone
+                            } = await reader.read();
+                            done = readerDone;
+                            const str = decoder.decode(value, {
+                                stream: true
+                            });
+
+                            // Exibe a saída no terminal
+                            terminalOutput.innerHTML += `<pre>${str}</pre>`;
+                            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        }
+                    };
+
+                    stream();
+                })
+                .catch(error => {
+                    console.error('Erro ao executar o comando:', error);
+                    terminalOutput.innerHTML +=
+                        `<pre style="color: red;">Erro ao executar o comando: ${error.message}</pre>`;
+                });
 
             terminalInput.value = ''; // Limpa o input
         }
 
+
+
         // Enviar comando quando pressionar Enter ou clicar no botão
-        terminalInput.addEventListener('keydown', function (e) {
+        terminalInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 sendCommand();
             }
@@ -238,11 +303,10 @@
         executeButton.addEventListener('click', sendCommand);
 
         // Limpar a tela quando o botão "Limpar" for pressionado
-        clearButton.addEventListener('click', function () {
+        clearButton.addEventListener('click', function() {
             terminalOutput.innerHTML = ''; // Limpa a saída do terminal
         });
-
-        
     </script>
 </body>
+
 </html>

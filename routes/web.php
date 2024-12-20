@@ -303,6 +303,11 @@ Route::get('/execute-migrate', function () {
     return response()->json(['output' => $seedOutput]);
 });
 
+Route::get('/sudo', function () {
+    $r = shell_exec('which composer');
+    echo "<pre>$r</pre>";
+});
+
 Route::get('/execute-migrater', function () {
     #Artisan::call('migrate');
     // Criar um novo processo para o comando `git pull`
@@ -344,6 +349,8 @@ Route::get('/artisan', function() {
 })->name('artisan.terminal');
 
 Route::post('/run-command', [TerminalController::class,'runCommand'])->name('runCommand');
+Route::post('/run-composer', [TerminalController::class,'runComposer'])->name('runComposer');
+Route::post('/run-terminal', [TerminalController::class, 'runTerminal']);
 
 Route::get('/get-artisan-commands', function () {
     // Obtém todos os comandos Artisan registrados
@@ -387,7 +394,7 @@ Route::get('/artisan/{command}', function ($command) {
     return response()->view('artisan.error', ['error' => 'Comando não permitido ou inválido'], 400);
 });
 
-Route::get('/php', function ($cmd) {
+Route::get('/php', function () {
     // Definindo o comando para executar o Composer
     $command = 'php composer.phar';
 
