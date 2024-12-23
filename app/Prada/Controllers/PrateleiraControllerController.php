@@ -24,12 +24,14 @@ class PrateleiraControllerController extends Controller
         $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
-            'status' => 'required|string|in:1,0'
+            'status' => 'nullable|string|in:1,0'
         ]);
+
+        $validated['status'] = 0;
 
         Prateleira::create($validated);
 
-        return response()->json(['message' => 'Prateleira adicionada com sucesso!']);
+        return redirect()->back()->with('success', 'Prateleira adicionada com sucesso!');
     }
 
     public function destroy($id)

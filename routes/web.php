@@ -38,6 +38,7 @@ use App\Http\Controllers\Dev\{
 use App\Http\Controllers\Api\{
     AuthController as ApiAuth
 };
+use App\Http\Controllers\Artisan\CommandController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,10 @@ use App\Http\Controllers\Api\{
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/env-test', function () {
+    dd(env('MAIL_FROM_ADDRESS'));
+});
 
 Route::post('estoque/adder', [EstoqueController::class, 'store'])->name('estoque.storer');
 
@@ -344,13 +349,18 @@ Route::prefix('alertas')->group(function () {
     });
 });
 
-Route::get('/artisan', function() {
+Route::prefix('artisan')->group(function() {
+    Route::get('/', [CommandController::class, 'index'])->name('artisan');
+    Route::post('/run', [CommandController::class, 'run'])->name('artisan.run');
+});
+
+Route::get('/artisa', function() {
     return view('artisan.terminal');
 })->name('artisan.terminal');
 
-Route::post('/run-command', [TerminalController::class,'runCommand'])->name('runCommand');
-Route::post('/run-composer', [TerminalController::class,'runComposer'])->name('runComposer');
-Route::post('/run-terminal', [TerminalController::class, 'runTerminal']);
+// Route::post('/run-command', [TerminalController::class,'runArtisanCommand'])->name('runCommand');
+// Route::post('/run-composer', [TerminalController::class,'runComposer'])->name('runComposer');
+// Route::post('/run-terminal', [TerminalController::class, 'runTerminal']);
 
 Route::get('/get-artisan-commands', function () {
     // Obtém todos os comandos Artisan registrados
@@ -358,7 +368,7 @@ Route::get('/get-artisan-commands', function () {
     return response()->json(['commands' => array_keys($commands)]);
 });
 
-Route::get('/artisan/backend/{cmd}', function($cmd) {
+Route::get('/artisa/backend/{cmd}', function($cmd) {
     try {
         // Executa o comando Artisan
         Artisan::call($cmd);
@@ -374,7 +384,7 @@ Route::get('/artisan/backend/{cmd}', function($cmd) {
     }
 })->name('artisan.terminal');
 
-Route::get('/artisan/{command}', function ($command) {
+Route::get('/artisa/{command}', function ($command) {
     // Limitar comandos permitidos
     $allowedCommands = [
         'cache:clear', 'config:clear', 'route:clear', 'view:clear', 'event:clear',

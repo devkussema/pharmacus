@@ -213,22 +213,33 @@
             });
 
         // Lógica de enviar comando
+        function escapeHTML(str) {
+            // Função para escapar caracteres especiais no HTML
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         function sendCommand() {
             const terminalInput = document.getElementById('terminal-input');
-            const commandType = document.getElementById('command-type')
-            .value; // Pega o tipo de comando (artisan, composer ou terminal)
-            const command = terminalInput.value;
+            const commandType = document.getElementById('command-type').value; // Tipo de comando
+            const command = terminalInput.value.trim(); // Comando digitado
+
+            // Mapeamento de endpoints por tipo de comando
             const endpointMap = {
                 artisan: '/run-command',
                 composer: '/run-composer',
                 terminal: '/run-terminal',
             };
 
-            if (!command) return;
+            if (!command) return; // Não faz nada se o comando estiver vazio
 
             // Exibe o comando digitado no terminal
             const terminalOutput = document.getElementById('terminal-output');
-            terminalOutput.innerHTML += `<pre><strong>${commandType}:</strong> ${command}</pre>`;
+            terminalOutput.innerHTML += `<pre><strong>${escapeHTML(commandType)}:</strong> ${escapeHTML(command)}</pre>`;
 
             // Determina o endpoint baseado no tipo de comando
             const endpoint = endpointMap[commandType];
@@ -252,7 +263,7 @@
                     },
                     body: JSON.stringify({
                         command: fullCommand
-                    })
+                    }),
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -270,13 +281,14 @@
                                 done: readerDone
                             } = await reader.read();
                             done = readerDone;
+
+                            // Decodifica e exibe a saída no terminal
                             const str = decoder.decode(value, {
                                 stream: true
                             });
-
-                            // Exibe a saída no terminal
-                            terminalOutput.innerHTML += `<pre>${str}</pre>`;
-                            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                            terminalOutput.innerHTML += `<pre>${escapeHTML(str)}</pre>`;
+                            terminalOutput.scrollTop = terminalOutput
+                            .scrollHeight; // Rola para o final do terminal
                         }
                     };
 
@@ -285,11 +297,12 @@
                 .catch(error => {
                     console.error('Erro ao executar o comando:', error);
                     terminalOutput.innerHTML +=
-                        `<pre style="color: red;">Erro ao executar o comando: ${error.message}</pre>`;
+                        `<pre style="color: red;">Erro ao executar o comando: ${escapeHTML(error.message)}</pre>`;
                 });
 
-            terminalInput.value = ''; // Limpa o input
+            terminalInput.value = ''; // Limpa o campo de entrada
         }
+
 
 
 

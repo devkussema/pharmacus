@@ -449,7 +449,7 @@
             originalElement.parentNode.insertBefore(cloneElement, originalElement.nextSibling);
         });
 
-        const inputDescritivo = document.getElementById('descritivo');
+        const inputDescritivo1 = document.getElementById('descritivo');
         const inputQuantidadeTotal = document.getElementById('qtd_total_estoque');
 
         function addQtdTotal(input) {

@@ -20,8 +20,8 @@
                             <div class="row">
                                 <div class="col pb-3">
                                     <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="11a2d86a-c885-44e4-9162-14215ef75b95">
-                                    <label class="mb-2">Designação *</label>
-                                    <input type="text" id="designacao" value="{{ old('designacao') ?? old('designacao') }}" class="form-control" placeholder="" name="designacao">
+                                    <label class="mb-2">Nome *</label>
+                                    <input type="text" id="nome" value="{{ old('nome') ?? old('nome') }}" class="form-control" placeholder="" name="nome">
                                 </div>
                                 {{-- <div class="col-md-6 pb-3">
                                     <label class="mb-2">Localização *</label>

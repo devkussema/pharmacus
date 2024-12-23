@@ -9,6 +9,26 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class TerminalController extends Controller
 {
+    function runArtisanCommand($command) {
+        $fullCommand = "php artisan " . $command;
+
+        $output = shell_exec($fullCommand);
+
+        if ($output === null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao executar o comando.',
+            ]);
+        }
+
+        // Encode para evitar problemas no front-end
+        return response()->json([
+            'success' => true,
+            'output' => htmlspecialchars($output),
+        ]);
+    }
+
+
     public function runCommand(Request $request)
     {
         try {
