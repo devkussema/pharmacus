@@ -31,7 +31,7 @@ class AuthController extends Controller
         $app_desc = "Inicie sessão e esteja a par de tudo na " . env('APP_NAME');
         $app_keywords = "entrar, pharmatina, pharmatina angola, google angola, pharmatino, farmatina, farmácia ao, farmacia angola, augusto kussema, kussema";
 
-        return view('auth.v2.login', compact('theme', 'app_desc', 'app_keywords'));
+        return view('login', compact('theme', 'app_desc', 'app_keywords'));
     }
 
     public function devver() {

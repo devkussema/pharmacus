@@ -377,7 +377,7 @@ Route::get('/artisa/backend/{cmd}', function($cmd) {
         $output = Artisan::output();
 
         // Retorna a saída como uma resposta JSON
-        return response()->json(['output' => nl2br($output)]);
+        return response()->json(['output' => $output]);
     } catch (\Exception $e) {
         // Em caso de erro, retorna a mensagem de erro
         return response()->json(['output' => 'Erro ao executar o comando: ' . $e->getMessage()]);

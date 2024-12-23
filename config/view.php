@@ -14,6 +14,7 @@ return [
     */
 
     'paths' => [
+        resource_path('views/auth/'.env('APP_LOGIN_THEME', '')),
         resource_path('views'),
         resource_path("views/" . (nem('APP_THEME') ? nem('APP_THEME') : env('APP_THEME'))),
     ],
