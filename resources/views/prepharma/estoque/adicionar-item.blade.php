@@ -100,8 +100,85 @@
                                 <div class="row">
                                     <div class="col pb-3">
                                         <label class="mb-2">Forma *</label>
-                                        <input type="text" class="form-control" value="{{ old('forma') ?? old('forma') }}" name="forma">
+                                        <select class="form-control" name="forma">
+                                            <option value="">Selecione uma forma</option>
+
+                                            <!-- Formas de Administração Oral -->
+                                            <optgroup label="Formas de Administração Oral">
+                                                <option value="Comprimidos">Comprimidos</option>
+                                                <option value="Cápsulas">Cápsulas</option>
+                                                <option value="Tabletes efervescentes">Tabletes efervescentes</option>
+                                                <option value="Pó para suspensão oral">Pó para suspensão oral</option>
+                                                <option value="Xaropes">Xaropes</option>
+                                                <option value="Soluções orais">Soluções orais</option>
+                                                <option value="Gomas mastigáveis">Gomas mastigáveis</option>
+                                                <option value="Soluções ou elixires">Soluções ou elixires</option>
+                                            </optgroup>
+
+                                            <!-- Formas de Administração Parenteral -->
+                                            <optgroup label="Formas de Administração Parenteral (fora do trato gastrointestinal)">
+                                                <option value="Injeções">Injeções</option>
+                                                <option value="Infusões intravenosas">Infusões intravenosas</option>
+                                                <option value="Implantes subcutâneos">Implantes subcutâneos</option>
+                                                <option value="Vacinas">Vacinas</option>
+                                                <option value="Pós para solução injetável">Pós para solução injetável</option>
+                                            </optgroup>
+
+                                            <!-- Formas de Administração Tópica -->
+                                            <optgroup label="Formas de Administração Tópica">
+                                                <option value="Cremes">Cremes</option>
+                                                <option value="Pomadas">Pomadas</option>
+                                                <option value="Géis">Géis</option>
+                                                <option value="Loções">Loções</option>
+                                                <option value="Pasta">Pasta</option>
+                                                <option value="Sprays tópicos">Sprays tópicos</option>
+                                                <option value="Adesivos transdérmicos">Adesivos transdérmicos</option>
+                                                <option value="Shampoos">Shampoos</option>
+                                                <option value="Sabonetes medicinais">Sabonetes medicinais</option>
+                                            </optgroup>
+
+                                            <!-- Formas de Administração Inalatória -->
+                                            <optgroup label="Formas de Administração Inalatória">
+                                                <option value="Aerossóis">Aerossóis</option>
+                                                <option value="Nebulizações">Nebulizações</option>
+                                                <option value="Inaladores de pó seco">Inaladores de pó seco</option>
+                                            </optgroup>
+
+                                            <!-- Formas de Administração Retal -->
+                                            <optgroup label="Formas de Administração Retal">
+                                                <option value="Supositórios">Supositórios</option>
+                                                <option value="Enemas">Enemas</option>
+                                                <option value="Pomadas retal">Pomadas retal</option>
+                                            </optgroup>
+
+                                            <!-- Formas de Administração Oftálmica -->
+                                            <optgroup label="Formas de Administração Oftálmica">
+                                                <option value="Colírios">Colírios</option>
+                                                <option value="Pomadas oftálmicas">Pomadas oftálmicas</option>
+                                            </optgroup>
+
+                                            <!-- Formas de Administração Nasal -->
+                                            <optgroup label="Formas de Administração Nasal">
+                                                <option value="Sprays nasais">Sprays nasais</option>
+                                                <option value="Gotas nasais">Gotas nasais</option>
+                                            </optgroup>
+
+                                            <!-- Formas de Administração Sublingual e Bucal -->
+                                            <optgroup label="Formas de Administração Sublingual e Bucal">
+                                                <option value="Comprimidos sublinguais">Comprimidos sublinguais</option>
+                                                <option value="Tabletes bucais">Tabletes bucais</option>
+                                                <option value="Pastilhas">Pastilhas</option>
+                                                <option value="Balas medicinais">Balas medicinais</option>
+                                            </optgroup>
+
+                                            <!-- Formas de Administração Vaginal -->
+                                            <optgroup label="Formas de Administração Vaginal">
+                                                <option value="Óvulos vaginais">Óvulos vaginais</option>
+                                                <option value="Creme vaginal">Creme vaginal</option>
+                                            </optgroup>
+                                        </select>
                                     </div>
+
                                     <div class="col pb-3">
                                         <label class="mb-2">G. Farmacológico *</label>
                                         <select name="grupo_farmaco_id" style="width: 100%" id="grupo_farmaco_id_"
