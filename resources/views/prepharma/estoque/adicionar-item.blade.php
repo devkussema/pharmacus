@@ -183,7 +183,7 @@
                                         <label class="mb-2">G. Farmacológico *</label>
                                         <select name="grupo_farmaco_id" style="width: 100%" id="grupo_farmaco_id_"
                                             class="form-control selectr2">
-                                            @foreach (\App\Models\GrupoFarmacologico::all() as $gf)
+                                            @foreach (\App\Models\GrupoFarmacologico::orderBy('nome')->get() as $gf)
                                                 <option value="{{ $gf->id }}">{{ $gf->nome }}</option>
                                             @endforeach
                                         </select>
