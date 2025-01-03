@@ -99,13 +99,7 @@
                         <th>Designação</th>
                         <th>Dosagem</th>
                         <th>Forma</th>
-                        <th>Fornecedor</th>
-                        <th>Lote</th>
-                        <th>Grupo</th>
-                        <th>Qtd. Caixa</th>
                         <th>Qtd. Unit.</th>
-                        <th>Inserido em</th>
-                        <th>Data Expiração</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -118,16 +112,10 @@
                                 <td>
                                     {{ $i }}
                                 </td>
-                                <td><b>{{ $est->produto->designacao }}</b></td>
+                                <td style="text-align: left"><b>{{ $est->produto->designacao }}</b></td>
                                 <td>{{ $est->produto->dosagem }}</td>
                                 <td>{{ $est->produto->forma }}</td>
-                                <td>{{ $est->produto->origem_destino }}</td>
-                                <td>{{ $est->produto->num_lote }}</td>
-                                <td><b>{{ $est->produto->grupo_farmaco->nome }}</b></td>
-                                <td>{{ getCaixa($est->produto->descritivo) }}</td>
                                 <td>{{ $est->produto->saldo->qtd }}</td>
-                                <td>{{ formatarData($est->produto->created_at) }}</td>
-                                <td>{{ $est->produto->data_expiracao }}</td>
                                 <td>
                                     <div class="dropdown dropdown-action">
                                         <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"

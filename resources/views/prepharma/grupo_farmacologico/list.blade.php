@@ -61,7 +61,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table border-0 custom-table comman-table datatable mb-0" id="table-content">
+                            <table class="table border-0 custom-table comman-table datatable mb-0  table-gfarmacos" id="table-content">
                                 <thead>
                                     <tr>
                                         <th>

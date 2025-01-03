@@ -176,6 +176,11 @@
                                                 <option value="Óvulos vaginais">Óvulos vaginais</option>
                                                 <option value="Creme vaginal">Creme vaginal</option>
                                             </optgroup>
+
+                                            <optgroup label="Outros">
+                                                <option value="Descartável">Descartável</option>
+                                                <option value="Não Atribuido">Não Atribuido</option>
+                                            </optgroup>
                                         </select>
                                     </div>
 
@@ -199,7 +204,7 @@
                                     <label class="mb-2">Área Hospitalar</label>
                                     <select name="area_id" style="width: 100%" id="area_id_" class="form-control select2">
                                         @foreach (\App\Models\AreaHospitalar::all() as $ah)
-                                            @if ($ah->nome == 'Armazém I' or $ah->nome == 'Direcção clínica')
+                                            @if ($ah->nome == 'Armazém I' or $ah->nome == 'Armazém II' or $ah->nome == 'Direcção clínica')
                                                 <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
                                             @endif
                                         @endforeach
