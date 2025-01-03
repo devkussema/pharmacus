@@ -99,7 +99,8 @@
                         <th>Designação</th>
                         <th>Dosagem</th>
                         <th>Forma</th>
-                        <th>Qtd. Unit.</th>
+                        <th>Expiração</th>
+                        <th>Estoque</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,6 +116,7 @@
                                 <td style="text-align: left"><b>{{ $est->produto->designacao }}</b></td>
                                 <td>{{ $est->produto->dosagem }}</td>
                                 <td>{{ $est->produto->forma }}</td>
+                                <td>{{ $est->produto->data_expiracao }}</td>
                                 <td>{{ $est->produto->saldo->qtd }}</td>
                                 <td>
                                     <div class="dropdown dropdown-action">
