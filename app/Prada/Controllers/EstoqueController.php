@@ -573,10 +573,10 @@ class EstoqueController extends Controller
         self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$ud->area_hospitalar->nome}");
         self::setNotify("Confirmação de entrada de estoque", $ud->user_id);
         $texto = auth()->user()->nome . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
-        self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
+        //self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
 
         // return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);
-        return redirect()->back()->with('success', 'Baixa concluida, a aguardar confirmação.');
+        return redirect()->back()->with('success', 'Baixa concluida.');
     }
 
     public function calcularNivelAlerta()
