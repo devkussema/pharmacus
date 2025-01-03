@@ -100,7 +100,7 @@
                         <th>Dosagem</th>
                         <th>Forma</th>
                         <th>Expiração</th>
-                        <th>Estoque</th>
+                        <th>Stock</th>
                     </tr>
                 </thead>
                 <tbody>
