@@ -165,8 +165,8 @@ class EstoqueController extends Controller
             }])
             ->get();
 
-        PE::where('forma', 'Pasta')
-            ->update(['forma' => 'Outros']);
+        // PE::where('forma', 'Pasta')
+        //     ->update(['forma' => 'Outros']);
 
         self::calcNivelAlerta();
 
