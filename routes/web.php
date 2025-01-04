@@ -38,6 +38,9 @@ use App\Http\Controllers\Dev\{
 use App\Http\Controllers\Api\{
     AuthController as ApiAuth
 };
+use App\Http\Controllers\Stock\{
+    Dashboard as DashStock
+};
 use App\Http\Controllers\Artisan\CommandController;
 
 /*
@@ -58,6 +61,10 @@ Route::get('/env-test', function () {
 Route::post('estoque/adder', [EstoqueController::class, 'store'])->name('estoque.storer');
 
 Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
+    Route::prefix('stock')->group(function () {
+        Route::get('/dashboard', [DashStock::class, 'index'])->name('stock.dashboard');
+    });
+
     Route::prefix('dev')->group(function () {
         Route::get('/levantamento', [DevController::class, 'levantamento'])->name('dev.levantamento');
         Route::get('/novo_doc', [DevController::class, 'novo_doc'])->name('dev.novo_doc');

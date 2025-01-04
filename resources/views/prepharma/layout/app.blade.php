@@ -65,18 +65,30 @@
     </audio>
     <script src="{{ asset('/sw2.js') }}"></script>
 
-    <script src="{{ assetr('assets/js/bootstrap.bundle.min.js') }}" type="be6558ccd95e077c3366a663-text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.8.1/feather.js" type="be6558ccd95e077c3366a663-text/javascript"></script>
+    <script src="{{ assetr('assets/js/jquery-3.7.1.min.js')}}"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script src="{{ assetr('assets/js/jquery.slimscroll.js')}}" type="be6558ccd95e077c3366a663-text/javascript"></script>
+    <script src="{{ assetr('assets/js/bootstrap.bundle.min.js')}}"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ assetr('assets/js/feather.min.js')}}"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
-    <script src="{{ assetr('assets/plugins/alertify/custom-alertify.min.js')}}" type="b8abefe4dfcd6d5a94855793-text/javascript"></script>
+    <script src="{{ assetr('assets/js/jquery.slimscroll.js')}}"></script>
 
-    <script src="{{ assetr('assets/js/app.js')}}" type="be6558ccd95e077c3366a663-text/javascript"></script>
+    <script src="{{ assetr('assets/js/select2.min.js')}}"></script>
+
+    <script src="{{ assetr('assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ assetr('assets/plugins/datatables/datatables.min.js')}}"></script>
+
+    <script src="{{ assetr('assets/js/jquery.waypoints.js')}}"></script>
+    <script src="{{ assetr('assets/js/jquery.counterup.min.js')}}"></script>
+
+    <script src="{{ assetr('assets/plugins/apexchart/apexcharts.min.js')}}"></script>
+    {{-- <script src="{{ assetr('assets/plugins/apexchart/chart-data.js')}}"></script> --}}
+    <script src="{{ assetr('plugins/charts/chart1.js')}}"></script>
+
+    <script src="{{ assetr('assets/js/circle-progress.min.js')}}"></script>
+
+    <script src="{{ assetr('assets/js/app.js')}}"></script>
+
     <script src="{{ assetr('assets/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
         data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
     <script>
