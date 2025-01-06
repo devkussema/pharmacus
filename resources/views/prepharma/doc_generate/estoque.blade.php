@@ -7,15 +7,18 @@
     <title>Estoque</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            padding-bottom: 80px; /* Espaço extra para o rodapé fixo */
             margin: 0;
-            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
         .container {
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            flex-grow: 1;
         }
 
         .header {
@@ -54,6 +57,10 @@
         .tbl-container {
             margin: 0 auto;
             width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         table {
@@ -82,10 +89,18 @@
             padding: 8px;
         }
 
+        /* Rodapé fixo */
         .footer {
+            position: fixed;
+            bottom: 0; /* Distância para o rodapé fixo */
+            left: 0;
+            right: 0;
             text-align: center;
-            padding: 20px;
             font-size: 14px;
+            color: gray;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            background-color: white;
         }
 
         .footer .line {
@@ -99,31 +114,37 @@
             display: block;
             margin-top: 10px;
             font-size: 12px;
-            color: gray;
         }
 
         /* Rodapé fixo em todas as páginas */
         @media print {
             .print-footer {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
+                display: none;
+            }
+
+            .footer-signature {
+                display: none;
+            }
+
+            /* Rodapé fixo em todas as páginas, mas com comportamento especial para a última página */
+            body:last-child .print-footer {
+                display: block;
                 text-align: center;
                 font-size: 12px;
                 color: gray;
                 padding: 10px 0;
                 border-top: 1px solid #ddd;
+                background-color: white;
             }
 
-            .footer-signature {
-                display: none; /* Apenas na última página */
-            }
-
+            /* Assinatura e dados adicionais apenas na última página */
             .footer-signature.last-page {
-                display: block; /* Mostrar apenas na última página */
+                display: block;
+                text-align: center;
+                padding-top: 10px;
                 position: relative;
                 padding-top: 20px;
+                bottom: 0;
             }
         }
     </style>
@@ -173,14 +194,15 @@
                             @if ($currentForma != $est->produto->forma)
                                 @php $currentForma = $est->produto->forma; @endphp
                                 <tr>
-                                    <td style="text-align: center; text-transform: capitalize" colspan="5" class="group-header">
+                                    <td style="text-align: center; text-transform: capitalize" colspan="5"
+                                        class="group-header">
                                         {{ strtoupper($currentForma) }}
                                     </td>
                                 </tr>
                             @endif
                             <tr>
                                 <td>{{ $i }}</td>
-                                <td style="text-align: left"><b>{{ $est->produto->designacao }}</b></td>
+                                <td style="text-align: left">{{ $est->produto->designacao }}</td>
                                 <td>{{ $est->produto->dosagem }}</td>
                                 <td>{{ \Carbon\Carbon::parse($est->produto->data_expiracao)->format('d-m-Y') }}</td>
                                 <td>{{ $est->produto->saldo->qtd }}</td>
@@ -200,10 +222,11 @@
         </div>
 
         <!-- Rodapé fixo -->
-        <div class="print-footer">
+        <div class="print-footer" style="bottom: 60px">
             Documento processado por computador e não necessita de assinatura manual.
             Gerado pelo aplicativo <b>Pharmatina</b> para gestão de estoque e controle farmacêutico.
         </div>
+
     </div>
 </body>
 
