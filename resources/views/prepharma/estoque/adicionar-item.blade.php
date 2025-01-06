@@ -55,7 +55,7 @@
                                         </div>
                                         <div class="col pb-3">
                                             <label class="mb-2">Caixinha *</label>
-                                            <input type="number" name="caxinha" value="{{ old('caxinha') ?? old('caxinha') }}" id="caxinha" class="form-control">
+                                            <input type="number" name="caxinha" value="{{ old('caxinha') ?? old('caxinha') }}" id="caxinha" class="form-control" >
                                         </div>
                                         <div class="col pb-3">
                                             <label class="mb-2">Unidade *</label>

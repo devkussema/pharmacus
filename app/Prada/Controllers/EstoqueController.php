@@ -49,9 +49,10 @@ class EstoqueController extends Controller
         return view('estoque.panel');
     }
 
-    public function edit(Request $request, $id, $returnID)
+    public function edit(Request $request, $id, $returnIDr)
     {
         $pe = PE::find($id);
+        $returnID = $returnIDr;
         return view('estoque.edit', compact('pe', 'returnID'));
     }
 
@@ -66,12 +67,27 @@ class EstoqueController extends Controller
             'caxinha' => 'required',
             'unidade' => 'required',
             'num_lote' => 'required',
-            'num_documento' => 'required',
-            'data_producao' => 'required',
+            'num_documento' => 'nullable',
+            'data_producao' => 'nullable',
             'data_expiracao' => 'required',
             'forma' => 'required',
             'grupo_farmaco_id' => 'required',
-            'origem_destino' => 'required',
+            'origem_destino' => 'nullable',
+            'prateleira_id' => 'required'
+        ], [
+            'designacao.required' => 'O campo Designação é obrigatório.',
+            'tipo.required' => 'O campo Tipo é obrigatório.',
+            'dosagem.nullable' => 'O campo Dosagem é opcional.',
+            'caixa.required' => 'O campo Caixa é obrigatório.',
+            'caxinha.required' => 'O campo Caixinha é obrigatório.',
+            'unidade.required' => 'O campo Unidade é obrigatório.',
+            'num_lote.required' => 'O campo Lote é obrigatório.',
+            'num_documento.nullable' => 'O campo Documento Nº é opcional.',
+            'data_producao.nullable' => 'O campo Data Produção é opcional.',
+            'data_expiracao.required' => 'O campo Data Expiração é obrigatório.',
+            'forma.required' => 'O campo Forma é obrigatório.',
+            'grupo_farmaco_id.required' => 'O campo G. Farmacológico é obrigatório.',
+            'origem_destino.nullable' => 'O campo Origem/Destino é opcional.',
         ]);
 
         // Encontrar o registro do Estoque pelo ID
@@ -447,7 +463,7 @@ class EstoqueController extends Controller
                 'user_de' => auth()->user()->id,
                 'area_de' => $area_de,
                 'area_para' => $request->input('area_para'),
-                'confirmado' => 0,
+                'confirmado' => 1,
                 'gastos' => $request->input('gastos'),
                 'existencia' => $request->input('existencia'),
                 'qtd_pedida' => $request->input('qtd_pedida'),
