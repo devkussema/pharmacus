@@ -32,10 +32,6 @@ class EstoqueController extends Controller
         $ah = AH::all();
         $estoque = "";
 
-        // Atualizar todas as entradas no campo 'forma' de 'produto_estoques'
-        PE::whereRaw("LOWER(forma) = 'xarope'")->update([
-            'forma' => 'Xaropes',
-        ]);
 
         if (!auth()->user()->isFarmacia and auth()->user()->area_hospitalar->area_hospitalar_id) {
             $area_hospitalar_id = auth()->user()->area_hospitalar->area_hospitalar_id;
@@ -169,6 +165,11 @@ class EstoqueController extends Controller
     {
         $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
         $isPerm = vPerm('area_hospitalar', ['ver']);
+
+        // Atualizar todas as entradas no campo 'forma' de 'produto_estoques'
+        PE::whereRaw("LOWER(forma) = 'xarope'")->update([
+            'forma' => 'Xaropes',
+        ]);
 
         $ah = FAH::with('area_hospitalar')
             ->where('area_hospitalar_id', $id)
