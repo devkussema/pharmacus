@@ -32,6 +32,11 @@ class EstoqueController extends Controller
         $ah = AH::all();
         $estoque = "";
 
+        // Atualizar todas as entradas no campo 'forma' de 'produto_estoques'
+        PE::whereRaw("LOWER(forma) = 'xarope'")->update([
+            'forma' => 'Xaropes',
+        ]);
+
         if (!auth()->user()->isFarmacia and auth()->user()->area_hospitalar->area_hospitalar_id) {
             $area_hospitalar_id = auth()->user()->area_hospitalar->area_hospitalar_id;
             $farmacia_id = @auth()->user()->isFarmacia->farmacia->id;

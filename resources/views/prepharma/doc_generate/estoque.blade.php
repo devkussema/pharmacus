@@ -137,6 +137,10 @@
                 background-color: white;
             }
 
+            .print-footer:last-of-type {
+                display: block;
+            }
+
             /* Assinatura e dados adicionais apenas na última página */
             .footer-signature.last-page {
                 display: block;
@@ -222,7 +226,7 @@
         </div>
 
         <!-- Rodapé fixo -->
-        <div class="print-footer" style="bottom: 60px">
+        <div class="print-footer" style="display:none; position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 12px; color: gray; padding: 10px 0; border-top: 1px solid #ddd; background-color: white;">
             Documento processado por computador e não necessita de assinatura manual.
             Gerado pelo aplicativo <b>Pharmatina</b> para gestão de estoque e controle farmacêutico.
         </div>
