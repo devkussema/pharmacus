@@ -138,9 +138,10 @@
             <h4>REPÚBLICA DE ANGOLA</h4>
             <h4>HOSPITAL GERAL ESPECIALIZADO DE LUANDA</h4>
             <h4>FICHA DE CONTROLO DE MEDICAMENTOS</h4>
+            <h4>SECÇÃO DA FARMÁCIA</h4>
             <h4>DATA: {{ date('d') }} / {{ date('m') }} / {{ date('Y') }}</h4>
 
-            <div class="signature-right">
+            <div class="signature-right" style="text-align: center">
                 Visto da Diretora Clínica<br>
                 <span class="line"></span>
                 = Dr.ª Rosa Camilo Andé = <br>
@@ -195,7 +196,7 @@
         <div class="footer footer-signature last-page">
             <div>O Chefe de Secção</div>
             <span class="line"></span>
-            <div>Adriano Lata</div>
+            <div>{{ Auth::user()->nome }}</div>
         </div>
 
         <!-- Rodapé fixo -->
