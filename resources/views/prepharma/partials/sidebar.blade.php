@@ -38,14 +38,14 @@
                             <span> Áreas Hospitalares </span>
                         </a>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a href="{{ route('stock.dashboard') }}" class="{{ Route::currentRouteName() == 'stock.dashboard' ? 'active' : '' }}">
                             <span class="menu-side">
                                 <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
                             </span>
                             <span>Estoque </span>
                         </a>
-                    </li>
+                    </li> --}}
                 @endif
                 @if (Auth::user()->area_hospitalar || Auth::user()->isFarmacia)
                     <li>

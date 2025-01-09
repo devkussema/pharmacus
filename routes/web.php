@@ -41,6 +41,9 @@ use App\Http\Controllers\Api\{
 use App\Http\Controllers\Stock\{
     Dashboard as DashStock
 };
+use App\Http\Controllers\LandingPage\{
+    HomeController as LPHomeController
+};
 use App\Http\Controllers\Artisan\CommandController;
 
 /*
@@ -54,8 +57,9 @@ use App\Http\Controllers\Artisan\CommandController;
 |
 */
 
-Route::get('/env-test', function () {
-    dd(env('MAIL_FROM_ADDRESS'));
+Route::prefix('landingpager')->group(function () {
+    Route::get('/', [LPHomeController::class, 'index'])->name('lp.home');
+    Route::get('/blog-single', [LPHomeController::class, 'blog_single'])->name('lp.blog_single');
 });
 
 Route::post('estoque/adder', [EstoqueController::class, 'store'])->name('estoque.storer');
