@@ -27,10 +27,20 @@ class NivelAlertaController extends Controller
         return view('niveis_alerta.show', compact('niveis'));
     }
 
-    public function gerarRelatorio()
+    public function gerarRelatorio(Request $request)
     {
+        $area_hospitalar_id = 6;
+        $produtos = \App\Models\ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
+            $query->where('area_hospitalar_id', $area_hospitalar_id);
+        })
+            ->whereRaw("CAST(SUBSTRING_INDEX(descritivo, 'x', 1) AS UNSIGNED) <= ?", [$request->qtd_maxima_caixa])
+            ->select('id', 'designacao', 'descritivo')
+            ->with('estoque')
+            ->orderBy('designacao', 'asc')
+            ->get();
+
         //return view('niveis_alerta.gerarRelatorio');
-        return view('doc_generate.relatorio');
+        return view('doc_generate.relatorio', compact('produtos'));
     }
 
     public function gerarRelatorioPost(Request $request)

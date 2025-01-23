@@ -104,11 +104,7 @@
             </thead>
             <tbody>
             @php $i = 1; @endphp
-            @foreach (\App\Models\ProdutoEstoque::whereRaw("CAST(SUBSTRING_INDEX(descritivo, 'x', 1) AS UNSIGNED) <= 5")
-                ->select('id', 'designacao', 'descritivo') // Seleciona os campos designacao e descritivo
-                ->with('estoque')
-                ->orderBy('designacao', 'asc')
-                ->get() as $pe)
+            @foreach ($produtos as $pe)
                 <tr>
                     <td>{{ $i }}</td>
                     <td>{{ $pe->designacao }}</td>
