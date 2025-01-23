@@ -117,7 +117,7 @@
 
                                             <!-- Formas de Administração Parenteral -->
                                             <optgroup label="Formas de Administração Parenteral (fora do trato gastrointestinal)">
-                                                <option value="Injeções">Injeções</option>
+                                                <option value="Injectável">Injectável</option>
                                                 <option value="Infusões intravenosas">Infusões intravenosas</option>
                                                 <option value="Implantes subcutâneos">Implantes subcutâneos</option>
                                                 <option value="Vacinas">Vacinas</option>

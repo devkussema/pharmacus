@@ -124,8 +124,10 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('/', [FuncionarioController::class, 'index'])->name('funcionarios');
     });
 
-    Route::prefix('nivel_alerta')->group(function () {
+    Route::prefix('relatorio')->group(function () {
         Route::get('/', [NivelAlertaController::class, 'index'])->name('nivel_alerta');
+        Route::get('/gerar_relatorio', [NivelAlertaController::class, 'gerarRelatorio'])->name('gerar_relatorio');
+        Route::post('/gerar_relatorio', [NivelAlertaController::class, 'gerarRelatorioPost'])->name('gerar_relatorio.post');
     });
 
     Route::prefix('alertas')->group(function () {

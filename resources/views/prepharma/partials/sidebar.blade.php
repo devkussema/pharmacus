@@ -86,6 +86,9 @@
                         <li>
                             <a href="{{ route('nivel_alerta') }}"> Niveis de alerta </a>
                         </li>
+                        <li>
+                            <a href="{{ route('gerar_relatorio') }}"> Gerar Relatório </a>
+                        </li>
                     </ul>
                 </li>
                 @endif
