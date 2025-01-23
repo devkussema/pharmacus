@@ -17,6 +17,8 @@
             </div>
         </div>
 
+        @include('partials.session')
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card">

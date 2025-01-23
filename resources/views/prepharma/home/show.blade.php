@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="content">
-        @include('partials.session')
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
@@ -16,6 +15,8 @@
                 </div>
             </div>
         </div>
+
+        @include('partials.session')
 
         <div class="good-morning-blk">
             <div class="row">

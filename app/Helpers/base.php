@@ -2,7 +2,7 @@
 
 use \App\Models\User;
 use App\Models\Grupo;
-use App\Models\{Permissao, Cargo, Setting, AreaHospitalar};
+use App\Models\{Permissao, Cargo, Setting, AreaHospitalar, ProdutoEstoque};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -13,6 +13,15 @@ if (! function_exists('formatar_horas')) {
     }
 }
 
+function getMinimumStock() {
+    // Busca registros com descritivo de 5 caixas ou menos (caixa x caixinha x unidade)
+    $produtos = ProdutoEstoque::whereRaw("CAST(SUBSTRING_INDEX(descritivo, 'x', 1) AS UNSIGNED) <= 5")
+        ->select('id', 'designacao', 'descritivo') // Seleciona os campos designacao e descritivo
+        ->with('estoque')
+        ->get(); // Retorna a coleção completa de objetos
+
+    return $produtos;
+}
 function formatDataAtv($data) {
     // Converte a string de data para um objeto DateTime
     $data_obj = new DateTime($data);

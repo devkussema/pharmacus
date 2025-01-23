@@ -1,3 +1,24 @@
+@php $produtos = getMinimumStock(); @endphp
+
+@if($produtos->count() > 2)
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Atenção!</strong> Há {{ $produtos->count() }} produtos com menos de 5 caixas.
+        <a href="{{ route('alert.show') }}" class="btn btn-link" style="color: #ff0000; font-weight: bold; text-decoration: none; float: right; padding: 0; margin-left: 10px;">
+            Ir para a página
+        </a>
+    </div>
+@else
+    @foreach ($produtos as $produto)
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <a href="/estoque/editar/{{ $produto->id  }}/{{ $produto->estoque->area_hospitalar_id  }}">
+                <strong>{{ $produto->designacao  }}!</strong> No <strong>[{{ $produto->estoque->area_hospitalar->nome  }}]</strong> tem apenas {{ getCaixa($produto->descritivo)  }} caixas.
+            </a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endforeach
+@endif
+
+
 {{-- Erros de Validação --}}
 @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show" role="alert">

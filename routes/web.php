@@ -9,7 +9,7 @@ use App\Prada\Controllers\CategoriaController;
 use App\Prada\Controllers\GerenteFarmaciaController;
 use App\Prada\Controllers\AreaHospitalarController;
 use Illuminate\Support\Facades\Artisan;
-use App\Prada\Controllers\{
+use App\Prada\Controllers\{AlertController,
     PermissoesController,
     GetterController,
     ConfigController,
@@ -23,8 +23,7 @@ use App\Prada\Controllers\{
     GrupoFarmacologicoController as GFC,
     AtividadeController,
     PrintController,
-    PrateleiraControllerController as PratControllers,
-};
+    PrateleiraControllerController as PratControllers};
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
 use App\Http\Controllers\{
@@ -127,6 +126,10 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
 
     Route::prefix('nivel_alerta')->group(function () {
         Route::get('/', [NivelAlertaController::class, 'index'])->name('nivel_alerta');
+    });
+
+    Route::prefix('alertas')->group(function () {
+        Route::get('/', [AlertController::class, 'index'])->name('alert.show');
     });
 
     Route::prefix('estoque')->middleware('is.area_hospitalar')->group(function () {

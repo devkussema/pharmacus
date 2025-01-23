@@ -16,6 +16,7 @@
                 </div>
             </div>
         </div>
+        @include('partials.session')
         <div class="row">
             @php
                 use App\Models\RelatorioEstoqueAlerta as REA;

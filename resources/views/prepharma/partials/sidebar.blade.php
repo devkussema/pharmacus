@@ -67,6 +67,12 @@
                         <span> Prateleiras </span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('alert.show') }}" class="{{ Route::currentRouteName() == 'alert.show' ? 'active' : '' }}">
+                        <i class="fa fa-bullhorn"></i>
+                        <span> Alertas </span>
+                    </a>
+                </li>
                 @if (vPerm('relatorio', ['ver']) or Auth::user()->isFarmacia)
                 <li class="submenu">
                     <a href="#">
