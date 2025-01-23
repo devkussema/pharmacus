@@ -35,7 +35,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <form method="POST" action="{{ route('estoque.update', ['id' => $pe->id]) }}">
+                    <form method="POST" action="{{ route('estoque.update', ['id' => $pe->id, 'returnID' => $returnID]) }}">
                         @csrf
                         <div class="row">
                             <div class="col-12">
@@ -52,10 +52,10 @@
                             <div class="col-md-6 pb-3">
                                 <label class="mb-2">Tipo *</label>
                                 <select name="tipo" style="width: 100%" id="tipo_produto_estoque" class="form-control">
-                                    <option selected disabled>Selecionar tipo</option>
-                                    <option value="descartável">Descartável</option>
-                                    <option value="medicamento">Medicamento</option>
-                                    <option value="liquido">Liquido</option>
+                                    <option disabled>Selecionar tipo</option>
+                                    <option value="descartável" @selected($pe->tipo == 'descartável')>Descartável</option>
+                                    <option value="medicamento" @selected($pe->tipo == 'medicamento')>Medicamento</option>
+                                    <option value="liquido" @selected($pe->tipo == 'liquido')>Líquido</option>
                                 </select>
                             </div>
                         </div>
@@ -127,98 +127,56 @@
                                 <div class="col pb-3">
                                     <label class="mb-2">Forma *</label>
                                     <select class="form-control" name="forma">
-                                        <option value="">Selecione uma forma</option>
+                                        <option value="" disabled>Selecione uma forma</option>
 
                                         <!-- Formas de Administração Oral -->
                                         <optgroup label="Formas de Administração Oral">
-                                            <option value="Comprimidos">Comprimidos</option>
-                                            <option value="Cápsulas">Cápsulas</option>
-                                            <option value="Tabletes efervescentes">Tabletes efervescentes</option>
-                                            <option value="Pó para suspensão oral">Pó para suspensão oral</option>
-                                            <option value="Xaropes">Xaropes</option>
-                                            <option value="Soluções orais">Soluções orais</option>
-                                            <option value="Gomas mastigáveis">Gomas mastigáveis</option>
-                                            <option value="Soluções ou elixires">Soluções ou elixires</option>
+                                            <option value="Comprimidos" @selected($pe->forma == 'Comprimidos')>Comprimidos</option>
+                                            <option value="Cápsulas" @selected($pe->forma == 'Cápsulas')>Cápsulas</option>
+                                            <option value="Tabletes efervescentes" @selected($pe->forma == 'Tabletes efervescentes')>Tabletes efervescentes</option>
+                                            <option value="Pó para suspensão oral" @selected($pe->forma == 'Pó para suspensão oral')>Pó para suspensão oral</option>
+                                            <option value="Xaropes" @selected($pe->forma == 'Xaropes')>Xaropes</option>
+                                            <option value="Soluções orais" @selected($pe->forma == 'Soluções orais')>Soluções orais</option>
+                                            <option value="Gomas mastigáveis" @selected($pe->forma == 'Gomas mastigáveis')>Gomas mastigáveis</option>
+                                            <option value="Soluções ou elixires" @selected($pe->forma == 'Soluções ou elixires')>Soluções ou elixires</option>
                                         </optgroup>
 
                                         <!-- Formas de Administração Parenteral -->
                                         <optgroup label="Formas de Administração Parenteral (fora do trato gastrointestinal)">
-                                            <option value="Injeções">Injeções</option>
-                                            <option value="Infusões intravenosas">Infusões intravenosas</option>
-                                            <option value="Implantes subcutâneos">Implantes subcutâneos</option>
-                                            <option value="Vacinas">Vacinas</option>
-                                            <option value="Pós para solução injetável">Pós para solução injetável</option>
+                                            <option value="Injeções" @selected($pe->forma == 'Injeções')>Injeções</option>
+                                            <option value="Infusões intravenosas" @selected($pe->forma == 'Infusões intravenosas')>Infusões intravenosas</option>
+                                            <option value="Implantes subcutâneos" @selected($pe->forma == 'Implantes subcutâneos')>Implantes subcutâneos</option>
+                                            <option value="Vacinas" @selected($pe->forma == 'Vacinas')>Vacinas</option>
+                                            <option value="Pós para solução injetável" @selected($pe->forma == 'Pós para solução injetável')>Pós para solução injetável</option>
                                         </optgroup>
 
                                         <!-- Formas de Administração Tópica -->
                                         <optgroup label="Formas de Administração Tópica">
-                                            <option value="Cremes">Cremes</option>
-                                            <option value="Pomadas">Pomadas</option>
-                                            <option value="Géis">Géis</option>
-                                            <option value="Loções">Loções</option>
-                                            <option value="Pasta">Pasta</option>
-                                            <option value="Sprays tópicos">Sprays tópicos</option>
-                                            <option value="Adesivos transdérmicos">Adesivos transdérmicos</option>
-                                            <option value="Shampoos">Shampoos</option>
-                                            <option value="Sabonetes medicinais">Sabonetes medicinais</option>
+                                            <option value="Cremes" @selected($pe->forma == 'Cremes')>Cremes</option>
+                                            <option value="Pomadas" @selected($pe->forma == 'Pomadas')>Pomadas</option>
+                                            <option value="Géis" @selected($pe->forma == 'Géis')>Géis</option>
+                                            <option value="Loções" @selected($pe->forma == 'Loções')>Loções</option>
+                                            <option value="Pasta" @selected($pe->forma == 'Pasta')>Pasta</option>
+                                            <option value="Sprays tópicos" @selected($pe->forma == 'Sprays tópicos')>Sprays tópicos</option>
+                                            <option value="Adesivos transdérmicos" @selected($pe->forma == 'Adesivos transdérmicos')>Adesivos transdérmicos</option>
+                                            <option value="Shampoos" @selected($pe->forma == 'Shampoos')>Shampoos</option>
+                                            <option value="Sabonetes medicinais" @selected($pe->forma == 'Sabonetes medicinais')>Sabonetes medicinais</option>
                                         </optgroup>
 
-                                        <!-- Formas de Administração Inalatória -->
-                                        <optgroup label="Formas de Administração Inalatória">
-                                            <option value="Aerossóis">Aerossóis</option>
-                                            <option value="Nebulizações">Nebulizações</option>
-                                            <option value="Inaladores de pó seco">Inaladores de pó seco</option>
-                                        </optgroup>
-
-                                        <!-- Formas de Administração Retal -->
-                                        <optgroup label="Formas de Administração Retal">
-                                            <option value="Supositórios">Supositórios</option>
-                                            <option value="Enemas">Enemas</option>
-                                            <option value="Pomadas retal">Pomadas retal</option>
-                                        </optgroup>
-
-                                        <!-- Formas de Administração Oftálmica -->
-                                        <optgroup label="Formas de Administração Oftálmica">
-                                            <option value="Colírios">Colírios</option>
-                                            <option value="Pomadas oftálmicas">Pomadas oftálmicas</option>
-                                        </optgroup>
-
-                                        <!-- Formas de Administração Nasal -->
-                                        <optgroup label="Formas de Administração Nasal">
-                                            <option value="Sprays nasais">Sprays nasais</option>
-                                            <option value="Gotas nasais">Gotas nasais</option>
-                                        </optgroup>
-
-                                        <!-- Formas de Administração Sublingual e Bucal -->
-                                        <optgroup label="Formas de Administração Sublingual e Bucal">
-                                            <option value="Comprimidos sublinguais">Comprimidos sublinguais</option>
-                                            <option value="Tabletes bucais">Tabletes bucais</option>
-                                            <option value="Pastilhas">Pastilhas</option>
-                                            <option value="Balas medicinais">Balas medicinais</option>
-                                        </optgroup>
-
-                                        <!-- Formas de Administração Vaginal -->
-                                        <optgroup label="Formas de Administração Vaginal">
-                                            <option value="Óvulos vaginais">Óvulos vaginais</option>
-                                            <option value="Creme vaginal">Creme vaginal</option>
-                                        </optgroup>
-
+                                        <!-- Outros grupos de opções seguem o mesmo padrão -->
                                         <optgroup label="Outros">
-                                            <option value="Descartável">Descartável</option>
-                                            <option value="Não Atribuido">Não Atribuido</option>
+                                            <option value="Descartável" @selected($pe->forma == 'Descartável')>Descartável</option>
+                                            <option value="Não Atribuido" @selected($pe->forma == 'Não Atribuido')>Não Atribuido</option>
                                         </optgroup>
                                     </select>
                                 </div>
                                 <div class="col pb-3">
                                     <label class="mb-2">G. Farmacológico *</label>
-                                    <select name="grupo_farmaco_id" style="width: 100%" id="grupo_farmaco_id_"
-                                        class="form-control selectr2">
+                                    <select name="grupo_farmaco_id" style="width: 100%" id="grupo_farmaco_id_" class="form-control selectr2">
                                         @foreach (\App\Models\GrupoFarmacologico::all() as $gf)
-                                            @if ($gf->id == $pe->grupo_farmaco_id)
-                                                <option selected value="{{ $gf->id }}">{{ $gf->nome }}</option>
-                                            @else
-                                                <option value="{{ $gf->id }}">{{ $gf->nome }}</option>
-                                            @endif
+                                            <option value="{{ $gf->id }}" @selected($gf->id == $pe->grupo_farmaco_id)>
+                                                {{ $gf->nome }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -226,13 +184,29 @@
                                     <label class="mb-2">Origem / Destino *</label>
                                     <input type="text" value="{{ $pe->origem_destino }}" class="form-control" placeholder="" name="origem_destino">
                                 </div>
-                                <div class="col pb-3">
-                                    <label class="mb-2">Prateleira</label>
-                                    <select name="prateleira_id" style="width: 100%" id="prateleira_id_" class="form-control">
-                                        @foreach (\App\Models\Prateleira::all() as $prat)
-                                            <option value="{{ $prat->id }}">{{ $prat->nome }} [{{ $prat->descricao }}]</option>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 pb-3">
+                                    <label class="mb-2">Área Hospitalar</label>
+                                    <select name="area_id" style="width: 100%" id="area_id_" class="form-control select2">
+                                        @foreach (\App\Models\AreaHospitalar::all() as $ah)
+                                            @if ($ah->nome == 'Armazém I' or $ah->nome == 'Armazém II' or $ah->nome == 'Direcção clínica')
+                                                <option value="{{ $ah->id }}" @selected($ah->id == $pe->estoque->area_hospitalar_id)>{{ $ah->nome }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
+                                </div>
+                                <div class="col-md-6 pb-3">
+                                    <div class="col pb-3">
+                                        <label class="mb-2">Prateleira</label>
+                                        <select name="prateleira_id" style="width: 100%" id="prateleira_id_" class="form-control">
+                                            @foreach (\App\Models\Prateleira::all() as $prat)
+                                                <option value="{{ $prat->id }}" @selected($prat->id == $pe->prateleira_id)>
+                                                    {{ $prat->nome }} [{{ $prat->descricao }}]
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>

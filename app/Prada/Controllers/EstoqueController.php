@@ -57,13 +57,14 @@ class EstoqueController extends Controller
         return view('estoque.edit', compact('pe', 'returnID'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $returnID)
     {
         // Validar os dados do formulário
         $request->validate([
+            'area_id' => 'required',
             'designacao' => 'required',
             'tipo' => 'required',
-            'dosagem' => 'nullable', // Pode ser nullable dependendo da lógica do seu sistema
+            'dosagem' => 'nullable',
             'caixa' => 'required',
             'caxinha' => 'required',
             'unidade' => 'required',
@@ -76,48 +77,52 @@ class EstoqueController extends Controller
             'origem_destino' => 'nullable',
             'prateleira_id' => 'required'
         ], [
-            'designacao.required' => 'O campo Designação é obrigatório.',
-            'tipo.required' => 'O campo Tipo é obrigatório.',
-            'dosagem.nullable' => 'O campo Dosagem é opcional.',
-            'caixa.required' => 'O campo Caixa é obrigatório.',
-            'caxinha.required' => 'O campo Caixinha é obrigatório.',
-            'unidade.required' => 'O campo Unidade é obrigatório.',
-            'num_lote.required' => 'O campo Lote é obrigatório.',
-            'num_documento.nullable' => 'O campo Documento Nº é opcional.',
-            'data_producao.nullable' => 'O campo Data Produção é opcional.',
-            'data_expiracao.required' => 'O campo Data Expiração é obrigatório.',
-            'forma.required' => 'O campo Forma é obrigatório.',
-            'grupo_farmaco_id.required' => 'O campo G. Farmacológico é obrigatório.',
-            'origem_destino.nullable' => 'O campo Origem/Destino é opcional.',
+            '*.required' => 'O campo :attribute é obrigatório.',
+            '*.nullable' => 'O campo :attribute é opcional.'
         ]);
 
-        // Encontrar o registro do Estoque pelo ID
         $estoque = PE::findOrFail($id);
 
-        $ID = $request->input('returnID');
+        $estoque->fill([
+            'designacao' => $request->input('designacao'),
+            'tipo' => $request->input('tipo'),
+            'dosagem' => $request->input('dosagem'),
+            'descritivo' => "{$request->input('caixa')}x{$request->input('caxinha')}x{$request->input('unidade')}",
+            'num_lote' => $request->input('num_lote'),
+            'num_documento' => $request->input('num_documento'),
+            'data_producao' => $request->input('data_producao'),
+            'data_expiracao' => $request->input('data_expiracao'),
+            'data_recepcao' => $request->input('data_recepcao'),
+            'forma' => $request->input('forma'),
+            'grupo_farmaco_id' => $request->input('grupo_farmaco_id'),
+            'origem_destino' => $request->input('origem_destino'),
+            'obs' => $request->input('obs'),
+            'prateleira_id' => $request->input('prateleira_id'),
+        ]);
 
-        // Atualizar os dados com base nos dados do formulário
-        $estoque->designacao = $request->input('designacao');
-        $estoque->tipo = $request->input('tipo');
-        $estoque->dosagem = $request->input('dosagem');
-        $estoque->descritivo = $request->input('caixa') . 'x' . $request->input('caxinha') . 'x' . $request->input('unidade');
-        $estoque->saldo->qtd = $request->input('qtd_total'); // Certifique-se de que esse campo é atualizado corretamente
-        $estoque->num_lote = $request->input('num_lote');
-        $estoque->num_documento = $request->input('num_documento');
-        $estoque->data_producao = $request->input('data_producao');
-        $estoque->data_expiracao = $request->input('data_expiracao');
-        $estoque->data_recepcao = $request->input('data_recepcao');
-        $estoque->forma = $request->input('forma');
-        $estoque->grupo_farmaco_id = $request->input('grupo_farmaco_id');
-        $estoque->origem_destino = $request->input('origem_destino');
-        // $estoque->area_id = $request->input('area_id');
-        $estoque->obs = $request->input('obs');
+        if ($estoque->saldo) {
+            $estoque->saldo->update([
+                'qtd' => $request->input('qtd_total')
+            ]);
+        } else {
+            $estoque->saldo()->create([
+                'qtd' => $request->input('qtd_total')
+            ]);
+        }
 
-        // Salvar as alterações no banco de dados
+        if ($estoque->estoque) {
+            $estoque->estoque->update([
+                'area_hospitalar_id' => $request->input('area_id')
+            ]);
+        } else {
+            $estoque->estoque()->create([
+                'area_hospitalar_id' => $request->input('area_id')
+            ]);
+        }
         $estoque->save();
 
         // Redirecionar de volta com uma mensagem de sucesso
-        return redirect()->route('estoque.getEstoque', ['id' => $ID])->with('success', 'Produto de estoque atualizado com sucesso.');
+        return redirect()->route('estoque.getEstoque', ['id' => $returnID])->with('success', 'Produto de estoque atualizado com sucesso.');
     }
 
     public function solicitar(Request $request, $area_id)
