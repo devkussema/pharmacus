@@ -30,14 +30,23 @@ class NivelAlertaController extends Controller
     public function gerarRelatorio(Request $request)
     {
         $area_hospitalar_id = 6;
-        $produtos = \App\Models\ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
-            $query->where('area_hospitalar_id', $area_hospitalar_id);
-        })
-            ->whereRaw("CAST(SUBSTRING_INDEX(descritivo, 'x', 1) AS UNSIGNED) <= ?", [$request->qtd_maxima_caixa])
-            ->select('id', 'designacao', 'descritivo')
-            ->with('estoque')
-            ->orderBy('designacao', 'asc')
+//        $produtos = \App\Models\ProdutoEstoque::whereHas('estoque', function ($query) use ($area_hospitalar_id) {
+//            $query->where('area_hospitalar_id', $area_hospitalar_id);
+//        })
+//            ->whereRaw("CAST(SUBSTRING_INDEX(descritivo, 'x', 1) AS UNSIGNED) <= ?", [$request->qtd_maxima_caixa])
+//            ->select('id', 'designacao', 'descritivo')
+//            ->with('estoque')
+//            ->orderBy('designacao', 'asc')
+//            ->get();
+
+        $produtos = \App\Models\Estoque::with('produto')
+            ->where('area_hospitalar_id', 6)
+            ->whereHas('produto', function ($query) use ($request) {
+                $query->whereRaw("CAST(SUBSTRING_INDEX(descritivo, 'x', 1) AS UNSIGNED) <= ?", 5);
+            })
             ->get();
+
+        //echo $product->count();
 
         //return view('niveis_alerta.gerarRelatorio');
         return view('doc_generate.relatorio', compact('produtos'));

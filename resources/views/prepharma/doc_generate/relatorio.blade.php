@@ -90,7 +90,7 @@
         <h4>HOSPITAL GERAL ESPECIALIZADO DE LUANDA</h4>
         <h4>FICHA DE LEVANTAMENTO E GASTO DE MEDICAMENTOS</h4>
         <h4>SECÇÃO: FARMÁCIA</h4>
-        <h4>DATA: 23 / 01/ 2025</h4>
+        <h4>DATA: 25 / 01/ 2025</h4>
     </div>
 
     <div class="tbl-container">
@@ -104,11 +104,11 @@
             </thead>
             <tbody>
             @php $i = 1; @endphp
-            @foreach ($produtos as $pe)
+            @foreach ($produtos->sortBy('produto.designacao') as $pe)
                 <tr>
                     <td>{{ $i }}</td>
-                    <td>{{ $pe->designacao }}</td>
-                    <td>{{ getCaixa($pe->descritivo) }}</td>
+                    <td>{{ $pe->produto->designacao }}</td>
+                    <td>{{ getCaixa($pe->produto->descritivo) }}</td>
                 </tr>
                 @php $i++; @endphp
             @endforeach
