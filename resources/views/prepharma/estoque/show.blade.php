@@ -246,7 +246,7 @@
                         <td colspan="10">
                             <div class="action-buttons">
                                 <button class="btn btn-primary btn-editar" data-id="${data.produto.id}">Editar</button>
-                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-qtd="${data.produto.saldo.qtd}">Dar Baixa</button>
+                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-qtd="${getCaixa(data.produto.descritivo)}">Dar Baixa</button>
                             </div>
                         </td>
                     </tr>`;
