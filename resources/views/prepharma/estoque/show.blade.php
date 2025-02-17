@@ -127,6 +127,11 @@
                                     : @auth()->user()->area_hospitalar->area_hospitalar->farmacia_id;
                             @endphp
                             <div class="form-group pb-3">
+                                <label for="qtd_">Designação</label>
+                                <input type="text" name="designacao" class="form-control" id="designacao"
+                                    min="1">
+                            </div>
+                            <div class="form-group pb-3">
                                 <label for="endereco">Área *</label>
                                 <input type="hidden" name="user_id" id="user_id">
                                 <select name="area_hospitalar_id" id="" class="form-control">
@@ -246,7 +251,7 @@
                         <td colspan="10">
                             <div class="action-buttons">
                                 <button class="btn btn-primary btn-editar" data-id="${data.produto.id}">Editar</button>
-                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-qtd="${getCaixa(data.produto.descritivo)}">Dar Baixa</button>
+                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-qtd="${getCaixa(data.produto.descritivo)}">Dar Baixa</button>
                             </div>
                         </td>
                     </tr>`;
@@ -264,7 +269,8 @@
             $(document).on('click', '.btn-dar-baixa', function() {
                 var id = $(this).data('id');
                 var qtd = $(this).data('qtd');
-                modalDarBaixa(id, qtd); // Chama a função que já existia no código anterior
+                var designacao = $(this).data('designacao');
+                modalDarBaixa(id, qtd, designacao); // Chama a função que já existia no código anterior
             });
 
             // Função para Excluir Produto
@@ -339,8 +345,10 @@
             };
         });
 
-        function modalDarBaixa(id_produto, descritivo) { //formBaixaEstoque
+        function modalDarBaixa(id_produto, descritivo, designacao) { //formBaixaEstoque
             $('#DarBaixa #formBaixaEstoque #id_produto').val(id_produto);
+            $('#DarBaixa #formBaixaEstoque #designacao').val(designacao);
+            $('#DarBaixa #formBaixaEstoque #designacao').prop("disabled", true);
             $('#DarBaixa #formBaixaEstoque #descritivo_').val(descritivo);
             $('#DarBaixa #formBaixaEstoque #descritivo_').prop("disabled", true);
             $('#DarBaixa').modal('show');
