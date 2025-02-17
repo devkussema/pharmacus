@@ -38,7 +38,17 @@
                 use App\Models\RelatorioEstoqueAlerta as REA;
                 $id_niv = [];
             @endphp
-            @foreach (REA::all() as $n)
+            @php
+                $ordem = ['Crítico', 'Mínimo', 'Médio', 'Máximo'];
+
+                $dadosOrdenados = REA::all()->sortBy(function ($item) use ($ordem) {
+                    return array_search($item->nivel_alerta->nome, $ordem);
+                });
+
+                $id_niv = []; // Para evitar duplicação
+            @endphp
+
+            @foreach ($dadosOrdenados as $n)
                 @if (!in_array($n->nivel_alerta->id, $id_niv))
                     <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
                         <div class="dash-widget">

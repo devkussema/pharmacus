@@ -3,6 +3,20 @@
 @section('titulo', 'Estoque ' . $ah->nome)
 
 @section('content')
+    <style>
+        .action-row {
+            background-color: #f8f9fa;
+        }
+
+        .action-buttons {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .action-buttons button {
+            margin: 5px;
+        }
+    </style>
     <div class="content">
         @include('partials.session')
         <div class="page-header">
@@ -85,7 +99,7 @@
                                         <th>Qtd. Unit.</th>
                                         <th>Inserido em</th>
                                         <th>Data Expiração</th>
-                                        <th>Ação</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -150,7 +164,6 @@
 
             $('.solicitar-produto .js-example-basic-multiple').select2();
 
-            // Inicializa a DataTable
             var table = $('#table-c').DataTable({
                 ajax: {
                     "url": "/api/produtos/{{ $ah->id }}",
@@ -167,12 +180,10 @@
                     },
                     {
                         "data": function(row) {
-                            return row.produto && row.produto.prateleira && row.produto.prateleira
-                                .nome ?
-                                getCaixa(row.produto.prateleira.nome) :
-                                '--';
+                            return row.produto?.prateleira?.nome ? getCaixa(row.produto.prateleira
+                                .nome) : '--';
                         }
-                    }, // Fornecedor
+                    }, // Prateleira
                     {
                         "data": "produto.num_lote"
                     }, // Lote
@@ -183,7 +194,7 @@
                     }, // Qtd. Caixa
                     {
                         "data": "produto.saldo.qtd"
-                    }, // Qtd. Unit. (interpretando que 'descritivo' contém essa info)
+                    }, // Qtd. Unit.
                     {
                         "data": function(row) {
                             return formatDate(row.created_at);
@@ -194,29 +205,10 @@
                             return formatDate(row.produto.data_expiracao);
                         }
                     }, // Data Expiração
-                    { // Última coluna com o dropdown de ações
-                        "orderable": false, // Desabilita a ordenação nessa coluna
-                        "data": null, // Não busca dados específicos, vamos manipular o HTML
-                        "render": function(data, type, row, meta) {
-                            // Adiciona o dropdown de ações se o usuário tiver permissão ou for farmácia
-                            let actionHtml = `
-                                <div class="dropdown dropdown-action">
-                                    <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-ellipsis-v"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="javascript:void(0)" onclick="modalDarBaixa(${row.produto.id}, '${getCaixa(row.produto.descritivo)}')">
-                                            <i class="fa-solid fa-pen-to-square m-r-5"></i> Dar Baixa
-                                        </a>
-                                        <a class="dropdown-item" href="/estoque/editar/${row.produto.id}/{{ $ah->id }}">
-                                            <i class="fa-solid fa-pen-to-square m-r-5"></i> Editar
-                                        </a>
-                                    </div>
-                                </div>`;
-
-                            return actionHtml;
-                        }
-                    }
+                    {
+                        "data": null,
+                        "defaultContent": ""
+                    } // Coluna vazia para ações
                 ],
                 "language": {
                     "search": "Filtrar resultados:",
@@ -233,6 +225,66 @@
                     }
                 }
             });
+
+            // Função para adicionar linha extra manualmente após carregar os dados
+            $('#table-c tbody').on('click', 'tr', function() {
+                var row = $(this);
+                var data = table.row(row).data(); // Pega os dados da linha clicada
+
+                // Se a linha de ações já existir, remover
+                if (row.next().hasClass('action-row')) {
+                    row.next().remove();
+                    return;
+                }
+
+                // Fecha qualquer outra linha de ação aberta
+                $('.action-row').remove();
+
+                // Criar e inserir nova linha de ação
+                var actionRow = `
+                    <tr class="action-row">
+                        <td colspan="10">
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-editar" data-id="${data.produto.id}">Editar</button>
+                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-qtd="${data.produto.saldo.qtd}">Dar Baixa</button>
+                            </div>
+                        </td>
+                    </tr>`;
+
+                row.after(actionRow);
+            });
+
+            // Função para Editar Produto
+            $(document).on('click', '.btn-editar', function() {
+                var id = $(this).data('id');
+                window.location.href = `/estoque/editar/${id}/{{ $ah->id }}`;
+            });
+
+            // Função para Dar Baixa
+            $(document).on('click', '.btn-dar-baixa', function() {
+                var id = $(this).data('id');
+                var qtd = $(this).data('qtd');
+                modalDarBaixa(id, qtd); // Chama a função que já existia no código anterior
+            });
+
+            // Função para Excluir Produto
+            $(document).on('click', '.btn-excluir', function() {
+                var id = $(this).data('id');
+                if (confirm("Tem certeza que deseja excluir este produto?")) {
+                    $.ajax({
+                        url: `/api/produtos/excluir/${id}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            alert("Produto excluído com sucesso!");
+                            table.ajax.reload(); // Recarrega a tabela
+                        },
+                        error: function(xhr) {
+                            alert("Erro ao excluir o produto.");
+                        }
+                    });
+                }
+            });
+
 
             $('form#form_search').on('submit', function(e) {
                 e.preventDefault();
