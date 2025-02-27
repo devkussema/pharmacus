@@ -107,7 +107,7 @@
                                             @else
                                                 <td>{{ $na->produto->saldo->qtd }}</td>
                                             @endif
-                                            <td>{{ $na->produto->estoque->area_hospitalar->nome }}</td>
+                                            <td>{{ @$na->produto->estoque->area_hospitalar->nome }}</td>
                                             <td>{{ $na->produto->num_lote }}</td>
                                             <td>{{ calcMes($na->produto->data_expiracao) }}</td>
                                         </tr>
