@@ -98,7 +98,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($niveis as $na)
+                                    @foreach ($niveis->sortBy('produto.designacao') as $na)
                                         <tr>
                                             <td><b>{{ $na->produto->designacao }}</b></td>
                                             <td><b>{{ $na->produto->dosagem }}</b></td>
