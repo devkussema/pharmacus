@@ -17,12 +17,21 @@
             </div>
         </div>
         @include('partials.session')
-        <div class="row">
+        {{-- <div class="row">
             @php
                 use App\Models\RelatorioEstoqueAlerta as REA;
                 $id_niv = [];
             @endphp
-            @foreach (REA::all() as $n)
+            @php
+                $ordem = ['Crítico', 'Mínimo', 'Médio', 'Máximo'];
+
+                $dadosOrdenados = REA::all()->sortBy(function ($item) use ($ordem) {
+                    return array_search($item->nivel_alerta->nome, $ordem);
+                });
+
+                $id_niv = []; // Para evitar duplicação
+            @endphp
+            @foreach ($dadosOrdenados as $n)
                 @if (!in_array($n->nivel_alerta->id, $id_niv))
                     <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
                         <div class="dash-widget">
@@ -35,12 +44,11 @@
                                 <p>
                                     <span class="passive-view">
                                         <i class="feather-arrow-up-right me-1"></i>
-                                        {{-- 40% --}}
                                     </span>
-                                    @if ($n->nivel_alerta->regra == '3') até 3 meses @endif
-                                    @if ($n->nivel_alerta->regra == '6') até 6 meses @endif
-                                    @if ($n->nivel_alerta->regra == '10') até 10 meses @endif
-                                    @if ($n->nivel_alerta->regra == '12') até 12 meses @endif
+                                    @if ($n->where('nivel_alerta_id', 1)->count()) até 3 meses @endif
+                                    @if ($n->where('nivel_alerta_id', 2)->count()) até 6 meses @endif
+                                    @if ($n->where('nivel_alerta_id', 3)->count()) até 10 meses @endif
+                                    @if ($n->where('nivel_alerta_id', 4)->count()) até 12 meses @endif
                                 </p>
                             </div>
                         </div>
@@ -48,7 +56,7 @@
                     @php $id_niv[] = $n->nivel_alerta->id; @endphp
                 @endif
             @endforeach
-        </div>
+        </div> --}}
 
         <div class="row">
             <div class="col-sm-12">
@@ -98,7 +106,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($niveis->sortBy('produto.designacao') as $na)
+                                    @foreach ($niveis->sortBy('produto.designacao')->unique('produto.num_lote') as $na)
                                         <tr>
                                             <td><b>{{ $na->produto->designacao }}</b></td>
                                             <td><b>{{ $na->produto->dosagem }}</b></td>

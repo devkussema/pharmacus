@@ -22,7 +22,7 @@ class NivelAlertaController extends Controller
 
     public function index()
     {
-        $niveis = REA::all();
+        $niveis = REA::whereIn('nivel_alerta_id', [1, 2])->get();
         self::calcNivelAlerta();
         return view('niveis_alerta.show', compact('niveis'));
     }

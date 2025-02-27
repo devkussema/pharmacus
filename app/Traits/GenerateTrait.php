@@ -59,7 +59,7 @@ trait GenerateTrait
             1 => 3, // ID 1 para o nível Critico
             2 => 6, // ID 2 para o nível Minimo
             3 => 10, // ID 3 para o nível Medio
-            4 => 12, // ID 4 para o nível Maximo
+            4 => 12, // ID 4 para o nível Maximo 
         ];
 
         // Percorre os produtos
