@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\Prada\Controllers\{AlertController,
     PermissoesController,
     GetterController,
+    StockController,
     ConfigController,
     AutenticarUserController,
     UsuarioController,
@@ -140,6 +141,11 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::post('/editar/{id}/{returnID}', [EstoqueController::class, 'update'])->name('estoque.update');
         Route::get('/home', [EstoqueController::class, 'getListHome'])->name('estoque.gerente');
         Route::get('/solicitar/{id}', [EstoqueController::class, 'solicitar'])->name('estoque.solicitar');
+        ///
+        Route::get('/add-estoque-minimo/{id}', [StockController::class, 'add_estoque_minimo'])->name('estoque._minimo');
+        Route::post('/add-estoque-minimo/{id}', [StockController::class, 'store_stock'])->name('estoque._store_stock');
+        Route::get('/estoque/filtro', [StockController::class, 'filtrarEstoque'])->name('estoque.filtrar');
+        ///
         Route::get('/ver/{id}', [EstoqueController::class, 'getEstoque'])->name('estoque.getEstoque');
         Route::get('obter/{id}', [EstoqueController::class, 'myEstoque'])->name('estoque.myEstoque');
         Route::get('/aa', [EstoqueController::class, 'aa']);
@@ -279,6 +285,9 @@ Route::prefix('auth')->middleware('guest')->group(function () {
 // Por favor, não alterar a estrutura da url
 Route::prefix('api')->group(function () {
     Route::get('/produtos/{id}', [EstoqueController::class, 'apiEstoque']);
+    ///#
+    Route::get('/status_produto/{id}', [StockController::class, 'status_produto']);
+    ///#
 
     Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);
     Route::get('/get/areas_hospitalares/def/{id}', [AreaHospitalarController::class, 'getAllMy']);

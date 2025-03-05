@@ -65,6 +65,12 @@
                                                     <i class="fa fa-box"></i>
                                                     Solicitar
                                                 </button>
+                                                <button
+                                                    onclick="location.href = '{{ route('estoque._minimo', ['id' => $ah->id]) }}';"
+                                                    class="btn btn-rounded btn-outline-success ms-2">
+                                                    <i class="fa fa-box"></i>
+                                                    Adicionar Estoque Minimo
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

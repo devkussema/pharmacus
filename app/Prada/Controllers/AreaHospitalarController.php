@@ -155,7 +155,7 @@ class AreaHospitalarController extends Controller
     {
         $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
         $all = FAH::where('farmacia_id', $farmacia_id)
-          ->where('area_hospitalar_id', '!=', $id_def)
+          //->where('area_hospitalar_id', '!=', $id_def)
           ->with('area_hospitalar', 'farmacia')
           ->get();
 
