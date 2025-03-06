@@ -162,7 +162,7 @@
 
             $(".add-table-items tbody").append(newRow);
 
-            var newSelect = $("#" + generateUniqueId());
+            var newSelect = $("#" + uniqueId);
             newSelect.select2();
 
             var selectedArea = $('#area_id_').val();
