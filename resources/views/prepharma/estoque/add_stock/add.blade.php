@@ -162,7 +162,7 @@
 
             $(".add-table-items tbody").append(newRow);
 
-            var newSelect = $("#" + uniqueId);
+            var newSelect = $("#" + generateUniqueId());
             newSelect.select2();
 
             var selectedArea = $('#area_id_').val();
@@ -236,12 +236,12 @@
     });
 
     function formatDate(dateString) {
-                var date = new Date(dateString);
-                var day = String(date.getDate()).padStart(2, '0');
-                var month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-                var year = date.getFullYear();
-                return `${day}-${month}-${year}`;
-            }
+        var date = new Date(dateString);
+        var day = String(date.getDate()).padStart(2, '0');
+        var month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        var year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
 
     function fetchAndPopulateSelectArea(id_def) {
         $.ajax({
@@ -249,15 +249,32 @@
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                // Limpa as options existentes antes de adicionar novas
-                //$('#area_id_').empty();
-                // Itera sobre os itens e adiciona as options ao select
-                $.each(data, function(index, item) {
+                $('#area_id_').empty(); // Limpa as opções anteriores
+
+                // Filtra apenas a área "Armazém I"
+                let areaSelecionada = data.find(item => item.area_hospitalar.nome === "Armazém I");
+
+                if (areaSelecionada) {
                     $('#area_id_').append($('<option>', {
-                        value: item.area_hospitalar_id,
-                        text: item.area_hospitalar.nome
+                        value: areaSelecionada.area_hospitalar_id,
+                        text: areaSelecionada.area_hospitalar.nome,
+                        selected: true
                     }));
-                });
+
+                    // Dispara o evento change para simular a seleção automática
+                    $('#area_id_').trigger('change');
+
+                    // Desativa o select para evitar alterações
+                    $('#area_id_').prop('disabled', true);
+
+                    // Simula a ação após a seleção
+                    var newSelect = $("#" + generateUniqueId());
+                    newSelect.select2();
+
+                    fetchAndPopulateSelect(areaSelecionada.area_hospitalar_id, newSelect);
+                } else {
+                    $('#area_id_').append('<option disabled selected>Nenhuma área encontrada</option>');
+                }
             },
             error: function(xhr, status, error) {
                 console.error('Erro ao buscar itens:', error);
