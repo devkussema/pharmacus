@@ -261,6 +261,18 @@
                         selected: true
                     }));
 
+                    // Criar um input hidden para garantir o envio no formulário
+                    if (!$('#area_id_hidden').length) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            id: 'area_id_hidden',
+                            name: 'area_para',
+                            value: areaSelecionada.area_hospitalar_id
+                        }).appendTo('form'); // Adiciona dentro do form
+                    } else {
+                        $('#area_id_hidden').val(areaSelecionada.area_hospitalar_id);
+                    }
+
                     // Dispara o evento change para simular a seleção automática
                     $('#area_id_').trigger('change');
 
@@ -298,7 +310,7 @@
                 $.each(sortedData, function(index, item) {
                     targetSelect.append($('<option>', {
                         value: item.id,
-                        text: item.produto.designacao
+                        text: item.produto.designacao+" "
                     }));
                 });
             },
