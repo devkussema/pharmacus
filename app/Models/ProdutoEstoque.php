@@ -47,4 +47,9 @@ class ProdutoEstoque extends Model
     {
         return $this->belongsTo(Prateleira::class);
     }
+
+    public function status_stock()
+    {
+        return $this->hasOne(StatusEstoque::class, 'produto_id');
+    }
 }

@@ -307,10 +307,13 @@
                     return a.produto.designacao.localeCompare(b.produto.designacao);
                 });
                 $.each(sortedData, function(index, item) {
-                    targetSelect.append($('<option>', {
-                        value: item.id,
-                        text: item.produto.designacao+" - "+item.produto.forma
-                    }));
+                    // Verifica se item.produto.status_stock.produto_id existe
+                    if (!item.produto.status_stock?.produto_id) {
+                        targetSelect.append($('<option>', {
+                            value: item.id,
+                            text: item.produto.designacao + " - " + item.produto.forma
+                        }));
+                    }
                 });
             },
             error: function(xhr, status, error) {

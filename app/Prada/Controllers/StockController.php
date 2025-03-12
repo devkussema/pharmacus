@@ -11,7 +11,30 @@ class StockController extends Controller
 {
     public function add_estoque_minimo(Request $request, $area)
     {
-        return view('estoque.add_stock.add', compact('area'));
+        // Filtros opcionais
+        $statusFiltro = $request->input('status');
+
+        // Buscar produtos com saldo e status_stock
+        $produtos = ProdutoEstoque::with(['saldo', 'status_stock'])
+            ->whereHas('saldo') // Garante que apenas produtos com saldo sejam incluídos
+            ->get()
+            ->map(function ($produto) {
+                return [
+                    'produto' => [
+                        'designacao' => $produto->designacao,
+                        'dosagem' => $produto->dosagem,
+                        'data_expiracao' => $produto->data_expiracao,
+                        'saldo' => $produto->saldo ? ['qtd' => $produto->saldo->qtd] : null,
+                    ],
+                    'critico' => $produto->status_stock?->critico ?? null,
+                    'minimo' => $produto->status_stock?->minimo ?? null,
+                    'medio' => $produto->status_stock?->medio ?? null,
+                ];
+            });
+
+        //return response()->json(['data' => $produtos]);
+
+        return view('estoque.add_stock.add', compact('area', 'produtos'));
     }
 
     public function store_stock(Request $request, $id)

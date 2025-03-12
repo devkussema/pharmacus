@@ -99,6 +99,7 @@
                                         <th>Designação</th>
                                         <th>Dosagem</th>
                                         <th>Forma</th>
+                                        <th>Status</th>
                                         <th>Prateleira</th>
                                         <th>Lote</th>
                                         <th>Qtd. Caixa</th>
@@ -169,6 +170,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Confirmação -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteLabel">Confirmar Exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja excluir este produto?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <script>
         $(document).ready(function() {
@@ -188,6 +209,27 @@
                     },
                     {
                         "data": "produto.forma"
+                    },
+                    {
+                        "data": function(row) {
+                            let saldo = row.produto?.saldo?.qtd ?? 0;
+                            let statusStock = row.produto?.status_stock; // Pode ser null
+
+                            if (statusStock) {
+                                if (saldo <= (statusStock.critico ?? -1))
+                                    return '<span class="badge bg-danger">Crítico</span>';
+                                if (saldo <= (statusStock.minimo ?? -1))
+                                    return '<span class="badge bg-warning">Mínimo</span>';
+                                if (saldo <= (statusStock.medio ?? -1))
+                                    return '<span class="badge bg-info">Médio</span>';
+                                if (saldo <= (statusStock.maximo ?? -1))
+                                    return '<span class="badge bg-success">Máximo</span>';
+                                if (saldo >= (statusStock.maximo ?? -1))
+                                    return '<span class="badge bg-success">Estável</span>';
+                            }
+
+                            return '<span class="badge bg-secondary">Não Atribuído</span>';
+                        }
                     },
                     {
                         "data": function(row) {
@@ -258,11 +300,39 @@
                             <div class="action-buttons">
                                 <button class="btn btn-primary btn-editar" data-id="${data.produto.id}">Editar</button>
                                 <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-qtd="${getCaixa(data.produto.descritivo)}">Dar Baixa</button>
+                                <button class="btn btn-danger btn-eliminar-item" data-id="${data.produto.id}">Eliminar</button>
                             </div>
                         </td>
                     </tr>`;
 
                 row.after(actionRow);
+            });
+
+            // Evento para abrir a modal de confirmação ao clicar em "Eliminar"
+            $(document).on('click', '.btn-eliminar-item', function() {
+                var produtoId = $(this).data('id');
+
+                // Configura a modal antes de exibir
+                $('#confirmDeleteModal').modal('show');
+                $('#confirmDeleteBtn').data('id', produtoId);
+            });
+
+            // Evento para confirmar e enviar a solicitação de exclusão
+            $('#confirmDeleteBtn').on('click', function() {
+                var produtoId = $(this).data('id');
+
+                $.ajax({
+                    url: '/api/produtos_/' + produtoId, // Substitua pela sua URL de API
+                    type: 'DELETE',
+                    success: function(response) {
+                        $('#confirmDeleteModal').modal('hide'); // Fecha a modal
+                        table.ajax.reload(); // Recarrega a tabela
+                    },
+                    error: function(xhr) {
+                        console.error("Erro ao excluir: ${produtoId}", xhr.responseText);
+                        alert("Erro ao excluir o produto. ${produtoId}");
+                    }
+                });
             });
 
             // Função para Editar Produto

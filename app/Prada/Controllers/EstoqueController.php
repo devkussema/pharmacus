@@ -217,6 +217,7 @@ class EstoqueController extends Controller
         $produtos = Estoque::where('area_hospitalar_id', $id)
             ->where('farmacia_id', $farmacia_id)
             ->with('produto.prateleira')
+            ->with('produto.status_stock')
             ->with('produto.saldo')
             ->with(['produto' => function ($query) {
                 $query->orderBy('designacao', 'ASC');
@@ -224,6 +225,21 @@ class EstoqueController extends Controller
             ->get();
 
         return response()->json(["data" => $produtos]);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        // Busca o produto pelo ID
+        $produto = PE::find($id);
+
+        if (!$produto) {
+            return response()->json(['error' => 'Produto não encontrado'], 404);
+        }
+
+        // Remove o produto
+        $produto->delete();
+
+        return response()->json(['message' => 'Produto excluído com sucesso']);
     }
 
     public function getListHome()
