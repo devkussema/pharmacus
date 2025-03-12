@@ -29,13 +29,24 @@ class StockController extends Controller
 
         try {
             foreach ($request->itens as $produto_id) {
-                StatusEstoque::create([
-                    'produto_id' => $produto_id,
-                    'critico' => $request->critico,
-                    'minimo' => $request->minimo,
-                    'medio' => $request->medio,
-                    'maximo' => $request->maximo,
-                ]);
+                $get_ = StatusEstoque::where('produto_id', $produto_id)->first();
+
+                if (!$get_) { // Se não existir, cria um novo registro
+                    StatusEstoque::create([
+                        'produto_id' => $produto_id,
+                        'critico' => $request->critico,
+                        'minimo' => $request->minimo,
+                        'medio' => $request->medio,
+                        'maximo' => $request->maximo,
+                    ]);
+                } else { // Se já existir, faz update
+                    $get_->update([
+                        'critico' => $request->critico,
+                        'minimo' => $request->minimo,
+                        'medio' => $request->medio,
+                        'maximo' => $request->maximo,
+                    ]);
+                }
             }
 
             return redirect()->back()->with('success', 'Estoque atualizado com sucesso!');

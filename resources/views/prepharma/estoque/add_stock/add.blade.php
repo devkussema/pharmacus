@@ -297,7 +297,6 @@
     // Função para popular o select de itens
     function fetchAndPopulateSelect(id, targetSelect) {
         var endpoint = '/api/produtos/' + id;
-
         $.ajax({
             url: endpoint,
             type: 'GET',
@@ -310,7 +309,7 @@
                 $.each(sortedData, function(index, item) {
                     targetSelect.append($('<option>', {
                         value: item.id,
-                        text: item.produto.designacao+" "
+                        text: item.produto.designacao+" - "+item.produto.forma
                     }));
                 });
             },
