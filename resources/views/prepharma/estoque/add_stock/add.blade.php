@@ -199,6 +199,7 @@
                 {
                     "data": row => {
                         let saldo = row.produto?.saldo?.qtd ?? 0;
+                        if (saldo <= 0) return '<span class="badge bg-dark">Estoque 0</span>';
                         if (saldo <= row.critico) return '<span class="badge bg-danger">Crítico</span>';
                         if (saldo <= row.minimo) return '<span class="badge bg-warning">Mínimo</span>';
                         if (saldo <= row.medio) return '<span class="badge bg-info">Médio</span>';
