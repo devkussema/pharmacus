@@ -172,8 +172,8 @@ class EstoqueController extends Controller
         $isPerm = vPerm('area_hospitalar', ['ver']);
 
         // Atualizar todas as entradas no campo 'forma' de 'produto_estoques'
-        PE::whereRaw("LOWER(forma) = 'xarope'")->update([
-            'forma' => 'Xaropes',
+        PE::whereRaw("LOWER(forma) = 'injeções'")->update([
+            'forma' => 'Injectável',
         ]);
 
         $ah = FAH::with('area_hospitalar')
