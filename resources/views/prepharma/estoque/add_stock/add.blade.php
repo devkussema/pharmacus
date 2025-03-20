@@ -312,7 +312,7 @@
                     if (!item.produto.status_stock?.produto_id) {
                         targetSelect.append($('<option>', {
                             value: item.id,
-                            text: item.produto.designacao + " - " + item.produto.forma
+                            text: item.produto.designacao + " [" + item.produto.dosagem + "]" + " - " + item.produto.forma
                         }));
                     }
                 });
