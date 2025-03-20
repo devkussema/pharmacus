@@ -143,8 +143,8 @@
 
                                         <!-- Formas de Administração Parenteral -->
                                         <optgroup label="Formas de Administração Parenteral (fora do trato gastrointestinal)">
-                                            <option value="Injeções" @selected($pe->forma == 'Injeções')>Injeções</option>
-                                            <option value="Infusões intravenosas" @selected($pe->forma == 'Infusões intravenosas')>Infusões intravenosas</option>
+                                            <option value="Injectável" @selected($pe->forma == 'Injectável')>Injectável</option>
+                                            <option value="Soros" @selected($pe->forma == 'Soros')>Soros</option>
                                             <option value="Implantes subcutâneos" @selected($pe->forma == 'Implantes subcutâneos')>Implantes subcutâneos</option>
                                             <option value="Vacinas" @selected($pe->forma == 'Vacinas')>Vacinas</option>
                                             <option value="Pós para solução injetável" @selected($pe->forma == 'Pós para solução injetável')>Pós para solução injetável</option>
