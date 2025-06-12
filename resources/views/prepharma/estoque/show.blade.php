@@ -216,6 +216,8 @@
                             let statusStock = row.produto?.status_stock; // Pode ser null
 
                             if (statusStock) {
+                                if (saldo <= (statusStock.critico <= 0))
+                                    return '<span class="badge bg-dark">Estoque 0</span>';
                                 if (saldo <= (statusStock.critico ?? -1))
                                     return '<span class="badge bg-danger">Crítico</span>';
                                 if (saldo <= (statusStock.minimo ?? -1))
@@ -228,7 +230,7 @@
                                     return '<span class="badge bg-success">Estável</span>';
                             }
 
-                            return '<span class="badge bg-secondary">Não Atribuído</span>';
+                            return '<span class="badge bg-secondary">Não Atribuido</span>';
                         }
                     },
                     {
