@@ -1,8 +1,8 @@
 @extends('layout.v2.auth')
 
 @section('content')
-@php global $theme; @endphp
-<div class="col-md-8 d-flex flex-column align-items-center bg-{{ isset($theme) ? $theme : 'dark'}}">
+    @php global $theme; @endphp
+    <div class="col-md-8 d-flex flex-column align-items-center bg-{{ isset($theme) ? $theme : 'dark'}}">
         <div class="container my-auto py-5">
             <div class="row g-0">
                 <div class="col-11 col-md-8 col-lg-7 col-xl-6 mx-auto">
@@ -21,7 +21,8 @@
                         </button>
                         <ul class="social-icons d-inline-block social-icons-rounded">
                             <li class="social-icons-apple mb-0">
-                                <a onclick="wish()" class="bg-{{ isset($theme) ? $theme : 'light' }}-4" href="#" data-bs-toggle="tooltip" data-bs-original-title="Faça login com a Apple">
+                                <a onclick="wish()" class="bg-{{ isset($theme) ? $theme : 'light' }}-4" href="#"
+                                    data-bs-toggle="tooltip" data-bs-original-title="Faça login com a Apple">
                                     <i class="fab fa-apple"></i>
                                 </a>
                             </li>
@@ -32,17 +33,21 @@
                         <span class="mx-3 text-2 text-{{ isset($theme) ? $theme : 'white' }}-50">OU</span>
                         <hr class="flex-grow-1 border-secondary">
                     </div>
-                    <form id="login-form" method="POST" action="{{ route('login') }}" class="form-{{ isset($theme) == 'dark' ? 'light' : 'dark' }}">
+                    <form id="login-form" method="POST" action="{{ route('login') }}"
+                        class="form-{{ isset($theme) == 'dark' ? 'light' : 'dark' }}">
                         @csrf
                         @include('auth.session')
                         <div class="mb-3">
-                            <label class="form-label text-{{ isset($theme) ? $theme : 'white' }}" for="emailAddress">Email</label>
+                            <label class="form-label text-{{ isset($theme) ? $theme : 'white' }}"
+                                for="emailAddress">Email</label>
                             <input name="email" type="email" class="form-control" id="emailAddress" required
                                 placeholder="Digite seu e-mail">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label text-{{ isset($theme) ? $theme : 'white' }}" for="loginPassword">Senha</label>
-                            <a style="text-decoration: none" class="float-end text-2" href="{{ route('recuperar_senha') }}">Esqueceu sua senha?</a>
+                            <label class="form-label text-{{ isset($theme) ? $theme : 'white' }}"
+                                for="loginPassword">Senha</label>
+                            <a style="text-decoration: none" class="float-end text-2"
+                                href="{{ route('recuperar_senha') }}">Esqueceu sua senha?</a>
                             <input name="password" type="password" class="form-control" id="loginPassword" required
                                 placeholder="Digite a senha">
                         </div>
