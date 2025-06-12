@@ -55,7 +55,7 @@
                 <a href="#" class="text-slate-300 hover:text-white transition-colors">Preços</a>
                 <a href="#login" class="text-slate-300 hover:text-white transition-colors">Entrar</a>
             </div>
-            <a href="#" class="hidden md:block bg-teal-500 hover:bg-teal-600 text-white font-semibold px-5 py-2 rounded-lg transition-all transform hover:scale-105">
+            <a href="{{ route('preview.login') }}" class="hidden md:block bg-teal-500 hover:bg-teal-600 text-white font-semibold px-5 py-2 rounded-lg transition-all transform hover:scale-105">
                 Começar Agora
             </a>
             <!-- Mobile menu button -->
@@ -89,7 +89,7 @@
                 <a href="#features" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition-colors">Recursos</a>
                 <a href="#" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition-colors">Preços</a>
                 <a href="#login" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition-colors">Entrar</a>
-                <a href="#" @click="mobileMenuOpen = false" class="block w-full mt-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold text-center px-5 py-2.5 rounded-lg transition-all transform hover:scale-105">
+                <a href="{{ route('preview.login') }}" @click="mobileMenuOpen = false" class="block w-full mt-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold text-center px-5 py-2.5 rounded-lg transition-all transform hover:scale-105">
                     Começar Agora
                 </a>
             </div>

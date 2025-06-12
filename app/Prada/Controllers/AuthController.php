@@ -155,8 +155,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $sessName = env('APP_NAME') . '_session';
-
         if (!higienizarEmail($request->email)) {
             if ($request->ajax()) {
                 return response()->json(['message' => "Informe um email válido"], 401);
@@ -186,11 +184,7 @@ class AuthController extends Controller
             }
 
             $user = auth()->user();
-            $id_area_ = @$user->isFarmacia
-                ? optional(\App\Models\AreaHospitalar::where('nome', 'Armazém I')->first())->id
-                : optional($user->farmacia->area_hospitalar)->id ?? 0;
-
-            session(['id_area_' => $id_area_]);
+            session(['id_area_' => @$user->isFarmacia ? optional(\App\Models\AreaHospitalar::where('nome', 'Armazém I')->first())->id : optional($user->farmacia->area_hospitalar)->id ?? 0]);
 
             if ($request->ajax()) {
                 return response()->json(['message' => 'Cadastro efetuado', 'success' => true], 201);

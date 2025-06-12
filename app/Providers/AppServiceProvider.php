@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Registra o namespace 'preview' para as views
+        View::addNamespace('preview', resource_path('views/preview'));
     }
 }

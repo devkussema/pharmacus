@@ -45,6 +45,7 @@ use App\Http\Controllers\LandingPage\{
     HomeController as LPHomeController
 };
 use App\Http\Controllers\Artisan\CommandController;
+use App\Http\Controllers\PreviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +61,17 @@ use App\Http\Controllers\Artisan\CommandController;
 Route::prefix('landingpager')->group(function () {
     Route::get('/', [LPHomeController::class, 'index'])->name('lp.home');
     Route::get('/blog-single', [LPHomeController::class, 'blog_single'])->name('lp.blog_single');
+});
+
+Route::prefix('preview')->group(function () {
+    Route::prefix('v3')->group(function () {
+        Route::get('/recuperar-senha', [PreviewController::class, 'recuperarSenha'])->name('preview.recuperar_senha');
+        Route::get('/', [PreviewController::class, 'index'])->name('preview.index');
+        Route::get('/login', [PreviewController::class, 'login'])->name('preview.login');
+        Route::get('/registar', [PreviewController::class, 'registar'])->name('preview.registar');
+        Route::get('/redefinir-senha/sucesso', [PreviewController::class, 'resetSenhaSuccess'])->name('preview.reset_senha_success');
+        Route::get('/redefinir-senha', [PreviewController::class, 'resetSenhaForm'])->name('preview.reset_senha');
+    });
 });
 
 Route::post('estoque/adder', [EstoqueController::class, 'store'])->name('estoque.storer');
