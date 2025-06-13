@@ -35,6 +35,11 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+
+            Route::middleware('web')
+                ->prefix('preview/v3') // Adiciona o prefixo 'preview' às URLs deste grupo
+                ->as('preview.') // Adiciona o prefixo 'preview.' aos nomes das rotas
+                ->group(base_path('routes/preview.php'));
         });
     }
 }
