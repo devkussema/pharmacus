@@ -11,6 +11,9 @@ class RelatorioEstoqueAlerta extends Model
 
     protected $table = "relatorio_estoque_alerta";
 
+    protected $primaryKey = 'id';
+
+
     protected $fillable = [
         'nivel_alerta_id',
         'produto_estoque_id'

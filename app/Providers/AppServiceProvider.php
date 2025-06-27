@@ -22,5 +22,6 @@ class AppServiceProvider extends ServiceProvider
     {
         // Registra o namespace 'preview' para as views
         View::addNamespace('preview', resource_path('views/preview'));
+        View::addNamespace('ocorrencia', base_path('core/views/ocorrencias'));
     }
 }

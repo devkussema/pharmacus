@@ -103,16 +103,19 @@
             </div>
         @endif
         <div class="col-sm-12">
+            <div class="d-flex justify-content-end align-items-center mb-2" style="position:relative;z-index:2;">
+                <button id="btn-refresh-table" class="btn btn-outline-primary btn-sm" type="button">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+            </div>
             <div class="card card-table show-entire">
                 <div class="card-body">
-                    <div class="table-responsive">
-                        {{-- <select id="filtro-status" class="form-control">
-                            <option value="">Todos</option>
-                            <option value="critico">Crítico</option>
-                            <option value="minimo">Mínimo</option>
-                            <option value="medio">Médio</option>
-                            <option value="maximo">Máximo</option>
-                        </select> --}}
+                    <div class="table-responsive position-relative" id="table-produto-container">
+                        <div id="table-loader-overlay" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:10; display:flex; align-items:center; justify-content:center;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                        </div>
                         <table class="table border-0 custom-table comman-table datatable mb-0 table-produto"
                             id="table-c">
                             <thead>
@@ -124,6 +127,7 @@
                                     <th>Crítico</th>
                                     <th>Mínimo</th>
                                     <th>Data Expiração</th>
+                                    <th>Ações</th> <!-- NOVO -->
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -136,11 +140,54 @@
 
 </div>
 
+<!-- Modal de Edição dos Estados -->
+<div class="modal fade" id="modal-editar-estados" tabindex="-1" aria-labelledby="modal-editar-estados-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="form-editar-estados">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal-editar-estados-label">Editar Estados do Estoque</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="edit-row-id">
+          <div class="mb-3">
+            <label for="edit-item-nome" class="form-label">Item</label>
+            <input type="text" class="form-control" id="edit-item-nome" name="item_nome" disabled>
+          </div>
+          <div class="mb-3">
+            <label for="edit-critico" class="form-label">Crítico</label>
+            <input type="number" class="form-control" id="edit-critico" name="critico" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-minimo" class="form-label">Mínimo</label>
+            <input type="number" class="form-control" id="edit-minimo" name="minimo" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-medio" class="form-label">Médio</label>
+            <input type="number" class="form-control" id="edit-medio" name="medio" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-maximo" class="form-label">Máximo</label>
+            <input type="number" class="form-control" id="edit-maximo" name="maximo" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
+    // Torna generateUniqueId global
+    function generateUniqueId() {
+        return 'select-' + Math.random().toString(36).substr(2, 9);
+    }
+
     $(document).ready(function() {
-        function generateUniqueId() {
-            return 'select-' + Math.random().toString(36).substr(2, 9);
-        }
         $(document).on("click", ".btn-add-inp", function() {
             var uniqueId = generateUniqueId();
             var newRow = '<tr class="add-row">' +
@@ -178,19 +225,25 @@
         });
         $('.js-example-basic-single').select2();
 
-        ///#
         var table = $('#table-c').DataTable({
             ajax: {
                 "url": "/api/status_produto/6",
                 "data": function(d) {
-                    d.status = $('#filtro-status').val(); // Enviar status para o backend
+                    d.status = $('#filtro-status').val();
                 },
                 "dataSrc": function(json) {
-                    //console.log("Dados recebidos:", json); // Debug para ver os dados retornados
-                    return json.data || [];
+                    if (!json || typeof json !== 'object') {
+                        showTableError('Erro: resposta inesperada do servidor.');
+                        return [];
+                    }
+                    if (json.data === undefined) {
+                        showTableError('Erro: dados não encontrados.');
+                        return [];
+                    }
+                    return json.data;
                 },
                 "error": function(xhr, status, error) {
-                    console.error("Erro na requisição AJAX:", xhr.responseText);
+                    showTableError('Erro ao carregar dados: ' + (xhr.responseText || error || status));
                 }
             },
             "columns": [
@@ -209,7 +262,34 @@
                 { "data": row => row.produto?.saldo?.qtd ?? '--' }, // Qtd. Restante
                 { "data": row => row.critico ?? '--' }, // Crítico
                 { "data": row => row.minimo ?? '--' }, // Mínimo
-                { "data": row => row.produto?.data_expiracao ? formatDate(row.produto.data_expiracao) : '--' } // Data Expiração
+                { "data": row => row.produto?.data_expiracao ? formatDate(row.produto.data_expiracao) : '--' }, // Data Expiração
+                {
+                    "data": function(row, type, set, meta) {
+                        // Inclui o nome do item como data-item-nome
+                        return `
+                            <div class="dropdown">
+                                <button class="btn btn-link btn-sm text-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#" class="dropdown-item btn-editar-estados"
+                                            data-row-id="${row.id}"
+                                            data-critico="${row.critico ?? ''}"
+                                            data-minimo="${row.minimo ?? ''}"
+                                            data-medio="${row.medio ?? ''}"
+                                            data-maximo="${row.maximo ?? ''}"
+                                            data-item-nome="${row.produto?.designacao ?? ''}">
+                                            Editar
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        `;
+                    },
+                    "orderable": false,
+                    "searchable": false
+                }
             ],
             "language": {
                 "search": "Filtrar resultados:",
@@ -224,7 +304,37 @@
                     "next": "Próximo",
                     "previous": "Anterior"
                 }
+            },
+            "preXhr": function() {
+                $('#table-loader-overlay').fadeIn(150);
+                clearTableError();
+            },
+            "xhr": function() {
+                $('#table-loader-overlay').fadeOut(150);
+            },
+        });
+
+        // Loader overlay: sempre some ao finalizar carregamento, erro ou sucesso
+        $('#table-c').on('processing.dt', function(e, settings, processing) {
+            if(processing) {
+                $('#table-loader-overlay').fadeIn(150);
+            } else {
+                $('#table-loader-overlay').fadeOut(150);
             }
+        });
+
+        function showTableError(msg) {
+            var colspan = $('#table-c thead th').length;
+            $('#table-c tbody').html('<tr><td colspan="'+colspan+'" class="text-center text-danger">'+msg+'</td></tr>');
+            $('#table-loader-overlay').fadeOut(150);
+        }
+        function clearTableError() {
+            $('#table-c tbody .text-danger').remove();
+        }
+
+        // Botão para atualizar a tabela
+        $('#btn-refresh-table').on('click', function() {
+            table.ajax.reload();
         });
 
         // Quando o usuário mudar o filtro, recarregar os dados
@@ -233,7 +343,6 @@
             //console.log("Enviando status para API:", status); // Confirme se o valor está correto
             table.ajax.reload();
         });
-        ///#
     });
 
     function formatDate(dateString) {
@@ -333,6 +442,41 @@
             var selectedValue = $(this).val();
             fetchAndPopulateSelect(selectedValue, $('#select-itens'));
         });
+    });
+
+    // Evento para abrir modal ao clicar em editar
+    $(document).on('click', '.btn-editar-estados', function(e) {
+        e.preventDefault();
+        $('#edit-row-id').val($(this).data('row-id'));
+        $('#edit-critico').val($(this).data('critico'));
+        $('#edit-minimo').val($(this).data('minimo'));
+        $('#edit-medio').val($(this).data('medio'));
+        $('#edit-maximo').val($(this).data('maximo'));
+        $('#edit-item-nome').val($(this).data('item-nome'));
+        $('#modal-editar-estados').modal('show');
+    });
+
+    // Evento submit do form do modal
+    $('#form-editar-estados').on('submit', function(e) {
+        e.preventDefault();
+        let rowId = $('#edit-row-id').val();
+        let critico = $('#edit-critico').val();
+        let minimo = $('#edit-minimo').val();
+        let medio = $('#edit-medio').val();
+        let maximo = $('#edit-maximo').val();
+        // Atualiza localmente na tabela (você pode adaptar para AJAX)
+        let rowIdx = table.rows().eq(0).filter(function(idx) {
+            return table.row(idx).data().id == rowId;
+        });
+        if(rowIdx.length){
+            let data = table.row(rowIdx[0]).data();
+            data.critico = critico;
+            data.minimo = minimo;
+            data.medio = medio;
+            data.maximo = maximo;
+            table.row(rowIdx[0]).data(data).draw(false);
+        }
+        $('#modal-editar-estados').modal('hide');
     });
 </script>
 @endsection

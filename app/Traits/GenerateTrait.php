@@ -59,7 +59,7 @@ trait GenerateTrait
             1 => 3, // ID 1 para o nível Critico
             2 => 6, // ID 2 para o nível Minimo
             3 => 10, // ID 3 para o nível Medio
-            4 => 12, // ID 4 para o nível Maximo 
+            4 => 12, // ID 4 para o nível Maximo
         ];
 
         // Percorre os produtos
@@ -88,17 +88,18 @@ trait GenerateTrait
                 // Obtém a chave do nível de alerta com base no nome do nível
                 $nivelAlertaId = array_search($nivelAlerta, array_keys($limites));
                 $nivelAlertaId += 1;
-                // Atualiza ou cadastra o relatório conforme necessário
+                // Atualiza ou cadastra o relatório conforme necessário.
                 if ($relatorio) {
                     // O produto já está na tabela, então atualiza o nível atual
                     $relatorio->update(['nivel_alerta_id' => $nivelAlertaId]);
-                } else {
-                    // O produto não está na tabela, então cadastra um novo relatório
-                    REA::create([
-                        'produto_estoque_id' => $produto->id,
-                        'nivel_alerta_id' => $nivelAlertaId
-                    ]);
                 }
+                // } else {
+                //     // O produto não está na tabela, então cadastra um novo relatório
+                //     REA::create([
+                //         'produto_estoque_id' => $produto->id,
+                //         'nivel_alerta_id' => $nivelAlertaId
+                //     ]);
+                // }
             }
         }
 
