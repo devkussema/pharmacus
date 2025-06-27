@@ -300,6 +300,7 @@ Route::prefix('api')->group(function () {
     Route::delete('/produtos_/{id}', [EstoqueController::class, 'destroy']);
     ///#
     Route::get('/status_produto/{id}', [StockController::class, 'status_produto']);
+    Route::post('/status_produto/update/{id}', [StockController::class, 'update_status_produto']);
     ///#
 
     Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);

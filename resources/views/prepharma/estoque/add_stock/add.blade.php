@@ -174,7 +174,14 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-estados">
+            Salvar
+            <span class="loader" style="display:none; margin-left: 10px;">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </span>
+          </button>
         </div>
       </div>
     </form>
@@ -526,24 +533,57 @@
     // Evento submit do form do modal
     $('#form-editar-estados').on('submit', function(e) {
         e.preventDefault();
-        let rowId = $('#edit-row-id').val();
-        let critico = $('#edit-critico').val();
-        let minimo = $('#edit-minimo').val();
-        let medio = $('#edit-medio').val();
-        let maximo = $('#edit-maximo').val();
-        // Atualiza localmente na tabela (você pode adaptar para AJAX)
-        let rowIdx = table.rows().eq(0).filter(function(idx) {
-            return table.row(idx).data().id == rowId;
+        var id = $('#edit-row-id').val();
+        var critico = $('#edit-critico').val();
+        var minimo = $('#edit-minimo').val();
+        var medio = $('#edit-medio').val();
+        var maximo = $('#edit-maximo').val();
+        var $btn = $('#btn-save-estados');
+        $btn.prop('disabled', true);
+        $('#modal-editar-estados .modal-footer .loader').show();
+        $.ajax({
+            url: '/api/status_produto/update/' + id,
+            type: 'POST',
+            data: {
+                critico: critico,
+                minimo: minimo,
+                medio: medio,
+                maximo: maximo,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(resp) {
+                $('#modal-editar-estados').modal('hide');
+                $btn.prop('disabled', false);
+                $('#modal-editar-estados .modal-footer .loader').hide();
+                if (resp.success) {
+                    showToast('Estados atualizados com sucesso!', 'success');
+                    table.ajax.reload(null, false);
+                } else {
+                    showToast(resp.message || 'Erro ao atualizar.', 'error');
+                }
+            },
+            error: function(xhr) {
+                $btn.prop('disabled', false);
+                $('#modal-editar-estados .modal-footer .loader').hide();
+                let msg = 'Erro ao atualizar: ' + (xhr.responseJSON?.message || xhr.statusText);
+                showToast(msg, 'error');
+            }
         });
-        if(rowIdx.length){
-            let data = table.row(rowIdx[0]).data();
-            data.critico = critico;
-            data.minimo = minimo;
-            data.medio = medio;
-            data.maximo = maximo;
-            table.row(rowIdx[0]).data(data).draw(false);
-        }
-        $('#modal-editar-estados').modal('hide');
     });
+
+    // Função para mostrar toast/alerta
+    function showToast(msg, type) {
+        let color = type === 'success' ? 'bg-success' : 'bg-danger';
+        let toast = $(
+            `<div class="toast align-items-center text-white ${color} border-0 show" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+                <div class="d-flex">
+                    <div class="toast-body">${msg}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>`
+        );
+        $('body').append(toast);
+        setTimeout(() => { toast.fadeOut(400, function() { $(this).remove(); }); }, 3500);
+    }
 </script>
 @endsection

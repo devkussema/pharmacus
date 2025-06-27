@@ -125,4 +125,40 @@ class StockController extends Controller
 
         return response()->json(["data" => $produtos]);
     }
+
+    /**
+     * Atualiza os estados de estoque (crítico, mínimo, médio, máximo) via AJAX.
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_status_produto(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'critico' => 'required|numeric|min:0',
+            'minimo' => 'required|numeric|min:0',
+            'medio' => 'required|numeric|min:0',
+            'maximo' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            $status = StatusEstoque::findOrFail($id);
+            $status->update($validated);
+            return response()->json([
+                'success' => true,
+                'message' => 'Status de estoque atualizado com sucesso.'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
