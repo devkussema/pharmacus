@@ -105,18 +105,29 @@
                     </div>
                 </div>
             @endif
+            <!-- Barra de Ações Externa -->
+            <div class="col-sm-12 mb-3">
+                <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 bg-white rounded-3 p-3 shadow-sm border">
+                    <input id="global-search" type="text" class="form-control form-control-sm rounded-pill border-2" style="max-width:220px; min-width:160px;" placeholder="🔍 Buscar item, dosagem...">
+                    <div class="vr mx-2" style="height: 30px;"></div>
+                    <button id="btn-export-excel" class="btn btn-success btn-sm rounded-pill px-3 py-2" type="button" data-bs-toggle="tooltip" title="Exportar para Excel">
+                        <i class="fas fa-file-excel me-1"></i>Excel
+                    </button>
+                    <button id="btn-export-pdf" class="btn btn-danger btn-sm rounded-pill px-3 py-2" type="button" data-bs-toggle="tooltip" title="Exportar para PDF">
+                        <i class="fas fa-file-pdf me-1"></i>PDF
+                    </button>
+                    <button id="btn-print-table" class="btn btn-secondary btn-sm rounded-pill px-3 py-2" type="button" data-bs-toggle="tooltip" title="Imprimir tabela">
+                        <i class="fas fa-print me-1"></i>Imprimir
+                    </button>
+                    <div class="vr mx-2" style="height: 30px;"></div>
+                    <button id="btn-refresh-table" class="btn btn-primary btn-sm rounded-pill px-3 py-2" type="button" data-bs-toggle="tooltip" title="Atualizar dados">
+                        <i class="fas fa-sync-alt me-1"></i>Atualizar
+                    </button>
+                </div>
+            </div>
             <div class="col-sm-12">
-                <div class="card card-table show-entire">
-                    <div class="card-body">
-                        <div class="d-flex flex-wrap align-items-center gap-2 mb-3" style="margin-top:-10px; justify-content: flex-end;">
-                            <div class="d-flex flex-wrap align-items-center gap-2" style="background:transparent;">
-                                <input id="global-search" type="text" class="form-control form-control-sm rounded-pill" style="max-width:200px; min-width:140px;" placeholder="Buscar...">
-                                <button id="btn-export-excel" class="btn btn-success btn-sm rounded-pill d-flex align-items-center gap-1" type="button"><i class="fas fa-file-excel"></i></button>
-                                <button id="btn-export-pdf" class="btn btn-danger btn-sm rounded-pill d-flex align-items-center gap-1" type="button"><i class="fas fa-file-pdf"></i></button>
-                                <button id="btn-print-table" class="btn btn-secondary btn-sm rounded-pill d-flex align-items-center gap-1" type="button"><i class="fas fa-print"></i></button>
-                                <button id="btn-refresh-table" class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center gap-1" type="button"><i class="fas fa-sync-alt"></i> Atualizar</button>
-                            </div>
-                        </div>
+                <div class="card card-table show-entire shadow-sm border-0">
+                    <div class="card-body p-0">
                         <div class="table-responsive position-relative" id="table-produto-container">
                             <div id="table-loader-overlay"
                                 style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:10; display:flex; align-items:center; justify-content:center;">
@@ -241,12 +252,17 @@
         }
 
         .card.bg-light { background: #f8fafc !important; border-radius: 1.2rem !important; }
-        #global-search:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.1rem #0d6efd33; }
-        #btn-export-excel, #btn-export-pdf, #btn-print-table, #btn-refresh-table { transition: background 0.2s, color 0.2s, box-shadow 0.2s; }
-        #btn-export-excel:hover { background: #198754 !important; color: #fff !important; }
-        #btn-export-pdf:hover { background: #dc3545 !important; color: #fff !important; }
-        #btn-print-table:hover { background: #6c757d !important; color: #fff !important; }
-        #btn-refresh-table:hover { background: #0d6efd !important; color: #fff !important; }
+        #global-search { border-color: #ddd; }
+        #global-search:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25); }
+        #btn-export-excel, #btn-export-pdf, #btn-print-table, #btn-refresh-table {
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #btn-export-excel:hover { background: #198754 !important; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3); }
+        #btn-export-pdf:hover { background: #dc3545 !important; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3); }
+        #btn-print-table:hover { background: #6c757d !important; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3); }
+        #btn-refresh-table:hover { background: #0d6efd !important; color: #fff !important; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3); }
         .table-produto tbody tr { transition: background 0.2s; cursor: pointer; }
         .table-produto tbody tr:hover, .table-produto tbody tr.row-selected { background: #e3f2fd !important; }
         .table-produto .badge { font-size: 0.95em; border-radius: 1rem; padding: 0.4em 1.1em; font-weight: 500; }
