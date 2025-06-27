@@ -181,6 +181,36 @@
   </div>
 </div>
 
+<style>
+#custom-context-menu {
+    display: none;
+    position: absolute;
+    z-index: 9999;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    padding: 0.5rem 0;
+    font-size: 15px;
+}
+#custom-context-menu .context-item {
+    padding: 8px 18px;
+    cursor: pointer;
+    color: #333;
+    transition: background 0.2s;
+    user-select: none;
+}
+#custom-context-menu .context-item:hover {
+    background: #f1f5fa;
+    color: #0d6efd;
+}
+</style>
+<div id="custom-context-menu">
+    <div class="context-item" id="context-editar">Editar</div>
+    <div class="context-item" id="context-atualizar">Atualizar Estoque</div>
+</div>
+
 <script>
     // Torna generateUniqueId global
     function generateUniqueId() {
@@ -342,6 +372,43 @@
             let status = $(this).val();
             //console.log("Enviando status para API:", status); // Confirme se o valor está correto
             table.ajax.reload();
+        });
+
+        // Menu de contexto personalizado (deve estar dentro do ready e após o DataTable)
+        let contextRowId = null;
+        $('#table-c tbody').on('contextmenu', 'tr', function(e) {
+            e.preventDefault();
+            let rowData = table.row(this).data();
+            if (!rowData) return;
+            contextRowId = rowData.id;
+            $('#custom-context-menu')
+                .css({ top: e.pageY + 'px', left: e.pageX + 'px' })
+                .fadeIn(120);
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#custom-context-menu').length) {
+                $('#custom-context-menu').fadeOut(80);
+            }
+        });
+        $('#context-editar').on('click', function() {
+            if (!contextRowId) return;
+            let rowData = table.rows().data().toArray().find(r => r.id == contextRowId);
+            if (!rowData) return;
+            $('#edit-row-id').val(rowData.id);
+            $('#edit-critico').val(rowData.critico);
+            $('#edit-minimo').val(rowData.minimo);
+            $('#edit-medio').val(rowData.medio);
+            $('#edit-maximo').val(rowData.maximo);
+            $('#edit-item-nome').val(rowData.produto?.designacao ?? '');
+            $('#modal-editar-estados').modal('show');
+            $('#custom-context-menu').fadeOut(80);
+        });
+        $('#context-atualizar').on('click', function() {
+            table.ajax.reload();
+            $('#custom-context-menu').fadeOut(80);
+        });
+        $(window).on('scroll', function() {
+            $('#custom-context-menu').fadeOut(80);
         });
     });
 
