@@ -547,14 +547,128 @@
 
             // Exportação Excel/PDF/Imprimir
             $('#btn-export-excel').on('click', function() {
-                window.print(); // Placeholder, pode integrar SheetJS ou DataTables export
+                exportTableToExcel();
             });
             $('#btn-export-pdf').on('click', function() {
-                window.print(); // Placeholder, pode integrar jsPDF
+                exportTableToPDF();
             });
             $('#btn-print-table').on('click', function() {
-                window.print();
+                printTableOnly();
             });
+
+            // Funções de exportação
+            function exportTableToExcel() {
+                let tableData = table.data().toArray();
+                let csvContent = "data:text/csv;charset=utf-8,";
+
+                // Cabeçalhos
+                csvContent += "Designação,Dosagem,Estado Atual,Qtd. Restante,Crítico,Mínimo,Data Expiração\n";
+
+                // Dados
+                tableData.forEach(function(row) {
+                    let designacao = row.produto?.designacao || '';
+                    let dosagem = row.produto?.dosagem || '';
+                    let saldo = row.produto?.saldo?.qtd || 0;
+                    let estado = '';
+                    if (saldo <= 0) estado = 'Estoque 0';
+                    else if (saldo <= row.critico) estado = 'Crítico';
+                    else if (saldo <= row.minimo) estado = 'Mínimo';
+                    else if (saldo <= row.medio) estado = 'Médio';
+                    else estado = 'Estável';
+
+                    let dataExp = row.produto?.data_expiracao ? formatDate(row.produto.data_expiracao) : '';
+
+                    csvContent += `"${designacao}","${dosagem}","${estado}","${saldo}","${row.critico || ''}","${row.minimo || ''}","${dataExp}"\n`;
+                });
+
+                let encodedUri = encodeURI(csvContent);
+                let link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "estoque_" + new Date().toISOString().split('T')[0] + ".csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            function exportTableToPDF() {
+                let tableData = table.data().toArray();
+                let printContent = `
+                    <html>
+                    <head>
+                        <title>Relatório de Estoque</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            h1 { color: #333; text-align: center; margin-bottom: 30px; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
+                            th { background-color: #f8f9fa; font-weight: bold; }
+                            .badge { padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold; }
+                            .bg-success { background-color: #28a745; }
+                            .bg-warning { background-color: #ffc107; color: #333; }
+                            .bg-danger { background-color: #dc3545; }
+                            .bg-info { background-color: #17a2b8; }
+                            .bg-dark { background-color: #343a40; }
+                            @media print { body { margin: 0; } }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Relatório de Estoque - ${new Date().toLocaleDateString('pt-BR')}</h1>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Designação</th>
+                                    <th>Dosagem</th>
+                                    <th>Estado Atual</th>
+                                    <th>Qtd. Restante</th>
+                                    <th>Crítico</th>
+                                    <th>Mínimo</th>
+                                    <th>Data Expiração</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+                tableData.forEach(function(row) {
+                    let designacao = row.produto?.designacao || '--';
+                    let dosagem = row.produto?.dosagem || '--';
+                    let saldo = row.produto?.saldo?.qtd || 0;
+                    let estado = '';
+                    let estadoClass = '';
+
+                    if (saldo <= 0) { estado = 'Estoque 0'; estadoClass = 'bg-dark'; }
+                    else if (saldo <= row.critico) { estado = 'Crítico'; estadoClass = 'bg-danger'; }
+                    else if (saldo <= row.minimo) { estado = 'Mínimo'; estadoClass = 'bg-warning'; }
+                    else if (saldo <= row.medio) { estado = 'Médio'; estadoClass = 'bg-info'; }
+                    else { estado = 'Estável'; estadoClass = 'bg-success'; }
+
+                    let dataExp = row.produto?.data_expiracao ? formatDate(row.produto.data_expiracao) : '--';
+
+                    printContent += `
+                        <tr>
+                            <td>${designacao}</td>
+                            <td>${dosagem}</td>
+                            <td><span class="badge ${estadoClass}">${estado}</span></td>
+                            <td>${saldo}</td>
+                            <td>${row.critico || '--'}</td>
+                            <td>${row.minimo || '--'}</td>
+                            <td>${dataExp}</td>
+                        </tr>`;
+                });
+
+                printContent += `
+                            </tbody>
+                        </table>
+                    </body>
+                    </html>`;
+
+                let printWindow = window.open('', '_blank');
+                printWindow.document.write(printContent);
+                printWindow.document.close();
+                printWindow.print();
+            }
+
+            function printTableOnly() {
+                exportTableToPDF();
+            }
 
             // Notificação em tempo real (polling simples)
             setInterval(function() {
