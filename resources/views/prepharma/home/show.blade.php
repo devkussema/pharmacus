@@ -57,7 +57,13 @@
                             </div>
                             <div class="dash-content dash-count">
                                 <h4>{{ $n->nivel_alerta->nome }}</h4>
-                                <h2><span class="counter-up">{{ $n->nivel_alerta->relatorios->count() }}</span></h2>
+                                <h2><span class="counter-up">
+                                    @if ($n->nivel_alerta->nome == 'Crítico' || $n->nivel_alerta->nome == 'Mínimo')
+                                        0
+                                    @else
+                                        {{ $n->nivel_alerta->relatorios->count() }}
+                                    @endif
+                                </span></h2>
                                 @if ($n->nivel_alerta->regra == '3') até 3 meses @endif
                                 @if ($n->nivel_alerta->regra == '6') até 6 meses @endif
                                 @if ($n->nivel_alerta->regra == '10') até 10 meses @endif

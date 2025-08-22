@@ -45,82 +45,61 @@ trait GenerateTrait
 
         // Define os limites de tempo para cada nível de alerta (em meses)
         $limites = [
-            1 => 3, // ID 1 para o nível Critico
-            2 => 6, // ID 2 para o nível Minimo
-            3 => 10, // ID 3 para o nível Medio
-            4 => 12, // ID 4 para o nível Maximo
+            1 => ['nome' => 'Crítico', 'meses' => 3],
+            2 => ['nome' => 'Mínimo', 'meses' => 6],
+            3 => ['nome' => 'Médio', 'meses' => 10],
+            4 => ['nome' => 'Máximo', 'meses' => 12]
         ];
 
-        // Obtém todos os produtos
-        $produtos = PE::all();
+        // Inicializa contadores
+        $contadores = array_fill(1, 4, 0);
 
-        // Contadores para os níveis de alerta
-        $contadores = [
-            1 => 3, // ID 1 para o nível Critico
-            2 => 6, // ID 2 para o nível Minimo
-            3 => 10, // ID 3 para o nível Medio
-            4 => 12, // ID 4 para o nível Maximo
-        ];
+        // Obtém produtos que ainda não expiraram e com data de expiração
+        $produtos = PE::whereNotNull('data_expiracao')
+            ->where('data_expiracao', '>', $hoje)
+            ->get();
 
-        // Percorre os produtos
+        // Processa produtos em lote
+        $atualizacoes = [];
         foreach ($produtos as $produto) {
-            // Calcula o tempo de expiração do produto em meses
             $tempoExpiracao = Carbon::parse($produto->data_expiracao)->diffInMonths($hoje);
 
-            // Determina o nível de alerta do produto com base no tempo de expiração
+            // Determina o nível de alerta
             $nivelAlerta = null;
-            foreach ($limites as $nivel => $limite) {
-                // Se o tempo de expiração for menor ou igual ao limite, define o nível de alerta
-                if ($tempoExpiracao <= $limite) {
+            foreach ($limites as $nivel => $info) {
+                if ($tempoExpiracao <= $info['meses']) {
                     $nivelAlerta = $nivel;
-                    break; // Interrompe o loop assim que encontrar o primeiro nível adequado
+                    $contadores[$nivel]++;
+                    break;
                 }
             }
 
-            // Se o nível de alerta for encontrado
             if ($nivelAlerta !== null) {
-                // Atualiza o contador para o nível de alerta atual
-                $contadores[$nivelAlerta]++;
-
-                // Verifica se o produto já está na tabela relatorio_estoque_alerta
-                $relatorio = REA::where('produto_estoque_id', $produto->id)->first();
-
-                // Obtém a chave do nível de alerta com base no nome do nível
-                $nivelAlertaId = array_search($nivelAlerta, array_keys($limites));
-                $nivelAlertaId += 1;
-                // Atualiza ou cadastra o relatório conforme necessário.
-                if ($relatorio) {
-                    // O produto já está na tabela, então atualiza o nível atual
-                    $relatorio->update(['nivel_alerta_id' => $nivelAlertaId]);
-                }
-                // } else {
-                //     // O produto não está na tabela, então cadastra um novo relatório
-                //     REA::create([
-                //         'produto_estoque_id' => $produto->id,
-                //         'nivel_alerta_id' => $nivelAlertaId
-                //     ]);
-                // }
+                $atualizacoes[] = [
+                    'produto_id' => $produto->id,
+                    'nivel_id' => $nivelAlerta
+                ];
             }
         }
 
-        // Monta o relatório como uma tabela
-        $relatorio = '<table border="1">';
-        $relatorio .= '<tr><th>Critico</th><th>Minimo</th><th>Medio</th><th>Maximo</th></tr>';
-        $relatorio .= '<tr>';
-        foreach ($contadores as $nivel => $contagem) {
-            $relatorio .= '<td>' . $contagem . '</td>';
+        // Atualiza relatórios em lote
+        if (!empty($atualizacoes)) {
+            foreach ($atualizacoes as $atualizacao) {
+                REA::updateOrCreate(
+                    ['produto_estoque_id' => $atualizacao['produto_id']],
+                    ['nivel_alerta_id' => $atualizacao['nivel_id']]
+                );
+            }
         }
-        $relatorio .= '</tr>';
-        $relatorio .= '</table>';
 
-        // Resumo básico
-        $totalProdutos = array_sum($contadores);
-        $resumo = "Cerca de $totalProdutos produtos atingiram níveis de alerta.";
+        // Gera relatório usando view ou componente blade
+        $data = [
+            'niveis' => $limites,
+            'contadores' => $contadores,
+            'total' => array_sum($contadores)
+        ];
 
-        // Adiciona o resumo ao relatório
-        $relatorio .= '<p>' . $resumo . '</p>';
-
-        return $relatorio;
+        return view('components.relatorio-alerta', $data)->render();
     }
 
     public static function gerarSenhaAutomatica()
