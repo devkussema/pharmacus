@@ -58,7 +58,7 @@
                             <div class="dash-content dash-count">
                                 <h4>{{ $n->nivel_alerta->nome }}</h4>
                                 <h2><span class="counter-up">
-                                    @if ($n->nivel_alerta->nome == 'Crítico' || $n->nivel_alerta->nome == 'Mínimo')
+                                    @if (Str::lower($n->nivel_alerta->nome) == 'crítico' || Str::lower($n->nivel_alerta->nome) == 'mínimo' || Str::lower($n->nivel_alerta->nome) == 'minimo' || Str::lower($n->nivel_alerta->nome) == 'critico')
                                         0
                                     @else
                                         {{ $n->nivel_alerta->relatorios->count() }}
@@ -75,6 +75,7 @@
                 @endif
             @endforeach
         </div>
+
         {{-- <div class="row">
             <div class="col-12 col-md-12 col-lg-6 col-xl-9">
                 <div class="card">
