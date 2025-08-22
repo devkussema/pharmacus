@@ -51,58 +51,124 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.98);
+            background: #fff;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease-out;
+            transition: all 0.3s ease-out;
         }
 
         .loader-container {
+            text-align: center;
             position: relative;
-            width: 120px;
-            height: 120px;
         }
 
         .loader-logo {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            z-index: 2;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
         }
 
-        .loader-circle {
+        .loader-ring {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 100px;
+            height: 100px;
             border: 4px solid transparent;
-            border-top-color: #2E37A4;
             border-radius: 50%;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .loader-ring:nth-child(1) {
+            border-top-color: #2E37A4;
             animation: spin 1s linear infinite;
         }
 
-        .loader-circle:nth-child(2) {
-            border-top-color: #00d2ff;
-            animation-duration: 1.3s;
+        .loader-ring:nth-child(2) {
+            border-right-color: #00d2ff;
+            animation: spin 1s linear infinite reverse;
         }
 
-        .loader-circle:nth-child(3) {
-            border-top-color: #2E37A4;
-            animation-duration: 1.6s;
+        .loader-ring:nth-child(3) {
+            width: 120px;
+            height: 120px;
+            top: -20px;
+            border-bottom-color: #2E37A4;
+            animation: spin 2s linear infinite;
+        }
+
+        .loader-text {
+            color: #2E37A4;
+            font-size: 18px;
+            margin-top: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            font-weight: 500;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards 0.5s;
+        }
+
+        .loader-dots::after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
         }
 
         .loader-wrapper.fade-out {
             opacity: 0;
-            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .performance-warning {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: #fff3e0;
+            border-radius: 4px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -111,10 +177,13 @@
     <!-- Loader -->
     <div class="loader-wrapper">
         <div class="loader-container">
-            <div class="loader-circle"></div>
-            <div class="loader-circle"></div>
-            <div class="loader-circle"></div>
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
             <img src="{{ assetr('assets/img/white__logo2.png') }}" alt="Logo" class="loader-logo">
+            <div class="loader-text">
+                A carregar<span class="loader-dots"></span>
+            </div>
         </div>
     </div>
 
@@ -169,14 +238,9 @@
                 setTimeout(function() {
                     const loader = document.querySelector('.loader-wrapper');
                     loader.classList.add('fade-out');
-                    setTimeout(function() {
-                        loader.style.display = 'none';
-                    }, 500);
-                }, 1000);
+                }, 800);
             }
-        };
-
-        function playAudio() {
+        };        function playAudio() {
             var audio = document.getElementById('audioPlayer');
             audio.play();
         }
