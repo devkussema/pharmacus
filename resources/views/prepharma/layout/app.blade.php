@@ -43,10 +43,81 @@
         .dataTables_wrapper .dataTables_filter {
             display: none;
         }
+
+        /* Loader Styles */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .loader-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            z-index: 2;
+        }
+
+        .loader-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: #2E37A4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-circle:nth-child(2) {
+            border-top-color: #00d2ff;
+            animation-duration: 1.3s;
+        }
+
+        .loader-circle:nth-child(3) {
+            border-top-color: #2E37A4;
+            animation-duration: 1.6s;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-wrapper.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body>
+    <!-- Loader -->
+    <div class="loader-wrapper">
+        <div class="loader-container">
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <img src="{{ assetr('assets/img/white__logo2.png') }}" alt="Logo" class="loader-logo">
+        </div>
+    </div>
+
     <div class="main-wrapper">
         @include('partials.header')
 
@@ -92,6 +163,19 @@
     <script src="{{ assetr('assets/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
         data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
     <script>
+        // Loader Control
+        document.onreadystatechange = function() {
+            if (document.readyState === "complete") {
+                setTimeout(function() {
+                    const loader = document.querySelector('.loader-wrapper');
+                    loader.classList.add('fade-out');
+                    setTimeout(function() {
+                        loader.style.display = 'none';
+                    }, 500);
+                }, 1000);
+            }
+        };
+
         function playAudio() {
             var audio = document.getElementById('audioPlayer');
             audio.play();
