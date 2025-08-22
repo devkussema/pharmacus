@@ -22,8 +22,18 @@ class NivelAlertaController extends Controller
 
     public function index()
     {
-        $niveis = REA::whereIn('nivel_alerta_id', [1, 2])->get();
+        // Primeiro calcula os níveis de alerta atualizados
         self::calcNivelAlerta();
+
+        // Obtém produtos com mais de 6 meses até a expiração
+        $niveis = REA::whereIn('nivel_alerta_id', [3, 4]) // Apenas Médio e Máximo
+            ->whereHas('produto', function($query) {
+                $hoje = now();
+                $seisMesesDepois = now()->addMonths(6);
+                $query->whereDate('data_expiracao', '>', $seisMesesDepois);
+            })
+            ->get();
+
         return view('niveis_alerta.show', compact('niveis'));
     }
 
