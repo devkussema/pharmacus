@@ -52,7 +52,11 @@ class AHSeeder extends Seeder
         ];
 
         foreach ($areasHospitalares as $area) {
-            AreaHospitalar::create($area);
+            // Usa firstOrCreate para evitar duplicações em execuções repetidas
+            AreaHospitalar::firstOrCreate(
+                ['nome' => $area['nome']],
+                ['descricao' => $area['descricao']]
+            );
         }
     }
 }

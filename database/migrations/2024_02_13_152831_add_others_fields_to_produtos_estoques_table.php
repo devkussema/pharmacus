@@ -26,8 +26,15 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('produtos_estoques', function (Blueprint $table) {
-            //
+        Schema::table('produto_estoques', function (Blueprint $table) {
+            $table->dropColumn([
+                'origem_destino',
+                'num_lote',
+                'data_expiracao',
+                'data_producao',
+                'num_documento',
+                'obs'
+            ]);
         });
     }
 };

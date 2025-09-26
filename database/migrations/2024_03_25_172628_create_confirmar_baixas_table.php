@@ -17,8 +17,9 @@ return new class extends Migration
             $table->boolean('confirmado')->default(0);
             $table->unsignedBigInteger('area_hospitalar_para');
 
-            $table->foreign('area_hospitalar_de')->references('area_hospitalar_id')->on('farmacia_areas_hospitalares')->onDelete('cascade');
-            $table->foreign('area_hospitalar_para')->references('area_hospitalar_id')->on('farmacia_areas_hospitalares')->onDelete('cascade');
+            // Referenciar diretamente a tabela areas_hospitalares ao invés de farmacia_areas_hospitalares
+            $table->foreign('area_hospitalar_de')->references('id')->on('areas_hospitalares')->onDelete('cascade');
+            $table->foreign('area_hospitalar_para')->references('id')->on('areas_hospitalares')->onDelete('cascade');
             $table->timestamps();
         });
     }

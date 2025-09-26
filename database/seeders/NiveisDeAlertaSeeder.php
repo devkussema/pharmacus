@@ -22,7 +22,10 @@ class NiveisDeAlertaSeeder extends Seeder
 
         // Itera sobre os níveis e os cadastra no banco de dados
         foreach ($niveis as $nivel) {
-            NivelAlerta::create($nivel);
+            NivelAlerta::firstOrCreate(
+                ['nome' => $nivel['nome']],
+                ['regra' => $nivel['regra']]
+            );
         }
     }
 }

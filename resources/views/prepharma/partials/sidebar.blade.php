@@ -2,30 +2,33 @@
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
-                <li class="menu-title">Inicio</li>
-                <li>
-                    <a href="{{ route('home') }}" class="{{ Route::currentRouteName() == 'home' ? 'active' : '' }}">
+                <li class="menu-title">
+                    <span data-key="t-menu">Menu</span>
+                </li>
+                <li class="{{ Route::currentRouteName() == 'home' ? 'active' : '' }}">
+                    <a href="{{ route('home') }}" class="sidebar-link" data-route="home">
                         <span class="menu-side">
-                            <img src="{{ assetr('assets/img/icons/menu-icon-01.svg')}}" alt>
+                            <i class="fas fa-tachometer-alt"></i>
                         </span>
                         <span> Dashboard </span>
                     </a>
                 </li>
                 @if (isAdministrator())
-                    <li>
-                        <a href="{{ route('farmacia') }}" class="{{ Route::currentRouteName() == 'farmacia' ? 'active' : '' }}">
+                    <li class="{{ Route::currentRouteName() == 'farmacia' ? 'active' : '' }}">
+                        <a href="{{ route('farmacia') }}" class="sidebar-link" data-route="farmacia">
                             <span class="menu-side">
-                                <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
+                                <i class="fas fa-clinic-medical"></i>
                             </span>
                             <span> Farmácias </span>
+                            <span class="badge badge-pill badge-info ms-auto">{{ App\Models\Farmacia::count() }}</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('usuario') }}" class="{{ Route::currentRouteName() == 'usuario' ? 'active' : '' }}">
+                    <li class="{{ Route::currentRouteName() == 'usuario' ? 'active' : '' }}">
+                        <a href="{{ route('usuario') }}" class="sidebar-link" data-route="usuario">
                             <span class="menu-side">
-                                <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
+                                <i class="fas fa-users"></i>
                             </span>
-                            <span> Farmácias </span>
+                            <span> Usuários </span>
                         </a>
                     </li>
                 @endif
