@@ -14,6 +14,11 @@ class FarmaciaController extends Controller
         return view('farmacia.index', compact('farmacias'));
     }
 
+    public function settings(Request $request, $id)
+    {
+        return;
+    }
+
     public function show(Request $request, $id)
     {
         /**

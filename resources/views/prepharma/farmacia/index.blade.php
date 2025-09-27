@@ -36,6 +36,223 @@
                                                     </a>
                                                 </form>
                                             </div>
+                                            {{-- Botão para abrir modal de cadastrar farmácia --}}
+                                                <button type="button"
+                                                    class="btn btn-primary btn-sm ms-2 d-inline-flex align-items-center"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalCadastrarFarmacia"
+                                                    title="Cadastrar Farmácia"
+                                                    aria-label="Cadastrar Farmácia">
+                                                    <i class="ri-add-line me-1"></i>
+                                                    Cadastrar Farmácia
+                                                </button>
+
+                                                <!-- Modal: Cadastrar Farmácia (prepharma theme) -->
+                                                <div class="modal fade" id="modalCadastrarFarmacia" tabindex="-1" aria-labelledby="modalCadastrarFarmaciaLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-content border-0 shadow-sm">
+                                                            <div class="modal-body p-4">
+                                                                <div class="popup text-left">
+                                                                    <h4 class="mb-3">Adicionar farmácia</h4>
+                                                                    <div class="content create-workform bg-body p-3 rounded">
+                                                                        <form id="formAddFarmacia" action="{{ route('farmacia.store') }}" method="POST" enctype="multipart/form-data">
+                                                                            @csrf
+                                                                            <div class="row g-3">
+                                                                                <div class="col-md-6">
+                                                                                    <label for="nome_farmacia_modal" class="form-label">Nome *</label>
+                                                                                    <input type="text" name="nome" id="nome_farmacia_modal" class="form-control" required>
+                                                                                </div>
+
+                                                                                <div class="col-md-6">
+                                                                                    <label for="categoria_farmacia_modal" class="form-label">Tipo de Farmácia *</label>
+                                                                                    <select name="categoria_id" id="categoria_farmacia_modal" class="form-select">
+                                                                                        @php $cats = \App\Models\Categoria::where('tipo', 'farmacia')->get(); @endphp
+                                                                                        @foreach ($cats as $categoria)
+                                                                                            <option value="{{ $categoria->id }}">{{ $categoria->nome }}</option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+
+                                                                                <div class="col-md-6">
+                                                                                    <label for="logotipo_farmacia_modal" class="form-label">Logotipo</label>
+                                                                                    <input class="form-control" type="file" id="logotipo_farmacia_modal" name="logotipo" accept="image/*">
+                                                                                </div>
+
+                                                                                <div class="col-md-6">
+                                                                                    <label for="codigo_farmacia_modal" class="form-label">Código</label>
+                                                                                    <input type="text" name="codigo" id="codigo_farmacia_modal" class="form-control">
+                                                                                </div>
+
+                                                                                <div class="col-12">
+                                                                                    <label for="endereco_farmacia_modal" class="form-label">Endereço *</label>
+                                                                                    <input type="text" name="endereco" id="endereco_farmacia_modal" class="form-control" required>
+                                                                                </div>
+
+                                                                                <div class="col-12">
+                                                                                    <label for="descricao_farmacia_modal" class="form-label">Descrição</label>
+                                                                                    <textarea name="obs" id="descricao_farmacia_modal" class="form-control" rows="3"></textarea>
+                                                                                    <input type="hidden" name="descricao" id="descricao_hidden" value="">
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="d-flex justify-content-end mt-4">
+                                                                                <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Fechar</button>
+                                                                                <button type="submit" class="btn btn-primary">Cadastrar</button>
+                                                                            </div>
+                                                                        </form>
+                                                                        <div id="formAddFarmaciaErrors" class="mb-2"></div>
+                                                                        <script>
+                                                                            (function(){
+                                                                                try{
+                                                                                    const form = document.getElementById('formAddFarmacia');
+                                                                                    if (!form) return console.warn('formAddFarmacia not found');
+
+                                                                                    const modalEl = document.getElementById('modalCadastrarFarmacia');
+                                                                                    let bsModal = null;
+                                                                                    try{
+                                                                                        if (typeof bootstrap !== 'undefined' && modalEl){
+                                                                                            bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                                                                                        }
+                                                                                    }catch(e){
+                                                                                        console.warn('bootstrap modal instance not available', e);
+                                                                                        bsModal = null;
+                                                                                    }
+
+                                                                                    const errorsContainer = document.getElementById('formAddFarmaciaErrors');
+
+                                                                                    function clearErrors(){
+                                                                                        if (!errorsContainer) return;
+                                                                                        errorsContainer.innerHTML = '';
+                                                                                        const invalids = form.querySelectorAll('.is-invalid');
+                                                                                        invalids.forEach(i => i.classList.remove('is-invalid'));
+                                                                                    }
+
+                                                                                    function showErrors(errors){
+                                                                                        clearErrors();
+                                                                                        if (!errorsContainer) return;
+                                                                                        const ul = document.createElement('ul');
+                                                                                        ul.className = 'alert alert-danger small';
+                                                                                        for (const key in errors){
+                                                                                            if (!Object.prototype.hasOwnProperty.call(errors, key)) continue;
+                                                                                            const msgs = errors[key];
+                                                                                            msgs.forEach(m => {
+                                                                                                const li = document.createElement('li');
+                                                                                                li.textContent = m;
+                                                                                                ul.appendChild(li);
+                                                                                                // try to mark the related field invalid
+                                                                                                const field = form.querySelector('[name="' + key + '"]');
+                                                                                                if (field) field.classList.add('is-invalid');
+                                                                                            });
+                                                                                        }
+                                                                                        errorsContainer.appendChild(ul);
+                                                                                    }
+
+                                                                                    form.addEventListener('submit', function(e){
+                                                                                        e.preventDefault();
+                                                                                        clearErrors();
+
+                                                                                        // copy descricao to hidden
+                                                                                        const txt = document.getElementById('descricao_farmacia_modal');
+                                                                                        const hidden = document.getElementById('descricao_hidden');
+                                                                                        if (txt && hidden) hidden.value = txt.value;
+
+                                                                                        const submitBtn = form.querySelector('button[type="submit"]');
+                                                                                        const originalBtnHtml = submitBtn ? submitBtn.innerHTML : null;
+                                                                                        if (submitBtn){
+                                                                                            submitBtn.disabled = true;
+                                                                                            try{ submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enviando...'; }catch(e){}
+                                                                                        }
+
+                                                                                        const action = form.getAttribute('action') || window.location.href;
+                                                                                        const method = (form.getAttribute('method') || 'POST').toUpperCase();
+                                                                                        const formData = new FormData(form);
+
+                                                                                        fetch(action, {
+                                                                                            method: method,
+                                                                                            body: formData,
+                                                                                            credentials: 'same-origin',
+                                                                                            headers: {
+                                                                                                'X-Requested-With': 'XMLHttpRequest',
+                                                                                                'Accept': 'application/json'
+                                                                                            }
+                                                                                        }).then(async res => {
+                                                                                            const contentType = res.headers.get('content-type') || '';
+                                                                                            let data = {};
+                                                                                            if (contentType.indexOf('application/json') > -1) data = await res.json();
+                                                                                            else data.text = await res.text();
+
+                                                                                            if (res.ok){
+                                                                                                // success flow
+                                                                                                try{ if (bsModal) bsModal.hide(); }catch(e){}
+                                                                                                const successMsg = (data && data.message) ? data.message : 'Farmácia cadastrada com sucesso.';
+                                                                                                const successModalEl = document.getElementById('modalFarmaciaSuccess');
+                                                                                                if (successModalEl){
+                                                                                                    try{ successModalEl.querySelector('.modal-body p').textContent = successMsg; }catch(e){}
+                                                                                                    try{ const sm = (typeof bootstrap !== 'undefined') ? bootstrap.Modal.getOrCreateInstance(successModalEl) : null; sm && sm.show(); }catch(e){ alert(successMsg); }
+                                                                                                } else {
+                                                                                                    alert(successMsg);
+                                                                                                }
+
+                                                                                                // optional: reload page after short delay so table updates
+                                                                                                setTimeout(function(){
+                                                                                                    try{
+                                                                                                        if (window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable){
+                                                                                                            try{ window.jQuery('#table-p').DataTable().ajax && window.jQuery('#table-p').DataTable().ajax.reload(); }catch(e){ location.reload(); }
+                                                                                                        } else {
+                                                                                                            location.reload();
+                                                                                                        }
+                                                                                                    }catch(e){ location.reload(); }
+                                                                                                }, 1200);
+                                                                                            } else if (res.status === 422){
+                                                                                                // validation errors
+                                                                                                showErrors((data && data.errors) ? data.errors : {'error': ['Dados inválidos']});
+                                                                                            } else {
+                                                                                                // other errors
+                                                                                                const msg = (data && data.message) ? data.message : (data.text || 'Ocorreu um erro inesperado');
+                                                                                                showErrors({'error': [msg]});
+                                                                                            }
+                                                                                        }).catch(err => {
+                                                                                            console.error('fetch error', err);
+                                                                                            showErrors({'error': [err.message || 'Erro de rede']});
+                                                                                        }).finally(() => {
+                                                                                            if (submitBtn){
+                                                                                                submitBtn.disabled = false;
+                                                                                                try{ submitBtn.innerHTML = originalBtnHtml; }catch(e){}
+                                                                                            }
+                                                                                        });
+                                                                                    });
+                                                                                }catch(err){
+                                                                                    console.error('formAddFarmacia init error', err);
+                                                                                }
+                                                                            })();
+                                                                        </script>
+
+                                                                        <!-- Success modal shown after AJAX submit -->
+                                                                        <div class="modal fade" id="modalFarmaciaSuccess" tabindex="-1" aria-hidden="true">
+                                                                            <div class="modal-dialog modal-sm modal-dialog-centered">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-body text-center p-4">
+                                                                                        <div class="mb-3">
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#20c997" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                                                                                <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zM8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0z"/>
+                                                                                                <path d="M10.97 5.97a.235.235 0 0 0-.02-.022L7.477 9.42 5.383 7.33a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.079-.02l3.5-4a.75.75 0 0 0-1.02-1.1z"/>
+                                                                                            </svg>
+                                                                                        </div>
+                                                                                        <h5>Sucesso</h5>
+                                                                                        <p class="small text-muted">Operação concluída com sucesso.</p>
+                                                                                        <div class="mt-3">
+                                                                                            <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Fechar</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
@@ -100,15 +317,13 @@
                                         <td>{{ $farmacia->obs }}</td>
                                         <td>
                                             <div class="d-flex align-items-center list-action">
-                                                <button type="button"
+                                                <a href="{{ route('farmacia.show', ['farmacia' => $farmacia->id]) }}"
                                                     class="btn btn-sm btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
-                                                    style="width:36px; height:36px; padding:0;"
-                                                    onclick="visualizarFarmacia({{ $farmacia->id }})" data-toggle="tooltip"
-                                                    data-bs-toggle="tooltip" title="Ver {{ $farmacia->nome }}"
+                                                    style="width:36px; height:36px; padding:0;" title="Ver {{ $farmacia->nome }}"
                                                     aria-label="Ver {{ $farmacia->nome }}">
                                                     <i class="ri-eye-line"></i>
                                                     <span class="visually-hidden">Ver</span>
-                                                </button>
+                                                </a>
 
                                                 <button type="button"
                                                     class="btn btn-sm btn-success rounded-circle d-inline-flex align-items-center justify-content-center me-2"

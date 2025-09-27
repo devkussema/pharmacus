@@ -5,7 +5,7 @@
                 <div class="popup text-left">
                     <h4 class="mb-3">Editar farmácia</h4>
                     <div class="content create-workform bg-body">
-                        <form id="formEditFarmacia" action="{{ route('farmacia.update') }}" method="POST" enctype="multipart/form-data">
+                        <form id="formEditFarmacia" action="{{ route('farmacia.update', ['farmacia' => $farmacia->id]) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="form-group">
