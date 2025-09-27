@@ -1,15 +1,27 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\{
     Farmacia, User, Grupo
 };
 
+/**
+ * Controlador de Usuários
+ *
+ * Responsável pela gestão de utilizadores do sistema Pharmacus.
+ *
+ * @author Augusto Kussema
+ * @created 2025-09-27
+ */
 class UsuarioController extends Controller
 {
     /**
@@ -69,6 +81,7 @@ class UsuarioController extends Controller
                     'nome' => $user->nome,
                     'email' => $user->email,
                     'grupo' => optional($user->grupo)->nome ?? null,
+                    'grupo_id' => $user->grupo_id,
                     'isFarmacia' => (bool) $user->isFarmacia,
                     'status' => (bool) $user->status,
                     'telefone' => $user->telefone ?? null,
@@ -83,6 +96,37 @@ class UsuarioController extends Controller
         // Requisição normal: renderizar a view com todos os usuários (fallback)
         $users = User::all();
         return view('usuario.show', compact('farmacias', 'users', 'grupos'));
+    }
+
+    /**
+     * Exibe o formulário de edição de um usuário.
+     *
+     * Input:
+     * - id: identificador do usuário
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     *
+     * @author Augusto Kussema
+     * @created 2025-09-27
+     */
+    public function edit(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['message' => 'Usuário não encontrado'], 404);
+            }
+
+            return redirect()->back()->with('warning', 'Usuário não encontrado!');
+        }
+
+        $farmacias = Farmacia::all();
+        $grupos = Grupo::all();
+
+        return view('usuario.edit', compact('user', 'farmacias', 'grupos'));
     }
 
     public function perfil($username)
@@ -175,5 +219,97 @@ class UsuarioController extends Controller
         }
 
         return response()->json(['message' => 'Ocorreu um erro, por favor recarregue a página e tente novamente'], 404);
+    }
+
+    /**
+     * Atualiza as informações de um utilizador.
+     *
+     * Valida e atualiza: nome, email (único exceto o próprio), grupo_id opcional,
+     * status, telefone, foto de perfil e tipo de usuário (isFarmacia).
+     * Não altera a senha neste método.
+     *
+     * @param Request $request
+     * @param string $id - UUID do usuário
+     * @return JsonResponse|RedirectResponse
+     *
+     * @author Augusto Kussema
+     * @created 2025-09-27
+     */
+    public function update(Request $request, string $id): JsonResponse|RedirectResponse
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['message' => 'Usuário não encontrado'], 404);
+            }
+            return redirect()->back()->with('error', 'Usuário não encontrado!');
+        }
+
+        // Validação dos dados de entrada
+        $validated = $request->validate([
+            'nome' => ['required', 'string', 'max:255'],
+            'grupo_id' => ['nullable', 'exists:grupos,id'],
+            'status' => ['nullable', 'in:0,1'],
+            'telefone' => ['nullable', 'string', 'max:50'],
+            'isFarmacia' => ['nullable', 'boolean'],
+            'foto_perfil' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+        ], [
+            'nome.required' => 'O nome é obrigatório.',
+            'nome.max' => 'O nome não pode ter mais de 255 caracteres.',
+            'grupo_id.exists' => 'O grupo selecionado não existe.',
+            'status.in' => 'O status deve ser Ativo ou Inativo.',
+            'telefone.max' => 'O telefone não pode ter mais de 50 caracteres.',
+            'foto_perfil.image' => 'O arquivo deve ser uma imagem.',
+            'foto_perfil.mimes' => 'A foto deve ser nos formatos: JPG, PNG, GIF.',
+            'foto_perfil.max' => 'A foto não pode ser maior que 2MB.',
+        ]);
+
+        // Processar upload da foto de perfil
+        if ($request->hasFile('foto_perfil')) {
+            // Remover foto anterior se existir
+            if ($user->foto_perfil && Storage::disk('public')->exists($user->foto_perfil)) {
+                Storage::disk('public')->delete($user->foto_perfil);
+            }
+
+            // Armazenar nova foto
+            $validated['foto_perfil'] = $request->file('foto_perfil')->store('perfil', 'public');
+        }
+
+        // Normalizar campos booleanos conforme padrão do sistema
+        if ($request->has('status')) {
+            $validated['status'] = $request->input('status') === '1' ? 1 : 0;
+        }
+        $validated['isFarmacia'] = $request->has('isFarmacia') ? (bool) $request->input('isFarmacia') : false;
+
+        // Atualizar o usuário
+        $user->fill($validated);
+        $user->save();
+
+        // Verificar se é uma requisição AJAX (para modal)
+        if ($request->ajax() || $request->wantsJson()) {
+            $user->load('grupo');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuário atualizado com sucesso.',
+                'user' => [
+                    'id' => $user->id,
+                    'nome' => $user->nome,
+                    'email' => $user->email,
+                    'telefone' => $user->telefone,
+                    'grupo' => optional($user->grupo)->nome,
+                    'isFarmacia' => (bool) $user->isFarmacia,
+                    'status' => (bool) $user->status,
+                    'perfil_url' => route('u.perfil', ['username' => $user->username ?? $user->id]),
+                    'foto_perfil' => $user->foto_perfil ? url('storage/' . $user->foto_perfil) : assetr('assets/images/default-avatar.png'),
+                ]
+            ], 200);
+        }
+
+        // Resposta para formulário tradicional
+        return redirect()
+            ->route('usuario')
+            ->with('success', 'Usuário atualizado com sucesso.');
     }
 }

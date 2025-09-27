@@ -6,10 +6,36 @@
         <div class="content">
 
             <div class="page-header">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('usuario') }}">Usuários </a></li>
+                <div class="                                                <td class="text-end">
+                                                    <div class="d-flex justify-content-end gap-2">
+                                                        <a href="{{ route('u.perfil', ['username' => $user->id] ?? '#') }}" class="btn btn-sm btn-outline-primary">Ver</a>
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm btn-success btn-edit-user"
+                                                            data-user-id="{{ $user->id }}"
+                                                            data-user-nome="{{ htmlspecialchars($user->nome, ENT_QUOTES) }}"
+                                                            data-user-email="{{ htmlspecialchars($user->email, ENT_QUOTES) }}"
+                                                            data-user-grupo-id="{{ $user->grupo_id ?? '' }}"
+                                                            data-user-status="{{ $user->status ? 1 : 0 }}"
+                                                            data-user-telefone="{{ $user->telefone ?? '' }}"
+                                                        >Editar</button>
+                                                    </div>
+                                                </td>                    <div class="col-sm-12">
+                        <ul class="breadcrum                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a href="${u.perfil_url}" class="btn btn-sm btn-outline-primary">Ver</a>
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-success btn-edit-user"
+                                            data-user-id="${u.id}"
+                                            data-user-nome="${escapeHtml(u.nome)}"
+                                            data-user-email="${escapeHtml(u.email)}"
+                                            data-user-grupo-id="${u.grupo_id || ''}"
+                                            data-user-status="${u.status ? 1 : 0}"
+                                            data-user-telefone="${u.telefone || ''}"
+                                        >Editar</button>
+                                    </div>
+                                </td>                          <li class="breadcrumb-item"><a href="{{ route('usuario') }}">Usuários </a></li>
                             <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
                             <li class="breadcrumb-item active">Lista de usuários</li>
                         </ul>
@@ -184,7 +210,7 @@
                                                 <td class="text-end">
                                                     <div class="d-flex justify-content-end gap-2">
                                                         <a href="{{ route('u.perfil', ['username' => $user->id] ?? '#') }}" class="btn btn-sm btn-outline-primary">Ver</a>
-                                                        <a href="#" onclick="location.href='{{ route('u.perfil', ['username' => $user->id] ?? '#') }}'" class="btn btn-sm btn-success">Editar</a>
+                                                        <a href="{{ route('usuario.editar', $user->id) }}" class="btn btn-sm btn-success">Editar</a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -255,7 +281,7 @@
                     tbody.innerHTML = users.map(function (u) {
                         const statusBadge = u.status ? '<span class="badge bg-success">Ativo</span>' : '<span class="badge bg-secondary">Inativo</span>';
                         const tipoText = u.isFarmacia ? 'Gerente' : 'Usuário';
-                        const avatar = u.foto_perfil || '{{ assetr('assets/images/default-avatar.png') }}';
+                        const avatar = u.foto_perfil || '{{ asset('assets/images/default-avatar.png') }}';
 
                         return `
                             <tr>
@@ -278,12 +304,22 @@
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-2">
                                         <a href="${u.perfil_url}" class="btn btn-sm btn-outline-primary">Ver</a>
-                                        <a href="#" onclick="location.href='${u.perfil_url}'" class="btn btn-sm btn-success">Editar</a>
+                                        <a href="/usuario/${u.id}/edit" class="btn btn-sm btn-success">Editar</a>
                                     </div>
                                 </td>
                             </tr>
                         `;
                     }).join('');
+                }
+
+                // Função utilitária para escapar HTML
+                function escapeHtml(unsafe) {
+                    return String(unsafe || '')
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#039;');
                 }
 
                 applyBtn.addEventListener('click', function (e) {
@@ -295,6 +331,50 @@
                     fetchUsers();
                 });
 
+                // Delegação: abrir modal de edição quando clicam em qualquer botão .btn-edit-user
+                document.addEventListener('click', function (ev) {
+                    const btn = ev.target.closest && ev.target.closest('.btn-edit-user');
+                    if (!btn) return;
+                    ev.preventDefault();
+
+                    // preencher modal com os data-attributes
+                    const id = btn.getAttribute('data-user-id');
+                    const nome = btn.getAttribute('data-user-nome') || '';
+                    const email = btn.getAttribute('data-user-email') || '';
+                    const grupoId = btn.getAttribute('data-user-grupo-id') || '';
+                    const status = btn.getAttribute('data-user-status') || '1';
+                    const telefone = btn.getAttribute('data-user-telefone') || '';
+
+                    try {
+                        const modal = document.getElementById('editUsuarioModal');
+                        if (!modal) return console.warn('Modal de edição não encontrado');
+
+                        // preencher campos
+                        document.getElementById('edit_user_id').value = id;
+                        document.getElementById('edit_nome_usuario').value = nome;
+                        const emailEl = document.getElementById('edit_email_usuario');
+                        if (emailEl) { emailEl.value = email; }
+                        document.getElementById('edit_telefone_usuario').value = telefone;
+                        document.getElementById('edit_grupo_usuario').value = grupoId;
+                        document.getElementById('edit_status_usuario').value = status;
+
+                        // definir action do form para rota de update
+                        const formEdit = document.getElementById('formEditUsuario');
+                        if (formEdit) {
+                            formEdit.action = '/usuario/' + id;
+                        }
+
+                        // abrir modal (Bootstrap 5) com fallback jQuery
+                        if (typeof bootstrap !== 'undefined') {
+                            bootstrap.Modal.getOrCreateInstance(modal).show();
+                        } else if (window.jQuery) {
+                            jQuery(modal).modal('show');
+                        }
+                    } catch (err) {
+                        console.error('Erro ao abrir modal de edição', err);
+                    }
+                });
+
                 // Carregar inicialmente
                 document.addEventListener('DOMContentLoaded', function () {
                     // se houver filtro preenchido pelo backend, não sobrescreve
@@ -302,40 +382,63 @@
                 });
             })();
         </script>
-    @include('prepharma.modals._addUsuario')
+        @include('prepharma.modals._addUsuario')
+    @include('prepharma.modals._editUsuario')
         <script>
             // Handler AJAX para criação de usuário via modal
-            window.handleAddUsuario = async function (evt) {
+            window.handleAddUsuario = async function (evt) {/* Lines 309-338 omitted */}
+
+            // Handler AJAX para edição de usuário via modal
+            window.handleEditUsuario = async function (evt) {
                 evt.preventDefault();
-                const form = document.getElementById('formAddUsuario');
+                const form = document.getElementById('formEditUsuario');
+                const btn = document.getElementById('btnSaveEditUsuario');
+                const spinner = document.getElementById('editUsuarioSpinner');
+                const errorContainer = document.getElementById('edit-error-container');
+                const url = form.action || '#';
                 const data = new FormData(form);
-                const url = form.action;
+
                 try {
+                    btn.disabled = true;
+                    spinner.style.display = '';
+                    errorContainer.style.display = 'none';
+
                     const res = await fetch(url, {
-                        method: 'POST',
+                        method: 'POST', // Laravel usa POST + _method=PATCH
                         headers: { 'Accept': 'application/json' },
                         body: data
                     });
+
                     if (res.status === 422) {
                         const json = await res.json();
-                        // Exibir erros (simples alert por enquanto)
-                        alert(Object.values(json.errors).flat().join('\n'));
+                        const msgs = Object.values(json.errors || {}).flat();
+                        errorContainer.innerHTML = msgs.join('<br>');
+                        errorContainer.style.display = 'block';
                         return false;
                     }
-                    if (!res.ok) throw new Error('Erro ao criar usuário');
 
-                    // Sucesso — fechar modal e recarregar tabela
-                    try{ const m = document.getElementById('addUsuarioModal'); if (typeof bootstrap !== 'undefined') bootstrap.Modal.getOrCreateInstance(m).hide(); else jQuery('#addUsuarioModal').modal('hide'); }catch(e){}
-                    // Recarregar lista de usuários via função existente
-                    try{ if (typeof fetchUsers === 'function') fetchUsers(); }catch(e){}
-                    alert('Usuário criado e convite enviado por e-mail.');
+                    if (!res.ok) throw new Error('Erro ao atualizar usuário: ' + res.status);
+
+                    // Sucesso: fechar modal e recarregar lista
+                    try {
+                        const m = document.getElementById('editUsuarioModal');
+                        if (typeof bootstrap !== 'undefined') bootstrap.Modal.getOrCreateInstance(m).hide();
+                        else if (window.jQuery) jQuery(m).modal('hide');
+                    } catch (e) { /* ignore */ }
+
+                    try { if (typeof fetchUsers === 'function') fetchUsers(); } catch (e) {}
+                    alert('Usuário atualizado com sucesso.');
                     return false;
                 } catch (err) {
                     console.error(err);
-                    alert('Ocorreu um erro. Tente novamente.');
+                    errorContainer.innerHTML = 'Ocorreu um erro ao atualizar. Tente novamente.';
+                    errorContainer.style.display = 'block';
                     return false;
+                } finally {
+                    btn.disabled = false;
+                    spinner.style.display = 'none';
                 }
-            }
+            };
         </script>
         <div class="notification-box">
             <div class="msg-sidebar notifications msg-noti">

@@ -2,29 +2,28 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Prada\Controllers\HomeController;
-use App\Prada\Controllers\AuthController;
-use App\Prada\Controllers\FarmaciaController;
-use App\Prada\Controllers\CategoriaController;
-use App\Prada\Controllers\GerenteFarmaciaController;
-use App\Prada\Controllers\AreaHospitalarController;
 use Illuminate\Support\Facades\Artisan;
 use App\Prada\Controllers\{AlertController,
     PermissoesController,
     GetterController,
     StockController,
     ConfigController,
-    AutenticarUserController,
-    UsuarioController,
-    FuncionarioController,
-    CargoController,
-    ConfirmarController,
+    HomeController,
+    FarmaciaController,
+    AreaHospitalarController,
     EstoqueController,
-    NivelAlertaController,
-    GrupoFarmacologicoController as GFC,
+    FuncionarioController,
+    UsuarioController,
+    AuthController,
+    GerenteFarmaciaController,
+    GrupoFarmacologicoController,
+    CategoriaController,
     AtividadeController,
+    NivelAlertaController,
     PrintController,
-    PrateleiraControllerController as PratControllers};
+    PrateleiraControllerController,
+    CargoController,
+    ConfirmarController};
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
 use App\Http\Controllers\{
@@ -187,6 +186,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('u')->group(function () {
         Route::get('/', [UsuarioController::class, 'index'])->name('usuario');
         Route::put('/', [UsuarioController::class, 'addCargo'])->name('usuario.addCargo');
+        Route::get('/editar/{id}', [UsuarioController::class, 'edit'])->name('usuario.editar');
         // não alterar a rota aqui updatePassword
         Route::put('bloquear/{id}', [UsuarioController::class, 'blockUser'])->name('u.bloquear');
         Route::get('desbloquear/{id}', [UsuarioController::class, 'unblockUser'])->name('u.desbloquear');
@@ -531,3 +531,6 @@ Route::get('/php', function () {
 
 // Rota para actualizar usuário via modal (AJAX)
 Route::patch('/usuario/{user}', [UsuarioController::class, 'update'])->name('usuario.update');
+
+// Rotas para gestão de usuários
+Route::get('/usuario/{user}/edit', [UsuarioController::class, 'edit'])->name('usuario.edit');
