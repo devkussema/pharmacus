@@ -110,69 +110,73 @@
                                 </form>
                             </div>
                             <div class="table-responsive">
+                                @php
+                                    // fallback: se o controller não passou $users, obter todos
+                                    $users = $users ?? \App\Models\User::all();
+                                @endphp
                                 <table class="table border-0 custom-table comman-table datatable mb-0">
                                     <thead>
                                         <tr>
                                             <th>
                                                 <div class="form-check check-tables">
-                                                    <input class="form-check-input" type="checkbox" value="something">
+                                                    <input class="form-check-input" type="checkbox" value="all" id="select_all_users">
                                                 </div>
                                             </th>
-                                            <th>Employee Name</th>
-                                            <th>Leave Type</th>
-                                            <th>From</th>
-                                            <th>To</th>
-                                            <th>No of days</th>
-                                            <th>Reason</th>
+                                            <th>Nome</th>
+                                            <th>Email</th>
+                                            <th>Grupo</th>
+                                            <th>Tipo</th>
                                             <th>Status</th>
-                                            <th></th>
+                                            <th>Telefone</th>
+                                            <th class="text-end">Ação</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check check-tables">
-                                                    <input class="form-check-input" type="checkbox" value="something">
-                                                </div>
-                                            </td>
-                                            <td class="profile-image"><a href="profile.html"><img width="28"
-                                                        height="28" src="assets/img/profiles/avatar-01.jpg"
-                                                        class="rounded-circle m-r-5" alt> Andrea Lalema</a></td>
-                                            <td>Medical Leave</td>
-                                            <td>02.10.2022</td>
-                                            <td>04.10.2022</td>
-                                            <td>2 Days</td>
-                                            <td>Not Feeling well</td>
-                                            <td>
-                                                <div class="dropdown action-label">
-                                                    <a class="custom-badge status-green dropdown-toggle" href="#"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                                        Approved
+                                        @forelse($users as $user)
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check check-tables">
+                                                        <input class="form-check-input user-checkbox" type="checkbox" value="{{ $user->id }}">
+                                                    </div>
+                                                </td>
+                                                <td class="profile-image">
+                                                    <a href="{{ route('u.perfil', ['username' => $user->id] ?? '#') }}">
+                                                        @php
+                                                            $avatar = $user->foto_perfil ? url('storage/'.$user->foto_perfil) : assetr('assets/images/default-avatar.png');
+                                                        @endphp
+                                                        <img width="28" height="28" src="{{ $avatar }}" class="rounded-circle m-r-5" alt>
+                                                        {{ $user->nome }}
                                                     </a>
-                                                    <div class="dropdown-menu dropdown-menu-end status-staff">
-                                                        <a class="dropdown-item" href="javascript:;">New</a>
-                                                        <a class="dropdown-item" href="javascript:;">Pending</a>
-                                                        <a class="dropdown-item" href="javascript:;">Approved</a>
-                                                        <a class="dropdown-item" href="javascript:;">Declined</a>
+                                                </td>
+                                                <td>{{ $user->email }}</td>
+                                                <td>{{ optional($user->grupo)->nome ?? '-' }}</td>
+                                                <td>
+                                                    @if($user->isFarmacia)
+                                                        Gerente
+                                                    @else
+                                                        Usuário
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($user->status)
+                                                        <span class="badge bg-success">Ativo</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Inativo</span>
+                                                    @endif
+                                                </td>
+                                                <td>{{ $user->telefone ?? '-' }}</td>
+                                                <td class="text-end">
+                                                    <div class="d-flex justify-content-end gap-2">
+                                                        <a href="{{ route('u.perfil', ['username' => $user->id] ?? '#') }}" class="btn btn-sm btn-outline-primary">Ver</a>
+                                                        <a href="#" onclick="location.href='{{ route('u.perfil', ['username' => $user->id] ?? '#') }}'" class="btn btn-sm btn-success">Editar</a>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="dropdown dropdown-action">
-                                                    <a href="#" class="action-icon dropdown-toggle"
-                                                        data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                            class="fa fa-ellipsis-v"></i></a>
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="edit-leave.html"><i
-                                                                class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                            Edit</a>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                            data-bs-target="#delete_patient"><i
-                                                                class="fa fa-trash-alt m-r-5"></i> Delete</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center">Nenhum usuário encontrado.</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
