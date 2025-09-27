@@ -14,6 +14,24 @@ class FarmaciaController extends Controller
         return view('farmacia.index', compact('farmacias'));
     }
 
+    public function show(Request $request, $id)
+    {
+        /**
+         * Busca informações de uma farmácia pelo id e retorna a view com os dados.
+         *
+         * @author Augusto Kussema
+         * @created 2025-09-27
+         */
+        $farmacia = Farmacia::find($id);
+
+        if (!$farmacia) {
+            // Retorna 404 se não for encontrada
+            abort(404, 'Farmácia não encontrada');
+        }
+
+        return view('farmacia.show', compact('farmacia'));
+    }
+
     public function get(string $id)
     {
         $get = Farmacia::find($id);

@@ -236,8 +236,8 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
 
         Route::get('/get/{id}', [FarmaciaController::class, 'get'])->name('farmacia.get');
 
-        // Rota para processar o formulário de edição de farmácia
-        Route::put('/farmacia', [FarmaciaController::class, 'update'])->name('farmacia.update');
+    // Rota para processar o formulário de edição de farmácia (aceita o id/uuid da farmácia)
+    Route::put('/{farmacia}', [FarmaciaController::class, 'update'])->name('farmacia.update');
 
         // Rota para excluir a farmácia
         Route::delete('/apagar/{farmacia}', [FarmaciaController::class, 'destroy'])->name('farmacia.destroy');
