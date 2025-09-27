@@ -341,10 +341,10 @@
                                                     style="width:36px; height:36px; padding:0;"
                                                     onclick="preencherModalComFarmacia('{{ route('farmacia.get', ['id' => $farmacia->id]) }}')"
                                                     data-toggle="tooltip" data-bs-toggle="tooltip"
-                                                    title="Detalhes {{ $farmacia->nome }}"
-                                                    aria-label="Detalhes {{ $farmacia->nome }}">
+                                                    title="Adicionar gerente {{ $farmacia->nome }}"
+                                                    aria-label="Adicionar gerente {{ $farmacia->nome }}">
                                                     <i class="ri-bubble-chart-line"></i>
-                                                    <span class="visually-hidden">Detalhes</span>
+                                                    <span class="visually-hidden">Adicionar gerente</span>
                                                 </button>
 
                                                 <button type="button"

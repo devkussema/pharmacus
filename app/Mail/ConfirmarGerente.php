@@ -43,6 +43,7 @@ class ConfirmarGerente extends Mailable
     {
         return new Content(
             view: 'emails.confirmarGerente',
+            text: 'emails.confirmarGerente_plain'
         );
     }
 
