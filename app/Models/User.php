@@ -24,14 +24,24 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'nome',
-        'username',
         'email',
-        'status',
+        'telefone',
         'grupo_id',
+        'status',
+        'isFarmacia',
         'foto_perfil',
-        'online',
-        'password',
-        'email_verified_at',
+    ];
+
+    /**
+     * Casts úteis.
+     *
+     * @var array<string,string>
+     */
+    protected $casts = [
+        'status' => 'boolean',
+        'isFarmacia' => 'boolean',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     protected static function boot()
@@ -132,12 +142,25 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Retorna a URL do perfil (útil para JS).
      *
-     * @var array<string, string>
+     * @return string
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+    public function getPerfilUrlAttribute(): string
+    {
+        return route('u.perfil', ['username' => $this->id]);
+    }
+
+    /**
+     * Retorna a URL pública da foto de perfil ou uma imagem default.
+     *
+     * @return string
+     */
+    public function getFotoPerfilUrlAttribute(): string
+    {
+        if ($this->foto_perfil) {
+            return url('storage/'.$this->foto_perfil);
+        }
+        return asset('assets/images/default-avatar.png');
+    }
 }
