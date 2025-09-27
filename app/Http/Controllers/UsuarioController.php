@@ -20,9 +20,12 @@ class UsuarioController extends Controller
 	// ...existing code...
 
 	/**
-	 * Atualiza um utilizador (sem alterar senha).
+	 * Atualiza um utilizador (sem alterar a senha).
 	 *
-	 * Valida: nome, email (único exceto o próprio), grupo_id opcional, status booleano e telefone opcional.
+	 * Valida: nome, email (único exceto o próprio), grupo_id opcional, status e telefone.
+	 *
+	 * Autor: Augusto Kussema
+	 * Data: 2025-09-27
 	 *
 	 * @param Request $request
 	 * @param User $user
@@ -36,16 +39,14 @@ class UsuarioController extends Controller
 			'grupo_id' => ['nullable', 'integer'],
 			'status' => ['nullable', 'in:0,1'],
 			'telefone' => ['nullable', 'string', 'max:50'],
-			// password não é alterada aqui
 		]);
 
-		// normalizar status
-		$validated['status'] = array_key_exists('status', $validated) ? (bool) $validated['status'] : false;
+		// normaliza o status para boolean
+		$validated['status'] = array_key_exists('status', $validated) ? (bool)$validated['status'] : false;
 
 		$user->fill($validated);
 		$user->save();
 
-		// retornar user com informações úteis para preencher a tabela por JS
 		$user->load('grupo');
 
 		return response()->json([

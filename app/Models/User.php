@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -11,11 +11,21 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * Modelo User
+ *
+ * Representa um utilizador do sistema.
+ *
+ * Autor: Augusto Kussema
+ * Data: 2025-09-27
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
     protected $primaryKey = 'id';
     public $incrementing = false;
+    protected $keyType = 'string';
 
     /**
      * The attributes that are mass assignable.
@@ -44,37 +54,45 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($user) {
+        static::creating(function (User $user): void {
             $user->id = Uuid::uuid4()->toString();
             $user->generateUsername();
         });
     }
 
-    public function area_hospitalar()
+    /**
+     * Área hospitalar associada (se aplicável).
+     *
+     * @return HasOne
+     */
+    public function area_hospitalar(): HasOne
     {
         return $this->hasOne(UserAreaHospitalar::class, 'user_id');
     }
 
+    /**
+     * Relação com a farmácia (se aplicável).
+     *
+     * @return HasOne
+     */
     public function farmacia(): HasOne
     {
         return $this->hasOne(UserAreaHospitalar::class, 'user_id');
     }
 
-    public function isFarmacia()
-    {
-        return $this->hasOne(GerenteFarmacia::class, 'user_id');
-    }
-
     /**
-     * Cria o nome de usuário com base no nome fornecido.
+     * Cria o nome de usuário (username) com base no campo nome.
+     *
+     * Remove acentos, substitui espaços por pontos, remove caracteres especiais
+     * e garante unicidade acrescentando sufixo numérico quando necessário.
      *
      * @return void
      */
-    protected function generateUsername()
+    protected function generateUsername(): void
     {
         // Remove acentos manualmente
         $accentedChars = [
@@ -93,7 +111,7 @@ class User extends Authenticatable
             'Ç' => 'C',
             'Ñ' => 'N'
         ];
-        $baseUsername = strtr($this->nome, $accentedChars);
+        $baseUsername = strtr($this->nome ?? '', $accentedChars);
 
         // Adiciona pontos entre os espaços
         $baseUsername = str_replace(' ', '.', $baseUsername);
@@ -116,19 +134,24 @@ class User extends Authenticatable
         $this->username = $username;
     }
 
+    /**
+     * Relação many-to-many com grupos (limite 1).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function grupos()
     {
         return $this->belongsToMany(Grupo::class, 'user_grupos')->limit(1);
     }
 
-    public function grupo()
+    /**
+     * Relação belongsTo para o grupo principal.
+     *
+     * @return BelongsTo
+     */
+    public function grupo(): BelongsTo
     {
         return $this->belongsTo(Grupo::class, 'grupo_id');
-    }
-
-    public function gerente()
-    {
-        return $this->hasOne(User::class, 'id');
     }
 
     /**
@@ -161,6 +184,7 @@ class User extends Authenticatable
         if ($this->foto_perfil) {
             return url('storage/'.$this->foto_perfil);
         }
+
         return asset('assets/images/default-avatar.png');
     }
 }
