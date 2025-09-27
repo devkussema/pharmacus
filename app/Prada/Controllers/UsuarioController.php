@@ -12,11 +12,76 @@ use App\Models\{
 
 class UsuarioController extends Controller
 {
-    public function index()
+    /**
+     * Lista a página de usuários ou retorna usuários filtrados via JSON para requisições AJAX.
+     *
+     * Inputs (opcionais):
+     * - search: string para buscar por nome ou email
+     * - grupo_id: id do grupo
+     * - tipo: 'gerente' | 'usuario' | 'all'
+     * - status: 1 | 0
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     *
+     * @author Augusto Kussema
+     * @created 2025-09-27
+     */
+    public function index(Request $request)
     {
         $farmacias = Farmacia::all();
-        $users = User::all();
         $grupos = Grupo::all();
+
+        // Se for uma requisição AJAX (ou espera JSON), retornar apenas os usuários filtrados em JSON
+        if ($request->ajax() || $request->wantsJson()) {
+            $query = User::with('grupo');
+
+            if ($request->filled('search')) {
+                $s = '%' . $request->input('search') . '%';
+                $query->where(function ($q) use ($s) {
+                    $q->where('nome', 'like', $s)
+                        ->orWhere('email', 'like', $s);
+                });
+            }
+
+            if ($request->filled('grupo_id')) {
+                $query->where('grupo_id', $request->input('grupo_id'));
+            }
+
+            if ($request->filled('tipo') && $request->input('tipo') !== 'all') {
+                if ($request->input('tipo') === 'gerente') {
+                    $query->where('isFarmacia', 1);
+                } elseif ($request->input('tipo') === 'usuario') {
+                    $query->where('isFarmacia', 0);
+                }
+            }
+
+            if ($request->filled('status')) {
+                $st = intval($request->input('status'));
+                $query->where('status', $st);
+            }
+
+            $users = $query->orderBy('nome')->get();
+
+            $result = $users->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'nome' => $user->nome,
+                    'email' => $user->email,
+                    'grupo' => optional($user->grupo)->nome ?? null,
+                    'isFarmacia' => (bool) $user->isFarmacia,
+                    'status' => (bool) $user->status,
+                    'telefone' => $user->telefone ?? null,
+                    'foto_perfil' => $user->foto_perfil ? url('storage/' . $user->foto_perfil) : assetr('assets/images/default-avatar.png'),
+                    'perfil_url' => route('u.perfil', ['username' => $user->username ?? $user->id]),
+                ];
+            });
+
+            return response()->json(['users' => $result], 200);
+        }
+
+        // Requisição normal: renderizar a view com todos os usuários (fallback)
+        $users = User::all();
         return view('usuario.show', compact('farmacias', 'users', 'grupos'));
     }
 

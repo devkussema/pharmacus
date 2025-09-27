@@ -205,6 +205,7 @@ class AuthController extends Controller
             'nome' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'grupo_id' => 'nullable|exists:grupos,id',
         ], [
             'nome.required' => 'O campo nome é obrigatório.',
             'nome.string' => 'O campo nome deve ser uma string.',
@@ -223,11 +224,17 @@ class AuthController extends Controller
         $nome = strtolower(trim($request->nome));
 
         // Criar novo usuário
-        $user = User::create([
+        $data = [
             'nome' => $request->nome,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-        ]);
+        ];
+
+        if ($request->filled('grupo_id')) {
+            $data['grupo_id'] = $request->input('grupo_id');
+        }
+
+        $user = User::create($data);
 
         $token = self::gerarToken($user, "Confirmação de email");
 
