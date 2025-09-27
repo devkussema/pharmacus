@@ -456,18 +456,100 @@
         }
 
         function getDataFarma(url) {
-            jQuery.get(url)
-                .done(function(data) {
-                    jQuery('#id_farmacia').val(data.id);
-                    jQuery('#nome_farmacia').val(data.nome);
-                    jQuery('#endereco').val(data.endereco);
-                    jQuery('#descricao').val(data.descricao);
-                    jQuery('#modalEditarFarmacia').modal('show');
+            console.log('getDataFarma requesting', url);
+            fetch(url, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
+                .then(async res => {
+                    const ct = res.headers.get('content-type') || '';
+                    let data = {};
+                    if (ct.indexOf('application/json') > -1) data = await res.json();
+                    else data.text = await res.text();
+                    if (!res.ok) throw new Error((data && data.message) ? data.message : 'Erro ao obter dados');
+
+                    console.log('getDataFarma response', data);
+                    // populate edit form fields
+                    jQuery('#id_farmacia').val(data.id || data.ID || '');
+                    jQuery('#nome_farmacia').val(data.nome || data.name || '');
+                    jQuery('#endereco').val(data.endereco || data.address || '');
+                    jQuery('#descricao').val(data.descricao || data.descricao || data.obs || '');
+                    // try set categoria if exists
+                    if (data.categoria_id){
+                        const cat = document.querySelector('#formEditFarmacia select[name="categoria_id"]');
+                        if (cat) cat.value = data.categoria_id;
+                    }
+
+                    // set form action to the update route for this farmacia
+                    var form = document.getElementById('formEditFarmacia');
+                    if (form){
+                        form.setAttribute('action', '/farmacia/' + (data.id || ''));
+                        // ensure method override input exists
+                        if (!form.querySelector('input[name="_method"]')){
+                            var m = document.createElement('input'); m.type='hidden'; m.name='_method'; m.value='PUT'; form.appendChild(m);
+                        }
+                    }
+
+                    // show bootstrap modal
+                    try{
+                        var m = document.getElementById('modalEditarFarmacia');
+                        if (typeof bootstrap !== 'undefined') bootstrap.Modal.getOrCreateInstance(m).show();
+                        else jQuery('#modalEditarFarmacia').modal('show');
+                    }catch(e){ console.warn('could not show modal', e); }
                 })
-                .fail(function() {
-                    alert('Erro ao carregar dados para edição');
+                .catch(err => {
+                    console.error('getDataFarma error', err);
+                    alert('Erro ao carregar dados para edição: ' + (err.message || err));
                 });
         }
+
+        // AJAX submit for edit form to avoid redirect
+        (function(){
+            try{
+                const formEdit = document.getElementById('formEditFarmacia');
+                if (!formEdit) return;
+
+                const errorsContainerEdit = document.createElement('div');
+                errorsContainerEdit.id = 'formEditFarmaciaErrors';
+                formEdit.parentNode.insertBefore(errorsContainerEdit, formEdit);
+
+                function clearErrorsEdit(){
+                    errorsContainerEdit.innerHTML = '';
+                    formEdit.querySelectorAll('.is-invalid').forEach(i=>i.classList.remove('is-invalid'));
+                }
+
+                function showErrorsEdit(errors){
+                    clearErrorsEdit();
+                    const ul = document.createElement('ul'); ul.className='alert alert-danger small';
+                    for (const k in errors){ if (!Object.prototype.hasOwnProperty.call(errors,k)) continue; errors[k].forEach(m=>{ const li=document.createElement('li'); li.textContent=m; ul.appendChild(li); const f=formEdit.querySelector('[name="'+k+'"]'); if(f) f.classList.add('is-invalid'); }) }
+                    errorsContainerEdit.appendChild(ul);
+                }
+
+                formEdit.addEventListener('submit', function(e){
+                    e.preventDefault();
+                    clearErrorsEdit();
+                    const submitBtn = formEdit.querySelector('button[type="submit"]');
+                    const orig = submitBtn ? submitBtn.innerHTML : null;
+                    if (submitBtn){ submitBtn.disabled=true; submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...'; }
+
+                    const action = formEdit.getAttribute('action') || window.location.href;
+                    const method = (formEdit.getAttribute('method') || 'POST').toUpperCase();
+                    const fd = new FormData(formEdit);
+
+                    fetch(action, { method: method, body: fd, credentials: 'same-origin', headers: {'X-Requested-With':'XMLHttpRequest','Accept':'application/json'} })
+                        .then(async res=>{
+                            const ct = res.headers.get('content-type')||''; let data={}; if (ct.indexOf('application/json')>-1) data = await res.json(); else data.text = await res.text();
+                            if (res.ok){
+                                try{ if (typeof bootstrap !== 'undefined') { bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditarFarmacia')).hide(); } }
+                                catch(e){}
+                                const msg = data.message || 'Actualizado com sucesso';
+                                const successModal = document.getElementById('modalFarmaciaSuccess');
+                                if (successModal){ successModal.querySelector('.modal-body p').textContent = msg; try{ bootstrap.Modal.getOrCreateInstance(successModal).show(); }catch(e){ alert(msg); } }
+                                setTimeout(()=>{ location.reload(); }, 900);
+                            } else if (res.status === 422){ showErrorsEdit((data && data.errors) ? data.errors : {'error':['Dados inválidos']}); }
+                            else { showErrorsEdit({'error': [ (data && data.message) ? data.message : (data.text || 'Erro') ]}); }
+                        }).catch(err=>{ console.error('edit submit error',err); showErrorsEdit({'error':[err.message||'Erro de rede']}); })
+                        .finally(()=>{ if (submitBtn){ submitBtn.disabled=false; submitBtn.innerHTML = orig; } });
+                });
+            }catch(e){ console.error('init edit form handler error', e); }
+        })();
     </script>
 
 @endsection
