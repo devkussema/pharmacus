@@ -1,8 +1,12 @@
 <div class="header">
-    <div class="header-left">
+    <div class="header-left" style="display:flex;align-items:center;gap:.75rem;">
         <a href="{{ route('home') }}" class="logo">
             <img src="{{ assetr('assets/img/white__logo2.png')}}" width="35" height="35" alt> <span>Pharmatina</span>
         </a>
+        {{-- Botão fullscreen à esquerda do header --}}
+        <button id="btn_fullscreen" class="btn btn-sm btn-light d-none d-md-inline-flex" title="Tela cheia" style="padding:.25rem .5rem;border-radius:6px;">
+            <i id="fullscreen_icon" class="fa-solid fa-expand"></i>
+        </button>
     </div>
     <a id="toggle_btn" href="javascript:void(0);"><img src="{{ assetr('assets/img/icons/bar-icon.svg')}}" alt></a>
     <a id="mobile_btn" class="mobile_btn float-start" href="#sidebar"><img src="{{ assetr('assets/img/icons/bar-icon.svg')}}" alt></a>
@@ -110,8 +114,12 @@
         </li> --}}
         <li class="nav-item dropdown has-arrow user-profile-list">
             <a href="javascript:void(0)" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
-                <div class="user-names">
-                    <h5>{{ Auth::user()->nome }}</h5>
+                <div class="user-names" style="display:flex;align-items:center;gap:.5rem;">
+                    <h5 style="margin:0;">{{ Auth::user()->nome }}</h5>
+                    {{-- botão fullscreen ao lado do nome do usuário --}}
+                    <button id="btn_fullscreen" class="btn btn-sm btn-light" title="Tela cheia" style="padding:.25rem .5rem;border-radius:6px;">
+                        <i id="fullscreen_icon" class="fa-solid fa-expand"></i>
+                    </button>
                     {{-- <span>Admin</span> --}}
                 </div>
                 <span class="user-img">
@@ -146,3 +154,79 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    (function () {
+        const STORAGE_KEY = 'pharmatina_fullscreen';
+        const btn = document.getElementById('btn_fullscreen');
+        const icon = document.getElementById('fullscreen_icon');
+
+        function isFullScreen() {
+            return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+        }
+
+        function updateIcon() {
+            if (isFullScreen()) {
+                icon.classList.remove('fa-expand');
+                icon.classList.add('fa-compress');
+            } else {
+                icon.classList.remove('fa-compress');
+                icon.classList.add('fa-expand');
+            }
+        }
+
+        function enterFullScreen() {
+            const el = document.documentElement;
+            if (el.requestFullscreen) return el.requestFullscreen();
+            if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+            if (el.mozRequestFullScreen) return el.mozRequestFullScreen();
+            if (el.msRequestFullscreen) return el.msRequestFullscreen();
+            return Promise.resolve();
+        }
+
+        function exitFullScreen() {
+            if (document.exitFullscreen) return document.exitFullscreen();
+            if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+            if (document.mozCancelFullScreen) return document.mozCancelFullScreen();
+            if (document.msExitFullscreen) return document.msExitFullscreen();
+            return Promise.resolve();
+        }
+
+        function toggleFullScreen() {
+            if (isFullScreen()) {
+                exitFullScreen();
+                localStorage.setItem(STORAGE_KEY, '0');
+            } else {
+                enterFullScreen();
+                localStorage.setItem(STORAGE_KEY, '1');
+            }
+        }
+
+        // Restaura estado ao carregar
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                const pref = localStorage.getItem(STORAGE_KEY);
+                if (pref === '1' && !isFullScreen()) {
+                    enterFullScreen().catch(() => {});
+                }
+                updateIcon();
+            } catch (e) {
+                // localStorage pode falhar em contexts restritos
+            }
+        });
+
+        // Atualiza ícone quando o estado de fullscreen mudar
+        ['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(evt => {
+            document.addEventListener(evt, updateIcon);
+        });
+
+        if (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                toggleFullScreen();
+            });
+        }
+    })();
+</script>
+@endpush

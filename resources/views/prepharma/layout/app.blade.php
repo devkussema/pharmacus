@@ -427,6 +427,72 @@
             $('#formProdutoEstoque #qtd_total_estoque').val(quantidadeTotal);
         }
     </script>
+    <script>
+        (function () {
+            // Detecta a URL base usada pelo helper assetr() inspecionando o CSS principal
+            var mainCss = document.querySelector("link[href*='assets/css/style.css']");
+            var assetsBase = window.location.origin + '/';
+            if (mainCss && mainCss.href) {
+                try {
+                    var parts = mainCss.href.split('/assets/');
+                    if (parts.length > 0) assetsBase = parts[0] + '/assets/';
+                } catch (e) {
+                    assetsBase = window.location.origin + '/assets/';
+                }
+            }
+
+            window.Pharmatina = window.Pharmatina || {};
+            window.Pharmatina.assetsBase = assetsBase;
+            /**
+             * Constrói URL completa para um recurso usando a mesma base que assetr().
+             * Exemplo: Pharmatina.assetr('assets/img/logo.png')
+             */
+            window.Pharmatina.assetr = function (path) {
+                if (!path) return assetsBase;
+                // Remove possíveis barras duplicadas
+                return assetsBase.replace(/\/+$/, '/') + path.replace(/^\/+/, '');
+            };
+
+            // Persistência do estado do sidebar
+            var SIDEBAR_KEY = 'pharmatina_sidebar_collapsed';
+            var BODY_CLASS = 'mini-sidebar'; // classe aplicada ao body para minimizar (ajuste se seu tema usar outra)
+
+            function applySidebarState() {
+                try {
+                    var collapsed = localStorage.getItem(SIDEBAR_KEY) === '1';
+                    if (collapsed) document.body.classList.add(BODY_CLASS);
+                    else document.body.classList.remove(BODY_CLASS);
+                } catch (e) {
+                    // localStorage pode falhar em ambientes restritos
+                }
+            }
+
+            function toggleSidebarState() {
+                var isCollapsed = document.body.classList.toggle(BODY_CLASS);
+                try {
+                    localStorage.setItem(SIDEBAR_KEY, isCollapsed ? '1' : '0');
+                } catch (e) {}
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                applySidebarState();
+
+                var toggleBtn = document.getElementById('toggle_btn');
+                var mobileBtn = document.getElementById('mobile_btn');
+
+                if (toggleBtn) toggleBtn.addEventListener('click', function (e) { e.preventDefault(); toggleSidebarState(); });
+                if (mobileBtn) mobileBtn.addEventListener('click', function (e) { /* mobile opens overlay, keep toggle for persistence */ toggleSidebarState(); });
+            });
+
+            // Utilidade para trocar CSS dinamicamente (ex.: temas remotos)
+            window.Pharmatina.switchCss = function (relativePath) {
+                if (!mainCss) return false;
+                mainCss.href = window.Pharmatina.assetr(relativePath);
+                return true;
+            };
+        })();
+    </script>
+    @stack('scripts')
 </body>
 
 </html>

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Prateleira;
 
-class PrateleiraControllerController extends Controller
+class PrateleiraController extends Controller
 {
     public function index()
     {

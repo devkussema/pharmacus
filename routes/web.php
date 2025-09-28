@@ -16,12 +16,12 @@ use App\Prada\Controllers\{AlertController,
     UsuarioController,
     AuthController,
     GerenteFarmaciaController,
-    GrupoFarmacologicoController,
+    GrupoFarmacologicoController as GFC,
     CategoriaController,
     AtividadeController,
     NivelAlertaController,
     PrintController,
-    PrateleiraControllerController,
+    PrateleiraController,
     CargoController,
     ConfirmarController};
 use Illuminate\Support\Facades\Auth;
@@ -88,14 +88,14 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     });
 
     Route::prefix('prateleira')->group(function () {
-        Route::get('/', [PratControllers::class, 'index'])->name('prateleira.show');
-        Route::get('/add', [PratControllers::class, 'add'])->name('prateleira.add');
+        Route::get('/', [PrateleiraController::class, 'index'])->name('prateleira.show');
+        Route::get('/add', [PrateleiraController::class, 'add'])->name('prateleira.add');
 
-        Route::post('/add', [PratControllers::class, 'store'])->name('prateleira.store');
-        Route::delete('/delete/{id}', [PratControllers::class, 'destroy'])->name('prateleira.destroy');
-        Route::post('/toggle-status/{id}', [PratControllers::class, 'toggleStatus']);
+        Route::post('/add', [PrateleiraController::class, 'store'])->name('prateleira.store');
+        Route::delete('/delete/{id}', [PrateleiraController::class, 'destroy'])->name('prateleira.destroy');
+        Route::post('/toggle-status/{id}', [PrateleiraController::class, 'toggleStatus']);
 
-        Route::get('/get/all', [PratControllers::class, 'getPrateleiras'])->name('prateleira.all');
+        Route::get('/get/all', [PrateleiraController::class, 'getPrateleiras'])->name('prateleira.all');
     });
 
     Route::prefix('pedidos')->group(function () {
@@ -200,6 +200,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::put('/a_h/{id}', [AreaHospitalarController::class, 'update']);
         Route::delete('/apagar/{id}', [AreaHospitalarController::class, 'destroy'])->name('a_h.destroy');
         Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');
+    Route::post('toggle-status/{id}', [AreaHospitalarController::class, 'toggleStatus'])->name('a_h.toggle_status');
         Route::get('/statUs', [AreaHospitalarController::class, 'getStatDia'])->name('a_h.get_stat_dia');
 
         Route::get("/get/areas", function () {

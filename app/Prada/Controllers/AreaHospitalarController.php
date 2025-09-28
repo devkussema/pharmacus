@@ -16,14 +16,29 @@ class AreaHospitalarController extends Controller
 
     public function index()
     {
-        $ah = "";
-        if (@Auth::user()->isFarmacia->farmacia->id) {
-            $ah = FAH::where('farmacia_id', Auth::user()->isFarmacia->farmacia->id)->get();
-        }elseif (@auth()->user()->farmacia->farmacia_id){
-            $ah = FAH::where('farmacia_id', auth()->user()->farmacia->farmacia_id)->get();
+        /**
+         * Lista as áreas hospitalares associadas à farmácia do usuário autenticado.
+         *
+         * @author Augusto Kussema
+         * @created 2025-09-27
+         * @return \Illuminate\Contracts\View\View
+         */
+        $farmacia_id = null;
+        try {
+            $farmacia_id = Auth::user()->isFarmacia->farmacia->id ?? Auth::user()->farmacia->farmacia_id ?? null;
+        } catch (\Throwable $e) {
+            $farmacia_id = null;
         }
 
-        return view('area_hospitalar.show', compact('ah'));
+        $ah = collect();
+        if ($farmacia_id) {
+            // eager load da área hospitalar para evitar consultas por linha na view
+            $ah = FAH::where('farmacia_id', $farmacia_id)
+                ->with('area_hospitalar')
+                ->get();
+        }
+
+        return view('area_hospitalar.show', compact('ah', 'farmacia_id'));
     }
 
     public function store(Request $request)
@@ -142,6 +157,23 @@ class AreaHospitalarController extends Controller
         if ($request->ajax())
             return response()->json(['message' => 'Área hospitalar excluída com sucesso']);
         return redirect()->route('a_h.index')->with('success', "{$area_hospitalar->area_hospitalar->nome} eliminada com sucesso");
+    }
+
+    /**
+     * Toggle status (ativo/inativo) da relação farmacia_areas_hospitalares
+     */
+    public function toggleStatus(Request $request, $id)
+    {
+        $fah = FAH::find($id);
+
+        if (!$fah) {
+            return response()->json(['message' => 'Registro não encontrado'], 404);
+        }
+
+        $fah->status = $fah->status ? 0 : 1;
+        $fah->save();
+
+        return response()->json(['message' => 'Status atualizado', 'status' => $fah->status], 200);
     }
 
     public function getAll()

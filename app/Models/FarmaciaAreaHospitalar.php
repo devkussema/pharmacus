@@ -17,6 +17,7 @@ class FarmaciaAreaHospitalar extends Model
         'farmacia_id',
         'area_hospitalar_id',
         'fah_id',
+        'status',
     ];
 
     public function area_hospitalar()

@@ -38,7 +38,6 @@ class User extends Authenticatable
         'telefone',
         'grupo_id',
         'status',
-        'isFarmacia',
         'foto_perfil',
     ];
 
@@ -49,7 +48,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'status' => 'boolean',
-        'isFarmacia' => 'boolean',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
@@ -81,7 +79,21 @@ class User extends Authenticatable
      */
     public function farmacia(): HasOne
     {
+        // A relação originalmente retornava UserAreaHospitalar; para obter a
+        // farmácia associada a este utilizador, consultamos a relação
+        // `area_hospitalar`/`farmacia` através do modelo pivot `UserAreaHospitalar`.
+        // Mantemos um acesso directo ao pivot para compatibilidade.
         return $this->hasOne(UserAreaHospitalar::class, 'user_id');
+    }
+
+    /**
+     * Relação com GerenteFarmacia (isFarmacia).
+     *
+     * @return HasOne
+     */
+    public function isFarmacia(): HasOne
+    {
+        return $this->hasOne(GerenteFarmacia::class, 'user_id');
     }
 
     /**
@@ -125,8 +137,7 @@ class User extends Authenticatable
         // Verifica se o nome de usuário já existe
         $username = $baseUsername;
         $count = 1;
-        while (User::where('username', $username)->exists()) {
-            // Se já existe, acrescenta um número ao final
+        while (self::where('username', $username)->exists()) {
             $username = $baseUsername . $count;
             $count++;
         }

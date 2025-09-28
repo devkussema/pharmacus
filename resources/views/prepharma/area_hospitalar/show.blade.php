@@ -86,12 +86,20 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a
-                                                    href="{{ route('estoque.getEstoque', ['id' => $a->area_hospitalar->id]) }}">
-                                                    {{ $a->area_hospitalar->nome }}
-                                                </a>
+                                                <a href="{{ route('estoque.getEstoque', ['id' => $a->area_hospitalar->id]) }}">{{ $a->area_hospitalar->nome }}</a>
                                             </td>
                                             <td>{{ $a->area_hospitalar->descricao }}</td>
+                                            <td>
+                                                @if (isset($a->status))
+                                                    @if ($a->status)
+                                                        <span class="badge status-badge bg-success">Ativo</span>
+                                                    @else
+                                                        <span class="badge status-badge bg-secondary">Inativo</span>
+                                                    @endif
+                                                @else
+                                                    <span class="badge status-badge bg-secondary">N/A</span>
+                                                @endif
+                                            </td>
                                             <td class="text-end">
                                                 <div class="dropdown dropdown-action">
                                                     <a href="#" class="action-icon dropdown-toggle"
@@ -110,6 +118,19 @@
                                                             <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                                             Editar
                                                         </a>
+                                                        @if (isset($a->status))
+                                                            @if ($a->status)
+                                                                <a class="dropdown-item text-warning" href="javascript:void(0)" onclick="toggleFAHStatus({{ $a->id }}, this)">
+                                                                    <i class="fa-solid fa-toggle-off m-r-5"></i>
+                                                                    Desativar
+                                                                </a>
+                                                            @else
+                                                                <a class="dropdown-item text-success" href="javascript:void(0)" onclick="toggleFAHStatus({{ $a->id }}, this)">
+                                                                    <i class="fa-solid fa-toggle-on m-r-5"></i>
+                                                                    Ativar
+                                                                </a>
+                                                            @endif
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </td>
@@ -361,31 +382,28 @@
             //showModalAlerta()
 
             // Adicionar evento de clique aos botões dentro da modal
-            var dismissButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
-            dismissButtons.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var modal = new bootstrap.Modal(document.getElementById('ver-pedido'));
-                    modal.close();
-                    // Remover a classe "show" da backdrop
-                    // var backdrop = document.querySelector('.modal-backdrop');
-                    // // backdrop.classList.remove('show');
-                    // backdrop.classList.remove('modal-backdrop');
-                });
-            });
-
-
-            var table = document.getElementById('dt_areas_h').DataTable({
-                searching: true,
-                language: {
-                    search: ''
+            // Inicializa DataTable corretamente (id '#table-content') se a biblioteca estiver presente
+            if ($.fn.DataTable && $('#table-content').length) {
+                var table;
+                if (!$.fn.DataTable.isDataTable('#table-content')) {
+                    table = $('#table-content').DataTable({
+                        searching: true,
+                        language: {
+                            search: ''
+                        }
+                    });
+                } else {
+                    table = $('#table-content').DataTable();
                 }
-            });
 
-            // Adicione o evento de digitação no input
-            var areaDtInput = document.getElementById('area_dt');
-            areaDtInput.addEventListener('keyup', function() {
-                table.search(this.value).draw();
-            });
+                // Adicione o evento de digitação no input, se existir
+                var areaDtInput = document.getElementById('area_dt');
+                if (areaDtInput) {
+                    areaDtInput.addEventListener('keyup', function() {
+                        table.search(this.value).draw();
+                    });
+                }
+            }
         });
 
         function modalAddCargoAH(area_id) {
@@ -414,6 +432,177 @@
                     toastr.error("Erro ao obter dados da Ãrea Hospitalar", 'Erro');
                 }
             });
+        }
+
+        // Handler AJAX para adicionar área hospitalar via modal
+        (function () {
+            var $form = $('#formAddAH');
+            var $modal = $('#AddAH');
+
+            // Cria modal de sucesso se não existir
+            if ($('#modalSuccessAH').length === 0) {
+                $('body').append('\n<div class="modal fade" id="modalSuccessAH" tabindex="-1" aria-hidden="true">\n  <div class="modal-dialog modal-sm modal-dialog-centered">\n    <div class="modal-content text-center p-3">\n      <div class="modal-body">\n        <div class="mb-3">\n          <i class="fa-solid fa-circle-check" style="color:#2E37A4;font-size:48px"></i>\n        </div>\n        <h5 id="modalSuccessTitle">Sucesso</h5>\n        <p id="modalSuccessMessage" class="small text-muted">Operação concluída com sucesso.</p>\n      </div>\n    </div>\n  </div>\n</div>\n');
+            }
+
+            $form.on('submit', function (e) {
+                e.preventDefault();
+
+                var $btn = $form.find('button[type=submit]');
+                var originalHtml = $btn.html();
+
+                // Mostrar loader no botão
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> A enviar...');
+
+                $.ajax({
+                    url: $form.attr('action'),
+                    type: 'POST',
+                    data: $form.serialize(),
+                    success: function (resp, textStatus, xhr) {
+                        // Tolerância: servidor pode retornar JSON ou HTML/redirect.
+                        // Tentamos interpretar JSON; se falhar, consideramos sucesso quando status 200.
+                        var isJson = false;
+                        var parsed = null;
+                        try {
+                            if (typeof resp === 'string') parsed = JSON.parse(resp);
+                            else parsed = resp;
+                            isJson = true;
+                        } catch (e) {
+                            // não JSON
+                        }
+
+                        // Se a resposta aparentar ser uma página de login (redirect), redireciona
+                        if (typeof resp === 'string' && resp.indexOf('<form') !== -1 && resp.toLowerCase().indexOf('login') !== -1) {
+                            window.location = '/login';
+                            return;
+                        }
+
+                        // Agora tratamos como sucesso
+                        // Fechar modal atual usando API do Bootstrap
+                        try {
+                            var addModalEl = document.getElementById('AddAH');
+                            var addModalInstance = bootstrap.Modal.getInstance(addModalEl) || new bootstrap.Modal(addModalEl);
+                            addModalInstance.hide();
+                        } catch (err) {
+                            // fallback: esconder via jQuery (pode não funcionar com BS5 sem plugin)
+                            $modal.hide();
+                        }
+
+                        // Limpar formulário
+                        $form[0].reset();
+
+                        // Atualizar tabela: se DataTable estiver presente, recarrega via Ajax se configurado
+                        // Atualizar DataTable se configurado com ajax; caso contrário, reload como fallback
+                        try {
+                            if ($.fn.DataTable && $.fn.DataTable.isDataTable('#table-content')) {
+                                var dt = $('#table-content').DataTable();
+                                if (dt && dt.ajax && typeof dt.ajax.reload === 'function') {
+                                    dt.ajax.reload();
+                                } else if (isJson && parsed && parsed.data && parsed.data.html_row) {
+                                    // Se o backend retornar o HTML da linha inserida, podemos inserir sem reload
+                                    try {
+                                        dt.row.add($(parsed.data.html_row)).draw(false);
+                                    } catch (e) {
+                                        location.reload();
+                                    }
+                                } else {
+                                    location.reload();
+                                }
+                            } else {
+                                location.reload();
+                            }
+                        } catch (e) {
+                            location.reload();
+                        }
+
+                        // Mostrar modal de sucesso animado
+                        var $successModal = $('#modalSuccessAH');
+                        $('#modalSuccessTitle').text('Sucesso');
+                        $('#modalSuccessMessage').text('Área hospitalar adicionada com sucesso.');
+                        var bs = new bootstrap.Modal($successModal.get(0));
+                        bs.show();
+                        // Fechar automaticamente após 1.6s
+                        setTimeout(function () {
+                            bs.hide();
+                        }, 1600);
+                    },
+                    error: function (xhr) {
+                        // Exibir erros (assume JSON response com mensagens)
+                        var msg = 'Ocorreu um erro. Por favor verifique os dados e tente novamente.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
+                        alertify.error(msg);
+                    },
+                    complete: function () {
+                        $btn.prop('disabled', false).html(originalHtml);
+                    }
+                });
+            });
+        })();
+
+        // Função para alternar status (Ativar/Desativar) de FarmaciaAreaHospitalar
+        function toggleFAHStatus(id, el) {
+            // Cria modal de confirmação se não existir
+            if ($('#modalConfirmFAHToggle').length === 0) {
+                $('body').append('\n<div class="modal fade" id="modalConfirmFAHToggle" tabindex="-1" aria-hidden="true">\n  <div class="modal-dialog modal-dialog-centered">\n    <div class="modal-content">\n      <div class="modal-header">\n        <h5 class="modal-title">Confirmação</h5>\n        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>\n      </div>\n      <div class="modal-body">\n        <p id="modalConfirmFAHMessage">Tem certeza que deseja alterar o estado desta área?</p>\n      </div>\n      <div class="modal-footer">\n        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>\n        <button type="button" class="btn btn-primary" id="modalConfirmFAHConfirm">Confirmar</button>\n      </div>\n    </div>\n  </div>\n</div>\n');
+            }
+
+            var $confirmModalEl = document.getElementById('modalConfirmFAHToggle');
+            var confirmModal = bootstrap.Modal.getInstance($confirmModalEl) || new bootstrap.Modal($confirmModalEl);
+
+            // Atualiza a mensagem conforme ação (opcional)
+            $('#modalConfirmFAHMessage').text('Tem certeza que deseja alterar o estado desta área?');
+
+            // Remove handlers anteriores para evitar múltiplas execuções
+            $('#modalConfirmFAHConfirm').off('click');
+
+            $('#modalConfirmFAHConfirm').on('click', function () {
+                // fecha a modal de confirmação imediatamente
+                try { confirmModal.hide(); } catch (e) { /* fallback */ }
+
+                // executa chamada AJAX
+                $.ajax({
+                    url: '{{ url('areas_hospitalares/toggle-status') }}/' + id,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (resp) {
+                        try {
+                            var $el = $(el);
+                            var $row = $el.closest('tr');
+                            var $badge = $row.find('.status-badge');
+                            if (resp.status == 1) {
+                                // agora ativo
+                                $badge.removeClass('bg-secondary').addClass('bg-success').text('Ativo');
+                                $el.removeClass('text-warning').addClass('text-danger');
+                                $el.html('<i class="fa-solid fa-toggle-off m-r-5"></i> Desativar');
+                                $('#modalSuccessTitle').text('Ativado');
+                                $('#modalSuccessMessage').text('Área hospitalar ativada com sucesso.');
+                            } else {
+                                // agora inativo
+                                $badge.removeClass('bg-success').addClass('bg-secondary').text('Inativo');
+                                $el.removeClass('text-danger').addClass('text-success');
+                                $el.html('<i class="fa-solid fa-toggle-on m-r-5"></i> Ativar');
+                                $('#modalSuccessTitle').text('Desativado');
+                                $('#modalSuccessMessage').text('Área hospitalar desativada com sucesso.');
+                            }
+
+                            // mostrar modal animado de sucesso
+                            var $successModal = $('#modalSuccessAH');
+                            var bs = new bootstrap.Modal($successModal.get(0));
+                            bs.show();
+                            setTimeout(function () { bs.hide(); }, 1400);
+                        } catch (e) {
+                            alertify.success(resp.message || 'Status atualizado');
+                        }
+                    },
+                    error: function (xhr) {
+                        alertify.error('Erro ao alterar o estado');
+                    }
+                });
+            });
+
+            // mostra a modal de confirmação
+            confirmModal.show();
         }
     </script>
 @endsection
