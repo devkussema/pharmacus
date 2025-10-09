@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
              AHSeeder::class,
+           RolesAndPermissionsSeeder::class,
              CategoriasSeeder::class,
             GrupoFarmaco::class,
             GrupoSeeder::class,

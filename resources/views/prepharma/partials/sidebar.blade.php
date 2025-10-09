@@ -32,7 +32,8 @@
                         </a>
                     </li>
                 @endif
-                @if (isGerente())
+
+                    @if (Auth::check() && (Auth::user()->hasAnyRole(['Admin','Gerente']) || Auth::user()->hasPermissionTo('funcionario.read')))
                     <li class="{{ Route::currentRouteName() == 'gerente.funcionarios.index' ? 'active' : '' }}">
                         <a href="{{ route('gerente.funcionarios.index') }}" class="sidebar-link" data-route="gerente.funcionarios.index">
                             <span class="menu-side">
@@ -41,8 +42,9 @@
                             <span> Funcionários </span>
                         </a>
                     </li>
-                @endif
-                @if (@Auth::user()->isFarmacia or vPerm('area_hospitalar', ['ver']))
+                    @endif
+
+                    @if (Auth::check() && (Auth::user()->hasAnyRole(['Admin','Gerente']) || Auth::user()->hasPermissionTo('areas_hospitalares.read')))
                     <li>
                         <a href="{{ route('a_h.index') }}" class="{{ Route::currentRouteName() == 'a_h.index' ? 'active' : '' }}">
                             <span class="menu-side">
@@ -51,15 +53,8 @@
                             <span> Áreas Hospitalares </span>
                         </a>
                     </li>
-                    {{-- <li>
-                        <a href="{{ route('stock.dashboard') }}" class="{{ Route::currentRouteName() == 'stock.dashboard' ? 'active' : '' }}">
-                            <span class="menu-side">
-                                <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
-                            </span>
-                            <span>Estoque </span>
-                        </a>
-                    </li> --}}
-                @endif
+                    @endif
+
                 @if (Auth::user()->area_hospitalar || Auth::user()->isFarmacia)
                     <li>
                         <a href="{{ route('atividade.show') }}" class="{{ Route::currentRouteName() == 'atividade.show' ? 'active' : '' }}">
