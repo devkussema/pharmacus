@@ -51,7 +51,7 @@
                                                 </form>
                                             </div>
                                             <div class="add-group">
-                                                @if (isAdministrator() or vPerm('produtos', ['cadastrar']))
+                                                @if (isAdministrator() or auth()->user()->pode_cadastrar_produtos)
                                                     <button
                                                         onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'"
                                                         class="btn btn-rounded btn-outline-primary ms-2">

@@ -16,6 +16,7 @@
         "mobiledetect/mobiledetectlib": "^4.8",
         "ramsey/uuid": "^4.9",
         "spatie/laravel-backup": "^9.3",
+        "spatie/laravel-permission": "^6.21",
         "yajra/laravel-datatables-oracle": "^12.4"
     },
     "require-dev": {

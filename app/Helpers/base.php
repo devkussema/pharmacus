@@ -7,6 +7,85 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+if (!function_exists('verificarPermissao')) {
+    /**
+     * Verifica se o usuário tem uma permissão específica no JSON
+     *
+     * @param int $userId
+     * @param string $modulo
+     * @param string $acao
+     * @return bool
+     */
+    function verificarPermissao($userId, $modulo, $acao = 'cadastrar')
+    {
+        try {
+            $permissao = \App\Models\Permissao::where('user_id', $userId)->first();
+
+            if (!$permissao || !$permissao->conteudo) {
+                return false;
+            }
+
+            // Decodificar JSON
+            $conteudo = is_string($permissao->conteudo)
+                ? json_decode($permissao->conteudo, true)
+                : $permissao->conteudo;
+
+            if (!is_array($conteudo)) {
+                return false;
+            }
+
+            // Verificar se o módulo existe e tem a ação
+            return isset($conteudo[$modulo][$acao]) && $conteudo[$modulo][$acao] === 'on';
+
+        } catch (\Exception $e) {
+            \Log::error('Erro ao verificar permissão: ' . $e->getMessage());
+            return false;
+        }
+    }
+}
+
+if (!function_exists('podeUsuarioCadastrar')) {
+    /**
+     * Verifica se o usuário pode cadastrar produtos
+     *
+     * @param int $userId
+     * @return bool
+     */
+    function podeUsuarioCadastrar($userId)
+    {
+        return verificarPermissao($userId, 'produtos', 'cadastrar');
+    }
+}
+
+if (!function_exists('obterPermissoesUsuario')) {
+    /**
+     * Obtém todas as permissões do usuário
+     *
+     * @param int $userId
+     * @return array
+     */
+    function obterPermissoesUsuario($userId)
+    {
+        try {
+            $permissao = \App\Models\Permissao::where('user_id', $userId)->first();
+
+            if (!$permissao || !$permissao->conteudo) {
+                return [];
+            }
+
+            $conteudo = is_string($permissao->conteudo)
+                ? json_decode($permissao->conteudo, true)
+                : $permissao->conteudo;
+
+            return is_array($conteudo) ? $conteudo : [];
+
+        } catch (\Exception $e) {
+            \Log::error('Erro ao obter permissões: ' . $e->getMessage());
+            return [];
+        }
+    }
+}
+
 if (! function_exists('formatar_horas')) {
     function formatar_horas($data) {
         return \Carbon\Carbon::parse($data)->format('H:i');
@@ -212,29 +291,32 @@ function isAH($getId = 0)
     }
 }
 
-function vPerm($modulo, $permissoes)
-{
-    $jsonPermissoe = \App\Models\Permissao::where('user_id', auth()->user()->id)->first();
+if (!function_exists('vPerm')) {
+    /**
+     * Função vPerm simplificada - apenas para compatibilidade
+     * Agora só verifica se o usuário pode cadastrar produtos
+     *
+     * @param string $modulo
+     * @param array|null $permissoes (ignorado - apenas para compatibilidade)
+     * @return bool
+     */
+    function vPerm($modulo, $permissoes = null)
+    {
+        try {
+            // Para compatibilidade, se for 'produtos' com array contendo 'cadastrar'
+            if ($modulo === 'produtos' && is_array($permissoes) && isset($permissoes['cadastrar'])) {
+                return podeAuthCadastrar();
+            }
 
-    if (!$jsonPermissoe)
-        return 0;
+            // Para outros casos, retornar false por enquanto
+            // Pode ser expandido conforme necessário
+            return false;
 
-    $jsonPermissoes = $jsonPermissoe->conteudo;
-    $permissoesUsuario = json_decode($jsonPermissoes, true);
-
-    // Verifica se o módulo existe
-    if (!isset($permissoesUsuario[$modulo])) {
-        return 0;
-    }
-
-    // Verifica se o usuário tem todas as permissões necessárias
-    foreach ($permissoes as $permissao) {
-        if (!isset($permissoesUsuario[$modulo][$permissao]) || $permissoesUsuario[$modulo][$permissao] !== 'on') {
-            return 0;
+        } catch (\Exception $e) {
+            \Log::error('Erro na função vPerm: ' . $e->getMessage());
+            return false;
         }
     }
-
-    return 1;
 }
 
 function getConfig($chave)
@@ -791,9 +873,7 @@ if (!function_exists('getPerm')) {
 
 function isGerente()
 {
-    if (auth()->user()->gerente) {
-        return true;
-    }
+    return auth()->user()->grupo_id === Grupo::where('nome', 'Gerente')->first()->id;
 
     return false;
 }

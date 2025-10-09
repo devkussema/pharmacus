@@ -21,7 +21,6 @@
 {{-- Erros de Validação --}}
 @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>{{ Auth::user()->nome }}</strong> Por favor, corrija os seguintes erros:
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -34,7 +33,7 @@
 {{-- Mensagem de Erro Geral --}}
 @if (session()->has('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>{{ Auth::user()->nome }}</strong> {{ session('error') }}.
+        <strong>{{ (Auth::user() ? Auth::user()->nome : '') }}</strong> {{ session('error') }}.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\{Mail, Hash, Auth};
 use App\Models\UserAreaHospitalar;
 use App\Mail\ConfirmarContaGerenteAH as CCG;
 use App\Models\{Grupo, UserAreaHospitalar as UAH, AreaHospitalar as AH, User, Cargo, FarmaciaAreaHospitalar as FAH};
+use App\Mail\ConfirmarDesignacaoAH;
 use App\Traits\GenerateTrait;
 
 class AreaHospitalarController extends Controller
@@ -83,6 +84,7 @@ class AreaHospitalarController extends Controller
 
         $ah = AH::find($request->area_id);
         $cargo = Cargo::find($request->cargo_id);
+        $farmacia = \App\Models\Farmacia::find($request->farmacia_id);
 
         $grupo = Grupo::where('nome', 'Funcionário AH')->first();
 
@@ -102,15 +104,25 @@ class AreaHospitalarController extends Controller
         ]);
 
         $token = self::gerarToken($user);
-        $url = route('confirmar.funcionario', ['token' => $token->token]);
+        $linkConfirmacao = route('confirmar.funcionario', ['token' => $token->token]);
 
-        Mail::to($request->email)->send(new CCG($url));
+        // Dados para o email
+        $dadosEmail = [
+            'usuario' => $user,
+            'cargo' => $cargo,
+            'areaHospitalar' => $ah,
+            'farmacia' => $farmacia,
+            'linkConfirmacao' => $linkConfirmacao,
+            'dataDesignacao' => now(),
+            'tempoExpiracao' => '48 horas',
+            'assunto' => 'Confirmação de Designação - ' . $cargo->nome,
+            'mensagemPersonalizada' => "Foi designado(a) como {$cargo->nome} na área {$ah->nome}. Por favor, confirme a sua designação para ativar o seu acesso ao sistema."
+        ];
 
-        if ($request->json()){
-            return response()->json(['message' => "Um email para o {$cargo->nome} foi enviado."]);
-        }else{
-            return redirect()->back()->with('info', "Um email para o {$cargo->nome} foi enviado.");
-        }
+        // Enviar email com dados completos
+        Mail::to($request->email)->send(new ConfirmarDesignacaoAH($dadosEmail));
+
+        return redirect()->back()->with('info', "Um email para o {$cargo->nome} foi enviado.");
     }
 
     public function getStatDia()

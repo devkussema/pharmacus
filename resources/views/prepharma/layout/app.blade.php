@@ -175,7 +175,7 @@
 
 <body>
     <!-- Loader -->
-    <div class="loader-wrapper">
+    {{-- <div class="loader-wrapper">
         <div class="loader-container">
             <div class="loader-ring"></div>
             <div class="loader-ring"></div>
@@ -185,7 +185,7 @@
                 A carregar<span class="loader-dots"></span>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="main-wrapper">
         @include('partials.header')
@@ -218,12 +218,12 @@
     <script src="{{ assetr('assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{ assetr('assets/plugins/datatables/datatables.min.js')}}"></script>
 
+    <script src="{{ assetr('assets/plugins/moment/moment.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
+    <script src="{{ assetr('assets/js/bootstrap-datetimepicker.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
+
     <script src="{{ assetr('assets/js/jquery.waypoints.js')}}"></script>
     <script src="{{ assetr('assets/js/jquery.counterup.min.js')}}"></script>
 
-    <script src="{{ assetr('assets/plugins/apexchart/apexcharts.min.js')}}"></script>
-    {{-- <script src="{{ assetr('assets/plugins/apexchart/chart-data.js')}}"></script> --}}
-    <script src="{{ assetr('plugins/charts/chart1.js')}}"></script>
 
     <script src="{{ assetr('assets/js/circle-progress.min.js')}}"></script>
 
@@ -287,7 +287,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    alert('Erro ao buscar pedidos:', error);
+                    console.log('Erro ao buscar pedidos:', error);
                 }
             });
         }

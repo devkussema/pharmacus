@@ -31,7 +31,7 @@ class AuthController extends Controller
         $app_desc = "Inicie sessão e esteja a par de tudo na " . env('APP_NAME');
         $app_keywords = "entrar, pharmatina, pharmatina angola, google angola, pharmatino, farmatina, farmácia ao, farmacia angola, augusto kussema, kussema";
 
-        return view('login', compact('theme', 'app_desc', 'app_keywords'));
+        return view('prepharma_auth::login', compact('theme', 'app_desc', 'app_keywords'));
     }
 
     public function devver() {
@@ -108,7 +108,7 @@ class AuthController extends Controller
             ->first();
 
         if ($reset) {
-            return view('auth.alterarSenha');
+            return view('prepharma_auth::change-password');
         } else {
             return redirect()->route('login')->with('error', 'Link inválido.');
         }
@@ -184,7 +184,19 @@ class AuthController extends Controller
             }
 
             $user = auth()->user();
-            session(['id_area_' => @$user->isFarmacia ? optional(\App\Models\AreaHospitalar::where('nome', 'Armazém I')->first())->id : optional($user->farmacia->area_hospitalar)->id ?? 0]);
+            // Tornar opcional: apenas define 'id_area_' se conseguirmos um id válido
+            $areaId = null;
+
+            if (!empty($user->isFarmacia)) {
+                $area = \App\Models\AreaHospitalar::where('nome', 'Armazém I')->first();
+                $areaId = $area->id ?? null;
+            } elseif (!empty($user->farmacia) && !empty($user->farmacia->area_hospitalar)) {
+                $areaId = $user->farmacia->area_hospitalar->id ?? null;
+            }
+
+            if (!is_null($areaId)) {
+                session(['id_area_' => $areaId]);
+            }
 
             if ($request->ajax()) {
                 return response()->json(['message' => 'Cadastro efetuado', 'success' => true], 201);
@@ -273,13 +285,14 @@ class AuthController extends Controller
             $token = UT::find($request->token_id);
             $usr = Auth::user();
 
-            $usr->update([
-                'email_verified_at' => now()
-            ]);
+            // Evita mass assignment para campos não fillable
+            $usr->email_verified_at = now();
+            $usr->save();
 
-            $token->update([
-                'last_used_at' => now()
-            ]);
+            if ($token) {
+                $token->last_used_at = now();
+                $token->save();
+            }
 
             Auth::logout();
 

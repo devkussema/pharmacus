@@ -18,7 +18,7 @@ class GerenteFarmaciaController extends Controller
     {
         $token = UT::where("token", $token)->first();
         if ($token) {
-            return view('auth.gerenteConfirmar', compact('token'));
+            return view('prepharma_auth::emailConfirm', compact('token'));
         }
         return redirect()->route('login')->with('error', "Este link não existe!");
     }
@@ -39,19 +39,13 @@ class GerenteFarmaciaController extends Controller
 
         $passwd = $this->gerarSenhaAutomatica();
 
-        $nome = strtolower(trim($request->nome));
-
         $grupo = Grupo::where('nome', 'Gerente')->first();
         if (!$grupo)
             $grupo = null;
 
-        // Substitui espaços por pontos no nome
-        $username = str_replace(' ', '.', $nome);
-
         $user = User::create([
             'nome' => $request->nome,
             'email' => $request->email,
-            'username' => $username,
             'grupo_id' => $grupo->id,
             'password' => Hash::make($passwd)
         ]);

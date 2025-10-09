@@ -6,40 +6,13 @@
         <div class="content">
 
             <div class="page-header">
-                <div class="                                                <td class="text-end">
-                                                    <div class="d-flex justify-content-end gap-2">
-                                                        <a href="{{ route('u.perfil', ['username' => $user->id] ?? '#') }}" class="btn btn-sm btn-outline-primary">Ver</a>
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-sm btn-success btn-edit-user"
-                                                            data-user-id="{{ $user->id }}"
-                                                            data-user-nome="{{ htmlspecialchars($user->nome, ENT_QUOTES) }}"
-                                                            data-user-email="{{ htmlspecialchars($user->email, ENT_QUOTES) }}"
-                                                            data-user-grupo-id="{{ $user->grupo_id ?? '' }}"
-                                                            data-user-status="{{ $user->status ? 1 : 0 }}"
-                                                            data-user-telefone="{{ $user->telefone ?? '' }}"
-                                                        >Editar</button>
-                                                    </div>
-                                                </td>                    <div class="col-sm-12">
-                        <ul class="breadcrum                                <td class="text-end">
-                                    <div class="d-flex justify-content-end gap-2">
-                                        <a href="${u.perfil_url}" class="btn btn-sm btn-outline-primary">Ver</a>
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-success btn-edit-user"
-                                            data-user-id="${u.id}"
-                                            data-user-nome="${escapeHtml(u.nome)}"
-                                            data-user-email="${escapeHtml(u.email)}"
-                                            data-user-grupo-id="${u.grupo_id || ''}"
-                                            data-user-status="${u.status ? 1 : 0}"
-                                            data-user-telefone="${u.telefone || ''}"
-                                        >Editar</button>
-                                    </div>
-                                </td>                          <li class="breadcrumb-item"><a href="{{ route('usuario') }}">Usuários </a></li>
-                            <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                            <li class="breadcrumb-item active">Lista de usuários</li>
-                        </ul>
-                    </div>
+                <div class="col-sm-12">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('usuario') }}">Usuários</a></li>
+                        <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
+                        <li class="breadcrumb-item active">Lista de usuários</li>
+                    </ul>
+                </div>
                 </div>
             </div>
 
@@ -227,6 +200,50 @@
                 </div>
             </div>
         </div>
+
+        <div class="modais">
+            <div class="modal fade" id="confirmEnviarEmailRedefinicaoModal" tabindex="-1" aria-labelledby="confirmEnviarEmailRedefinicaoLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmEnviarEmailRedefinicaoLabel">Confirmar Envio de Email</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+                        <div class="modal-body">
+                            Tem certeza que deseja enviar um email de redefinição de senha para o usuário <span id="confirm-enviar-email-user-name"></span>?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="confirm-enviar-email-btn">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                window.confirmEnviarEmailRedefinicao = function (id, name) {
+                    document.getElementById('confirm-enviar-email-user-name').textContent = name;
+                    document.getElementById('confirm-enviar-email-btn').addEventListener('click', function () {
+                        const url = "{{ route('usuario.enviar.email.redefinicao', ['id' => ':id']) }}".replace(':id', id);
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') || '',
+                                'Accept': 'application/json'
+                            }
+                        }).then(function (response) {
+                            if (response.ok) {
+                                window.location.reload();
+                            }
+                        }).catch(function (error) {
+                            console.error('Erro ao enviar email de redefinição de senha', error);
+                        });
+                    });
+                }
+            </script>
+
+        </div>
+
         <script>
             (function () {
                 const form = document.getElementById('user-filter-form');
@@ -302,9 +319,16 @@
                                 <td>${statusBadge}</td>
                                 <td>${u.telefone || '-'}</td>
                                 <td class="text-end">
-                                    <div class="d-flex justify-content-end gap-2">
-                                        <a href="${u.perfil_url}" class="btn btn-sm btn-outline-primary">Ver</a>
-                                        <a href="/usuario/${u.id}/edit" class="btn btn-sm btn-success">Editar</a>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" id="dropdownMenuButton${u.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="feather-more-horizontal"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton${u.id}">
+                                            <li><a class="dropdown-item" href="${u.perfil_url}">Ver</a></li>
+                                            <li><a class="dropdown-item" href="/usuario/${u.id}/edit">Editar</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="enviarEmailBoasVindas(${u.id})">Enviar email de boas vindas</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#confirmEnviarEmailRedefinicaoModal" onclick="confirmEnviarEmailRedefinicao(${u.id}, '${escapeHtml(u.nome)}')">Enviar email de redefinição de senha para <span id="confirm-enviar-email-user-name"></span></a></li>
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>
@@ -437,6 +461,30 @@
                 } finally {
                     btn.disabled = false;
                     spinner.style.display = 'none';
+                }
+            };
+        </script>
+        <script>
+            // Envio de e-mail de boas-vindas
+            window.enviarEmailBoasVindas = async function (id) {
+                try {
+                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    const url = "{{ route('usuario.enviar.email.boas.vindas', ['id' => ':id']) }}".replace(':id', id);
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        }
+                    });
+                    const json = await res.json().catch(() => ({}));
+                    if (!res.ok || json.success === false) {
+                        throw new Error(json.message || ('Falha (' + res.status + ')'));
+                    }
+                    alert('E-mail de boas-vindas enviado com sucesso.');
+                } catch (e) {
+                    console.error('Erro ao enviar e-mail de boas-vindas', e);
+                    alert('Não foi possível enviar o e-mail de boas-vindas.');
                 }
             };
         </script>

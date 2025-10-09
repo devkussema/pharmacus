@@ -293,7 +293,7 @@ class EstoqueController extends Controller
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
             'obs' => 'nullable',
             'qtd' => 'integer|nullable',
-            'prateleira_id' => 'required|exists:prateleiras,id',
+            'prateleira_id' => 'nullable|exists:prateleiras,id',
         ], [
             'designacao.required' => 'A designação é obrigatória.',
             'farmacia_id.required' => 'Algo correu mal, atualize a página e tente novamente.',

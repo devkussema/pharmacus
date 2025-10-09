@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -39,6 +40,9 @@ class User extends Authenticatable
         'grupo_id',
         'status',
         'foto_perfil',
+        'password',
+        'estado',
+        'pode_cadastrar_produtos', // Nova coluna
     ];
 
     /**
@@ -50,6 +54,7 @@ class User extends Authenticatable
         'status' => 'boolean',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'pode_cadastrar_produtos' => 'boolean', // Cast automático
     ];
 
     protected static function boot(): void
@@ -60,6 +65,48 @@ class User extends Authenticatable
             $user->id = Uuid::uuid4()->toString();
             $user->generateUsername();
         });
+    }
+
+    /**
+     * Relação com o pivot UserAreaHospitalar.
+     *
+     * Um utilizador pode ter várias entradas em UserAreaHospitalar,
+     * cada uma contendo (por exemplo) area_id, farmacia_id e cargo_id.
+     *
+     * @return HasMany
+     */
+    public function userAreaHospitalares(): HasMany
+    {
+        return $this->hasMany(UserAreaHospitalar::class, 'user_id');
+    }
+
+    /**
+     * Recupera os cargos associados ao utilizador através de UserAreaHospitalar.
+     *
+     * Uso sugerido:
+     * - $user->cargos() -> Collection de App\Models\Cargo
+     * - $user->cargoPrimario() -> Cargo|null (primeiro cargo associado)
+     *
+     * @return Collection<int, Cargo>
+     */
+    public function cargos(): Collection
+    {
+        return $this->userAreaHospitalares()
+            ->with('cargo')
+            ->get()
+            ->map(fn (UserAreaHospitalar $uah) => $uah->cargo)
+            ->filter();
+    }
+    /**
+     * Retorna o cargo primário (primeiro encontrado) associado via UserAreaHospitalar.
+     *
+     * @return Cargo|null
+     */
+    public function cargoPrimario(): ?Cargo
+    {
+        return $this->userAreaHospitalares()
+            ->with('cargo')
+            ->first()?->cargo ?? null;
     }
 
     /**
@@ -197,5 +244,81 @@ class User extends Authenticatable
         }
 
         return asset('assets/images/default-avatar.png');
+    }
+
+    /**
+     * Relacionamento para obter o cargo do usuário através de UserAreaHospitalar
+     *
+     * @return HasOneThrough
+     */
+    public function cargo()
+    {
+        return $this->hasOneThrough(
+            Cargo::class,           // Model final (Cargo)
+            UserAreaHospitalar::class, // Model intermediário (UserAreaHospitalar)
+            'user_id',             // Chave estrangeira na tabela intermediária (user_area_hospitalares.user_id)
+            'id',                  // Chave estrangeira na tabela final (cargos.id)
+            'id',                  // Chave local na tabela atual (users.id)
+            'cargo_id'             // Chave local na tabela intermediária (user_area_hospitalares.cargo_id)
+        );
+    }
+
+    /**
+     * Relacionamento direto com UserAreaHospitalar
+     *
+     * @return HasOne
+     */
+    public function userAreaHospitalar()
+    {
+        return $this->hasOne(UserAreaHospitalar::class, 'user_id');
+    }
+
+    /**
+     * Relacionamento para obter a área hospitalar do usuário
+     *
+     * @return HasOneThrough
+     */
+    public function areaHospitalar()
+    {
+        return $this->hasOneThrough(
+            AreaHospitalar::class,
+            UserAreaHospitalar::class,
+            'user_id',
+            'id',
+            'id',
+            'area_hospitalar_id'
+        );
+    }
+
+    /**
+     * Verificar se o usuário pode cadastrar produtos
+     *
+     * @return bool
+     */
+    public function podeUsuarioCadastrarProdutos()
+    {
+        return $this->pode_cadastrar_produtos;
+    }
+
+    /**
+     * Dar permissão para cadastrar produtos
+     *
+     * @return bool
+     */
+    public function permitirCadastrarProdutos()
+    {
+        $this->pode_cadastrar_produtos = true;
+        return $this->save();
+    }
+
+    /**
+     * Remover permissão para cadastrar produtos
+     *
+     * @return bool
+     */
+    public function proibirCadastrarProdutos()
+    {
+        $this->pode_cadastrar_produtos = false;
+        return $this->save();
     }
 }

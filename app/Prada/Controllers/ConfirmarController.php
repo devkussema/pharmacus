@@ -13,7 +13,7 @@ class ConfirmarController extends Controller
     {
         $token = UT::where("token", $token)->first();
         if ($token) {
-            return view('auth.registarFuncionario', compact('token'));
+            return view('prepharma_auth::cargo-confirm', compact('token'));
         }
 
         return redirect()->route('login')->with('error', "Este link é inválido ou já foi usado");
@@ -50,7 +50,7 @@ class ConfirmarController extends Controller
                 'email' => $request->email,
                 'password' => $request->password
             ];
-            
+
             Auth::attempt($credentials);
 
             if ($request->ajax()) {

@@ -20,7 +20,29 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 pb-3">
-                                    <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="11a2d86a-c885-44e4-9162-14215ef75b95">
+                                    {{-- Remover esta linha com ID hardcoded --}}
+                                    {{-- <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="11a2d86a-c885-44e4-9162-14215ef75b95"> --}}
+
+                                    {{-- Substituir por: --}}
+                                    @php
+                                        $farmaciaUsuario = null;
+                                        try {
+                                            $farmaciaUsuario = auth()->user()->farmacia_id ??
+                                                              auth()->user()->isFarmacia->farmacia_id ??
+                                                              auth()->user()->userAreaHospitalar->farmacia_id ?? null;
+                                        } catch (\Exception $e) {
+                                            // Log do erro mas continuar
+                                        }
+                                    @endphp
+
+                                    @if($farmaciaUsuario)
+                                        <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="{{ $farmaciaUsuario }}">
+                                    @else
+                                        <div class="alert alert-danger">
+                                            Erro: Usuário não possui farmácia associada. Contacte o administrador.
+                                        </div>
+                                    @endif
+
                                     <label class="mb-2">Designação *</label>
                                     <input type="text" id="designacao" value="{{ old('designacao') ?? old('designacao') }}" class="form-control" placeholder="" name="designacao">
                                 </div>
@@ -36,7 +58,7 @@
                             </div>
                             <div class="" id="item_medicamento" style="display:none">
                                 <div class="form-row">
-                                    {{-- <div class="col pb-3">
+                                    {{-- <div class="col pb-3>
                                                 <label class="mb-2">Quantidade em Estoque *</label>
                                                 <input type="number" class="form-control" placeholder="" name="qtd">
                                             </div> --}}
@@ -203,10 +225,10 @@
                                 <div class="col-md-6 pb-3">
                                     <label class="mb-2">Área Hospitalar</label>
                                     <select name="area_id" style="width: 100%" id="area_id_" class="form-control select2">
-                                        @foreach (\App\Models\AreaHospitalar::all() as $ah)
-                                            @if ($ah->nome == 'Armazém I' or $ah->nome == 'Armazém II' or $ah->nome == 'Direcção clínica')
-                                                <option value="{{ $ah->id }}">{{ $ah->nome }}</option>
-                                            @endif
+                                        @foreach (App\Models\FarmaciaAreaHospitalar::where('farmacia_id', auth()->user()->isFarmacia->farmacia->id)
+                                                ->where('status', 1)
+                                                ->get() as $areas)
+                                            <option value="{{ $areas->id }}">{{ $areas->area_hospitalar->nome }}</option>
                                         @endforeach
                                     </select>
                                 </div>

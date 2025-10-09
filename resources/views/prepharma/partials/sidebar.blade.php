@@ -32,6 +32,16 @@
                         </a>
                     </li>
                 @endif
+                @if (isGerente())
+                    <li class="{{ Route::currentRouteName() == 'gerente.funcionarios.index' ? 'active' : '' }}">
+                        <a href="{{ route('gerente.funcionarios.index') }}" class="sidebar-link" data-route="gerente.funcionarios.index">
+                            <span class="menu-side">
+                                <i class="fas fa-users"></i>
+                            </span>
+                            <span> Funcionários </span>
+                        </a>
+                    </li>
+                @endif
                 @if (@Auth::user()->isFarmacia or vPerm('area_hospitalar', ['ver']))
                     <li>
                         <a href="{{ route('a_h.index') }}" class="{{ Route::currentRouteName() == 'a_h.index' ? 'active' : '' }}">

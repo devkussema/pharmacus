@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\AuthController;
+use App\Http\Controllers\Api\ProdutoApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,6 @@ Route::prefix('')->namespace('App\Http\Controllers\Api\v1')->group(function () {
 
     Route::post('/login', 'AuthController@entrar');
 });
+
+Route::get('/produtos/{area_id}', [ProdutoApiController::class, 'listarPorArea']);
+Route::delete('/produtos_/{id}', [ProdutoApiController::class, 'destroy']);
