@@ -27,11 +27,16 @@ trait AtividadeTrait
     public static function startAtv(string $texto, ?array $changes = null, array $meta = []): bool
     {
         try {
-            if (!function_exists('auth') || !auth()->check()) {
+            // Obter user diretamente; em ambientes de teste às vezes auth()->check() pode ser falso
+            // mesmo quando um usuário foi definido via actingAs. Usar auth()->user() como fonte única.
+            if (!function_exists('auth')) {
                 return false;
             }
 
             $user = auth()->user();
+            if (!$user) {
+                return false;
+            }
 
             $payload = array_merge([
                 'texto' => $texto,

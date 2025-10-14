@@ -23,8 +23,13 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $nome = fake()->name();
+        $username = Str::slug(strtolower($nome));
+
         return [
-            'name' => fake()->name(),
+            // Projeto usa 'nome' em português
+            'nome' => $nome,
+            'username' => $username,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),

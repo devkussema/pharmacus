@@ -14,6 +14,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Executar backup automático antes de alterar a tabela (usar credenciais do .env)
+        /* try {
+            \Illuminate\Support\Facades\Artisan::call('backup:db', ['--path' => 'storage/backups']);
+        } catch (\Throwable $e) {
+            // Se o backup falhar, logamos mas continuamos — o developer pode optar por abortar manualmente
+            logger()->error('Falha ao executar backup automático antes da migration de atividades: ' . $e->getMessage());
+        } */
+
         Schema::table('atividades', function (Blueprint $table) {
             if (!Schema::hasColumn('atividades', 'action')) {
                 $table->string('action', 80)->nullable()->after('texto');
@@ -72,23 +80,30 @@ return new class extends Migration
             }
         });
 
-        // Índices idempotentes
-        if (!Schema::hasColumn('atividades', 'model_type')) return;
-
+        // Índices idempotentes — tentativa segura: tentamos criar e ignoramos falhas
         Schema::table('atividades', function (Blueprint $table) {
-            $sm = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexes = array_map(fn($i) => $i->getName(), $sm->listTableIndexes('atividades'));
-
-            if (!in_array('atividades_model_type_index', $indexes) && Schema::hasColumn('atividades', 'model_type')) {
-                $table->index('model_type');
+            try {
+                if (Schema::hasColumn('atividades', 'model_type')) {
+                    $table->index('model_type');
+                }
+            } catch (\Throwable $e) {
+                logger()->warning('Não foi possível criar índice model_type em atividades: ' . $e->getMessage());
             }
 
-            if (!in_array('atividades_model_id_index', $indexes) && Schema::hasColumn('atividades', 'model_id')) {
-                $table->index('model_id');
+            try {
+                if (Schema::hasColumn('atividades', 'model_id')) {
+                    $table->index('model_id');
+                }
+            } catch (\Throwable $e) {
+                logger()->warning('Não foi possível criar índice model_id em atividades: ' . $e->getMessage());
             }
 
-            if (!in_array('atividades_correlation_id_index', $indexes) && Schema::hasColumn('atividades', 'correlation_id')) {
-                $table->index('correlation_id');
+            try {
+                if (Schema::hasColumn('atividades', 'correlation_id')) {
+                    $table->index('correlation_id');
+                }
+            } catch (\Throwable $e) {
+                logger()->warning('Não foi possível criar índice correlation_id em atividades: ' . $e->getMessage());
             }
         });
     }
