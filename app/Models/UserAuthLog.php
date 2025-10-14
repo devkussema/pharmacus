@@ -35,4 +35,12 @@ class UserAuthLog extends Model
             }
         });
     }
+
+    /**
+     * Relacionamento com User (opcional)
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

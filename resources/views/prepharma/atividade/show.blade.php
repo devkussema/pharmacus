@@ -25,7 +25,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row align-items-center">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fas fa-search text-muted"></i>
@@ -40,6 +40,13 @@
                                     @foreach(\App\Models\User::orderBy('nome')->get() as $user)
                                         <option value="{{ $user->id }}">{{ $user->nome }}</option>
                                     @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="typeFilter" class="form-control">
+                                    <option value="all">Todos os tipos</option>
+                                    <option value="activity">Atividades</option>
+                                    <option value="auth">Auth (login/logout/password)</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -137,7 +144,13 @@
 
             // Limit filter
             $('#limitFilter').on('change', function() {
-                location.reload();
+                // prefer AJAX reload when switching limit
+                loadCurrentType();
+            });
+
+            // Type filter (Auth / Atividades)
+            $('#typeFilter').on('change', function() {
+                loadCurrentType();
             });
 
             // Export functionality
@@ -217,6 +230,124 @@
                 } else {
                     $('#noResults').hide();
                 }
+            }
+
+            // Carrega atividades de acordo com o tipo selecionado.
+            // Tenta buscar via endpoint JSON (/atividades/json?type=auth|activity&limit=XX).
+            // Se falhar, usa o filtro local no DOM como fallback.
+            async function loadCurrentType() {
+                const type = $('#typeFilter').val() || 'all';
+                const limit = $('#limitFilter').val() || 25;
+
+                // Se "all" ou "activity", podemos reutilizar o HTML atual
+                if (type === 'all' || type === 'activity') {
+                    // Request para servidor caso exista endpoint
+                    try {
+                        const res = await fetch(`/atividades/json?type=${type}&limit=${limit}`, { headers: { 'Accept': 'application/json' }});
+                        if (res.ok) {
+                            const json = await res.json();
+                            renderActivities(json.items || json);
+                            return;
+                        }
+                    } catch (e) {
+                        // ignore and fallback to DOM filter
+                    }
+
+                    // fallback: re-show existing items and apply local filters
+                    $('.activity-item').show();
+                    filterActivities();
+                    return;
+                }
+
+                // type === 'auth' -> fetch auth logs
+                try {
+                    const res = await fetch(`/atividades/json?type=auth&limit=${limit}`, { headers: { 'Accept': 'application/json' }});
+                    if (!res.ok) throw new Error('no json');
+                    const json = await res.json();
+                    renderActivities(json.items || json, 'auth');
+                    return;
+                } catch (e) {
+                    // if endpoint not available, show message
+                    $('#activityList').empty();
+                    $('#noResults').show().find('h5').text('Nenhuma atividade de autenticação disponível (endpoint faltando)');
+                }
+            }
+
+            // Renderiza um array de items no #activityList
+            function renderActivities(items, mode = 'activity') {
+                $('#noResults').hide();
+                const $list = $('#activityList');
+                $list.empty();
+                if (!items || items.length === 0) {
+                    $('#noResults').show();
+                    return;
+                }
+
+                items.forEach(item => {
+                    if (mode === 'auth' || item.action) {
+                        // auth log
+                        const date = new Date(item.created_at || item.createdAt);
+                        const userName = item.user_name || item.user?.nome || '—';
+                        const texto = `${(item.action || 'auth')} — ${item.status || ''}`;
+                        const li = `<li class="activity-item" data-user-id="${item.user_id || ''}" data-date="${date.toISOString().slice(0,10)}" data-text="${texto.toLowerCase()}">
+                                        <div class="activity-user">
+                                            <a href="javascript:void(0)" title="Usuário: ${userName}&#10;Data: ${date.toLocaleDateString()}&#10;Hora: ${date.toLocaleTimeString()}&#10;Atividade: ${texto}" data-bs-toggle="tooltip" data-bs-html="true" class="avatar">
+                                                <img alt="${userName}" src="${"`"+""}" class="img-fluid rounded-circle">
+                                            </a>
+                                        </div>
+                                        <div class="activity-content timeline-group-blk">
+                                            <div class="timeline-group flex-shrink-0">
+                                                <h4 class="${isToday(date) ? 'text-primary' : ''}">${formatDateSimple(date)}</h4>
+                                                <span class="time">${formatTimeSimple(date)}</span>
+                                            </div>
+                                            <div class="comman-activitys flex-grow-1">
+                                                <h3>${userName}</h3>
+                                                <p><span>${texto}</span></p>
+                                            </div>
+                                        </div>
+                                    </li>`;
+                        $list.append(li);
+                    } else {
+                        // atividade normal (espera-se campos user, texto, created_at)
+                        const date = new Date(item.created_at || item.createdAt);
+                        const userName = item.user?.nome || item.user_name || '—';
+                        const texto = item.texto || item.action || '';
+                        const li = `<li class="activity-item" data-user-id="${item.user_id || ''}" data-date="${date.toISOString().slice(0,10)}" data-text="${(texto||'').toLowerCase()}">
+                                        <div class="activity-user">
+                                            <a href="javascript:void(0)" title="Usuário: ${userName}&#10;Data: ${formatDateSimple(date)}&#10;Hora: ${formatTimeSimple(date)}&#10;Atividade: ${texto}" data-bs-toggle="tooltip" data-bs-html="true" class="avatar">
+                                                <img alt="${userName}" src="${"`"+""}" class="img-fluid rounded-circle">
+                                            </a>
+                                        </div>
+                                        <div class="activity-content timeline-group-blk">
+                                            <div class="timeline-group flex-shrink-0">
+                                                <h4 class="${isToday(date) ? 'text-primary' : ''}">${formatDateSimple(date)}</h4>
+                                                <span class="time">${formatTimeSimple(date)}</span>
+                                            </div>
+                                            <div class="comman-activitys flex-grow-1">
+                                                <h3>${userName}</h3>
+                                                <p><span>${texto}</span></p>
+                                            </div>
+                                        </div>
+                                    </li>`;
+                        $list.append(li);
+                    }
+                });
+
+                // re-init tooltips se necessário
+                try { $('[data-bs-toggle="tooltip"]').tooltip(); } catch (e) {}
+            }
+
+            function isToday(d) {
+                const t = new Date();
+                return d.toDateString() === t.toDateString();
+            }
+
+            function formatDateSimple(d) {
+                return d.toLocaleDateString();
+            }
+
+            function formatTimeSimple(d) {
+                return d.toLocaleTimeString();
             }
 
             function exportToExcel() {

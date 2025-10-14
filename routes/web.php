@@ -130,6 +130,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
 
     Route::prefix('atividades')->group(function () {
         Route::get('/', [AtividadeController::class, 'index'])->name('atividade.show');
+        Route::get('/json', [\App\Prada\Controllers\AtividadeApiController::class, 'indexJson']);
     });
 
     Route::prefix('funcionarios')->group(function () {
