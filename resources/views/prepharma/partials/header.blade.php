@@ -116,11 +116,7 @@
             <a href="javascript:void(0)" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
                 <div class="user-names" style="display:flex;align-items:center;gap:.5rem;">
                     <h5 style="margin:0;">{{ Auth::user()->nome }}</h5>
-                    {{-- botão fullscreen ao lado do nome do usuário --}}
-                    <button id="btn_fullscreen" class="btn btn-sm btn-light" title="Tela cheia" style="padding:.25rem .5rem;border-radius:6px;">
-                        <i id="fullscreen_icon" class="fa-solid fa-expand"></i>
-                    </button>
-                    {{-- <span>Admin</span> --}}
+                    <span>Admin</span>
                 </div>
                 <span class="user-img">
                     <img src="{{ assetr('assets/img/user.jpg')}}" alt="Admin">
@@ -148,8 +144,6 @@
                 class="fa-solid fa-ellipsis-vertical"></i></a>
         <div class="dropdown-menu dropdown-menu-end">
             <a class="dropdown-item" href="{{ route('u.perfil', ['username' => Auth::user()->username]) }}">Meu Perfil</a>
-            <a class="dropdown-item" href="edit-profile.html">Editar Perfil</a>
-            <a class="dropdown-item" href="settings.html">Definições</a>
             <a class="dropdown-item" href="{{ route('logout') }}">Sair</a>
         </div>
     </div>
