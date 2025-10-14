@@ -148,6 +148,19 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
+        // Log password change
+        try {
+            UserAuthLog::create([
+                'user_id' => $user->id,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->header('User-Agent'),
+                'action' => 'password_change',
+                'status' => 'success',
+            ]);
+        } catch (\Throwable $e) {
+            // ignore logging failure
+        }
+
         Mail::to($email)->send(new SenhaAlterada($email, $user->nome));
 
         // Retornar uma resposta adequada
@@ -293,6 +306,18 @@ class AuthController extends Controller
         //     //return response()->json(['message' => 'Cadastro efetuado', 'success' => true],201);
         //     return redirect()->route('conta_criada')->with('email', $request->email);
         // }
+        try {
+            UserAuthLog::create([
+                'user_id' => $user->id,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->header('User-Agent'),
+                'action' => 'register',
+                'status' => 'success',
+            ]);
+        } catch (\Throwable $e) {
+            // não bloquear fluxo em caso de falha no log
+        }
+
         return redirect()->route('conta_criada')->with('email', $request->email);
     }
 
@@ -316,6 +341,19 @@ class AuthController extends Controller
             // Evita mass assignment para campos não fillable
             $usr->email_verified_at = now();
             $usr->save();
+
+            // registrar confirmação de email
+            try {
+                UserAuthLog::create([
+                    'user_id' => $usr->id,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->header('User-Agent'),
+                    'action' => 'confirm_email',
+                    'status' => 'success',
+                ]);
+            } catch (\Throwable $e) {
+                // ignore
+            }
 
             if ($token) {
                 $token->last_used_at = now();
