@@ -16,7 +16,7 @@
                         @csrf
                         <div class="input-block">
                             <label>Email <span class="login-danger">*</span></label>
-                            <input class="form-control" type="text" name="email" id="login-email">
+                            <input class="form-control" type="text" name="email" id="login-email" value="{{ old('email') }}">
                         </div>
                         <div class="input-block">
                             <label>Senha <span class="login-danger">*</span></label>
