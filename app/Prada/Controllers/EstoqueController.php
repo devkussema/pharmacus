@@ -459,7 +459,8 @@ class EstoqueController extends Controller
             'level' => 'info',
             'snapshot_after' => $pe->toArray(),
         ];
-        self::startAtv("Adicionou cerca de {$caixas} caixas equivalente {$request->qtd_total} unidades de {$request->designacao}", null, $meta);
+    // Garante que gravamos um snapshot do recurso adicionado
+    self::startAtv("Adicionou cerca de {$caixas} caixas equivalente {$request->qtd_total} unidades de {$request->designacao}", null, $meta);
 
         if ($request->ajax())
             return response()->json(['message' => "{$request->designacao} adicionado!"]);
