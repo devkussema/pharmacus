@@ -133,7 +133,7 @@ class EstoqueController extends Controller
                 }
             }
 
-            if (!empty($changes)) {
+                if (!empty($changes)) {
                 // Mapeamento de nomes técnicos para rótulos amigáveis (Português)
                 $fieldNames = [
                     'designacao' => 'Designação',
@@ -163,9 +163,37 @@ class EstoqueController extends Controller
                 }, $changes);
 
                 $fields = implode(', ', $namedChanges);
-                self::startAtv("Editou produto {$estoque->designacao} - Campos alterados: {$fields}");
+
+                // Estrutura de changes com old/new
+                $structuredChanges = [];
+                foreach ($changes as $key) {
+                    $structuredChanges[$key] = [
+                        'old' => $original[$key] ?? null,
+                        'new' => $new[$key] ?? null,
+                    ];
+                }
+
+                $meta = [
+                    'model_type' => PE::class,
+                    'model_id' => $estoque->id,
+                    'ip_address' => request()->ip(),
+                    'route' => request()->path(),
+                    'http_method' => request()->method(),
+                    'level' => 'info',
+                    'correlation_id' => request()->header('X-Request-Id') ?: null,
+                ];
+
+                self::startAtv("Editou produto {$estoque->designacao} - Campos alterados: {$fields}", $structuredChanges, $meta);
             } else {
-                self::startAtv("Acessou edição do produto {$estoque->designacao} sem alterações de dados");
+                $meta = [
+                    'model_type' => PE::class,
+                    'model_id' => $estoque->id,
+                    'ip_address' => request()->ip(),
+                    'route' => request()->path(),
+                    'http_method' => request()->method(),
+                    'level' => 'info',
+                ];
+                self::startAtv("Acessou edição do produto {$estoque->designacao} sem alterações de dados", null, $meta);
             }
         } catch (\Throwable $e) {
             logger()->error('Falha ao registar atividade de edição de produto: ' . $e->getMessage());
@@ -422,7 +450,16 @@ class EstoqueController extends Controller
 
         $caixas = getCaixa($request->descritivo);
 
-        self::startAtv("Adicionou cerca de {$caixas} caixas equivalente {$request->qtd_total} unidades de {$request->designacao}");
+        $meta = [
+            'model_type' => PE::class,
+            'model_id' => $pe->id,
+            'ip_address' => request()->ip(),
+            'route' => request()->path(),
+            'http_method' => request()->method(),
+            'level' => 'info',
+            'snapshot_after' => $pe->toArray(),
+        ];
+        self::startAtv("Adicionou cerca de {$caixas} caixas equivalente {$request->qtd_total} unidades de {$request->designacao}", null, $meta);
 
         if ($request->ajax())
             return response()->json(['message' => "{$request->designacao} adicionado!"]);
@@ -663,7 +700,16 @@ class EstoqueController extends Controller
         $caixas = getCaixa($newDescritivo);
         $unit = getCaixaUnit($newDescritivo);
 
-        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$ud->area_hospitalar->nome}");
+        $meta = [
+            'model_type' => PE::class,
+            'model_id' => $produto->id,
+            'ip_address' => request()->ip(),
+            'route' => request()->path(),
+            'http_method' => request()->method(),
+            'level' => 'info',
+            'snapshot_before' => $produto->toArray(),
+        ];
+        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$ud->area_hospitalar->nome}", null, $meta);
         self::setNotify("Confirmação de entrada de estoque", $ud->user_id);
         $texto = auth()->user()->nome . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
         //self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
