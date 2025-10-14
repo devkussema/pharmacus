@@ -83,6 +83,8 @@ class EstoqueController extends Controller
 
         $estoque = PE::findOrFail($id);
 
+        $original = $estoque->getAttributes();
+
         $estoque->fill([
             'designacao' => $request->input('designacao'),
             'tipo' => $request->input('tipo'),
@@ -120,6 +122,54 @@ class EstoqueController extends Controller
             ]);
         }
         $estoque->save();
+
+        // Registrar atividade: listar campos que mudaram
+        try {
+            $changes = [];
+            $new = $estoque->getAttributes();
+            foreach ($new as $key => $value) {
+                if (array_key_exists($key, $original) && $original[$key] != $value) {
+                    $changes[] = $key;
+                }
+            }
+
+            if (!empty($changes)) {
+                // Mapeamento de nomes técnicos para rótulos amigáveis (Português)
+                $fieldNames = [
+                    'designacao' => 'Designação',
+                    'tipo' => 'Tipo',
+                    'dosagem' => 'Dosagem',
+                    'descritivo' => 'Descritivo',
+                    'num_lote' => 'Lote',
+                    'num_documento' => 'Documento Nº',
+                    'data_producao' => 'Data Produção',
+                    'data_expiracao' => 'Data Expiração',
+                    'data_recepcao' => 'Data Recepção',
+                    'forma' => 'Forma',
+                    'grupo_farmaco_id' => 'Grupo Farmacológico',
+                    'origem_destino' => 'Origem / Destino',
+                    'obs' => 'Observação',
+                    'prateleira_id' => 'Prateleira',
+                    'qtd_embalagem' => 'Quantidade por Embalagem',
+                    // campos relacionados a relações/tabelas auxiliares
+                    'saldo' => 'Saldo',
+                    'prateleira' => 'Prateleira',
+                    'updated_at' => 'Data de Actualização',
+                    'created_at' => 'Data de Criação',
+                ];
+
+                $namedChanges = array_map(function ($key) use ($fieldNames) {
+                    return $fieldNames[$key] ?? ucwords(str_replace('_', ' ', $key));
+                }, $changes);
+
+                $fields = implode(', ', $namedChanges);
+                self::startAtv("Editou produto {$estoque->designacao} - Campos alterados: {$fields}");
+            } else {
+                self::startAtv("Acessou edição do produto {$estoque->designacao} sem alterações de dados");
+            }
+        } catch (\Throwable $e) {
+            logger()->error('Falha ao registar atividade de edição de produto: ' . $e->getMessage());
+        }
 
         // Redirecionar de volta com uma mensagem de sucesso
         return redirect()->route('estoque.getEstoque', ['id' => $returnID])->with('success', 'Produto de estoque atualizado com sucesso.');
