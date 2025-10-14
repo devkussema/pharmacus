@@ -382,52 +382,91 @@
                 document.body.removeChild(link);
             }
 
-            // Delegated handler para abrir modal de detalhes de Auth
+            // util: formatar data em pt-PT
+            function formatDateTimeISO(iso) {
+                try {
+                    const d = new Date(iso);
+                    return d.toLocaleString('pt-PT', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                } catch (e) { return iso || '—'; }
+            }
+
+            // util simples para extrair browser e OS do userAgent (fallback leve)
+            function parseUserAgent(ua) {
+                if (!ua) return 'Desconhecido';
+                ua = ua.toLowerCase();
+                let browser = 'Desconhecido';
+                if (ua.includes('chrome') && !ua.includes('chromium') && !ua.includes('edge')) browser = 'Chrome';
+                else if (ua.includes('safari') && !ua.includes('chrome')) browser = 'Safari';
+                else if (ua.includes('firefox')) browser = 'Firefox';
+                else if (ua.includes('edge') || ua.includes('edg/')) browser = 'Edge';
+                else if (ua.includes('opera') || ua.includes('opr/')) browser = 'Opera';
+
+                let os = 'Desconhecido';
+                if (ua.includes('windows')) os = 'Windows';
+                else if (ua.includes('macintosh') || ua.includes('mac os')) os = 'macOS';
+                else if (ua.includes('android')) os = 'Android';
+                else if (ua.includes('iphone') || ua.includes('ipad')) os = 'iOS';
+                else if (ua.includes('linux')) os = 'Linux';
+
+                return `${browser} on ${os}`;
+            }
+
+            // Delegated handler para abrir modal de detalhes de Auth com loader no botão
             $(document).on('click', '.btn-auth-details', function () {
-                const $li = $(this).closest('.activity-item');
+                const $btn = $(this);
+                const originalHtml = $btn.html();
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carregando');
+
+                const $li = $btn.closest('.activity-item');
                 const user = $li.find('h3').text();
-                const action = $li.data('action') || '';
-                const status = $li.data('status') || '';
-                const ip = $li.data('ip') || '';
-                const ua = $li.data('ua') || '';
-                const date = $li.data('date') || '';
+                const cachedAction = $li.data('action') || '';
+                const cachedStatus = $li.data('status') || '';
+                const cachedIp = $li.data('ip') || '';
+                const cachedUa = $li.data('ua') || '';
+                const cachedDate = $li.data('date') || '';
 
-                $('#authDetailsModal .modal-title').text(user + (action ? ' — ' + action : ''));
-                $('#authDetailsModal #auth_user').text(user || '—');
-                $('#authDetailsModal #auth_action').text(action || '—');
-                $('#authDetailsModal #auth_status').text(status || '—');
-                $('#authDetailsModal #auth_ip').text(ip || '—');
-                $('#authDetailsModal #auth_ua').text(ua || '—');
-                $('#authDetailsModal #auth_date').text(date || '—');
+                const id = $btn.data('log-id');
+                const showModalWith = (data) => {
+                    const user_name = data.user_name || user || '—';
+                    const action = data.action || cachedAction || '—';
+                    const status = data.status || cachedStatus || '—';
+                    const ip = data.ip_address || cachedIp || '—';
+                    const ua_raw = data.user_agent || cachedUa || '—';
+                    const created = data.created_at || cachedDate || '';
 
-                const id = $(this).data('log-id');
-                if (!id) {
+                    $('#authDetailsModal .modal-title').text(user_name + (action ? ' — ' + action : ''));
+                    $('#auth_avatar').attr('src', data.user_foto || '{{ asset("assets/img/default-avatar.png") }}');
+                    $('#auth_user').text(user_name);
+                    $('#auth_role').text(data.user_role || '—');
+                    $('#auth_badge_action').text(action);
+                    $('#auth_badge_status').text(status);
+                    $('#auth_ip').text(ip);
+                    $('#auth_ua').text(ua_raw);
+                    $('#auth_date').text(formatDateTimeISO(created));
+                    $('#auth_browser_device').remove();
+                    $('<div id="auth_browser_device" class="mb-2"><strong>Navegador/Dispositivo:</strong> ' + parseUserAgent(ua_raw) + '</div>').insertAfter('#auth_ip');
+
                     var modalEl = document.getElementById('authDetailsModal');
                     var modal = new bootstrap.Modal(modalEl);
                     modal.show();
+                };
+
+                if (!id) {
+                    showModalWith({ user_name: user, action: cachedAction, status: cachedStatus, ip_address: cachedIp, user_agent: cachedUa, created_at: cachedDate });
+                    $btn.prop('disabled', false).html(originalHtml);
                     return;
                 }
 
-                // buscar detalhes no backend
+                // fetch details
                 fetch(`/atividades/json/${id}`, { headers: { 'Accept': 'application/json' }})
                     .then(r => r.ok ? r.json() : Promise.reject(r))
                     .then(json => {
-                        $('#authDetailsModal .modal-title').text((json.user_name || 'Usuário') + (json.action ? ' — ' + json.action : ''));
-                        $('#authDetailsModal #auth_user').text(json.user_name || '—');
-                        $('#authDetailsModal #auth_action').text(json.action || '—');
-                        $('#authDetailsModal #auth_status').text(json.status || '—');
-                        $('#authDetailsModal #auth_ip').text(json.ip_address || '—');
-                        $('#authDetailsModal #auth_ua').text(json.user_agent || '—');
-                        $('#authDetailsModal #auth_date').text(json.created_at || '—');
-
-                        var modalEl = document.getElementById('authDetailsModal');
-                        var modal = new bootstrap.Modal(modalEl);
-                        modal.show();
+                        showModalWith(json);
                     }).catch(() => {
-                        // fallback: mostrar o que já temos
-                        var modalEl = document.getElementById('authDetailsModal');
-                        var modal = new bootstrap.Modal(modalEl);
-                        modal.show();
+                        // fallback to cached data
+                        showModalWith({ user_name: user, action: cachedAction, status: cachedStatus, ip_address: cachedIp, user_agent: cachedUa, created_at: cachedDate });
+                    }).finally(() => {
+                        $btn.prop('disabled', false).html(originalHtml);
                     });
             });
 
