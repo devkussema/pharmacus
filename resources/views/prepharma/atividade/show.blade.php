@@ -116,6 +116,14 @@
                                     @endforeach
                                 </ul>
 
+                                <!-- Loader while fetching data -->
+                                <div id="activityLoader" class="text-center py-5" style="display: none;">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">A Carregar...</span>
+                                    </div>
+                                    <div class="mt-2 text-muted">A Carregar...</div>
+                                </div>
+
                                 <!-- No Results Message -->
                                 <div id="noResults" class="text-center py-5" style="display: none;">
                                     <i class="fas fa-search fa-3x text-muted mb-3"></i>
@@ -232,10 +240,28 @@
                 }
             }
 
+            // Mostra/oculta loader e desativa controles enquanto carrega
+            function setLoading(flag) {
+                const $loader = $('#activityLoader');
+                const $list = $('#activityList');
+                const controls = ['#typeFilter', '#limitFilter', '#userFilter', '#dateFilter', '#searchInput', '#exportBtn', '#refreshBtn'];
+
+                if (flag) {
+                    $loader.show();
+                    $list.hide();
+                    controls.forEach(sel => $(sel).prop('disabled', true));
+                } else {
+                    $loader.hide();
+                    $list.show();
+                    controls.forEach(sel => $(sel).prop('disabled', false));
+                }
+            }
+
             // Carrega atividades de acordo com o tipo selecionado.
             // Tenta buscar via endpoint JSON (/atividades/json?type=auth|activity&limit=XX).
             // Se falhar, usa o filtro local no DOM como fallback.
             async function loadCurrentType() {
+                setLoading(true);
                 const type = $('#typeFilter').val() || 'all';
                 const limit = $('#limitFilter').val() || 25;
 
@@ -247,6 +273,7 @@
                         if (res.ok) {
                             const json = await res.json();
                             renderActivities(json.items || json);
+                            setLoading(false);
                             return;
                         }
                     } catch (e) {
@@ -256,6 +283,7 @@
                     // fallback: re-show existing items and apply local filters
                     $('.activity-item').show();
                     filterActivities();
+                    setLoading(false);
                     return;
                 }
 
@@ -265,11 +293,14 @@
                     if (!res.ok) throw new Error('no json');
                     const json = await res.json();
                     renderActivities(json.items || json, 'auth');
+                    setLoading(false);
                     return;
                 } catch (e) {
                     // if endpoint not available, show message
                     $('#activityList').empty();
                     $('#noResults').show().find('h5').text('Nenhuma atividade de autenticação disponível (endpoint faltando)');
+                } finally {
+                    setLoading(false);
                 }
             }
 
