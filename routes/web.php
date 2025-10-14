@@ -246,6 +246,18 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
 
     Route::post('/logout', function () {
         if (auth()->check()) {
+            // registrar evento de logout
+            try {
+                \App\Models\UserAuthLog::create([
+                    'user_id' => Auth::id(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->header('User-Agent'),
+                    'action' => 'logout',
+                    'status' => 'success',
+                ]);
+            } catch (\Throwable $e) {
+                // falha ao gravar log: não bloquear logout
+            }
             Auth::logout();
         }
         return redirect()->route('login'); // Redireciona para a página inicial após o logout

@@ -17,7 +17,8 @@ return new class extends Migration
     {
         Schema::create('user_auth_logs', function (Blueprint $table) {
             $table->uuid('id')->primary(); // UUID for unique identification
-            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade'); // Foreign key to users table
+            $table->uuid('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
             $table->string('ip_address', 45); // IPv4 or IPv6
             $table->text('user_agent'); // Browser/Device info
             $table->enum('action', ['login', 'logout', 'failed_login', 'password_reset', 'password_change']); // Auth actions

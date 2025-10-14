@@ -13,6 +13,7 @@ use App\Mail\{AtivarUsuario, SenhaAlterada, LinkRecuperarSenha};
 use App\Models\{UsersToken as UT, GerenteFarmacia, Farmacia};
 use App\Traits\GenerateTrait;
 use Illuminate\Support\Facades\Password;
+use App\Models\UserAuthLog;
 
 class AuthController extends Controller
 {
@@ -89,6 +90,14 @@ class AuthController extends Controller
 
         // Verificar o status para determinar a resposta adequada
         if ($db) {
+            // registrar geração de token de recuperação
+            UserAuthLog::create([
+                'user_id' => User::where('email', $request->email)->first()?->id,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->header('User-Agent'),
+                'action' => 'password_reset',
+                'status' => 'success',
+            ]);
             return redirect()->route('login')->with('info', "Enviamos por e-mail seu link de redefinição de senha.");
         } else {
             return redirect()->route('recuperar_senha')->withErrors(['email' => "Algo deu errado, atualize a página e tente novamente."]);
@@ -183,7 +192,7 @@ class AuthController extends Controller
                 return redirect()->route('login')->with('error', 'A tua conta não está ativada');
             }
 
-            $user = auth()->user();
+            $user = Auth::user();
             // Tornar opcional: apenas define 'id_area_' se conseguirmos um id válido
             $areaId = null;
 
@@ -201,8 +210,27 @@ class AuthController extends Controller
             if ($request->ajax()) {
                 return response()->json(['message' => 'Cadastro efetuado', 'success' => true], 201);
             }
+
+            // Log successful login
+            UserAuthLog::create([
+                'user_id' => $user->id,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->header('User-Agent'),
+                'action' => 'login',
+                'status' => 'success',
+            ]);
+
             return redirect()->route('home');
         }
+
+        // Log failed login attempt (no user_id available)
+        UserAuthLog::create([
+            'user_id' => null,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->header('User-Agent'),
+            'action' => 'failed_login',
+            'status' => 'failure',
+        ]);
 
         if ($request->ajax()) {
             return response()->json(['message' => 'Credenciais inválidas, tente novamente'], 422);
@@ -322,7 +350,7 @@ class AuthController extends Controller
      */
     public function checkSession()
     {
-        $isLoggedIn = auth()->check();
+        $isLoggedIn = Auth::check();
 
         //return response()->json($isLoggedIn);
         if ($isLoggedIn)

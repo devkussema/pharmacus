@@ -78,12 +78,22 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = Auth::user();
-        # $user->tokens()->delete(); // elimina todos os tokens
+        // elimina o token atual
         $request->user()->currentAccessToken()->delete();
 
-        // Remova o token do cliente (envie resposta sem o token)
-        #@Auth::logout(); // Esqueça a sessão (opcional)
-        #return redirect()->route('login');
+        // registrar logout
+        try {
+            \App\Models\UserAuthLog::create([
+                'user_id' => $user?->id,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->header('User-Agent'),
+                'action' => 'logout',
+                'status' => 'success',
+            ]);
+        } catch (\Throwable $e) {
+            // ignore logging failures
+        }
+
         return response()->json('Logout realizado com sucesso', 200);
     }
 }
