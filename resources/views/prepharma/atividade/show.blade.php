@@ -289,7 +289,7 @@
                         const date = new Date(item.created_at || item.createdAt);
                         const userName = item.user_name || item.user?.nome || '—';
                         const texto = `${(item.action || 'auth')} — ${item.status || ''}`;
-                        const li = `<li class="activity-item" data-user-id="${item.user_id || ''}" data-date="${date.toISOString().slice(0,10)}" data-text="${texto.toLowerCase()}">
+                        const li = `<li class="activity-item" data-user-id="${item.user_id || ''}" data-date="${date.toISOString().slice(0,10)}" data-text="${texto.toLowerCase()}" data-action="${item.action}" data-status="${item.status}" data-ip="${item.ip_address || ''}" data-ua="${(item.user_agent||'').replace(/"/g,'&quot;')}">
                                         <div class="activity-user">
                                             <a href="javascript:void(0)" title="Usuário: ${userName}&#10;Data: ${date.toLocaleDateString()}&#10;Hora: ${date.toLocaleTimeString()}&#10;Atividade: ${texto}" data-bs-toggle="tooltip" data-bs-html="true" class="avatar">
                                                 <img alt="${userName}" src="${"`"+""}" class="img-fluid rounded-circle">
@@ -303,6 +303,9 @@
                                             <div class="comman-activitys flex-grow-1">
                                                 <h3>${userName}</h3>
                                                 <p><span>${texto}</span></p>
+                                                <div class="d-flex align-items-center gap-2 mt-2">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary btn-auth-details" data-log-id="${item.id}">Detalhes</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </li>`;
@@ -378,7 +381,109 @@
                 link.click();
                 document.body.removeChild(link);
             }
+
+            // Delegated handler para abrir modal de detalhes de Auth
+            $(document).on('click', '.btn-auth-details', function () {
+                const $li = $(this).closest('.activity-item');
+                const user = $li.find('h3').text();
+                const action = $li.data('action') || '';
+                const status = $li.data('status') || '';
+                const ip = $li.data('ip') || '';
+                const ua = $li.data('ua') || '';
+                const date = $li.data('date') || '';
+
+                $('#authDetailsModal .modal-title').text(user + (action ? ' — ' + action : ''));
+                $('#authDetailsModal #auth_user').text(user || '—');
+                $('#authDetailsModal #auth_action').text(action || '—');
+                $('#authDetailsModal #auth_status').text(status || '—');
+                $('#authDetailsModal #auth_ip').text(ip || '—');
+                $('#authDetailsModal #auth_ua').text(ua || '—');
+                $('#authDetailsModal #auth_date').text(date || '—');
+
+                const id = $(this).data('log-id');
+                if (!id) {
+                    var modalEl = document.getElementById('authDetailsModal');
+                    var modal = new bootstrap.Modal(modalEl);
+                    modal.show();
+                    return;
+                }
+
+                // buscar detalhes no backend
+                fetch(`/atividades/json/${id}`, { headers: { 'Accept': 'application/json' }})
+                    .then(r => r.ok ? r.json() : Promise.reject(r))
+                    .then(json => {
+                        $('#authDetailsModal .modal-title').text((json.user_name || 'Usuário') + (json.action ? ' — ' + json.action : ''));
+                        $('#authDetailsModal #auth_user').text(json.user_name || '—');
+                        $('#authDetailsModal #auth_action').text(json.action || '—');
+                        $('#authDetailsModal #auth_status').text(json.status || '—');
+                        $('#authDetailsModal #auth_ip').text(json.ip_address || '—');
+                        $('#authDetailsModal #auth_ua').text(json.user_agent || '—');
+                        $('#authDetailsModal #auth_date').text(json.created_at || '—');
+
+                        var modalEl = document.getElementById('authDetailsModal');
+                        var modal = new bootstrap.Modal(modalEl);
+                        modal.show();
+                    }).catch(() => {
+                        // fallback: mostrar o que já temos
+                        var modalEl = document.getElementById('authDetailsModal');
+                        var modal = new bootstrap.Modal(modalEl);
+                        modal.show();
+                    });
+            });
+
+            // copiar IP/UA
+            $(document).on('click', '#copy_ip', function (e) {
+                e.preventDefault();
+                const text = $('#auth_ip').text();
+                navigator.clipboard?.writeText(text || '')?.then(()=>{});
+            });
+            $(document).on('click', '#copy_ua', function (e) {
+                e.preventDefault();
+                const text = $('#auth_ua').text();
+                navigator.clipboard?.writeText(text || '')?.then(()=>{});
+            });
         });
     </script>
+
+    <!-- Modal para detalhes de Auth -->
+    <div class="modal fade" id="authDetailsModal" tabindex="-1" aria-labelledby="authDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="authDetailsModalLabel">Detalhes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex gap-3 align-items-center mb-3">
+                        <img id="auth_avatar" src="{{ asset('assets/img/default-avatar.png') }}" alt="avatar" class="rounded-circle" width="64" height="64">
+                        <div>
+                            <h5 id="auth_user">-</h5>
+                            <div><small id="auth_role" class="text-muted">-</small></div>
+                        </div>
+                        <div class="ms-auto">
+                            <span id="auth_badge_action" class="badge bg-primary me-1">-</span>
+                            <span id="auth_badge_status" class="badge bg-secondary">-</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <strong>IP:</strong> <span id="auth_ip">-</span>
+                        <button class="btn btn-link btn-sm" id="copy_ip" title="Copiar IP">Copiar</button>
+                    </div>
+
+                    <div class="mb-2">
+                        <strong>User Agent:</strong>
+                        <pre id="auth_ua" class="small bg-light p-2 rounded">-</pre>
+                        <button class="btn btn-link btn-sm" id="copy_ua" title="Copiar User Agent">Copiar</button>
+                    </div>
+
+                    <div class="text-muted"><small>Data: <span id="auth_date">-</span></small></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection

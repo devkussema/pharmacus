@@ -40,4 +40,28 @@ class AtividadeApiController extends Controller
 
         return response()->json(['items' => $items], 200);
     }
+
+    /**
+     * Retorna um único log (auth) por id
+     */
+    public function showJson(Request $request, string $id)
+    {
+        $log = UserAuthLog::with('user')->find($id);
+        if (!$log) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        return response()->json([
+            'id' => $log->id,
+            'user_id' => $log->user_id,
+            'user_name' => $log->user?->nome,
+            'user_role' => $log->user?->cargoPrimario()?->nome ?? $log->user?->roles?->first()?->name ?? null,
+            'user_foto' => $log->user?->foto_perfil_url ?? null,
+            'action' => $log->action,
+            'status' => $log->status,
+            'ip_address' => $log->ip_address,
+            'user_agent' => $log->user_agent,
+            'created_at' => $log->created_at,
+        ], 200);
+    }
 }
