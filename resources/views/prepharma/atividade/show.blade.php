@@ -470,16 +470,25 @@
                     });
             });
 
-            // copiar IP/UA
+            // copiar IP com feedback visual
             $(document).on('click', '#copy_ip', function (e) {
                 e.preventDefault();
+                const $btn = $(this);
                 const text = $('#auth_ip').text();
-                navigator.clipboard?.writeText(text || '')?.then(()=>{});
-            });
-            $(document).on('click', '#copy_ua', function (e) {
-                e.preventDefault();
-                const text = $('#auth_ua').text();
-                navigator.clipboard?.writeText(text || '')?.then(()=>{});
+                const originalHtml = $btn.html();
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text || '').then(() => {
+                        $btn.html('<i class="fas fa-check text-success"></i> Copiado!');
+                        setTimeout(() => $btn.html(originalHtml), 2000);
+                    }).catch(() => {
+                        $btn.html('<i class="fas fa-times text-danger"></i> Erro');
+                        setTimeout(() => $btn.html(originalHtml), 2000);
+                    });
+                } else {
+                    $btn.html('<i class="fas fa-times text-danger"></i> Não suportado');
+                    setTimeout(() => $btn.html(originalHtml), 2000);
+                }
             });
         });
     </script>
@@ -493,30 +502,49 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex gap-3 align-items-center mb-3">
-                        <img id="auth_avatar" src="{{ asset('assets/img/default-avatar.png') }}" alt="avatar" class="rounded-circle" width="64" height="64">
+                    <div class="d-flex gap-3 align-items-center mb-4 pb-3 border-bottom">
+                        <img id="auth_avatar" src="{{ asset('assets/img/default-avatar.png') }}" alt="avatar" class="rounded-circle shadow-sm" width="64" height="64">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1" id="auth_user">-</h5>
+                            <div><small id="auth_role" class="text-muted"><i class="fas fa-user-tag me-1"></i>-</small></div>
+                        </div>
                         <div>
-                            <h5 id="auth_user">-</h5>
-                            <div><small id="auth_role" class="text-muted">-</small></div>
-                        </div>
-                        <div class="ms-auto">
-                            <span id="auth_badge_action" class="badge bg-primary me-1">-</span>
-                            <span id="auth_badge_status" class="badge bg-secondary">-</span>
+                            <span id="auth_badge_action" class="badge bg-primary rounded-pill px-3 py-2 me-1">-</span>
+                            <span id="auth_badge_status" class="badge bg-success rounded-pill px-3 py-2">-</span>
                         </div>
                     </div>
 
-                    <div class="mb-2">
-                        <strong>IP:</strong> <span id="auth_ip">-</span>
-                        <button class="btn btn-link btn-sm" id="copy_ip" title="Copiar IP">Copiar</button>
-                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong><i class="fas fa-network-wired me-2 text-primary"></i>Endereço IP:</strong>
+                                        <button class="btn btn-sm btn-outline-primary" id="copy_ip" title="Copiar IP">
+                                            <i class="fas fa-copy me-1"></i>Copiar
+                                        </button>
+                                    </div>
+                                    <code id="auth_ip" class="d-block p-2 bg-white rounded">-</code>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="mb-2">
-                        <strong>User Agent:</strong>
-                        <pre id="auth_ua" class="small bg-light p-2 rounded">-</pre>
-                        <button class="btn btn-link btn-sm" id="copy_ua" title="Copiar User Agent">Copiar</button>
-                    </div>
+                        <div class="col-md-12" id="auth_browser_device_wrapper">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <strong><i class="fas fa-desktop me-2 text-info"></i>Navegador/Dispositivo:</strong>
+                                    <div id="auth_browser_device" class="mt-2 text-muted">-</div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="text-muted"><small>Data: <span id="auth_date">-</span></small></div>
+                        <div class="col-md-12">
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="fas fa-clock me-2"></i>
+                                <small><strong>Data/Hora:</strong> <span id="auth_date">-</span></small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
