@@ -23,8 +23,9 @@ class UsersController extends Controller
 
         // If the request is AJAX, return only the rendered rows to update the table body
         if ($request->ajax()) {
-            $html = view('admin::users._rows', compact('users'))->render();
-            return response()->json(['html' => $html]);
+            $rows = view('admin::users._rows', compact('users'))->render();
+            $pagination = view('admin::users._pagination', compact('users'))->render();
+            return response()->json(['html' => $rows, 'pagination' => $pagination]);
         }
 
         return view('admin::users.index', compact('users'));

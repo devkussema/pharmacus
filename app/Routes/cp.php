@@ -14,13 +14,13 @@ Route::resource('dashboard', DashboardController::class)->only(['index'])->names
 
 // Regista o resource 'users' com nomes completos para permitir uso consistente em views
 Route::resource('users', UsersController::class)->names([
-	'index' => 'cp.users.index',
-	'create' => 'cp.users.create',
-	'store' => 'cp.users.store',
-	'show' => 'cp.users.show',
-	'edit' => 'cp.users.edit',
-	'update' => 'cp.users.update',
-	'destroy' => 'cp.users.destroy',
+    'index' => 'cp.users.index',
+    'create' => 'cp.users.create',
+    'store' => 'cp.users.store',
+    'show' => 'cp.users.show',
+    'edit' => 'cp.users.edit',
+    'update' => 'cp.users.update',
+    'destroy' => 'cp.users.destroy',
 ]);
 
 

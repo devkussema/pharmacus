@@ -64,6 +64,7 @@
                                 @include('admin::users._rows', ['users' => $users])
                             </tbody>
                         </table>
+                        @include('admin::users._pagination', ['users' => $users])
                     </div>
                 </div>
             </div>
@@ -75,23 +76,40 @@
     <script>
         (function ($) {
             $(document).ready(function () {
-                $('#js-refresh-users').on('click', function (e) {
-                    e.preventDefault();
-                    var $btn = $(this);
+                function loadUsers(url) {
+                    var $btn = $('#js-refresh-users');
                     $btn.prop('disabled', true);
                     $.ajax({
-                        url: '{{ route("cp.users.index") }}',
+                        url: url || '{{ route("cp.users.index") }}',
                         method: 'GET',
                         dataType: 'json'
                     }).done(function (res) {
                         if (res.html) {
                             $('#js-users-rows').html(res.html);
                         }
+                        if (res.pagination) {
+                            // replace pagination container
+                            $('#js-users-pagination').replaceWith(res.pagination);
+                        }
                     }).fail(function () {
                         alert('Erro ao obter lista de utilizadores.');
                     }).always(function () {
                         $btn.prop('disabled', false);
                     });
+                }
+
+                $('#js-refresh-users').on('click', function (e) {
+                    e.preventDefault();
+                    loadUsers();
+                });
+
+                // Delegate click on pagination links
+                $(document).on('click', '#js-users-pagination a', function (e) {
+                    e.preventDefault();
+                    var url = $(this).attr('href');
+                    if (url) {
+                        loadUsers(url);
+                    }
                 });
             });
         })(jQuery);
