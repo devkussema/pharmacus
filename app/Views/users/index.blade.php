@@ -52,14 +52,12 @@
                                             <input class="form-check-input" type="checkbox" value="something">
                                         </div>
                                     </th>
-                                    <th>Name</th>
-                                    <th>Department</th>
-                                    <th>Specialization</th>
-                                    <th>Degree</th>
-                                    <th>Mobile</th>
+                                    <th>Nome</th>
+                                    <th>Grupo</th>
+                                    <th>Telefone</th>
                                     <th>Email</th>
-                                    <th>Joining Date</th>
-                                    <th></th>
+                                    <th>Data de Criação</th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="js-users-rows">
