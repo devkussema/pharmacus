@@ -1,6 +1,6 @@
 <div class="header">
     <div class="header-left">
-        <a href="index.html" class="logo">
+        <a href="{{ route('cp.admin.index') }}" class="logo">
             <img src="{{ assetr('assets/img/white__logo2.png') }}" width="35" height="35" alt> <span>Pharmatina</span>
         </a>
     </div>
@@ -8,12 +8,12 @@
         <img src="{{ assetr('assets/img/icons/bar-icon.svg') }}" alt></a>
     <a id="mobile_btn" class="mobile_btn float-start" href="#sidebar">
         <img src="{{ assetr('assets/img/icons/bar-icon.svg') }}" alt></a>
-    <div class="top-nav-search mob-view">
+    {{-- <div class="top-nav-search mob-view">
         <form>
             <input type="text" class="form-control" placeholder="Search here">
             <a class="btn"><img src="assets/img/icons/search-normal.svg" alt></a>
         </form>
-    </div>
+    </div> --}}
     <ul class="nav user-menu float-end">
         <li class="nav-item dropdown has-arrow user-profile-list">
             <a href="#" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
@@ -29,19 +29,16 @@
                 <a class="dropdown-item" href="{{ route('logout') }}">Sair</a>
             </div>
         </li>
-        <li class="nav-item ">
+        {{-- <li class="nav-item ">
             <a href="settings.html" class="hasnotifications nav-link"><img src="assets/img/icons/setting-icon-01.svg"
                     alt> </a>
-        </li>
+        </li> --}}
     </ul>
     <div class="dropdown mobile-user-menu float-end">
         <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
                 class="fa-solid fa-ellipsis-vertical"></i></a>
         <div class="dropdown-menu dropdown-menu-end">
-            <a class="dropdown-item" href="profile.html">My Profile</a>
-            <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
-            <a class="dropdown-item" href="settings.html">Settings</a>
-            <a class="dropdown-item" href="login.html">Logout</a>
+            <a class="dropdown-item" href="{{ route('logout') }}">Sair</a>
         </div>
     </div>
 </div>
