@@ -9,6 +9,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\AreaHospitalar;
 
 Route::resource('dashboard', DashboardController::class)->only(['index'])->names(['index' => 'cp.admin.index']);
 
@@ -23,4 +24,12 @@ Route::resource('users', UsersController::class)->names([
     'destroy' => 'cp.users.destroy',
 ]);
 
-
+Route::resource('area_hospitalar', AreaHospitalar::class)->names([
+    'index' => 'cp.area_hospitalar.index',
+    'create' => 'cp.area_hospitalar.create',
+    'store' => 'cp.area_hospitalar.store',
+    'show' => 'cp.area_hospitalar.show',
+    'edit' => 'cp.area_hospitalar.edit',
+    'update' => 'cp.area_hospitalar.update',
+    'destroy' => 'cp.area_hospitalar.destroy',
+]);

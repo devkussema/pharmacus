@@ -19,6 +19,14 @@
                         <span> Usuários </span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('cp.area_hospitalar.index') }}">
+                        <span class="menu-side">
+                            <img src="{{ assetr('assets/img/icons/menu-icon-06.svg') }}" alt>
+                        </span>
+                        <span> Áreas Hospitalares </span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
