@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
 /**
@@ -94,6 +95,7 @@ class UsersController extends Controller
             'foto_perfil.image' => 'A foto de perfil deve ser uma imagem.',
             'foto_perfil.mimes' => 'Tipos permitidos para a foto de perfil: jpeg, png, jpg, gif, webp.',
             'foto_perfil.max' => 'A foto de perfil não pode exceder 2 MB.',
+            'foto_perfil.uploaded' => 'Falha no upload da foto (tamanho excede o permitido pelo servidor ou erro na transferência).',
 
             'estado.string' => 'O estado deve ser texto.',
             'estado.max' => 'O estado não pode exceder 30 caracteres.',
@@ -108,8 +110,28 @@ class UsersController extends Controller
 
         // Trata upload da foto de perfil (se houver)
         if ($request->hasFile('foto_perfil')) {
-            $path = $request->file('foto_perfil')->store('users', 'public');
-            $validated['foto_perfil'] = $path;
+            $file = $request->file('foto_perfil');
+            if (!$file->isValid()) {
+                $code = $file->getError();
+                $msg = match ($code) {
+                    UPLOAD_ERR_INI_SIZE => 'O ficheiro excede o limite do servidor (upload_max_filesize).',
+                    UPLOAD_ERR_FORM_SIZE => 'O ficheiro excede o tamanho máximo permitido pelo formulário.',
+                    UPLOAD_ERR_PARTIAL => 'Upload parcial. Por favor tente novamente.',
+                    UPLOAD_ERR_NO_FILE => 'Nenhum ficheiro foi enviado.',
+                    UPLOAD_ERR_NO_TMP_DIR => 'Pasta temporária em falta no servidor.',
+                    UPLOAD_ERR_CANT_WRITE => 'Falha ao gravar o ficheiro no disco.',
+                    UPLOAD_ERR_EXTENSION => 'Upload interrompido por extensão no servidor.',
+                    default => 'Erro desconhecido no upload (código ' . $code . ').',
+                };
+                return back()->withErrors(['foto_perfil' => $msg])->withInput();
+            }
+
+            try {
+                $path = $file->store('users', 'public');
+                $validated['foto_perfil'] = $path;
+            } catch (\Throwable $e) {
+                return back()->withErrors(['foto_perfil' => 'Falha ao guardar a foto: ' . $e->getMessage()])->withInput();
+            }
         }
 
         // Hashear password
