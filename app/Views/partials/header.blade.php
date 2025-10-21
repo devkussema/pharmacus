@@ -18,18 +18,15 @@
         <li class="nav-item dropdown has-arrow user-profile-list">
             <a href="#" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
                 <div class="user-names">
-                    <h5>Liam Michael </h5>
-                    <span>Admin</span>
+                    <h5>{{ Auth::user()->nome }}</h5>
+                    <span>Super Admin</span>
                 </div>
-                <span class="user-img">
-                    <img src="assets/img/user-06.jpg" alt="Admin">
-                </span>
+                {{-- <span class="user-img">
+                    <img src="{{ assetr('assets/img/user-06.jpg') }}" alt="Admin">
+                </span> --}}
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="profile.html">My Profile</a>
-                <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
-                <a class="dropdown-item" href="settings.html">Settings</a>
-                <a class="dropdown-item" href="login.html">Logout</a>
+                <a class="dropdown-item" href="{{ route('logout') }}">Sair</a>
             </div>
         </li>
         <li class="nav-item ">

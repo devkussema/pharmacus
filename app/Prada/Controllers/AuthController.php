@@ -193,7 +193,6 @@ class AuthController extends Controller
             'password.required' => 'Informe a senha'
         ]);
 
-
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
@@ -232,6 +231,10 @@ class AuthController extends Controller
                 'action' => 'login',
                 'status' => 'success',
             ]);
+
+            if (Auth::user()->role = 'super_admin') {
+                return redirect()->route('cp.admin.index');
+            }
 
             return redirect()->route('home');
         }
