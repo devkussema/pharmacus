@@ -6,6 +6,7 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
+            @include('admin::partials.session')
             <div class="card-body">
                 <form action="{{ route('cp.users.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
@@ -87,10 +88,16 @@
                         </div>
                         <!-- Foto / Permissão / Estado - alinhados em uma linha -->
                         <div class="col-12 col-md-4">
-                            <div class="input-block local-forms">
-                                <label>Foto de Perfil</label>
-                                <input type="file" name="foto_perfil" accept="image/*" class="form-control">
-                                @error('foto_perfil') <div class="text-danger small">{{ $message }}</div> @enderror
+                            <div class="input-block local-forms d-flex gap-3 align-items-center">
+                                <div>
+                                    <label class="d-block mb-1">Avatar</label>
+                                    <img id="avatarPreview" src="{{ assetr('assets/img/profiles/avatar-01.jpg') }}" alt="avatar" width="72" height="72" class="rounded-circle border" style="object-fit:cover;">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label>Foto de Perfil</label>
+                                    <input id="foto_perfil_input" type="file" name="foto_perfil" accept="image/*" class="form-control">
+                                    @error('foto_perfil') <div class="text-danger small">{{ $message }}</div> @enderror
+                                </div>
                             </div>
                         </div>
 
@@ -125,4 +132,32 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+    <script>
+        (function(){
+            document.addEventListener('DOMContentLoaded', function(){
+                const input = document.getElementById('foto_perfil_input');
+                const preview = document.getElementById('avatarPreview');
+
+                if (!input || !preview) return;
+
+                input.addEventListener('change', function(e){
+                    const file = input.files && input.files[0];
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                        alert('Por favor selecione uma imagem válida.');
+                        input.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        preview.src = ev.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        })();
+    </script>
 @endsection

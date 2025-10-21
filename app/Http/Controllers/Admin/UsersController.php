@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 /**
@@ -54,17 +55,36 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'nullable|in:super_admin,admin,user',
+            'grupo_id' => 'nullable|exists:grupos,id',
+            'telefone' => 'nullable|string|max:30',
+            'telefone_sec' => 'nullable|string|max:30',
+            'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'estado' => 'nullable|string|max:30',
+            'pode_cadastrar_produtos' => 'nullable|boolean',
+            'observacoes' => 'nullable|string',
         ]);
 
-        $data['password'] = bcrypt($data['password']);
-        $user = User::create($data);
+        // Normaliza boolean do checkbox
+        $validated['pode_cadastrar_produtos'] = $request->has('pode_cadastrar_produtos') ? 1 : 0;
 
-    return redirect()->route('cp.users.index')->with('success', 'Utilizador criado com sucesso.');
+        // Trata upload da foto de perfil (se houver)
+        if ($request->hasFile('foto_perfil')) {
+            $path = $request->file('foto_perfil')->store('users', 'public');
+            $validated['foto_perfil'] = $path;
+        }
+
+        // Hashear password
+        $validated['password'] = bcrypt($validated['password']);
+
+        // Criar o utilizador apenas com campos fillable
+        $user = User::create(array_intersect_key($validated, array_flip((new User())->getFillable())));
+
+        return redirect()->route('cp.users.index')->with('success', 'Utilizador criado com sucesso.');
     }
 
     /**

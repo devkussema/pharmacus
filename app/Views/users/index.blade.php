@@ -7,7 +7,7 @@
         <div class="col-sm-12">
             <div class="card card-table show-entire">
                 <div class="card-body">
-
+                    @include('admin::partials.session')
                     <div class="page-table-header mb-2">
                         <div class="row align-items-center">
                             <div class="col">
