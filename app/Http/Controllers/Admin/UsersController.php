@@ -20,6 +20,13 @@ class UsersController extends Controller
     public function index(Request $request)
     {
         $users = User::paginate(25);
+
+        // If the request is AJAX, return only the rendered rows to update the table body
+        if ($request->ajax()) {
+            $html = view('admin::users._rows', compact('users'))->render();
+            return response()->json(['html' => $html]);
+        }
+
         return view('admin::users.index', compact('users'));
     }
 
