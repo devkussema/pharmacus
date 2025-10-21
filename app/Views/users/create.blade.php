@@ -7,7 +7,8 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
-                <form>
+                <form action="{{ route('cp.users.store') }}" method="post" enctype="multipart/form-data">
+                    @csrf
                     <div class="row">
                         <div class="col-12">
                             <div class="form-heading">
@@ -17,136 +18,95 @@
                         <div class="col-12 col-md-6 col-xl-4">
                             <div class="input-block local-forms">
                                 <label>Nome <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder>
+                                <input name="nome" value="{{ old('nome') }}" class="form-control" type="text" placeholder="Nome completo">
+                                @error('nome') <div class="text-danger small">{{ $message }}</div> @enderror
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-4">
                             <div class="input-block local-forms">
-                                <label>Sobrenome <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder>
+                                <label>Telefone</label>
+                                <input name="telefone" value="{{ old('telefone') }}" class="form-control" type="text" placeholder="Telefone">
+                                @error('telefone') <div class="text-danger small">{{ $message }}</div> @enderror
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-4">
-                            <div class="input-block local-forms">
-                                <label>Nome de usuário <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-xl-6">
-                            <div class="input-block local-forms">
-                                <label>Telefone <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-xl-6">
                             <div class="input-block local-forms">
                                 <label>Email <span class="login-danger">*</span></label>
-                                <input class="form-control" type="email" placeholder>
+                                <input name="email" value="{{ old('email') }}" class="form-control" type="email" placeholder="email@exemplo.com">
+                                @error('email') <div class="text-danger small">{{ $message }}</div> @enderror
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-6">
                             <div class="input-block local-forms">
                                 <label>Senha <span class="login-danger">*</span></label>
-                                <input class="form-control" type="password" placeholder="Digite a senha">
+                                <input name="password" class="form-control" type="password" placeholder="Digite a senha">
+                                @error('password') <div class="text-danger small">{{ $message }}</div> @enderror
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-6">
                             <div class="input-block local-forms">
                                 <label>Confirmar Senha <span class="login-danger">*</span></label>
-                                <input class="form-control" type="password" placeholder="Confirme a senha">
+                                <input name="password_confirmation" class="form-control" type="password" placeholder="Confirme a senha">
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-6">
-                            <div class="input-block local-forms cal-icon">
-                                <label>Data de Nascimento <span class="login-danger">*</span></label>
-                                <input class="form-control datetimepicker" type="text" placeholder="Selecione a data de nascimento">
+                            <div class="input-block local-forms">
+                                <label>Grupo</label>
+                                <select name="grupo_id" class="form-control">
+                                    <option value="">-- Selecionar grupo --</option>
+                                    @foreach(\App\Models\Grupo::orderBy('nome')->get() as $g)
+                                        <option value="{{ $g->id }}" {{ old('grupo_id') == $g->id ? 'selected' : '' }}>{{ $g->nome }}</option>
+                                    @endforeach
+                                </select>
+                                @error('grupo_id') <div class="text-danger small">{{ $message }}</div> @enderror
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-6">
                             <div class="input-block select-gender">
-                                <label class="gen-label">Gênero <span class="login-danger">*</span></label>
-                                <div class="form-check-inline">
-                                    <label class="form-check-label">
-                                        <input type="radio" name="gender" class="form-check-input mt-0">Masculino
-                                    </label>
-                                </div>
-                                <div class="form-check-inline">
-                                    <label class="form-check-label">
-                                        <input type="radio" name="gender" class="form-check-input mt-0">Feminino
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-xl-4">
-                            <div class="input-block local-forms">
-                                <label>Formação <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder="Digite a formação">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-xl-4">
-                            <div class="input-block local-forms">
-                                <label>Cargo <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder="Digite o cargo">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-xl-4">
-                            <div class="input-block local-forms">
-                                <label>Departamento <span class="login-danger">*</span></label>
-                                <select class="form-control select">
-                                    <option>Selecionar Departamento</option>
-                                    <option>Ortopedia</option>
-                                    <option>Radiologia</option>
-                                    <option>Dentista</option>
+                                <label class="gen-label">Role</label>
+                                <select name="role" class="form-control">
+                                    <option value="{{ \App\Models\User::ROLE_USER }}">Utilizador</option>
+                                    <option value="{{ \App\Models\User::ROLE_ADMIN }}" {{ old('role') == \App\Models\User::ROLE_ADMIN ? 'selected' : '' }}>Admin</option>
+                                    <option value="{{ \App\Models\User::ROLE_SUPER_ADMIN }}" {{ old('role') == \App\Models\User::ROLE_SUPER_ADMIN ? 'selected' : '' }}>Super Admin</option>
                                 </select>
+                                @error('role') <div class="text-danger small">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <div class="input-block local-forms">
+                                <label>Foto de Perfil</label>
+                                <input type="file" name="foto_perfil" accept="image/*" class="form-control">
+                                @error('foto_perfil') <div class="text-danger small">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <div class="input-block local-forms">
+                                <label>Permissão cadastrar produtos</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="pode_cadastrar_produtos" value="1" {{ old('pode_cadastrar_produtos') ? 'checked' : '' }}>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12 col-sm-12">
                             <div class="input-block local-forms">
-                                <label>Endereço <span class="login-danger">*</span></label>
-                                <textarea class="form-control" rows="3" cols="30" placeholder="Digite o endereço"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-xl-3">
-                            <div class="input-block local-forms">
-                                <label>City <span class="login-danger">*</span></label>
-                                <select class="form-control select">
-                                    <option>Select City</option>
-                                    <option>Alaska</option>
-                                    <option>Los Angeles</option>
+                                <label>Estado</label>
+                                <select name="estado" class="form-control">
+                                    <option value="">-- selecione --</option>
+                                    <option value="activo" {{ old('estado')=='activo' ? 'selected' : '' }}>Activo</option>
+                                    <option value="inactivo" {{ old('estado')=='inactivo' ? 'selected' : '' }}>Inactivo</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-3">
                             <div class="input-block local-forms">
-                                <label>Country <span class="login-danger">*</span></label>
-                                <select class="form-control select">
-                                    <option>Select Country </option>
-                                    <option>Usa</option>
-                                    <option>Uk</option>
-                                    <option>Italy</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-xl-3">
-                            <div class="input-block local-forms">
-                                <label>State/Province <span class="login-danger">*</span></label>
-                                <select class="form-control select">
-                                    <option>Select State</option>
-                                    <option>Alaska</option>
-                                    <option>California</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-xl-3">
-                            <div class="input-block local-forms">
-                                <label>Postal Code <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder>
+                                <label>Telefone secundário</label>
+                                <input name="telefone_sec" value="{{ old('telefone_sec') }}" class="form-control" type="text" placeholder="Telefone secundário">
                             </div>
                         </div>
                         <div class="col-12 col-sm-12">
                             <div class="input-block local-forms">
-                                <label>Start Biography <span class="login-danger">*</span></label>
-                                <textarea class="form-control" rows="3" cols="30"></textarea>
+                                <label>Observações</label>
+                                <textarea name="observacoes" class="form-control" rows="3" cols="30">{{ old('observacoes') }}</textarea>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-6">
@@ -181,10 +141,8 @@
                         </div>
                         <div class="col-12">
                             <div class="doctor-submit text-end">
-                                <button type="submit"
-                                    class="btn btn-primary submit-form me-2">Submit</button>
-                                <button type="submit"
-                                    class="btn btn-primary cancel-form">Cancel</button>
+                                <button type="submit" class="btn btn-primary submit-form me-2">Salvar</button>
+                                <a href="{{ route('cp.users.index') }}" class="btn btn-secondary">Cancelar</a>
                             </div>
                         </div>
                     </div>
