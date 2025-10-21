@@ -5,8 +5,8 @@
 @section('content')
 <div class="row">
     <div class="col-sm-12">
+        @include('admin::partials.session')
         <div class="card">
-            @include('admin::partials.session')
             <div class="card-body">
                 <form action="{{ route('cp.users.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
@@ -113,10 +113,10 @@
                         <div class="col-12 col-md-4">
                             <div class="input-block local-forms">
                                 <label>Estado</label>
-                                <select name="estado" class="form-control">
+                                <select name="status" class="form-control">
                                     <option value="">-- selecione --</option>
-                                    <option value="activo" {{ old('estado')=='activo' ? 'selected' : '' }}>Activo</option>
-                                    <option value="inactivo" {{ old('estado')=='inactivo' ? 'selected' : '' }}>Inactivo</option>
+                                    <option value="activo" {{ old('status')=='activo' ? 'selected' : '' }}>Activo</option>
+                                    <option value="inactivo" {{ old('status')=='inactivo' ? 'selected' : '' }}>Inactivo</option>
                                 </select>
                             </div>
                         </div>
