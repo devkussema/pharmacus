@@ -23,3 +23,5 @@ index.php
 /resources/views/default/devver
 .nem_conf
 .htaccess
+storage/permission_migration_report.json
+storage/permission_migration_report.json

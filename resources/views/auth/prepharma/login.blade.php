@@ -7,7 +7,9 @@
             <div class="login-right">
                 <div class="login-right-wrap">
                     <div class="account-logo">
-                        <a href="index.html"><img src="assets/img/login-logo.png" alt></a>
+                        <a href="index.html">
+                            <img src="{{ assetr('assets/img/white__logo2.png') }}" width="48px">
+                        </a>
                     </div>
                     <h2>Iniciar Sessão</h2>
                     @include('partials.session')
@@ -31,7 +33,7 @@
                                     <span class="checkmark"></span> -->
                                 </label>
                             </div>
-                            <a href="{{ route('recuperar_senha') }}">Esqueceu a senha?</a>
+                            {{-- <a href="{{ route('recuperar_senha') }}">Esqueceu a senha?</a> --}}
                         </div>
                         <div class="input-block login-btn">
                             <button class="btn btn-primary btn-block d-inline-flex align-items-center gap-2" type="submit" id="btnLogin">
@@ -44,14 +46,14 @@
                     <div class="next-sign">
                         <!-- <p class="account-subtitle">Não tens uma conta? <a href="{{ route('registar') }}">Registar</a></p> -->
 
-                        <div class="social-login">
+                        {{-- <div class="social-login">
                             <a href="javascript:;"><img src="assets/img/icons/login-icon-01.svg"
                                     alt></a>
                             <a href="javascript:;"><img src="assets/img/icons/login-icon-02.svg"
                                     alt></a>
                             <a href="javascript:;"><img src="assets/img/icons/login-icon-03.svg"
                                     alt></a>
-                        </div>
+                        </div> --}}
 
                 </div>
             </div>
