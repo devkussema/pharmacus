@@ -33,22 +33,14 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-
-            Route::middleware('web')
-                ->group(base_path('routes/mail.php'))
-                ->group(base_path('routes/gerente.php'));
-
-            Route::middleware('web')
-                ->prefix('ocorrencias')
-                ->as('ocorrencia.')
-                ->group(base_path('core/routes/ocorrencia.php'));
-
-            Route::middleware('web')
-                ->prefix('preview/v3') // Adiciona o prefixo 'preview' às URLs deste grupo
-                ->as('preview.') // Adiciona o prefixo 'preview.' aos nomes das rotas
-                ->group(base_path('routes/preview.php'));
+            Route::middleware('web')->group(function () {
+                Route::group([], base_path('routes/web.php'));
+                Route::group([], base_path('routes/mail.php'));
+                Route::group([], base_path('routes/gerente.php'));
+                Route::prefix('ocorrencias')->as('ocorrencia.')->group(base_path('core/routes/ocorrencia.php'));
+                Route::prefix('preview/v3')->as('preview.')->group(base_path('routes/preview.php'));
+                Route::prefix('cp')->as('cp.')->group(app_path('Routes/cp.php'));
+            });
         });
     }
 }
