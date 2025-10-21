@@ -20,8 +20,8 @@ use Ramsey\Uuid\Uuid;
  *
  * Representa um utilizador do sistema.
  *
- * Autor: Augusto Kussema
- * Data: 2025-09-27
+ * autor: Augusto Kussema
+ * Data: 2025-10-21 09:30 (Luanda)
  */
 class User extends Authenticatable
 {
@@ -46,6 +46,7 @@ class User extends Authenticatable
         'password',
         'estado',
         'pode_cadastrar_produtos', // Nova coluna
+        'role', // role do utilizador: super_admin|admin|user
     ];
 
     /**
@@ -60,6 +61,12 @@ class User extends Authenticatable
         'pode_cadastrar_produtos' => 'boolean', // Cast automático
     ];
 
+    // Roles disponíveis
+    public const ROLE_SUPER_ADMIN = 'super_admin';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_USER = 'user';
+
+
     protected static function boot(): void
     {
         parent::boot();
@@ -67,6 +74,10 @@ class User extends Authenticatable
         static::creating(function (User $user): void {
             $user->id = Uuid::uuid4()->toString();
             $user->generateUsername();
+            // Assegura role por defeito
+            if (empty($user->role)) {
+                $user->role = self::ROLE_USER;
+            }
         });
     }
 
@@ -301,6 +312,36 @@ class User extends Authenticatable
     public function podeUsuarioCadastrarProdutos()
     {
         return $this->pode_cadastrar_produtos;
+    }
+
+    /**
+     * Verifica se o utilizador é super admin.
+     *
+     * @return bool
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+
+    /**
+     * Verifica se o utilizador é admin.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN || $this->isSuperAdmin();
+    }
+
+    /**
+     * Verifica se o utilizador é um utilizador padrão.
+     *
+     * @return bool
+     */
+    public function isUser(): bool
+    {
+        return $this->role === self::ROLE_USER;
     }
 
     /**
