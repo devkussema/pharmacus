@@ -19,6 +19,8 @@
 <body>
     <div class="main-wrapper">
         @include('admin::partials.header')
+
+        @include('admin::partials.sidebar')
     </div>
 
     <div class="sidebar-overlay" data-reff></div>
