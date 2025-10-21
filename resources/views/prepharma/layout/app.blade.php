@@ -171,6 +171,8 @@
             to { opacity: 1; }
         }
     </style>
+
+    @stack('styles')
 </head>
 
 <body>
