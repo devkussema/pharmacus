@@ -11,6 +11,14 @@
                         <span> Painel </span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('cp.users.index') }}">
+                        <span class="menu-side">
+                            <img src="{{ assetr('assets/img/icons/menu-icon-08.svg') }}" alt>
+                        </span>
+                        <span> Usuários </span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
