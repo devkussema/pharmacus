@@ -62,12 +62,14 @@
                             <span> Atividades </span>
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('grupos_farmacologicos.index') }}" class="{{ Route::currentRouteName() == 'grupos_farmacologicos.index' ? 'active' : '' }}">
-                            <i class="fa fa-table"></i>
-                            <span> G. Fármacos </span>
-                        </a>
-                    </li>
+                    @if (Auth::user()->username == 'adriano.lata' or Auth::user()->username == 'augusto.kussema')
+                        <li>
+                            <a href="{{ route('documents.index') }}" class="{{ Route::currentRouteName() == 'documents.index' ? 'active' : '' }}">
+                                <i class="fa fa-table"></i>
+                                <span> Documentos </span>
+                            </a>
+                        </li>
+                    @endif
                 @endif
                 <li>
                     <a href="{{ route('prateleira.show') }}" class="{{ Route::currentRouteName() == 'prateleira.show' ? 'active' : '' }}">
@@ -75,12 +77,6 @@
                         <span> Prateleiras </span>
                     </a>
                 </li>
-{{--                <li>--}}
-{{--                    <a href="{{ route('alert.show') }}" class="{{ Route::currentRouteName() == 'alert.show' ? 'active' : '' }}">--}}
-{{--                        <i class="fa fa-bullhorn"></i>--}}
-{{--                        <span> Alertas </span>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
                 @if (vPerm('relatorio', ['ver']) or Auth::user()->isFarmacia)
                 <li class="submenu">
                     <a href="#">
@@ -104,14 +100,6 @@
                 </li>
                 @endif
             </ul>
-            {{-- <div class="logout-btn">
-                <a href="{{ route('logout') }}">
-                    <span class="menu-side">
-                        <img src="{{ assetr('assets/img/icons/logout.svg')}}" alt>
-                    </span>
-                    <span>Sair</span>
-                </a>
-            </div> --}}
         </div>
     </div>
 </div>

@@ -24,6 +24,7 @@ use App\Prada\Controllers\{AlertController,
     PrintController,
     PrateleiraController,
     CargoController,
+    DocumentsController,
     ConfirmarController};
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Process\Process;
@@ -79,6 +80,10 @@ Route::post('estoque/adder', [EstoqueController::class, 'store'])->name('estoque
 Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('stock')->group(function () {
         Route::get('/dashboard', [DashStock::class, 'index'])->name('stock.dashboard');
+    });
+
+    Route::prefix('documents')->group(function () {
+        Route::get('/', [DocumentsController::class, 'index'])->name('documents.index');
     });
 
     Route::prefix('dev')->group(function () {
