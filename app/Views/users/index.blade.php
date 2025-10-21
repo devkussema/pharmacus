@@ -25,7 +25,7 @@
                                         <div class="add-group">
                                             <a href="add-doctor.html" class="btn btn-primary add-pluss ms-2">
                                                 <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
-                                                </a>
+                                            </a>
                                             <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2"><img
                                                     src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt></a>
                                         </div>
