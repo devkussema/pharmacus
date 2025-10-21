@@ -55,6 +55,7 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
+        // Validação com mensagens em português
         $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -67,6 +68,39 @@ class UsersController extends Controller
             'estado' => 'nullable|string|max:30',
             'pode_cadastrar_produtos' => 'nullable|boolean',
             'observacoes' => 'nullable|string',
+        ], [
+            'nome.required' => 'O nome é obrigatório.',
+            'nome.string' => 'O nome deve ser texto.',
+            'nome.max' => 'O nome não pode exceder 255 caracteres.',
+
+            'email.required' => 'O e-mail é obrigatório.',
+            'email.email' => 'O e-mail deve ser um endereço válido.',
+            'email.unique' => 'O e-mail já está em uso.',
+
+            'password.required' => 'A palavra-passe é obrigatória.',
+            'password.string' => 'A palavra-passe deve ser texto.',
+            'password.min' => 'A palavra-passe deve ter pelo menos 8 caracteres.',
+            'password.confirmed' => 'A confirmação da palavra-passe não coincide.',
+
+            'role.in' => 'O papel selecionado é inválido. Opções: super_admin, admin, user.',
+
+            'grupo_id.exists' => 'O grupo selecionado não existe.',
+
+            'telefone.string' => 'O telefone deve ser texto.',
+            'telefone.max' => 'O telefone não pode exceder 30 caracteres.',
+            'telefone_sec.string' => 'O telefone secundário deve ser texto.',
+            'telefone_sec.max' => 'O telefone secundário não pode exceder 30 caracteres.',
+
+            'foto_perfil.image' => 'A foto de perfil deve ser uma imagem.',
+            'foto_perfil.mimes' => 'Tipos permitidos para a foto de perfil: jpeg, png, jpg, gif, webp.',
+            'foto_perfil.max' => 'A foto de perfil não pode exceder 2 MB.',
+
+            'estado.string' => 'O estado deve ser texto.',
+            'estado.max' => 'O estado não pode exceder 30 caracteres.',
+
+            'pode_cadastrar_produtos.boolean' => 'Valor inválido para a opção de cadastrar produtos.',
+
+            'observacoes.string' => 'As observações devem ser texto.',
         ]);
 
         // Normaliza boolean do checkbox
