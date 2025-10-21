@@ -21,6 +21,14 @@
         @include('admin::partials.header')
 
         @include('admin::partials.sidebar')
+
+        <div class="page-wrapper">
+            <div class="content">
+                @yield('content')
+
+                @include('admin::partials.notification-box')
+            </div>
+        </div>
     </div>
 
     <div class="sidebar-overlay" data-reff></div>
