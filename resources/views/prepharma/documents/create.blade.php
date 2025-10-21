@@ -76,7 +76,8 @@
 				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
-				<form id="documentForm" class="smart-form">
+				<form id="documentForm" class="smart-form" enctype="multipart/form-data">
+					@csrf
 					<div class="row">
 						<!-- File Info Section -->
 						<div class="col-md-6">
@@ -87,7 +88,7 @@
 									<label class="form-label">Nome do Documento</label>
 									<div class="input-group">
 										<span class="input-group-text"><i class="fa fa-signature"></i></span>
-										<input type="text" id="fileName" class="form-control" placeholder="Nome do documento..." required>
+										<input type="text" name="name" id="fileName" class="form-control" placeholder="Nome do documento..." required>
 									</div>
 								</div>
 
@@ -95,23 +96,18 @@
 									<label class="form-label">Tipo de Documento</label>
 									<div class="input-group">
 										<span class="input-group-text"><i class="fa fa-tags"></i></span>
-										<select id="fileType" class="form-select" required>
+										<select name="document_type" id="fileType" class="form-select" required>
 											<option value="">Selecionar tipo...</option>
-											<option value="manual">Manual de Procedimentos</option>
-											<option value="politica">Política</option>
-											<option value="relatorio">Relatório</option>
-											<option value="lista">Lista de Preços</option>
-											<option value="inventario">Inventário</option>
-											<option value="apresentacao">Apresentação</option>
-											<option value="contrato">Contrato</option>
-											<option value="outro">Outro</option>
+											@foreach(\App\Models\Document::DOCUMENT_TYPES as $key => $label)
+												<option value="{{ $key }}">{{ $label }}</option>
+											@endforeach
 										</select>
 									</div>
 								</div>
 
 								<div class="mb-3">
 									<label class="form-label">Descrição</label>
-									<textarea id="fileDescription" class="form-control" rows="3" placeholder="Descrição do documento..."></textarea>
+									<textarea name="description" id="fileDescription" class="form-control" rows="3" placeholder="Descrição do documento..."></textarea>
 								</div>
 							</div>
 						</div>
@@ -125,7 +121,7 @@
 									<label class="form-label">Data do Documento</label>
 									<div class="input-group">
 										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
-										<input type="date" id="fileDate" class="form-control" required>
+										<input type="date" name="document_date" id="fileDate" class="form-control" required>
 									</div>
 								</div>
 
@@ -133,7 +129,7 @@
 									<label class="form-label">Fornecedor/Autor</label>
 									<div class="input-group">
 										<span class="input-group-text"><i class="fa fa-user"></i></span>
-										<input type="text" id="fileAuthor" class="form-control" placeholder="Nome do fornecedor ou autor...">
+										<input type="text" name="author" id="fileAuthor" class="form-control" placeholder="Nome do fornecedor ou autor...">
 									</div>
 								</div>
 
@@ -141,15 +137,11 @@
 									<label class="form-label">Departamento</label>
 									<div class="input-group">
 										<span class="input-group-text"><i class="fa fa-building"></i></span>
-										<select id="fileDepartment" class="form-select">
+										<select name="department" id="fileDepartment" class="form-select">
 											<option value="">Selecionar departamento...</option>
-											<option value="farmacia">Farmácia</option>
-											<option value="administracao">Administração</option>
-											<option value="financeiro">Financeiro</option>
-											<option value="recursos_humanos">Recursos Humanos</option>
-											<option value="ti">Tecnologia da Informação</option>
-											<option value="qualidade">Qualidade</option>
-											<option value="outro">Outro</option>
+											@foreach(\App\Models\Document::DEPARTMENTS as $key => $label)
+												<option value="{{ $key }}">{{ $label }}</option>
+											@endforeach
 										</select>
 									</div>
 								</div>
@@ -158,11 +150,19 @@
 									<label class="form-label">Nível de Acesso</label>
 									<div class="input-group">
 										<span class="input-group-text"><i class="fa fa-lock"></i></span>
-										<select id="fileAccess" class="form-select" required>
-											<option value="publico">Público</option>
-											<option value="restrito">Restrito</option>
-											<option value="confidencial">Confidencial</option>
+										<select name="access_level" id="fileAccess" class="form-select" required>
+											@foreach(\App\Models\Document::ACCESS_LEVELS as $key => $label)
+												<option value="{{ $key }}">{{ $label }}</option>
+											@endforeach
 										</select>
+									</div>
+								</div>
+
+								<div class="mb-3">
+									<label class="form-label">Categoria</label>
+									<div class="input-group">
+										<span class="input-group-text"><i class="fa fa-folder"></i></span>
+										<input type="text" name="category" id="fileCategory" class="form-control" placeholder="Categoria do documento...">
 									</div>
 								</div>
 							</div>
@@ -175,11 +175,19 @@
 						<div class="mb-3">
 							<div class="input-group">
 								<span class="input-group-text"><i class="fa fa-tag"></i></span>
-								<input type="text" id="fileTags" class="form-control" placeholder="Adicionar etiquetas (separadas por vírgula)...">
+								<input type="text" name="tags" id="fileTags" class="form-control" placeholder="Adicionar etiquetas (separadas por vírgula)...">
 							</div>
 							<div class="form-text">Exemplo: urgente, revisão, 2025, farmácia</div>
 						</div>
 						<div id="tagPreview" class="tag-preview"></div>
+					</div>
+
+					<!-- Notas adicionais -->
+					<div class="form-section">
+						<h6 class="section-title"><i class="fa fa-sticky-note me-2"></i>Notas Adicionais</h6>
+						<div class="mb-3">
+							<textarea name="notes" id="fileNotes" class="form-control" rows="2" placeholder="Notas ou observações adicionais..."></textarea>
+						</div>
 					</div>
 				</form>
 			</div>
@@ -514,6 +522,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		console.log('Handling files:', files.length);
 		
 		if (files.length === 1) {
+			// Armazenar o ficheiro atual
+			currentFile = files[0];
 			// Open modal for single file
 			openDocumentModal(files[0]);
 		} else {
@@ -710,36 +720,74 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// Save document
 	document.getElementById('saveDocument').addEventListener('click', function() {
-		const formData = {
-			name: document.getElementById('fileName').value,
-			type: document.getElementById('fileType').value,
-			description: document.getElementById('fileDescription').value,
-			date: document.getElementById('fileDate').value,
-			author: document.getElementById('fileAuthor').value,
-			department: document.getElementById('fileDepartment').value,
-			access: document.getElementById('fileAccess').value,
-			tags: document.getElementById('fileTags').value
-		};
+		const form = document.getElementById('documentForm');
+		const formData = new FormData(form);
+		
+		// Adicionar o ficheiro se existir
+		if (currentFile) {
+			formData.append('file', currentFile);
+		}
 		
 		// Validate required fields
-		if (!formData.name || !formData.type || !formData.date || !formData.access) {
+		const name = formData.get('name');
+		const documentType = formData.get('document_type');
+		const documentDate = formData.get('document_date');
+		const accessLevel = formData.get('access_level');
+		
+		if (!name || !documentType || !documentDate || !accessLevel) {
 			alert('Por favor, preencha todos os campos obrigatórios.');
 			return;
 		}
 		
-		// Simulate save
-		console.log('Saving document:', formData);
+		if (!currentFile) {
+			alert('Por favor, selecione um ficheiro.');
+			return;
+		}
 		
-		// Show success animation
-		this.innerHTML = '<i class="fa fa-check me-2"></i>Guardado!';
-		this.classList.add('btn-success');
+		// Desabilitar botão e mostrar loading
+		const saveBtn = this;
+		const originalText = saveBtn.innerHTML;
+		saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>A guardar...';
+		saveBtn.disabled = true;
 		
-		setTimeout(() => {
-			documentModal.hide();
-			// Redirect or show success message
-			window.location.href = '{{ route("documents.index") }}';
-		}, 1500);
+		// Enviar dados para o servidor
+		fetch('{{ route("documents.store") }}', {
+			method: 'POST',
+			body: formData,
+			headers: {
+				'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+			}
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (data.success) {
+				// Mostrar sucesso
+				saveBtn.innerHTML = '<i class="fa fa-check me-2"></i>Guardado!';
+				saveBtn.classList.remove('btn-primary');
+				saveBtn.classList.add('btn-success');
+				
+				setTimeout(() => {
+					documentModal.hide();
+					// Redirecionar para a listagem
+					window.location.href = '{{ route("documents.index") }}';
+				}, 1500);
+			} else {
+				// Mostrar erro
+				alert('Erro: ' + data.message);
+				saveBtn.innerHTML = originalText;
+				saveBtn.disabled = false;
+			}
+		})
+		.catch(error => {
+			console.error('Erro ao guardar documento:', error);
+			alert('Erro ao guardar documento. Tente novamente.');
+			saveBtn.innerHTML = originalText;
+			saveBtn.disabled = false;
+		});
 	});
+
+	// Variável para armazenar o ficheiro atual
+	let currentFile = null;
 
 	// Cancel button event
 	document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(btn => {

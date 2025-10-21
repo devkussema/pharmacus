@@ -85,6 +85,14 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     Route::prefix('documents')->group(function () {
         Route::get('/', [DocumentsController::class, 'index'])->name('documents.index');
         Route::get('/create', [DocumentsController::class, 'create'])->name('documents.create');
+        Route::post('/', [DocumentsController::class, 'store'])->name('documents.store');
+        Route::get('/{document}', [DocumentsController::class, 'show'])->name('documents.show');
+        Route::get('/{document}/download', [DocumentsController::class, 'download'])->name('documents.download');
+        Route::get('/{document}/preview', [DocumentsController::class, 'preview'])->name('documents.preview');
+        Route::delete('/{document}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
+        Route::patch('/{document}/restore', [DocumentsController::class, 'restore'])->name('documents.restore');
+        Route::patch('/{document}/archive', [DocumentsController::class, 'archive'])->name('documents.archive');
+        Route::get('/api/stats', [DocumentsController::class, 'stats'])->name('documents.stats');
     });
 
     Route::prefix('dev')->group(function () {

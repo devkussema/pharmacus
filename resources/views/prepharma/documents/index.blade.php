@@ -29,23 +29,23 @@
 				<div class="smart-filters d-flex flex-wrap gap-2">
 					<span class="filter-chip active" data-type="all">
 						<i class="fa fa-sparkles me-1"></i>Todos
-						<span class="chip-count">6</span>
+						<span class="chip-count">{{ $stats['total'] }}</span>
 					</span>
 					<span class="filter-chip" data-type="pdf">
 						<i class="fa fa-file-pdf me-1"></i>PDF
-						<span class="chip-count">2</span>
+						<span class="chip-count">{{ $stats['pdf'] }}</span>
 					</span>
 					<span class="filter-chip" data-type="xlsx">
 						<i class="fa fa-file-excel me-1"></i>Excel
-						<span class="chip-count">2</span>
+						<span class="chip-count">{{ $stats['xlsx'] }}</span>
 					</span>
 					<span class="filter-chip" data-type="docx">
 						<i class="fa fa-file-word me-1"></i>Word
-						<span class="chip-count">1</span>
+						<span class="chip-count">{{ $stats['docx'] }}</span>
 					</span>
 					<span class="filter-chip" data-type="pptx">
 						<i class="fa fa-file-powerpoint me-1"></i>PowerPoint
-						<span class="chip-count">1</span>
+						<span class="chip-count">{{ $stats['pptx'] }}</span>
 					</span>
 				</div>
 			</div>
@@ -56,7 +56,7 @@
 					<div class="card text-center">
 						<div class="card-body">
 							<i class="fa fa-file fa-2x text-primary mb-2"></i>
-							<h4 class="mb-0" id="statTotal">—</h4>
+							<h4 class="mb-0" id="statTotal">{{ $stats['total'] }}</h4>
 							<small class="text-muted">Total</small>
 						</div>
 					</div>
@@ -65,7 +65,7 @@
 					<div class="card text-center">
 						<div class="card-body">
 							<i class="fa fa-file-pdf fa-2x text-danger mb-2"></i>
-							<h4 class="mb-0" id="statPDF">—</h4>
+							<h4 class="mb-0" id="statPDF">{{ $stats['pdf'] }}</h4>
 							<small class="text-muted">PDF</small>
 						</div>
 					</div>
@@ -74,7 +74,7 @@
 					<div class="card text-center">
 						<div class="card-body">
 							<i class="fa fa-file-excel fa-2x text-success mb-2"></i>
-							<h4 class="mb-0" id="statXLSX">—</h4>
+							<h4 class="mb-0" id="statXLSX">{{ $stats['xlsx'] }}</h4>
 							<small class="text-muted">Excel</small>
 						</div>
 					</div>
@@ -83,7 +83,7 @@
 					<div class="card text-center">
 						<div class="card-body">
 							<i class="fa fa-file-word fa-2x text-info mb-2"></i>
-							<h4 class="mb-0" id="statDOCX">—</h4>
+							<h4 class="mb-0" id="statDOCX">{{ $stats['docx'] }}</h4>
 							<small class="text-muted">Word</small>
 						</div>
 					</div>
@@ -93,58 +93,64 @@
 			<!-- Grid View -->
 			<div id="viewGrid">
 				<div class="row">
-					@php
-						$demo = [
-							['nome' => 'Manual de Procedimentos.pdf','tipo'=>'PDF','tamanho'=>'1.2 MB','data'=>'10.10.2025'],
-							['nome' => 'Lista de Preços.xlsx','tipo'=>'XLSX','tamanho'=>'240 KB','data'=>'01.09.2025'],
-							['nome' => 'Relatorio_Mensal.docx','tipo'=>'DOCX','tamanho'=>'560 KB','data'=>'15.10.2025'],
-							['nome' => 'Política de Segurança.pdf','tipo'=>'PDF','tamanho'=>'890 KB','data'=>'05.10.2025'],
-							['nome' => 'Inventário_2025.xlsx','tipo'=>'XLSX','tamanho'=>'1.8 MB','data'=>'20.09.2025'],
-							['nome' => 'Apresentação_Farmácia.pptx','tipo'=>'PPTX','tamanho'=>'3.2 MB','data'=>'12.10.2025'],
-						];
-					@endphp
-					@foreach($demo as $doc)
+					@forelse($documents as $doc)
 					<div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-						<div class="card h-100 doc-card smart-card" data-type="{{ strtolower($doc['tipo']) }}" data-name="{{ strtolower($doc['nome']) }}">
+						<div class="card h-100 doc-card smart-card" data-type="{{ strtolower($doc->file_extension) }}" data-name="{{ strtolower($doc->name) }}">
 							<div class="card-body text-center position-relative">
 								<div class="ai-glow"></div>
 								<div class="mb-3">
-									@if($doc['tipo']==='PDF')
-										<div class="file-icon-container">
-											<i class="fa fa-file-pdf fa-3x text-danger"></i>
-											<div class="file-pulse"></div>
-										</div>
-									@elseif($doc['tipo']==='XLSX')
-										<div class="file-icon-container">
-											<i class="fa fa-file-excel fa-3x text-success"></i>
-											<div class="file-pulse"></div>
-										</div>
-									@elseif($doc['tipo']==='PPTX')
-										<div class="file-icon-container">
-											<i class="fa fa-file-powerpoint fa-3x text-warning"></i>
-											<div class="file-pulse"></div>
-										</div>
-									@else
-										<div class="file-icon-container">
-											<i class="fa fa-file-word fa-3x text-primary"></i>
-											<div class="file-pulse"></div>
-										</div>
-									@endif
+									@php
+										$iconClass = 'fa-file';
+										$iconColor = 'text-secondary';
+										switch(strtolower($doc->file_extension)) {
+											case 'pdf':
+												$iconClass = 'fa-file-pdf';
+												$iconColor = 'text-danger';
+												break;
+											case 'xlsx':
+											case 'xls':
+												$iconClass = 'fa-file-excel';
+												$iconColor = 'text-success';
+												break;
+											case 'docx':
+											case 'doc':
+												$iconClass = 'fa-file-word';
+												$iconColor = 'text-primary';
+												break;
+											case 'pptx':
+											case 'ppt':
+												$iconClass = 'fa-file-powerpoint';
+												$iconColor = 'text-warning';
+												break;
+										}
+									@endphp
+									<div class="file-icon-container">
+										<i class="fa {{ $iconClass }} fa-3x {{ $iconColor }}"></i>
+										<div class="file-pulse"></div>
+									</div>
 								</div>
-								<h6 class="card-title smart-title">{{ $doc['nome'] }}</h6>
+								<h6 class="card-title smart-title" title="{{ $doc->name }}">{{ Str::limit($doc->name, 30) }}</h6>
 								<p class="card-text">
-									<small class="text-muted ai-meta">{{ $doc['tamanho'] }} • {{ $doc['data'] }}</small>
+									<small class="text-muted ai-meta">{{ $doc->formatted_file_size }} • {{ $doc->created_at->format('d.m.Y') }}</small>
 								</p>
+								@if($doc->description)
+									<p class="card-text">
+										<small class="text-muted">{{ Str::limit($doc->description, 50) }}</small>
+									</p>
+								@endif
 								<div class="btn-group smart-actions" role="group">
-									<button class="btn btn-sm btn-primary btn-preview smart-btn" data-nome="{{ $doc['nome'] }}">
+									<button class="btn btn-sm btn-primary btn-preview smart-btn" 
+											data-url="{{ route('documents.preview', $doc) }}"
+											data-bs-toggle="modal" data-bs-target="#previewModal">
 										<i class="fa fa-eye"></i>
 										<span class="btn-tooltip">Visualizar</span>
 									</button>
-									<button class="btn btn-sm btn-success smart-btn">
+									<a href="{{ route('documents.download', $doc) }}" class="btn btn-sm btn-success smart-btn">
 										<i class="fa fa-download"></i>
 										<span class="btn-tooltip">Download</span>
-									</button>
-									<button class="btn btn-sm btn-danger smart-btn">
+									</a>
+									<button class="btn btn-sm btn-danger smart-btn btn-delete" 
+											data-url="{{ route('documents.destroy', $doc) }}">
 										<i class="fa fa-trash"></i>
 										<span class="btn-tooltip">Eliminar</span>
 									</button>
@@ -152,7 +158,18 @@
 							</div>
 						</div>
 					</div>
-					@endforeach
+					@empty
+						<div class="col-12">
+							<div class="text-center py-5">
+								<i class="fa fa-file fa-3x text-muted mb-3"></i>
+								<h5 class="text-muted">Nenhum documento encontrado</h5>
+								<p class="text-muted">Comece por adicionar o primeiro documento ao sistema.</p>
+								<a href="{{ route('documents.create') }}" class="btn btn-primary">
+									<i class="fa fa-plus me-2"></i>Adicionar Documento
+								</a>
+							</div>
+						</div>
+					@endforelse
 				</div>
 			</div>
 
@@ -166,49 +183,90 @@
 									<th>Documento</th>
 									<th>Tipo</th>
 									<th>Tamanho</th>
+									<th>Carregado por</th>
 									<th>Data</th>
 									<th class="text-end">Ações</th>
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($demo as $doc)
-								<tr data-type="{{ strtolower($doc['tipo']) }}" data-name="{{ strtolower($doc['nome']) }}">
+								@forelse($documents as $doc)
+								<tr data-type="{{ strtolower($doc->file_extension) }}" data-name="{{ strtolower($doc->name) }}">
 									<td>
 										<div class="d-flex align-items-center">
-											@if($doc['tipo']==='PDF')
-												<i class="fa fa-file-pdf text-danger me-2"></i>
-											@elseif($doc['tipo']==='XLSX')
-												<i class="fa fa-file-excel text-success me-2"></i>
-											@elseif($doc['tipo']==='PPTX')
-												<i class="fa fa-file-powerpoint text-warning me-2"></i>
-											@else
-												<i class="fa fa-file-word text-primary me-2"></i>
-											@endif
-											{{ $doc['nome'] }}
+											@php
+												$iconClass = 'fa-file';
+												$iconColor = 'text-secondary';
+												switch(strtolower($doc->file_extension)) {
+													case 'pdf':
+														$iconClass = 'fa-file-pdf';
+														$iconColor = 'text-danger';
+														break;
+													case 'xlsx':
+													case 'xls':
+														$iconClass = 'fa-file-excel';
+														$iconColor = 'text-success';
+														break;
+													case 'docx':
+													case 'doc':
+														$iconClass = 'fa-file-word';
+														$iconColor = 'text-primary';
+														break;
+													case 'pptx':
+													case 'ppt':
+														$iconClass = 'fa-file-powerpoint';
+														$iconColor = 'text-warning';
+														break;
+												}
+											@endphp
+											<i class="fa {{ $iconClass }} {{ $iconColor }} me-2"></i>
+											<div>
+												<div class="fw-semibold">{{ $doc->name }}</div>
+												@if($doc->description)
+													<small class="text-muted">{{ Str::limit($doc->description, 50) }}</small>
+												@endif
+											</div>
 										</div>
 									</td>
-									<td><span class="badge bg-light text-dark">{{ $doc['tipo'] }}</span></td>
-									<td>{{ $doc['tamanho'] }}</td>
-									<td>{{ $doc['data'] }}</td>
+									<td><span class="badge bg-light text-dark">{{ strtoupper($doc->file_extension) }}</span></td>
+									<td>{{ $doc->formatted_file_size }}</td>
+									<td>{{ $doc->uploader->name ?? 'Sistema' }}</td>
+									<td>{{ $doc->created_at->format('d/m/Y H:i') }}</td>
 									<td class="text-end">
 										<div class="btn-group" role="group">
-											<button class="btn btn-sm btn-primary btn-preview" data-nome="{{ $doc['nome'] }}">
+											<button class="btn btn-sm btn-primary btn-preview" 
+													data-url="{{ route('documents.preview', $doc) }}"
+													data-bs-toggle="modal" data-bs-target="#previewModal">
 												<i class="fa fa-eye"></i>
 											</button>
-											<button class="btn btn-sm btn-success">
+											<a href="{{ route('documents.download', $doc) }}" class="btn btn-sm btn-success">
 												<i class="fa fa-download"></i>
-											</button>
-											<button class="btn btn-sm btn-danger">
+											</a>
+											<button class="btn btn-sm btn-danger btn-delete" 
+													data-url="{{ route('documents.destroy', $doc) }}">
 												<i class="fa fa-trash"></i>
 											</button>
 										</div>
 									</td>
 								</tr>
-								@endforeach
+								@empty
+								<tr>
+									<td colspan="6" class="text-center py-4">
+										<i class="fa fa-file fa-2x text-muted mb-2 d-block"></i>
+										<span class="text-muted">Nenhum documento encontrado</span>
+									</td>
+								</tr>
+								@endforelse
 							</tbody>
 						</table>
 					</div>
 				</div>
+
+				<!-- Paginação -->
+				@if($documents->hasPages())
+					<div class="d-flex justify-content-center mt-4">
+						{{ $documents->links() }}
+					</div>
+				@endif
 			</div>
 		</div>
 	</div>
@@ -580,36 +638,137 @@ document.addEventListener('DOMContentLoaded', function(){
 	// Preview Modal
 	document.addEventListener('click', function(e) {
 		if (e.target.matches('.btn-preview') || e.target.closest('.btn-preview')) {
+			e.preventDefault();
 			console.log('Preview button clicked');
 			const btn = e.target.matches('.btn-preview') ? e.target : e.target.closest('.btn-preview');
-			const nome = btn.getAttribute('data-nome');
+			const previewUrl = btn.getAttribute('data-url');
 			
-			const previewName = document.getElementById('previewName');
-			const previewContent = document.getElementById('previewContent');
-			
-			if (previewName) previewName.textContent = nome;
-			
-			const fileExt = nome.split('.').pop().toUpperCase();
-			let iconClass = 'fa-file';
-			let iconColor = '#6c757d';
-			
-			switch(fileExt) {
-				case 'PDF': iconClass = 'fa-file-pdf'; iconColor = '#dc3545'; break;
-				case 'XLSX': iconClass = 'fa-file-excel'; iconColor = '#198754'; break;
-				case 'DOCX': iconClass = 'fa-file-word'; iconColor = '#0d6efd'; break;
-				case 'PPTX': iconClass = 'fa-file-powerpoint'; iconColor = '#fd7e14'; break;
+			if (previewUrl) {
+				// Fazer requisição AJAX para obter dados do documento
+				fetch(previewUrl)
+					.then(response => response.json())
+					.then(data => {
+						const previewName = document.getElementById('previewName');
+						const previewContent = document.getElementById('previewContent');
+						
+						if (previewName) previewName.textContent = data.name;
+						
+						let iconClass = 'fa-file';
+						let iconColor = '#6c757d';
+						
+						switch(data.file_extension.toUpperCase()) {
+							case 'PDF': iconClass = 'fa-file-pdf'; iconColor = '#dc3545'; break;
+							case 'XLSX': case 'XLS': iconClass = 'fa-file-excel'; iconColor = '#198754'; break;
+							case 'DOCX': case 'DOC': iconClass = 'fa-file-word'; iconColor = '#0d6efd'; break;
+							case 'PPTX': case 'PPT': iconClass = 'fa-file-powerpoint'; iconColor = '#fd7e14'; break;
+						}
+						
+						if (previewContent) {
+							previewContent.innerHTML = `
+								<div class="text-center">
+									<i class="fa ${iconClass} fa-4x mb-3" style="color: ${iconColor}"></i>
+									<h5>${data.name}</h5>
+									${data.description ? `<p class="text-muted">${data.description}</p>` : ''}
+									<div class="row mt-3">
+										<div class="col-6">
+											<strong>Tamanho:</strong><br>
+											<span class="text-muted">${data.file_size}</span>
+										</div>
+										<div class="col-6">
+											<strong>Tipo:</strong><br>
+											<span class="text-muted">${data.document_type}</span>
+										</div>
+									</div>
+									${data.author ? `
+									<div class="row mt-2">
+										<div class="col-6">
+											<strong>Autor:</strong><br>
+											<span class="text-muted">${data.author}</span>
+										</div>
+										<div class="col-6">
+											<strong>Data:</strong><br>
+											<span class="text-muted">${data.document_date}</span>
+										</div>
+									</div>
+									` : ''}
+									<div class="mt-4">
+										<a href="${data.download_url}" class="btn btn-primary">
+											<i class="fa fa-download me-2"></i>Download
+										</a>
+									</div>
+								</div>
+							`;
+						}
+					})
+					.catch(error => {
+						console.error('Erro ao carregar preview:', error);
+						const previewContent = document.getElementById('previewContent');
+						if (previewContent) {
+							previewContent.innerHTML = `
+								<div class="text-center text-danger">
+									<i class="fa fa-exclamation-triangle fa-3x mb-3"></i>
+									<p>Erro ao carregar pré-visualização</p>
+								</div>
+							`;
+						}
+					});
 			}
+		}
+	});
+
+	// Delete functionality
+	document.addEventListener('click', function(e) {
+		if (e.target.matches('.btn-delete') || e.target.closest('.btn-delete')) {
+			e.preventDefault();
+			const btn = e.target.matches('.btn-delete') ? e.target : e.target.closest('.btn-delete');
+			const deleteUrl = btn.getAttribute('data-url');
 			
-			if (previewContent) {
-				previewContent.innerHTML = `
-					<i class="fa ${iconClass} fa-3x mb-3" style="color: ${iconColor}"></i>
-					<p>Pré-visualização de ${nome}</p>
-				`;
+			if (confirm('Tem certeza que deseja eliminar este documento?')) {
+				fetch(deleteUrl, {
+					method: 'DELETE',
+					headers: {
+						'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+						'Content-Type': 'application/json',
+					}
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						// Remover elemento da página
+						const card = btn.closest('.col-lg-3, .col-md-4, .col-sm-6, tr');
+						if (card) {
+							card.style.animation = 'ai-exit 0.3s ease-in forwards';
+							setTimeout(() => card.remove(), 300);
+						}
+						
+						// Mostrar notificação de sucesso
+						showNotification(data.message, 'success');
+						
+						// Atualizar estatísticas
+						setTimeout(updateStats, 500);
+					} else {
+						showNotification(data.message, 'error');
+					}
+				})
+				.catch(error => {
+					console.error('Erro ao eliminar documento:', error);
+					showNotification('Erro ao eliminar documento', 'error');
+				});
 			}
-			
-			const modal = document.getElementById('previewModal');
-			if (modal && window.bootstrap) {
-				new bootstrap.Modal(modal).show();
+		}
+	});
+
+	// Função para mostrar notificações
+	function showNotification(message, type = 'info') {
+		// Implementar sistema de notificação (toast, alert, etc.)
+		if (type === 'success') {
+			alert('✓ ' + message);
+		} else if (type === 'error') {
+			alert('✗ ' + message);
+		} else {
+			alert(message);
+		}
+	}
 			}
 		}
 	});
