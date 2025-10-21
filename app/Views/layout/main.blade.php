@@ -26,8 +26,8 @@
             <div class="content">
                 @yield('content')
 
-                @include('admin::partials.notification-box')
             </div>
+                @include('admin::partials.notification-box')
         </div>
     </div>
 
