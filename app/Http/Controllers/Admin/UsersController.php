@@ -168,20 +168,52 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $data = $request->validate([
+        // Validar campos editáveis
+        $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'nullable|in:super_admin,admin,user',
+            'grupo_id' => 'nullable|exists:grupos,id',
+            'telefone' => 'nullable|string|max:30',
+            'telefone_sec' => 'nullable|string|max:30',
+            'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'status' => 'nullable|string|max:30',
+            'pode_cadastrar_produtos' => 'nullable|boolean',
+            'observacoes' => 'nullable|string',
         ]);
 
-        if (!empty($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
-        } else {
-            unset($data['password']);
+        // Normaliza checkbox
+        $validated['pode_cadastrar_produtos'] = $request->has('pode_cadastrar_produtos') ? 1 : 0;
+
+        // Trata upload da nova foto se existir
+        if ($request->hasFile('foto_perfil')) {
+            $file = $request->file('foto_perfil');
+            if ($file->isValid()) {
+                try {
+                    // eliminar foto antiga se existir
+                    if ($user->foto_perfil && Storage::disk('public')->exists($user->foto_perfil)) {
+                        Storage::disk('public')->delete($user->foto_perfil);
+                    }
+                    $path = $file->store('users', 'public');
+                    $validated['foto_perfil'] = $path;
+                } catch (\Throwable $e) {
+                    return back()->withErrors(['foto_perfil' => 'Falha ao guardar a foto: ' . $e->getMessage()])->withInput();
+                }
+            } else {
+                return back()->withErrors(['foto_perfil' => 'Ficheiro inválido no upload.'])->withInput();
+            }
         }
 
-        $user->update($data);
+        // Hashear senha apenas se fornecida
+        if (!empty($validated['password'])) {
+            $validated['password'] = bcrypt($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        // Atualizar apenas campos fillable
+        $user->update(array_intersect_key($validated, array_flip((new User())->getFillable())));
 
     return redirect()->route('cp.users.index')->with('success', 'Utilizador actualizado com sucesso.');
     }
