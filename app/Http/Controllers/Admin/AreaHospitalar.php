@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\FarmaciaAreaHospitalar;
 
 class AreaHospitalar extends Controller
 {
@@ -12,7 +13,14 @@ class AreaHospitalar extends Controller
      */
     public function index()
     {
-        return view('admin::area_hospitalar.index');
+        $farmaciaId = '11a2d86a-c885-44e4-9162-14215ef75b95';
+
+        $areas = FarmaciaAreaHospitalar::with('area_hospitalar')
+            ->where('farmacia_id', $farmaciaId)
+            ->orderByDesc('id')
+            ->get();
+
+        return view('admin::area_hospitalar.index', compact('areas'));
     }
 
     /**

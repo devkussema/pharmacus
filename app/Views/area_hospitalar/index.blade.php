@@ -16,32 +16,35 @@
                                 <div class="doctor-search-blk">
                                     <div class="top-nav-search table-search-blk">
                                         <form>
-                                            <input type="text" class="form-control"
-                                                placeholder="Pesquise aqui">
-                                            <a class="btn">
-                                                <img src="{{ assetr('assets/img/icons/search-normal.svg') }}" alt>
-                                            </a>
+                                                <input type="text" class="form-control"
+                                                    placeholder="Pesquise aqui">
+                                                <a class="btn">
+                                                    <img src="{{ asset('assets/img/icons/search-normal.svg') }}" alt>
+                                                </a>
                                         </form>
                                     </div>
                                     <div class="add-group">
-                                        <a href="add-department.html"
-                                            class="btn btn-primary add-pluss ms-2"><img
-                                                src="{{ assetr('assets/img/icons/plus.svg') }}" alt></a>
-                                        <a href="javascript:;"
-                                            class="btn btn-primary doctor-refresh ms-2"><img
-                                                src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt></a>
+                    <a href="javascript:;" class="btn btn-primary add-pluss ms-2"><img
+                        src="{{ asset('assets/img/icons/plus.svg') }}" alt></a>
+                    <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2"><img
+                        src="{{ asset('assets/img/icons/re-fresh.svg') }}" alt></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-auto text-end float-end ms-auto download-grp">
-                            <a href="javascript:;" class=" me-2"><img
-                                    src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt></a>
-                            <a href="javascript:;" class=" me-2"><img
-                                    src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt></a>
-                            <a href="javascript:;" class=" me-2"><img
-                                    src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt></a>
-                            <a href="javascript:;"><img src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}" alt></a>
+                            <a href="javascript:;" class=" me-2">
+                                <img src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt>
+                            </a>
+                            <a href="javascript:;" class=" me-2">
+                                <img src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt>
+                            </a>
+                            <a href="javascript:;" class=" me-2">
+                                <img src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt>
+                            </a>
+                            <a href="javascript:;">
+                                <img src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}" alt>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -52,49 +55,53 @@
                             <tr>
                                 <th>
                                     <div class="form-check check-tables">
-                                        <input class="form-check-input" type="checkbox"
-                                            value="something">
+                                        <input class="form-check-input" type="checkbox" value="all">
                                     </div>
                                 </th>
-                                <th>Department</th>
-                                <th>Department Head</th>
-                                <th>Description</th>
-                                <th>Date</th>
-                                <th>Status</th>
+                                <th>Área</th>
+                                <th>Descrição</th>
+                                <th>Estado</th>
+                                <th>Data</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="form-check check-tables">
-                                        <input class="form-check-input" type="checkbox"
-                                            value="something">
-                                    </div>
-                                </td>
-                                <td>Cardiology</td>
-                                <td class="profile-image"><a href="profile.html"><img width="28"
-                                            height="28" src="assets/img/profiles/avatar-01.jpg"
-                                            class="rounded-circle m-r-5" alt> Dr.Andrea Lalema</a></td>
-                                <td>Investigates and treats proble...</td>
-                                <td>01.10.2022</td>
-                                <td><button class="custom-badge status-green ">Active</button></td>
-                                <td class="text-end">
-                                    <div class="dropdown dropdown-action">
-                                        <a href="#" class="action-icon dropdown-toggle"
-                                            data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                class="fa fa-ellipsis-v"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item" href="edit-department.html"><i
-                                                    class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                Edit</a>
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#delete_patient"><i
-                                                    class="fa fa-trash-alt m-r-5"></i> Delete</a>
+                            @forelse($areas as $area)
+                                <tr>
+                                    <td>
+                                        <div class="form-check check-tables">
+                                            <input class="form-check-input" type="checkbox" value="{{ $area->id }}">
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td>{{ $area->area_hospitalar?->nome ?? '—' }}</td>
+                                    <td>{{ $area->area_hospitalar?->descricao ?? '—' }}</td>
+                                    <td>
+                                        @if($area->status === 'active' || $area->status === 1 || $area->status === '1')
+                                            <button class="custom-badge status-green">Ativo</button>
+                                        @else
+                                            <button class="custom-badge status-red">Inativo</button>
+                                        @endif
+                                    </td>
+                                    <td>{{ optional($area->created_at)->format('d.m.Y') }}</td>
+                                    <td class="text-end">
+                                        <div class="dropdown dropdown-action">
+                                            <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item" href="{{ route('cp.area_hospitalar.edit', $area->id) }}"><i class="fa-solid fa-pen-to-square m-r-5"></i> Editar</a>
+                                                <form action="{{ route('cp.area_hospitalar.destroy', $area->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja remover esta área?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="dropdown-item text-danger" type="submit"><i class="fa fa-trash-alt m-r-5"></i> Remover</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">Nenhuma área encontrada para esta farmácia.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
