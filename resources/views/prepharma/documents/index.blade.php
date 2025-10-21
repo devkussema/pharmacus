@@ -3,7 +3,7 @@
 @section('titulo', 'Documentos')
 
 @section('content')
-<div class="container-fluid">
+<div class="content container-fluid">
 	<div class="row">
 		<div class="col-12">
 			<!-- Header -->
@@ -23,10 +23,28 @@
 
 			<!-- Filters -->
 			<div class="mb-4">
-				<span class="badge bg-primary me-2 filter-tag active" data-type="all">Todos</span>
-				<span class="badge bg-outline-primary me-2 filter-tag" data-type="pdf">PDF</span>
-				<span class="badge bg-outline-primary me-2 filter-tag" data-type="xlsx">Excel</span>
-				<span class="badge bg-outline-primary filter-tag" data-type="docx">Word</span>
+				<div class="smart-filters d-flex flex-wrap gap-2">
+					<span class="filter-chip active" data-type="all">
+						<i class="fa fa-sparkles me-1"></i>Todos
+						<span class="chip-count">6</span>
+					</span>
+					<span class="filter-chip" data-type="pdf">
+						<i class="fa fa-file-pdf me-1"></i>PDF
+						<span class="chip-count">2</span>
+					</span>
+					<span class="filter-chip" data-type="xlsx">
+						<i class="fa fa-file-excel me-1"></i>Excel
+						<span class="chip-count">2</span>
+					</span>
+					<span class="filter-chip" data-type="docx">
+						<i class="fa fa-file-word me-1"></i>Word
+						<span class="chip-count">1</span>
+					</span>
+					<span class="filter-chip" data-type="pptx">
+						<i class="fa fa-file-powerpoint me-1"></i>PowerPoint
+						<span class="chip-count">1</span>
+					</span>
+				</div>
 			</div>
 
 			<!-- Stats -->
@@ -84,32 +102,48 @@
 					@endphp
 					@foreach($demo as $doc)
 					<div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-						<div class="card h-100 doc-card" data-type="{{ strtolower($doc['tipo']) }}" data-name="{{ strtolower($doc['nome']) }}">
-							<div class="card-body text-center">
+						<div class="card h-100 doc-card smart-card" data-type="{{ strtolower($doc['tipo']) }}" data-name="{{ strtolower($doc['nome']) }}">
+							<div class="card-body text-center position-relative">
+								<div class="ai-glow"></div>
 								<div class="mb-3">
 									@if($doc['tipo']==='PDF')
-										<i class="fa fa-file-pdf fa-3x text-danger"></i>
+										<div class="file-icon-container">
+											<i class="fa fa-file-pdf fa-3x text-danger"></i>
+											<div class="file-pulse"></div>
+										</div>
 									@elseif($doc['tipo']==='XLSX')
-										<i class="fa fa-file-excel fa-3x text-success"></i>
+										<div class="file-icon-container">
+											<i class="fa fa-file-excel fa-3x text-success"></i>
+											<div class="file-pulse"></div>
+										</div>
 									@elseif($doc['tipo']==='PPTX')
-										<i class="fa fa-file-powerpoint fa-3x text-warning"></i>
+										<div class="file-icon-container">
+											<i class="fa fa-file-powerpoint fa-3x text-warning"></i>
+											<div class="file-pulse"></div>
+										</div>
 									@else
-										<i class="fa fa-file-word fa-3x text-primary"></i>
+										<div class="file-icon-container">
+											<i class="fa fa-file-word fa-3x text-primary"></i>
+											<div class="file-pulse"></div>
+										</div>
 									@endif
 								</div>
-								<h6 class="card-title">{{ $doc['nome'] }}</h6>
+								<h6 class="card-title smart-title">{{ $doc['nome'] }}</h6>
 								<p class="card-text">
-									<small class="text-muted">{{ $doc['tamanho'] }} • {{ $doc['data'] }}</small>
+									<small class="text-muted ai-meta">{{ $doc['tamanho'] }} • {{ $doc['data'] }}</small>
 								</p>
-								<div class="btn-group" role="group">
-									<button class="btn btn-sm btn-primary btn-preview" data-nome="{{ $doc['nome'] }}">
+								<div class="btn-group smart-actions" role="group">
+									<button class="btn btn-sm btn-primary btn-preview smart-btn" data-nome="{{ $doc['nome'] }}">
 										<i class="fa fa-eye"></i>
+										<span class="btn-tooltip">Visualizar</span>
 									</button>
-									<button class="btn btn-sm btn-success">
+									<button class="btn btn-sm btn-success smart-btn">
 										<i class="fa fa-download"></i>
+										<span class="btn-tooltip">Download</span>
 									</button>
-									<button class="btn btn-sm btn-danger">
+									<button class="btn btn-sm btn-danger smart-btn">
 										<i class="fa fa-trash"></i>
+										<span class="btn-tooltip">Eliminar</span>
 									</button>
 								</div>
 							</div>
@@ -201,6 +235,235 @@
 
 @push('styles')
 <style>
+	/* Smart Filters com IA */
+	.smart-filters {
+		position: relative;
+	}
+	
+	.filter-chip {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		padding: 8px 16px;
+		background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+		border: 2px solid transparent;
+		border-radius: 25px;
+		color: #6c757d;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-weight: 500;
+		font-size: 14px;
+		overflow: hidden;
+	}
+	
+	.filter-chip::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -100%;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+		transition: left 0.5s;
+	}
+	
+	.filter-chip:hover::before {
+		left: 100%;
+	}
+	
+	.filter-chip:hover {
+		transform: translateY(-2px) scale(1.05);
+		box-shadow: 0 8px 25px rgba(0, 123, 255, 0.25);
+		border-color: rgba(0, 123, 255, 0.3);
+	}
+	
+	.filter-chip.active {
+		background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+		color: white;
+		border-color: #0056b3;
+		box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+		transform: translateY(-1px);
+	}
+	
+	.filter-chip.active::after {
+		content: '';
+		position: absolute;
+		top: -2px;
+		left: -2px;
+		right: -2px;
+		bottom: -2px;
+		background: linear-gradient(45deg, #007bff, #00d4ff, #007bff);
+		border-radius: 25px;
+		z-index: -1;
+		animation: ai-glow 2s ease-in-out infinite;
+	}
+	
+	.chip-count {
+		margin-left: 8px;
+		background: rgba(255,255,255,0.2);
+		padding: 2px 8px;
+		border-radius: 12px;
+		font-size: 12px;
+		font-weight: 600;
+	}
+	
+	.filter-chip.active .chip-count {
+		background: rgba(255,255,255,0.3);
+	}
+	
+	/* Smart Cards com IA */
+	.smart-card {
+		position: relative;
+		border: none;
+		border-radius: 15px;
+		background: white;
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		overflow: hidden;
+	}
+	
+	.smart-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: linear-gradient(135deg, rgba(0,123,255,0.05) 0%, rgba(0,212,255,0.05) 100%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		z-index: 1;
+	}
+	
+	.smart-card:hover::before {
+		opacity: 1;
+	}
+	
+	.smart-card:hover {
+		transform: translateY(-8px) scale(1.02);
+		box-shadow: 0 20px 40px rgba(0,123,255,0.15);
+	}
+	
+	.ai-glow {
+		position: absolute;
+		top: -50%;
+		left: -50%;
+		width: 200%;
+		height: 200%;
+		background: conic-gradient(from 0deg, transparent, rgba(0,123,255,0.1), transparent);
+		animation: ai-rotate 8s linear infinite;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		z-index: 0;
+	}
+	
+	.smart-card:hover .ai-glow {
+		opacity: 1;
+	}
+	
+	.file-icon-container {
+		position: relative;
+		display: inline-block;
+	}
+	
+	.file-pulse {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 60px;
+		height: 60px;
+		border: 2px solid currentColor;
+		border-radius: 50%;
+		transform: translate(-50%, -50%);
+		opacity: 0;
+		animation: ai-pulse 2s ease-in-out infinite;
+	}
+	
+	.smart-card:hover .file-pulse {
+		opacity: 0.3;
+	}
+	
+	.smart-title {
+		position: relative;
+		z-index: 2;
+		font-weight: 600;
+		transition: color 0.3s ease;
+	}
+	
+	.smart-card:hover .smart-title {
+		color: #007bff;
+	}
+	
+	.ai-meta {
+		position: relative;
+		z-index: 2;
+	}
+	
+	/* Smart Actions */
+	.smart-actions {
+		position: relative;
+		z-index: 2;
+	}
+	
+	.smart-btn {
+		position: relative;
+		overflow: hidden;
+		transition: all 0.3s ease;
+	}
+	
+	.smart-btn:hover {
+		transform: translateY(-2px);
+	}
+	
+	.btn-tooltip {
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		background: rgba(0,0,0,0.8);
+		color: white;
+		padding: 4px 8px;
+		border-radius: 4px;
+		font-size: 11px;
+		white-space: nowrap;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.3s ease;
+		z-index: 10;
+	}
+	
+	.smart-btn:hover .btn-tooltip {
+		opacity: 1;
+	}
+	
+	/* Animações IA */
+	@keyframes ai-glow {
+		0%, 100% { transform: scale(1); opacity: 0.4; }
+		50% { transform: scale(1.05); opacity: 0.8; }
+	}
+	
+	@keyframes ai-rotate {
+		from { transform: rotate(0deg); }
+		to { transform: rotate(360deg); }
+	}
+	
+	@keyframes ai-pulse {
+		0% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+		50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.1; }
+		100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+	}
+	
+	@keyframes ai-entrance {
+		0% {
+			opacity: 0;
+			transform: translateY(20px) scale(0.9);
+		}
+		100% {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
+	}
+	
+	/* Stats Cards */
 	.stats-card {
 		border: none;
 		border-radius: 10px;
@@ -276,9 +539,9 @@ document.addEventListener('DOMContentLoaded', function(){
 	btnGrid.addEventListener('click', () => setViewMode('grid'));
 	setViewMode(localStorage.getItem('docsViewMode') || 'grid');
 
-	// Search and Filter
+	// Search and Filter com IA
 	const searchInput = document.getElementById('docSearch');
-	const filterTags = document.querySelectorAll('.filter-tag');
+	const filterChips = document.querySelectorAll('.filter-chip');
 	let currentFilter = 'all';
 
 	function filterDocs() {
@@ -286,15 +549,29 @@ document.addEventListener('DOMContentLoaded', function(){
 		const gridItems = document.querySelectorAll('#viewGrid .col-lg-3, #viewGrid .col-md-4, #viewGrid .col-sm-6');
 		const listRows = document.querySelectorAll('#viewList tbody tr');
 		
-		// Filter grid
-		gridItems.forEach(item => {
+		// AI transition effect
+		document.querySelector('.smart-filters').style.transform = 'scale(0.98)';
+		setTimeout(() => {
+			document.querySelector('.smart-filters').style.transform = 'scale(1)';
+		}, 100);
+		
+		// Filter grid com animação IA
+		gridItems.forEach((item, index) => {
 			const docCard = item.querySelector('.doc-card');
 			const name = docCard.dataset.name;
 			const type = docCard.dataset.type;
 			const matchesSearch = !query || name.includes(query);
 			const matchesFilter = currentFilter === 'all' || type === currentFilter;
 			
-			item.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+			if (matchesSearch && matchesFilter) {
+				item.style.display = '';
+				// AI entrance animation
+				setTimeout(() => {
+					docCard.style.animation = 'ai-entrance 0.5s ease-out';
+				}, index * 50);
+			} else {
+				item.style.display = 'none';
+			}
 		});
 
 		// Filter list
@@ -308,14 +585,54 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 
 		updateStats();
+		updateFilterCounts();
+	}
+	
+	// Update filter counts com efeito IA
+	function updateFilterCounts() {
+		const allItems = document.querySelectorAll('#viewGrid .doc-card');
+		const counts = {
+			all: 6, pdf: 2, xlsx: 2, docx: 1, pptx: 1
+		};
+		
+		filterChips.forEach(chip => {
+			const type = chip.dataset.type;
+			const countEl = chip.querySelector('.chip-count');
+			const newCount = counts[type] || 0;
+			
+			// Animate count change
+			countEl.style.transform = 'scale(1.2)';
+			setTimeout(() => {
+				countEl.textContent = newCount;
+				countEl.style.transform = 'scale(1)';
+			}, 150);
+		});
 	}
 
 	searchInput.addEventListener('input', filterDocs);
 
-	filterTags.forEach(tag => {
-		tag.addEventListener('click', function() {
-			filterTags.forEach(t => t.classList.remove('active'));
+	filterChips.forEach(chip => {
+		chip.addEventListener('click', function() {
+			// Remove active from all chips com efeito IA
+			filterChips.forEach(c => {
+				c.classList.remove('active');
+				c.style.transform = 'scale(0.95)';
+				setTimeout(() => {
+					c.style.transform = 'scale(1)';
+				}, 100);
+			});
+			
+			// Add active to clicked chip com efeito IA
 			this.classList.add('active');
+			this.style.transform = 'scale(1.05)';
+			setTimeout(() => {
+				this.style.transform = 'scale(1)';
+			}, 200);
+			
+			currentFilter = this.dataset.type;
+			filterDocs();
+		});
+	});
 			currentFilter = this.dataset.type;
 			filterDocs();
 		});
