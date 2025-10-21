@@ -214,28 +214,6 @@
 	</div>
 </div>
 
-<!-- Modal simples -->
-<div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="previewName"></h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-			</div>
-			<div class="modal-body text-center">
-				<div id="previewContent" class="py-5">
-					<i class="fa fa-file fa-3x text-muted mb-3"></i>
-					<p>Pré-visualização do documento</p>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-				<button type="button" class="btn btn-success">Download</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 @push('styles')
 <style>
 	/* Smart Filters com IA */
@@ -503,6 +481,8 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function(){
+	console.log('DOM loaded - initializing scripts');
+	
 	// View Toggle
 	const btnList = document.getElementById('btnList');
 	const btnGrid = document.getElementById('btnGrid');
@@ -510,6 +490,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	const viewGrid = document.getElementById('viewGrid');
 
 	function setViewMode(mode) {
+		console.log('Setting view mode:', mode);
 		[btnList, btnGrid].forEach(btn => btn.classList.remove('active'));
 		
 		if (mode === 'grid') {
@@ -525,40 +506,38 @@ document.addEventListener('DOMContentLoaded', function(){
 		try { localStorage.setItem('docsViewMode', mode); } catch(e) {}
 	}
 
-	btnList.addEventListener('click', () => setViewMode('list'));
-	btnGrid.addEventListener('click', () => setViewMode('grid'));
-	setViewMode(localStorage.getItem('docsViewMode') || 'grid');
+	if (btnList && btnGrid) {
+		btnList.addEventListener('click', () => setViewMode('list'));
+		btnGrid.addEventListener('click', () => setViewMode('grid'));
+		setViewMode(localStorage.getItem('docsViewMode') || 'grid');
+	}
 
-	// Search and Filter com IA
+	// Search and Filter
 	const searchInput = document.getElementById('docSearch');
 	const filterChips = document.querySelectorAll('.filter-chip');
 	let currentFilter = 'all';
 
 	function filterDocs() {
+		console.log('Filtering docs with query:', searchInput.value, 'filter:', currentFilter);
 		const query = searchInput.value.toLowerCase().trim();
-		const gridItems = document.querySelectorAll('#viewGrid .col-lg-3, #viewGrid .col-md-4, #viewGrid .col-sm-6');
+		const gridItems = document.querySelectorAll('#viewGrid .col-lg-3');
 		const listRows = document.querySelectorAll('#viewList tbody tr');
 		
-		// AI transition effect
-		document.querySelector('.smart-filters').style.transform = 'scale(0.98)';
-		setTimeout(() => {
-			document.querySelector('.smart-filters').style.transform = 'scale(1)';
-		}, 100);
+		console.log('Found grid items:', gridItems.length, 'list rows:', listRows.length);
 		
-		// Filter grid com animação IA
+		// Filter grid
 		gridItems.forEach((item, index) => {
 			const docCard = item.querySelector('.doc-card');
-			const name = docCard.dataset.name;
-			const type = docCard.dataset.type;
+			if (!docCard) return;
+			
+			const name = docCard.dataset.name || '';
+			const type = docCard.dataset.type || '';
 			const matchesSearch = !query || name.includes(query);
 			const matchesFilter = currentFilter === 'all' || type === currentFilter;
 			
 			if (matchesSearch && matchesFilter) {
 				item.style.display = '';
-				// AI entrance animation
-				setTimeout(() => {
-					docCard.style.animation = 'ai-entrance 0.5s ease-out';
-				}, index * 50);
+				docCard.style.animation = 'ai-entrance 0.5s ease-out';
 			} else {
 				item.style.display = 'none';
 			}
@@ -566,8 +545,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
 		// Filter list
 		listRows.forEach(row => {
-			const name = row.dataset.name;
-			const type = row.dataset.type;
+			const name = row.dataset.name || '';
+			const type = row.dataset.type || '';
 			const matchesSearch = !query || name.includes(query);
 			const matchesFilter = currentFilter === 'all' || type === currentFilter;
 			
@@ -575,54 +554,24 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 
 		updateStats();
-		updateFilterCounts();
-	}
-	
-	// Update filter counts com efeito IA
-	function updateFilterCounts() {
-		const allItems = document.querySelectorAll('#viewGrid .doc-card');
-		const counts = {
-			all: 6, pdf: 2, xlsx: 2, docx: 1, pptx: 1
-		};
-		
-		filterChips.forEach(chip => {
-			const type = chip.dataset.type;
-			const countEl = chip.querySelector('.chip-count');
-			const newCount = counts[type] || 0;
-			
-			// Animate count change
-			countEl.style.transform = 'scale(1.2)';
-			setTimeout(() => {
-				countEl.textContent = newCount;
-				countEl.style.transform = 'scale(1)';
-			}, 150);
-		});
 	}
 
-	searchInput.addEventListener('input', filterDocs);
+	// Search input
+	if (searchInput) {
+		searchInput.addEventListener('input', filterDocs);
+	}
 
+	// Filter chips
 	filterChips.forEach(chip => {
 		chip.addEventListener('click', function() {
-			// Remove active from all chips com efeito IA
-			filterChips.forEach(c => {
-				c.classList.remove('active');
-				c.style.transform = 'scale(0.95)';
-				setTimeout(() => {
-					c.style.transform = 'scale(1)';
-				}, 100);
-			});
+			console.log('Filter clicked:', this.dataset.type);
 			
-			// Add active to clicked chip com efeito IA
+			// Remove active from all chips
+			filterChips.forEach(c => c.classList.remove('active'));
+			
+			// Add active to clicked chip
 			this.classList.add('active');
-			this.style.transform = 'scale(1.05)';
-			setTimeout(() => {
-				this.style.transform = 'scale(1)';
-			}, 200);
 			
-			currentFilter = this.dataset.type;
-			filterDocs();
-		});
-	});
 			currentFilter = this.dataset.type;
 			filterDocs();
 		});
@@ -631,10 +580,14 @@ document.addEventListener('DOMContentLoaded', function(){
 	// Preview Modal
 	document.addEventListener('click', function(e) {
 		if (e.target.matches('.btn-preview') || e.target.closest('.btn-preview')) {
+			console.log('Preview button clicked');
 			const btn = e.target.matches('.btn-preview') ? e.target : e.target.closest('.btn-preview');
 			const nome = btn.getAttribute('data-nome');
 			
-			document.getElementById('previewName').textContent = nome;
+			const previewName = document.getElementById('previewName');
+			const previewContent = document.getElementById('previewContent');
+			
+			if (previewName) previewName.textContent = nome;
 			
 			const fileExt = nome.split('.').pop().toUpperCase();
 			let iconClass = 'fa-file';
@@ -647,19 +600,24 @@ document.addEventListener('DOMContentLoaded', function(){
 				case 'PPTX': iconClass = 'fa-file-powerpoint'; iconColor = '#fd7e14'; break;
 			}
 			
-			document.getElementById('previewContent').innerHTML = `
-				<i class="fa ${iconClass} fa-3x mb-3" style="color: ${iconColor}"></i>
-				<p>Pré-visualização de ${nome}</p>
-			`;
+			if (previewContent) {
+				previewContent.innerHTML = `
+					<i class="fa ${iconClass} fa-3x mb-3" style="color: ${iconColor}"></i>
+					<p>Pré-visualização de ${nome}</p>
+				`;
+			}
 			
-			new bootstrap.Modal(document.getElementById('previewModal')).show();
+			const modal = document.getElementById('previewModal');
+			if (modal && window.bootstrap) {
+				new bootstrap.Modal(modal).show();
+			}
 		}
 	});
 
 	// Update Stats
 	function updateStats() {
 		const visibleGridItems = Array.from(document.querySelectorAll('#viewGrid .doc-card')).filter(item => 
-			item.parentElement.style.display !== 'none'
+			item.closest('.col-lg-3').style.display !== 'none'
 		);
 		
 		const total = visibleGridItems.length;
@@ -680,7 +638,9 @@ document.addEventListener('DOMContentLoaded', function(){
 		console.log('Stats updated:', { total, pdf: countByType('PDF'), xlsx: countByType('XLSX'), docx: countByType('DOCX') });
 	}
 
+	// Initialize
 	updateStats();
+	console.log('Scripts initialized successfully');
 });
 </script>
 @endpush
