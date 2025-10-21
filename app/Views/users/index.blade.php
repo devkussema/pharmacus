@@ -80,7 +80,7 @@
                     var $btn = $(this);
                     $btn.prop('disabled', true);
                     $.ajax({
-                        url: '{{ route("admin.users.index") }}',
+                        url: '{{ route("cp.users.index") }}',
                         method: 'GET',
                         dataType: 'json'
                     }).done(function (res) {

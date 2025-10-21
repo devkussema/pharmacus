@@ -11,8 +11,16 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UsersController;
 
 Route::resource('dashboard', DashboardController::class)->only(['index'])->names(['index' => 'cp.admin.index']);
-Route::resource('users', UsersController::class)->names(['index' => 'cp.users.index']);
-Route::resource('users', UsersController::class)->names(['create' => 'cp.users.create']);
-Route::resource('users', UsersController::class)->names(['edit' => 'cp.users.edit']);
+
+// Regista o resource 'users' com nomes completos para permitir uso consistente em views
+Route::resource('users', UsersController::class)->names([
+	'index' => 'cp.users.index',
+	'create' => 'cp.users.create',
+	'store' => 'cp.users.store',
+	'show' => 'cp.users.show',
+	'edit' => 'cp.users.edit',
+	'update' => 'cp.users.update',
+	'destroy' => 'cp.users.destroy',
+]);
 
 

@@ -53,7 +53,7 @@ class UsersController extends Controller
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
 
-        return redirect()->route('admin.users.index')->with('success', 'Utilizador criado com sucesso.');
+    return redirect()->route('cp.users.index')->with('success', 'Utilizador criado com sucesso.');
     }
 
     /**
@@ -96,7 +96,7 @@ class UsersController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('admin.users.index')->with('success', 'Utilizador actualizado com sucesso.');
+    return redirect()->route('cp.users.index')->with('success', 'Utilizador actualizado com sucesso.');
     }
 
     /**
@@ -106,6 +106,6 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'Utilizador removido.');
+    return redirect()->route('cp.users.index')->with('success', 'Utilizador removido.');
     }
 }

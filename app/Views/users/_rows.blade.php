@@ -5,7 +5,7 @@
                 <input class="form-check-input" type="checkbox" value="{{ $user->id }}">
             </div>
         </td>
-        <td class="profile-image"><a href="{{ route('cp.users.index', $user->id) }}">
+    <td class="profile-image"><a href="{{ route('cp.users.show', $user->id) }}">
                 <img width="28" height="28" src="{{ $user->foto_perfil ? asset('storage/'.$user->foto_perfil) : assetr('assets/img/profiles/avatar-01.jpg') }}" class="rounded-circle m-r-5" alt>
                 {{ $user->nome }}</a>
         </td>
