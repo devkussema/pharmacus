@@ -10,6 +10,9 @@
 			<div class="d-flex justify-content-between align-items-center mb-4">
 				<h3 class="mb-0">Documentos</h3>
 				<div class="d-flex gap-3 align-items-center">
+					<a href="{{ route('documents.create') }}" class="btn btn-success">
+						<i class="fa fa-plus me-2"></i>Adicionar
+					</a>
 					<div class="input-group" style="width: 300px;">
 						<span class="input-group-text"><i class="fa fa-search"></i></span>
 						<input type="text" id="docSearch" class="form-control" placeholder="Pesquisar documentos...">
@@ -495,19 +498,6 @@
 			</div>
 		</div>
 	</div>
-<!-- Modal de Preview -->
-<div class="modal fade" id="previewModal" tabindex="-1">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="previewName">Preview</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-			</div>
-			<div class="modal-body text-center" id="previewContent">
-				<!-- Conteúdo será inserido via JavaScript -->
-			</div>
-		</div>
-	</div>
 </div>
 
 @push('scripts')
@@ -677,10 +667,17 @@ document.addEventListener('DOMContentLoaded', function(){
 			item.dataset.type === type.toLowerCase()
 		).length;
 
-		document.getElementById('statTotal').textContent = total;
-		document.getElementById('statPDF').textContent = countByType('PDF');
-		document.getElementById('statXLSX').textContent = countByType('XLSX');
-		document.getElementById('statDOCX').textContent = countByType('DOCX');
+		const statTotal = document.getElementById('statTotal');
+		const statPDF = document.getElementById('statPDF');
+		const statXLSX = document.getElementById('statXLSX');
+		const statDOCX = document.getElementById('statDOCX');
+		
+		if (statTotal) statTotal.textContent = total;
+		if (statPDF) statPDF.textContent = countByType('PDF');
+		if (statXLSX) statXLSX.textContent = countByType('XLSX');  
+		if (statDOCX) statDOCX.textContent = countByType('DOCX');
+		
+		console.log('Stats updated:', { total, pdf: countByType('PDF'), xlsx: countByType('XLSX'), docx: countByType('DOCX') });
 	}
 
 	updateStats();

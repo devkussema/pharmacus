@@ -84,6 +84,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
 
     Route::prefix('documents')->group(function () {
         Route::get('/', [DocumentsController::class, 'index'])->name('documents.index');
+        Route::get('/create', [DocumentsController::class, 'create'])->name('documents.create');
     });
 
     Route::prefix('dev')->group(function () {
