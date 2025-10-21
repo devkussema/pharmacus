@@ -46,67 +46,64 @@
                         </div>
                         <div class="col-12 col-md-6 col-xl-6">
                             <div class="input-block local-forms">
-                                <label>Password <span class="login-danger">*</span></label>
-                                <input class="form-control" type="password" placeholder>
+                                <label>Senha <span class="login-danger">*</span></label>
+                                <input class="form-control" type="password" placeholder="Digite a senha">
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-6">
                             <div class="input-block local-forms">
-                                <label>Confirm Password <span class="login-danger">*</span></label>
-                                <input class="form-control" type="password" placeholder>
+                                <label>Confirmar Senha <span class="login-danger">*</span></label>
+                                <input class="form-control" type="password" placeholder="Confirme a senha">
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-6">
                             <div class="input-block local-forms cal-icon">
-                                <label>Date Of Birth <span class="login-danger">*</span></label>
-                                <input class="form-control datetimepicker" type="text" placeholder>
+                                <label>Data de Nascimento <span class="login-danger">*</span></label>
+                                <input class="form-control datetimepicker" type="text" placeholder="Selecione a data de nascimento">
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-6">
                             <div class="input-block select-gender">
-                                <label class="gen-label">Gender<span
-                                        class="login-danger">*</span></label>
+                                <label class="gen-label">Gênero <span class="login-danger">*</span></label>
                                 <div class="form-check-inline">
                                     <label class="form-check-label">
-                                        <input type="radio" name="gender"
-                                            class="form-check-input mt-0">Male
+                                        <input type="radio" name="gender" class="form-check-input mt-0">Masculino
                                     </label>
                                 </div>
                                 <div class="form-check-inline">
                                     <label class="form-check-label">
-                                        <input type="radio" name="gender"
-                                            class="form-check-input mt-0">Female
+                                        <input type="radio" name="gender" class="form-check-input mt-0">Feminino
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-4">
                             <div class="input-block local-forms">
-                                <label>Education <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder>
+                                <label>Formação <span class="login-danger">*</span></label>
+                                <input class="form-control" type="text" placeholder="Digite a formação">
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-4">
                             <div class="input-block local-forms">
-                                <label>Designation <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder>
+                                <label>Cargo <span class="login-danger">*</span></label>
+                                <input class="form-control" type="text" placeholder="Digite o cargo">
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-4">
                             <div class="input-block local-forms">
-                                <label>Department <span class="login-danger">*</span></label>
+                                <label>Departamento <span class="login-danger">*</span></label>
                                 <select class="form-control select">
-                                    <option>Select Department</option>
-                                    <option>Orthopedics</option>
-                                    <option>Radiology</option>
-                                    <option>Dentist</option>
+                                    <option>Selecionar Departamento</option>
+                                    <option>Ortopedia</option>
+                                    <option>Radiologia</option>
+                                    <option>Dentista</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-12 col-sm-12">
                             <div class="input-block local-forms">
-                                <label>Address <span class="login-danger">*</span></label>
-                                <textarea class="form-control" rows="3" cols="30"></textarea>
+                                <label>Endereço <span class="login-danger">*</span></label>
+                                <textarea class="form-control" rows="3" cols="30" placeholder="Digite o endereço"></textarea>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-xl-3">
