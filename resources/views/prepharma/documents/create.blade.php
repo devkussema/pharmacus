@@ -4,8 +4,8 @@
 
 @section('content')
 <div class="content container-fluid">
-	<div class="row justify-content-center">
-		<div class="col-xl-8 col-lg-10">
+	<div class="row">
+		<div class="col-12">
 			<!-- Header -->
 			<div class="d-flex justify-content-between align-items-center mb-4">
 				<div>
@@ -60,7 +60,7 @@
 </div>
 
 <!-- Modal Sofisticado -->
-<div class="modal fade" id="documentModal" tabindex="-1" data-bs-backdrop="static">
+<div class="modal fade" id="documentModal" tabindex="-1">
 	<div class="modal-dialog modal-lg modal-dialog-centered">
 		<div class="modal-content smart-modal">
 			<div class="modal-header gradient-header">
@@ -207,17 +207,18 @@
 
 	.smart-drop-zone {
 		position: relative;
-		padding: 60px 40px;
+		padding: 80px 40px;
 		text-align: center;
 		background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 		border: 3px dashed #dee2e6;
 		border-radius: 20px;
 		cursor: pointer;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		min-height: 300px;
+		min-height: 400px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		width: 100%;
 	}
 
 	.smart-drop-zone:hover {
@@ -229,7 +230,7 @@
 	.smart-drop-zone.drag-over {
 		border-color: #28a745;
 		background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-		transform: scale(1.02);
+		transform: scale(1.01);
 	}
 
 	.upload-icon {
@@ -453,14 +454,19 @@
 document.addEventListener('DOMContentLoaded', function() {
 	const dropZone = document.getElementById('dropZone');
 	const fileInput = document.getElementById('fileInput');
-	const documentModal = new bootstrap.Modal(document.getElementById('documentModal'));
+	const documentModalElement = document.getElementById('documentModal');
+	const documentModal = new bootstrap.Modal(documentModalElement);
 	const uploadProgress = document.getElementById('uploadProgress');
 	const progressList = document.getElementById('progressList');
 	
 	let currentFiles = [];
+	let isHandlingFiles = false;
 
 	// Drag & Drop Events
-	dropZone.addEventListener('click', () => fileInput.click());
+	dropZone.addEventListener('click', (e) => {
+		e.preventDefault();
+		fileInput.click();
+	});
 	
 	dropZone.addEventListener('dragover', (e) => {
 		e.preventDefault();
@@ -477,18 +483,35 @@ document.addEventListener('DOMContentLoaded', function() {
 	dropZone.addEventListener('drop', (e) => {
 		e.preventDefault();
 		dropZone.classList.remove('drag-over');
-		handleFiles(e.dataTransfer.files);
+		if (!isHandlingFiles) {
+			handleFiles(e.dataTransfer.files);
+		}
 	});
 	
 	fileInput.addEventListener('change', (e) => {
-		handleFiles(e.target.files);
+		if (!isHandlingFiles) {
+			handleFiles(e.target.files);
+		}
+		// Reset file input
+		e.target.value = '';
+	});
+
+	// Modal events
+	documentModalElement.addEventListener('hidden.bs.modal', function () {
+		// Reset when modal closes
+		isHandlingFiles = false;
+		dropZone.classList.remove('drag-over');
+		resetForm();
 	});
 
 	// Handle Files
 	function handleFiles(files) {
-		if (files.length === 0) return;
+		if (files.length === 0 || isHandlingFiles) return;
 		
+		isHandlingFiles = true;
 		currentFiles = Array.from(files);
+		
+		console.log('Handling files:', files.length);
 		
 		if (files.length === 1) {
 			// Open modal for single file
@@ -501,10 +524,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// Open Document Modal
 	function openDocumentModal(file) {
+		console.log('Opening modal for file:', file.name);
+		
 		const fileName = document.getElementById('fileName');
 		const fileType = document.getElementById('fileType');
 		const fileDate = document.getElementById('fileDate');
 		const modalIcon = document.getElementById('modalFileIcon');
+		
+		// Reset form first
+		resetForm();
 		
 		// Auto-fill file name
 		const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
@@ -520,7 +548,19 @@ document.addEventListener('DOMContentLoaded', function() {
 		// Update icon
 		updateModalIcon(ext, modalIcon);
 		
-		documentModal.show();
+		// Show modal
+		setTimeout(() => {
+			documentModal.show();
+		}, 100);
+	}
+
+	// Reset form
+	function resetForm() {
+		const form = document.getElementById('documentForm');
+		if (form) {
+			form.reset();
+		}
+		document.getElementById('tagPreview').innerHTML = '';
 	}
 
 	// Auto-detect file type
@@ -699,6 +739,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Redirect or show success message
 			window.location.href = '{{ route("documents.index") }}';
 		}, 1500);
+	});
+
+	// Cancel button event
+	document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(btn => {
+		btn.addEventListener('click', function() {
+			isHandlingFiles = false;
+			dropZone.classList.remove('drag-over');
+		});
 	});
 });
 </script>
