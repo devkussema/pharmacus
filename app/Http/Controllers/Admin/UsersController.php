@@ -19,7 +19,17 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::paginate(25);
+        $query = $request->input('q');
+        $usersQuery = User::query();
+        if (!empty($query)) {
+            $usersQuery->where(function ($q) use ($query) {
+                $q->where('nome', 'like', "%{$query}%")
+                  ->orWhere('email', 'like', "%{$query}%")
+                  ->orWhere('telefone', 'like', "%{$query}%");
+            });
+        }
+
+        $users = $usersQuery->paginate(25)->appends($request->only('q'));
 
         // If the request is AJAX, return only the rendered rows to update the table body
         if ($request->ajax()) {

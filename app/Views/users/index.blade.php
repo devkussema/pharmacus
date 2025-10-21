@@ -15,9 +15,9 @@
                                     <h3>Lista de Usuários</h3>
                                     <div class="doctor-search-blk">
                                         <div class="top-nav-search table-search-blk">
-                                            <form>
-                                                <input type="text" class="form-control" placeholder="Pesquisar">
-                                                <a class="btn">
+                                            <form id="js-users-search-form" onsubmit="return false;">
+                                                <input type="text" id="js-users-search" name="q" value="{{ request('q') }}" class="form-control" placeholder="Pesquisar">
+                                                <a class="btn" id="js-users-search-btn">
                                                     <img src="{{ assetr('assets/img/icons/search-normal.svg')}}" alt>
                                                 </a>
                                             </form>
@@ -26,8 +26,10 @@
                                             <a href="{{ route('cp.users.create') }}" class="btn btn-primary add-pluss ms-2">
                                                 <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
                                             </a>
-                                            <a href="javascript:;" id="js-refresh-users" class="btn btn-primary doctor-refresh ms-2"><img
-                                                    src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt></a>
+                                            <a href="javascript:;" id="js-refresh-users" class="btn btn-primary doctor-refresh ms-2">
+                                                <span id="js-refresh-spinner" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" style="display:none"></span>
+                                                <img src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -64,7 +66,9 @@
                                 @include('admin::users._rows', ['users' => $users])
                             </tbody>
                         </table>
-                        @include('admin::users._pagination', ['users' => $users])
+                        <div id="js-users-pagination">
+                            @include('admin::users._pagination', ['users' => $users])
+                        </div>
                     </div>
                 </div>
             </div>
@@ -76,11 +80,20 @@
     <script>
         (function ($) {
             $(document).ready(function () {
-                function loadUsers(url) {
+                function loadUsers(url, qs) {
                     var $btn = $('#js-refresh-users');
+                    var $spinner = $('#js-refresh-spinner');
                     $btn.prop('disabled', true);
+                    $spinner.show();
+
+                    // append querystring if provided
+                    var requestUrl = url || '{{ route("cp.users.index") }}';
+                    if (qs) {
+                        requestUrl += (requestUrl.indexOf('?') === -1 ? '?' : '&') + qs;
+                    }
+
                     $.ajax({
-                        url: url || '{{ route("cp.users.index") }}',
+                        url: requestUrl,
                         method: 'GET',
                         dataType: 'json'
                     }).done(function (res) {
@@ -95,12 +108,14 @@
                         alert('Erro ao obter lista de utilizadores.');
                     }).always(function () {
                         $btn.prop('disabled', false);
+                        $spinner.hide();
                     });
                 }
 
                 $('#js-refresh-users').on('click', function (e) {
                     e.preventDefault();
-                    loadUsers();
+                    var qs = $('#js-users-search').val() ? 'q=' + encodeURIComponent($('#js-users-search').val()) : '';
+                    loadUsers(undefined, qs);
                 });
 
                 // Delegate click on pagination links
@@ -108,8 +123,21 @@
                     e.preventDefault();
                     var url = $(this).attr('href');
                     if (url) {
-                        loadUsers(url);
+                        // preserve current search
+                        var qs = $('#js-users-search').val() ? 'q=' + encodeURIComponent($('#js-users-search').val()) : '';
+                        loadUsers(url, qs);
                     }
+                });
+
+                // Debounced search
+                var debounceTimer;
+                $('#js-users-search').on('input', function () {
+                    clearTimeout(debounceTimer);
+                    var q = $(this).val();
+                    debounceTimer = setTimeout(function () {
+                        var qs = q ? 'q=' + encodeURIComponent(q) : '';
+                        loadUsers(undefined, qs);
+                    }, 400);
                 });
             });
         })(jQuery);

@@ -1,4 +1,4 @@
-@foreach($users as $user)
+@forelse($users as $user)
     <tr>
         <td>
             <div class="form-check check-tables">
@@ -25,4 +25,8 @@
             </div>
         </td>
     </tr>
-@endforeach
+@empty
+    <tr>
+        <td colspan="9" class="text-center">Nenhum utilizador encontrado.</td>
+    </tr>
+@endforelse
