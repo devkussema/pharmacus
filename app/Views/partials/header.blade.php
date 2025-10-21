@@ -30,7 +30,11 @@
                 </span> --}}
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="{{ route('logout') }}">Sair</a>
+                <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <label class="dropdown-item" for="logout-btn" style="cursor: pointer">Sair</label>
+                    <input type="submit" name="logout" id="logout-btn" hidden>
+                </form>
             </div>
         </li>
         {{-- <li class="nav-item ">

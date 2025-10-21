@@ -232,8 +232,12 @@ class AuthController extends Controller
                 'status' => 'success',
             ]);
 
-            if (Auth::user()->role = 'super_admin') {
-                return redirect()->route('cp.admin.index');
+            // Redireciona super_admin para o painel administrativo
+            $currentUser = Auth::user();
+            if (method_exists($currentUser, 'isSuperAdmin') && $currentUser->isSuperAdmin()) {
+                if (\Illuminate\Support\Facades\Route::has('cp.admin.index')) {
+                    return redirect()->route('cp.admin.index');
+                }
             }
 
             return redirect()->route('home');
