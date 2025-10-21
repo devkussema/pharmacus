@@ -66,7 +66,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($areas as $area)
+                            @forelse($areas->sortBy(fn($a) => mb_strtolower($a->area_hospitalar?->nome ?? '')) as $area)
                                 <tr>
                                     <td>
                                         <div class="form-check check-tables">
