@@ -25,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
         View::addNamespace('ocorrencia', base_path('core/views/ocorrencias'));
         View::addNamespace('prepharma_auth', resource_path('views/auth/prepharma'));
         View::addNamespace('prepharma', resource_path('views/prepharma'));
+        View::addNamespace('admin', app_path('Views'));
     }
 }
