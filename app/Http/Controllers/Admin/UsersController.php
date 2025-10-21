@@ -21,7 +21,21 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $query = $request->input('q');
+        // Determina tamanho máximo do upload a partir do env (ex: 2M) e converte para kilobytes para a regra 'max:' do validador
+        $uploadMax = env('UPLOAD_MAX_FILESIZE', '2M');
+        $maxKb = 2048; // default 2M
+        if (preg_match('/^(\d+)([KkMmGg])?$/', $uploadMax, $m)) {
+            $num = (int)$m[1];
+            $unit = isset($m[2]) ? strtoupper($m[2]) : '';
+            switch ($unit) {
+                case 'G': $maxKb = $num * 1024 * 1024; break;
+                case 'M': $maxKb = $num * 1024; break;
+                case 'K': $maxKb = $num; break;
+                default: $maxKb = $num; break;
+            }
+        }
+
+        $validated = $request->validate([
         $usersQuery = User::query();
         if (!empty($query)) {
             $usersQuery->where(function ($q) use ($query) {
@@ -29,7 +43,7 @@ class UsersController extends Controller
                   ->orWhere('email', 'like', "%{$query}%")
                   ->orWhere('telefone', 'like', "%{$query}%");
             });
-        }
+            'foto_perfil' => "nullable|image|mimes:jpeg,png,jpg,gif,webp|max:{$maxKb}",
 
         $users = $usersQuery->paginate(25)->appends($request->only('q'));
 
