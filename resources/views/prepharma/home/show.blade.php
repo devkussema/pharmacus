@@ -28,7 +28,7 @@
                 </div>
                 <div class="col-md-6 position-blk">
                     <div class="morning-img">
-                        <img src="{{ assetr('assets/img/morning-img-01.png')}}" alt>
+                        <img src="{{ asset('prepharma/img/morning-img-01.png')}}" alt>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                     <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
                         <div class="dash-widget">
                             <div class="dash-boxs comman-flex-center">
-                                <img src="{{ assetr('assets/img/white__logo2.png') }}" width="24" height="24" alt>
+                                <img src="{{ asset('prepharma/img/white__logo2.png') }}" width="24" height="24" alt>
                             </div>
                             <div class="dash-content dash-count">
                                 <h4>{{ $n->nivel_alerta->nome }}</h4>
@@ -110,7 +110,7 @@
                             <h4>Patient by Department</h4>
                         </div>
                         <div id="donut-chart-dash" class="chart-user-icon">
-                            <img src="{{ assetr('assets/img/icons/user-icon.svg')}}" alt>
+                            <img src="{{ asset('prepharma/img/icons/user-icon.svg')}}" alt>
                         </div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
                         @foreach (\App\Models\FarmaciaAreaHospitalar::all() as $fah)
                             <div class="activity-top">
                                 <div class="activity-boxs comman-flex-center">
-                                    <img src="{{ assetr('assets/img/icons/dep-icon-01.svg')}}" alt>
+                                    <img src="{{ asset('prepharma/img/icons/dep-icon-01.svg')}}" alt>
                                 </div>
                                 <div class="departments-list">
                                     <h4>
@@ -172,7 +172,7 @@
                                             </td>
                                             <td class="table-image appoint-doctor">
                                                 {{-- <img width="28" height="28" class="rounded-circle"
-                                                    src="{{ assetr('assets/img/profiles/avatar-02.jpg')}}" alt> --}}
+                                                    src="{{ asset('prepharma/img/profiles/avatar-02.jpg')}}" alt> --}}
                                                 <h2>{{ $at->user->nome }}</h2>
                                             </td>
                                             <td>{{ $at->texto }}</td>
@@ -221,7 +221,7 @@
                                             </td>
                                             <td class="table-image">
                                                 {{-- <img width="28" height="28" class="rounded-circle"
-                                                    src="{{ assetr('assets/img/profiles/avatar-02.jpg')}}" alt> --}}
+                                                    src="{{ asset('prepharma/img/profiles/avatar-02.jpg')}}" alt> --}}
                                                 <h2>{{ $usr->nome }}</h2>
                                             </td>
                                             <td>

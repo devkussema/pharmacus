@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -22,22 +21,22 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
-    <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('prepharma/css/bootstrap.min.css') }}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="{{ assetr('assets/css/feather.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/plugins/alertify/alertify.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/css/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/plugins/alertify/alertify.min.css') }}">
 
-    <link rel="stylesheet" href="{{ assetr('assets/plugins/datatables/datatables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/plugins/datatables/datatables.min.css') }}">
 
-    <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('prepharma/css/style.css') }}">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="{{ assetr('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ assetr('assets/plugins/datatables/datatables.min.js') }}"></script>
+    <script src="{{ asset('prepharma/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('prepharma/plugins/datatables/datatables.min.js') }}"></script>
     <style>
         /* Oculta a barra de pesquisa padrão do DataTables */
         .dataTables_wrapper .dataTables_filter {
@@ -207,31 +206,31 @@
     </audio>
     <script src="{{ asset('/sw2.js') }}"></script>
 
-    <script src="{{ assetr('assets/js/jquery-3.7.1.min.js')}}"></script>
+    <script src="{{ asset('prepharma/js/jquery-3.7.1.min.js')}}"></script>
 
-    <script src="{{ assetr('assets/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ asset('prepharma/js/bootstrap.bundle.min.js')}}"></script>
 
-    <script src="{{ assetr('assets/js/feather.min.js')}}"></script>
+    <script src="{{ asset('prepharma/js/feather.min.js')}}"></script>
 
-    <script src="{{ assetr('assets/js/jquery.slimscroll.js')}}"></script>
+    <script src="{{ asset('prepharma/js/jquery.slimscroll.js')}}"></script>
 
-    <script src="{{ assetr('assets/js/select2.min.js')}}"></script>
+    <script src="{{ asset('prepharma/js/select2.min.js')}}"></script>
 
-    <script src="{{ assetr('assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{ assetr('assets/plugins/datatables/datatables.min.js')}}"></script>
+    <script src="{{ asset('prepharma/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ asset('prepharma/plugins/datatables/datatables.min.js')}}"></script>
 
-    <script src="{{ assetr('assets/plugins/moment/moment.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
-    <script src="{{ assetr('assets/js/bootstrap-datetimepicker.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
+    <script src="{{ asset('prepharma/plugins/moment/moment.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
+    <script src="{{ asset('prepharma/js/bootstrap-datetimepicker.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
 
-    <script src="{{ assetr('assets/js/jquery.waypoints.js')}}"></script>
-    <script src="{{ assetr('assets/js/jquery.counterup.min.js')}}"></script>
+    <script src="{{ asset('prepharma/js/jquery.waypoints.js')}}"></script>
+    <script src="{{ asset('prepharma/js/jquery.counterup.min.js')}}"></script>
 
 
-    <script src="{{ assetr('assets/js/circle-progress.min.js')}}"></script>
+    <script src="{{ asset('prepharma/js/circle-progress.min.js')}}"></script>
 
-    <script src="{{ assetr('assets/js/app.js')}}"></script>
+    <script src="{{ asset('prepharma/js/app.js')}}"></script>
 
-    <script src="{{ assetr('assets/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
+    <script src="{{ asset('prepharma/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
         data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
     <script>
         // Loader Control

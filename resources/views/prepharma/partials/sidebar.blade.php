@@ -48,7 +48,7 @@
                     <li>
                         <a href="{{ route('a_h.index') }}" class="{{ Route::currentRouteName() == 'a_h.index' ? 'active' : '' }}">
                             <span class="menu-side">
-                                <img src="{{ assetr('assets/img/icons/menu-icon-06.svg')}}" alt>
+                                <img src="{{ asset('prepharma/img/icons/menu-icon-06.svg')}}" alt>
                             </span>
                             <span> Áreas Hospitalares </span>
                         </a>
@@ -81,7 +81,7 @@
                 <li class="submenu">
                     <a href="#">
                         <span class="menu-side">
-                            <img src="{{ assetr('assets/img/icons/menu-icon-15.svg') }}" alt>
+                            <img src="{{ asset('prepharma/img/icons/menu-icon-15.svg') }}" alt>
                         </span>
                         <span>Relatorios </span>
                         <span class="menu-arrow"></span>

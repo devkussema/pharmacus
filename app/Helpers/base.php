@@ -5,6 +5,7 @@ use App\Models\Grupo;
 use App\Models\{Permissao, Cargo, Setting, AreaHospitalar, ProdutoEstoque};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 if (!function_exists('verificarPermissao')) {
@@ -38,7 +39,7 @@ if (!function_exists('verificarPermissao')) {
             return isset($conteudo[$modulo][$acao]) && $conteudo[$modulo][$acao] === 'on';
 
         } catch (\Exception $e) {
-            \Log::error('Erro ao verificar permissão: ' . $e->getMessage());
+            Log::error('Erro ao verificar permissão: ' . $e->getMessage());
             return false;
         }
     }
@@ -80,7 +81,7 @@ if (!function_exists('obterPermissoesUsuario')) {
             return is_array($conteudo) ? $conteudo : [];
 
         } catch (\Exception $e) {
-            \Log::error('Erro ao obter permissões: ' . $e->getMessage());
+            Log::error('Erro ao obter permissões: ' . $e->getMessage());
             return [];
         }
     }
