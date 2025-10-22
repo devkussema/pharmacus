@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Controlador de Documentos
@@ -94,8 +95,10 @@ class DocumentsController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            $validated = $request->validate([
-                'file' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
+            // Validação manual para garantir resposta JSON (mesmo sem header Accept)
+            $validator = Validator::make($request->all(), [
+                // 5120 KB = 5 MB
+                'file' => 'required|file|max:5120|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'document_type' => ['required', Rule::in(array_keys(Document::DOCUMENT_TYPES))],
@@ -107,6 +110,16 @@ class DocumentsController extends Controller
                 'notes' => 'nullable|string',
                 'access_level' => ['required', Rule::in(array_keys(Document::ACCESS_LEVELS))],
             ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dados inválidos. Por favor verifique os campos. ',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $validated = $validator->validated();
 
             $file = $request->file('file');
             $originalName = $file->getClientOriginalName();

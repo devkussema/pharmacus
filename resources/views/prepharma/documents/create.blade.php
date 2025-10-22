@@ -1054,10 +1054,30 @@
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
-                    .then(response => response.json())
+                    .then(async (response) => {
+                        const contentType = response.headers.get('content-type') || '';
+                        const isJson = contentType.includes('application/json');
+                        const payload = isJson ? await response.json() : { success: false, message: (await response.text()).slice(0, 500) };
+
+                        // Tratar 422/500
+                        if (!response.ok || payload.success === false) {
+                            let msg = payload.message || 'Erro ao guardar documento.';
+                            if (payload.errors) {
+                                try {
+                                    const flat = Object.values(payload.errors).flat();
+                                    msg = flat.join('<br>');
+                                } catch (e) {}
+                            }
+                            throw new Error(msg);
+                        }
+
+                        return payload;
+                    })
                     .then(data => {
                         if (data.success) {
                             // Mostrar sucesso
@@ -1088,7 +1108,7 @@
                     .catch(error => {
                         console.error('Erro ao guardar documento:', error);
                         notificationSystem.error(
-                            `Erro de conexão: ${error.message}. Verifique sua conexão e tente novamente.`,
+                            `Erro de conexão: ${error.message}. Verifique a informação do formulário e tente novamente.`,
                             'Erro de comunicação'
                         );
                         saveBtn.innerHTML = originalText;
