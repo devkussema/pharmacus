@@ -812,8 +812,8 @@
                 console.log('Handling files:', files.length);
 
                 if (files.length === 1) {
-                    // Armazenar o ficheiro atual
-                    currentFile = files[0];
+                    // Armazenar o ficheiro atual globalmente
+                    window.currentFile = files[0];
                     // Open modal for single file
                     openDocumentModal(files[0]);
                 } else {
@@ -1017,8 +1017,8 @@
                 const formData = new FormData(form);
 
                 // Adicionar o ficheiro se existir
-                if (currentFile) {
-                    formData.append('file', currentFile);
+                if (window.currentFile) {
+                    formData.append('file', window.currentFile);
                 }
 
                 // Validate required fields
@@ -1035,7 +1035,7 @@
                     return;
                 }
 
-                if (!currentFile) {
+                if (!window.currentFile) {
                     notificationSystem.warning(
                         'Por favor, selecione um ficheiro para fazer upload.',
                         'Ficheiro necessário'
@@ -1116,8 +1116,8 @@
                     });
             });
 
-            // Variável para armazenar o ficheiro atual
-            let currentFile = null;
+            // Variável global para armazenar o ficheiro atual
+            window.currentFile = null;
 
             // Cancel button event (fora do DOMContentLoaded, referenciar elementos dinamicamente)
             document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(btn => {
