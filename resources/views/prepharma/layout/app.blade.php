@@ -235,14 +235,15 @@
         data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
     <script>
         // Loader Control
-        document.onreadystatechange = function() {
-            if (document.readyState === "complete") {
-                setTimeout(function() {
-                    const loader = document.querySelector('.loader-wrapper');
-                    loader.classList.add('fade-out');
-                }, 800);
-            }
-        };        function playAudio() {
+        // document.onreadystatechange = function() {
+        //     if (document.readyState === "complete") {
+        //         setTimeout(function() {
+        //             const loader = document.querySelector('.loader-wrapper');
+        //             loader.classList.add('fade-out');
+        //         }, 800);
+        //     }
+        // };
+        function playAudio() {
             var audio = document.getElementById('audioPlayer');
             audio.play();
         }

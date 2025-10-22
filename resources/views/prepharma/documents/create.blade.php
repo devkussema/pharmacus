@@ -789,16 +789,16 @@
 
                 // === INICIALIZAÇÃO ===
                 notificationSystem.info('Sistema de upload carregado e pronto para uso!', 'Sistema iniciado');
-            });
 
-            // Modal events
-            documentModalElement.addEventListener('hidden.bs.modal', function () {
-                // Reset when modal closes
-                isHandlingFiles = false;
-                if (dropZone) {
-                    dropZone.classList.remove('drag-over');
-                }
-                resetForm();
+                // === EVENTOS DO MODAL ===
+                documentModalElement.addEventListener('hidden.bs.modal', function () {
+                    // Reset quando o modal fecha
+                    isHandlingFiles = false;
+                    if (dropZone) {
+                        dropZone.classList.remove('drag-over');
+                    }
+                    resetForm();
+                });
             });
 
             // Handle Files
@@ -829,6 +829,9 @@
                 const fileType = document.getElementById('fileType');
                 const fileDate = document.getElementById('fileDate');
                 const modalIcon = document.getElementById('modalFileIcon');
+                // Garantir instância do modal disponível neste escopo
+                const dmEl = document.getElementById('documentModal');
+                const dmInstance = bootstrap.Modal.getOrCreateInstance(dmEl);
 
                 // Reset form first
                 resetForm();
@@ -849,7 +852,7 @@
 
                 // Show modal
                 setTimeout(() => {
-                    documentModal.show();
+                    dmInstance.show();
                 }, 100);
             }
 
