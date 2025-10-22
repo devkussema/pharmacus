@@ -8,13 +8,17 @@
             background-color: #f8f9fa;
         }
 
+        /* Coloca os botões alinhados à esquerda com espaçamento consistente */
         .action-buttons {
-            text-align: center;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 8px;
             padding: 10px;
         }
 
         .action-buttons button {
-            margin: 5px;
+            margin: 0;
         }
     </style>
     <div class="content">
@@ -298,7 +302,7 @@
                 // Criar e inserir nova linha de ação
                 var actionRow = `
                     <tr class="action-row">
-                        <td colspan="10">
+                        <td colspan="11">
                             <div class="action-buttons">
                                 <button class="btn btn-primary btn-editar" data-id="${data.produto.id}">Editar</button>
                                 <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-qtd="${getCaixa(data.produto.descritivo)}">Dar Baixa</button>
