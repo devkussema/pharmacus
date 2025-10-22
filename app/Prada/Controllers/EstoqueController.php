@@ -596,53 +596,84 @@ class EstoqueController extends Controller
      */
     public function adicionar(Request $request)
     {
+        // Validação dos campos esperados da modal
         $request->validate([
             'produto_id' => 'required|exists:produto_estoques,id',
-            'units' => 'required|integer',
+            'descritivo' => 'required|string',
+            'units' => 'required|integer|min:0',
+            'num_lote' => 'nullable|string',
+            'fornecedor' => 'nullable|string',
+            'obs' => 'nullable|string',
         ]);
 
-        $produto = PE::find($request->produto_id);
-        if (!$produto) {
-            return response()->json(['message' => 'Produto não encontrado'], 404);
+        // informações do produto original (para copiar metadados)
+        $produtoOrig = PE::find($request->produto_id);
+        if (!$produtoOrig) {
+            return response()->json(['message' => 'Produto origem não encontrado'], 404);
         }
 
-        $unitsToAdd = intval($request->units);
+        $descritivo = $request->descritivo;
+        $units = intval($request->units);
 
-        // Usa helper para recalcular descritivo
-        $oldDescritivo = $produto->descritivo;
-        $newDescritivo = addUnitsToDescritivo($oldDescritivo, $unitsToAdd);
+        // Monta os dados do novo ProdutoEstoque (copiando meta do original)
+        $dadosPE = [
+            'designacao' => $produtoOrig->designacao,
+            'dosagem' => $produtoOrig->dosagem,
+            'tipo' => $produtoOrig->tipo,
+            'descritivo' => $descritivo,
+            'forma' => $produtoOrig->forma,
+            'confirmado' => 1,
+            'origem_destino' => $produtoOrig->origem_destino,
+            'num_lote' => $request->num_lote ?? $produtoOrig->num_lote,
+            'data_expiracao' => $produtoOrig->data_expiracao,
+            'data_producao' => $produtoOrig->data_producao,
+            'num_documento' => $produtoOrig->num_documento,
+            'obs' => $request->obs ?? $produtoOrig->obs,
+            'qtd_embalagem' => $produtoOrig->qtd_embalagem,
+            'grupo_farmaco_id' => $produtoOrig->grupo_farmaco_id,
+            'prateleira_id' => $produtoOrig->prateleira_id,
+        ];
 
-        // calcula unidades totais do novo descritivo
-        $novoTotalUnits = getCaixaUnit($newDescritivo);
+        // Cria novo ProdutoEstoque com o descritivo e metadados
+        $novoPE = PE::create($dadosPE);
 
-        // atualiza o produto origem (mantém mesmo descritivo aguardando lógica específica)
-        // aqui assumimos que estamos apenas adicionando/registrando nova entrada no estoque da área atual
+        // Cria saldo com quantidade informada
+        SE::create([
+            'produto_estoque_id' => $novoPE->id,
+            'qtd' => $units
+        ]);
 
-        // Se já existir um registro de saldo, atualiza
-        if ($produto->saldo) {
-            $produto->saldo->update(['qtd' => $produto->saldo->qtd + $unitsToAdd]);
-        } else {
-            $produto->saldo()->create(['qtd' => $unitsToAdd]);
+        // Determinar farmacia/area do usuário atual (mesma lógica do store)
+        $farmacia_id = '';
+        if (@auth()->user()->isFarmacia) {
+            $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
+        } elseif (@auth()->user()->farmacia) {
+            $farmacia_id = auth()->user()->farmacia->farmacia_id;
         }
 
-        // Atualiza o descritivo do produto (opcional dependendo do fluxo) — vamos atualizar para refletir inventário
-        $produto->update(['descritivo' => $newDescritivo]);
+        // Cria registro na tabela Estoque associando a area/farmacia
+        Estoque::create([
+            'produto_estoque_id' => $novoPE->id,
+            'farmacia_id' => $farmacia_id,
+            'area_hospitalar_id' => request()->input('area_hospitalar_id') ?? auth()->user()->area_hospitalar->area_hospitalar_id ?? null
+        ]);
 
         $meta = [
             'model_type' => PE::class,
-            'model_id' => $produto->id,
+            'model_id' => $novoPE->id,
             'ip_address' => request()->ip(),
             'route' => request()->path(),
             'http_method' => request()->method(),
             'level' => 'info',
+            'snapshot_after' => $novoPE->toArray(),
         ];
-        self::startAtv("Adicionou {$unitsToAdd} unidades a {$produto->designacao}", null, $meta);
+        self::startAtv("Adicionou entrada de estoque ({$units} unidades) para {$novoPE->designacao}", null, $meta);
 
         return response()->json([
-            'message' => "{$unitsToAdd} unidades adicionadas com sucesso",
-            'novo_descritivo' => $newDescritivo,
-            'novo_saldo' => $produto->saldo->qtd ?? $novoTotalUnits
-        ], 200);
+            'message' => "{$units} unidades registadas com sucesso",
+            'produto_id' => $novoPE->id,
+            'novo_descritivo' => $novoPE->descritivo
+        ], 201);
     }
 
     public function baixa(Request $request)

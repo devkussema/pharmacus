@@ -461,9 +461,15 @@
                                         <textarea class="form-control" id="add_obs" name="obs" rows="3"></textarea>
                                     </div>
 
+                                    <div class="col-12">
+                                        <div id="add_feedback" class="mb-2" style="display:none;"></div>
+                                    </div>
                                     <div class="col-12 text-end">
                                         <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-success">Adicionar</button>
+                                        <button type="submit" class="btn btn-success" id="add_submit_btn">
+                                            <span id="add_submit_text">Adicionar</span>
+                                            <span id="add_submit_spinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display:none;"></span>
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -513,24 +519,30 @@
             modal.show();
         });
 
-        // Envio via AJAX (mantém comportamento, backend será adaptado depois)
+        // Envio via AJAX (melhor UX: spinner, disable inputs, feedback inline)
         document.addEventListener('submit', function(e) {
             if (e.target && e.target.id === 'formAdicionarEstoque') {
                 e.preventDefault();
                 var form = e.target;
                 var fd = new FormData(form);
 
-                // também converter caixas/caixinhas/unidades para um campo descritivo
                 var caixa = parseInt(document.getElementById('add_caixa').value || 0, 10);
                 var caixinha = parseInt(document.getElementById('add_caixinha').value || 0, 10);
                 var unidade = parseInt(document.getElementById('add_unidade').value || 0, 10);
                 fd.set('descritivo', caixa + 'x' + caixinha + 'x' + unidade);
-                // envia também o total em unidades (campo esperado pelo controller)
                 var total = parseInt(document.getElementById('add_total').value || 0, 10);
                 fd.set('units', total);
 
-                var btn = form.querySelector('button[type="submit"]');
-                btn.disabled = true;
+                var btn = document.getElementById('add_submit_btn');
+                var btnText = document.getElementById('add_submit_text');
+                var btnSpinner = document.getElementById('add_submit_spinner');
+                var feedbackEl = document.getElementById('add_feedback');
+
+                // disable inputs
+                Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = true; });
+                btnSpinner.style.display = 'inline-block';
+                feedbackEl.style.display = 'none';
+                feedbackEl.innerHTML = '';
 
                 fetch('{{ route('estoque.adicionar') }}', {
                     method: 'POST',
@@ -540,27 +552,45 @@
                     },
                     body: fd
                 }).then(function(response) {
-                    btn.disabled = false;
                     if (!response.ok) return response.json().then(function(j) { throw j; });
                     return response.json();
                 }).then(function(data) {
-                    var modalEl = document.getElementById('modalAdicionarEstoque');
-                    var modal = bootstrap.Modal.getInstance(modalEl);
-                    if (modal) modal.hide();
+                    // sucesso
+                    feedbackEl.className = 'alert alert-success';
+                    feedbackEl.innerText = data.message || 'Adicionado com sucesso';
+                    feedbackEl.style.display = 'block';
 
-                    alertify.success(data.message || 'Adicionado com sucesso');
+                    // atualizar tabela
                     try { $('#table-c').DataTable().ajax.reload(null, false); } catch (err) {}
+
+                    // fechar modal após pequeno delay para o usuário ver feedback
+                    setTimeout(function() {
+                        var modalEl = document.getElementById('modalAdicionarEstoque');
+                        var modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                        // restore inputs
+                        Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = false; });
+                        btnSpinner.style.display = 'none';
+                    }, 700);
                 }).catch(function(err) {
+                    feedbackEl.style.display = 'block';
+                    feedbackEl.className = 'alert alert-danger';
+
                     if (err && err.errors) {
-                        // mostra primeiro erro geral
-                        var first = Object.keys(err.errors)[0];
-                        alertify.error(err.errors[first][0]);
+                        var msgs = [];
+                        for (var k in err.errors) {
+                            if (err.errors.hasOwnProperty(k)) msgs.push(err.errors[k][0]);
+                        }
+                        feedbackEl.innerHTML = msgs.join('<br>');
                     } else if (err && err.message) {
-                        alertify.error(err.message);
+                        feedbackEl.innerText = err.message;
                     } else {
-                        alertify.error('Erro inesperado');
+                        feedbackEl.innerText = 'Erro inesperado';
                     }
-                    btn.disabled = false;
+
+                    // restore inputs
+                    Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = false; });
+                    btnSpinner.style.display = 'none';
                 });
             }
         });
