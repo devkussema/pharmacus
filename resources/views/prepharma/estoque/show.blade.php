@@ -497,6 +497,10 @@
                     currentHistoryRequest = new AbortController();
                     var signal = currentHistoryRequest.signal;
 
+                    // mostrar loader overlay
+                    var loader = document.getElementById('history_loader');
+                    if (loader) loader.style.display = 'flex';
+
                     document.getElementById('offcanvasRightSubtitle').innerText = 'Carregando histórico...';
                     timeline.innerHTML = '';
 
@@ -513,12 +517,21 @@
                         document.getElementById('offcanvasRightSubtitle').innerText = 'Erro ao carregar';
                     }).finally(function() {
                         offcanvas.show();
+                        if (loader) loader.style.display = 'none';
                     });
                 }
 
                 // Ações do toolbar
                 document.getElementById('history_refresh').onclick = function() { loadProductHistory(1); };
                 document.getElementById('history_apply').onclick = function() { loadProductHistory(1); };
+                // limpar filtros
+                document.getElementById('history_clear').onclick = function() {
+                    document.getElementById('history_search').value = '';
+                    document.getElementById('history_from').value = '';
+                    document.getElementById('history_to').value = '';
+                    document.getElementById('history_per_page').value = '20';
+                    loadProductHistory(1);
+                };
 
                 // debounce para busca por texto
                 var searchTimer = null;

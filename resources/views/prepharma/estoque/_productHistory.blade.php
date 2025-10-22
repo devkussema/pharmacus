@@ -253,6 +253,9 @@
                         </button>
                     </div>
                 </div>
+                <div class="ms-2">
+                    <button id="history_clear" class="btn btn-outline-secondary btn-sm" title="Limpar filtros">Limpar</button>
+                </div>
             </div>
 
             <div class="d-flex gap-2 align-items-center">
@@ -311,10 +314,12 @@
             <div id="history_pagination_controls"></div>
         </div>
 
-        <div class="mt-3 text-end">
-            <button id="history_close" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">
-                <i class="fa fa-times me-1"></i> Fechar
-            </button>
+        <!-- overlay loader -->
+        <div id="history_loader" style="display:none; position:absolute; inset:0; background:rgba(255,255,255,0.7); z-index:20; align-items:center; justify-content:center;">
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status"></div>
+                <div class="mt-2 text-muted">Carregando histórico...</div>
+            </div>
         </div>
     </div>
 </div>
