@@ -150,7 +150,7 @@ class DocumentsController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Documento carregado com sucesso!',
-                'document' => $document->load('uploader:id,name')
+                'document' => $document->load('uploader:id,nome')
             ]);
 
         } catch (\Exception $e) {

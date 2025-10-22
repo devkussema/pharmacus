@@ -968,11 +968,6 @@
                     });
                 }
 
-                currentView = 'list';
-                updateStats();
-            });
-            }
-
             // === FUNCIONALIDADES DE PREVIEW E AÇÕES ===
 
             // Preview Modal
