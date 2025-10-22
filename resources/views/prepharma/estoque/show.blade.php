@@ -374,7 +374,6 @@
                 }
             });
 
-
             $('form#form_search').on('submit', function(e) {
                 e.preventDefault();
             });
