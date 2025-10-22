@@ -415,6 +415,97 @@
             }
         });
 
+        // --- Modal e AJAX para Adicionar Estoque ---
+        // Inserir a modal no DOM (se ainda não existir)
+        (function insertAddModal() {
+            if (!document.getElementById('modalAdicionarEstoque')) {
+                var modalHtml = `
+                <div class="modal fade" id="modalAdicionarEstoque" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Adicionar Estoque</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formAdicionarEstoque">
+                                    <input type="hidden" name="produto_id" id="add_produto_id">
+                                    <div class="mb-3">
+                                        <label for="add_units" class="form-label">Quantidade (unidades)</label>
+                                        <input type="number" min="1" class="form-control" id="add_units" name="units" required>
+                                        <div class="invalid-feedback" id="add_units_error"></div>
+                                    </div>
+                                    <div class="mb-3 text-end">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">Adicionar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+            }
+        })();
+
+        // Abre a modal quando clicar em .btn-add
+        document.addEventListener('click', function(e) {
+            var target = e.target.closest('.btn-add');
+            if (!target) return;
+            var produtoId = target.getAttribute('data-id');
+            document.getElementById('add_produto_id').value = produtoId;
+            var myModal = new bootstrap.Modal(document.getElementById('modalAdicionarEstoque'));
+            myModal.show();
+        });
+
+        // Submit via AJAX
+        document.addEventListener('submit', function(e) {
+            if (e.target && e.target.id === 'formAdicionarEstoque') {
+                e.preventDefault();
+                var form = e.target;
+                var fd = new FormData(form);
+
+                var btn = form.querySelector('button[type="submit"]');
+                btn.disabled = true;
+
+                fetch('{{ route('estoque.adicionar') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: fd
+                }).then(function(response) {
+                    btn.disabled = false;
+                    if (!response.ok) return response.json().then(function(j) { throw j; });
+                    return response.json();
+                }).then(function(data) {
+                    // fechar modal e recarregar tabela
+                    var modalEl = document.getElementById('modalAdicionarEstoque');
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+
+                    alertify.success(data.message || 'Adicionado com sucesso');
+                    // recarrega a tabela
+                    try { $('#table-c').DataTable().ajax.reload(null, false); } catch (err) {}
+                }).catch(function(err) {
+                    // erros de validação
+                    if (err && err.errors) {
+                        if (err.errors.units) {
+                            document.getElementById('add_units_error').innerText = err.errors.units[0];
+                            document.getElementById('add_units').classList.add('is-invalid');
+                        }
+                    } else if (err && err.message) {
+                        alertify.error(err.message);
+                    } else {
+                        alertify.error('Erro inesperado');
+                    }
+                    btn.disabled = false;
+                });
+            }
+        });
+
         document.getElementById('imprimir-pagina').addEventListener('click', function(e) {
             e.preventDefault(); // Evita que o link seja seguido imediatamente
 

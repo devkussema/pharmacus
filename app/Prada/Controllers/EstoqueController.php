@@ -589,6 +589,62 @@ class EstoqueController extends Controller
         return redirect()->route('estoque.solicitar', ['id' => $area_de])->with('success', 'Solicitação enviada, quando atendida receberás uma notificação.');
     }
 
+    /**
+     * Adiciona unidades/caixas a um produto existente via AJAX.
+     * Inputs esperados: produto_id (id do produto_estoque), units (número de unidades a adicionar)
+     * Retorna JSON { message, novo_descritivo, novo_saldo }
+     */
+    public function adicionar(Request $request)
+    {
+        $request->validate([
+            'produto_id' => 'required|exists:produto_estoques,id',
+            'units' => 'required|integer',
+        ]);
+
+        $produto = PE::find($request->produto_id);
+        if (!$produto) {
+            return response()->json(['message' => 'Produto não encontrado'], 404);
+        }
+
+        $unitsToAdd = intval($request->units);
+
+        // Usa helper para recalcular descritivo
+        $oldDescritivo = $produto->descritivo;
+        $newDescritivo = addUnitsToDescritivo($oldDescritivo, $unitsToAdd);
+
+        // calcula unidades totais do novo descritivo
+        $novoTotalUnits = getCaixaUnit($newDescritivo);
+
+        // atualiza o produto origem (mantém mesmo descritivo aguardando lógica específica)
+        // aqui assumimos que estamos apenas adicionando/registrando nova entrada no estoque da área atual
+
+        // Se já existir um registro de saldo, atualiza
+        if ($produto->saldo) {
+            $produto->saldo->update(['qtd' => $produto->saldo->qtd + $unitsToAdd]);
+        } else {
+            $produto->saldo()->create(['qtd' => $unitsToAdd]);
+        }
+
+        // Atualiza o descritivo do produto (opcional dependendo do fluxo) — vamos atualizar para refletir inventário
+        $produto->update(['descritivo' => $newDescritivo]);
+
+        $meta = [
+            'model_type' => PE::class,
+            'model_id' => $produto->id,
+            'ip_address' => request()->ip(),
+            'route' => request()->path(),
+            'http_method' => request()->method(),
+            'level' => 'info',
+        ];
+        self::startAtv("Adicionou {$unitsToAdd} unidades a {$produto->designacao}", null, $meta);
+
+        return response()->json([
+            'message' => "{$unitsToAdd} unidades adicionadas com sucesso",
+            'novo_descritivo' => $newDescritivo,
+            'novo_saldo' => $produto->saldo->qtd ?? $novoTotalUnits
+        ], 200);
+    }
+
     public function baixa(Request $request)
     {
         $request->validate([
