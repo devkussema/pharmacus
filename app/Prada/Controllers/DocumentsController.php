@@ -13,10 +13,10 @@ use Illuminate\Validation\Rule;
 
 /**
  * Controlador de Documentos
- * 
+ *
  * Responsável pela gestão completa de documentos do sistema, incluindo
  * listagem, criação, upload, download e manipulação de ficheiros.
- * 
+ *
  * @author Augusto Kussema
  * @since 21/10/2025
  */
@@ -30,7 +30,7 @@ class DocumentsController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Document::with(['uploader:id,name', 'farmacia:id,nome'])
+        $query = Document::with(['uploader:id,nome', 'farmacia:id,nome'])
                         ->active()
                         ->notArchived()
                         ->orderBy('created_at', 'desc');
@@ -170,7 +170,7 @@ class DocumentsController extends Controller
     public function show(Document $document)
     {
         $document->incrementViewCount();
-        
+
         return view('prepharma.documents.show', compact('document'));
     }
 

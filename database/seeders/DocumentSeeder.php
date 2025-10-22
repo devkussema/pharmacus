@@ -10,10 +10,10 @@ use Carbon\Carbon;
 
 /**
  * Seeder para documentos de exemplo
- * 
+ *
  * Cria documentos de demonstração para testar o sistema
  * de gestão documental.
- * 
+ *
  * @author Augusto Kussema
  * @since 21/10/2025
  */
@@ -26,7 +26,7 @@ class DocumentSeeder extends Seeder
     {
         // Obter o primeiro utilizador como uploader
         $user = User::first();
-        
+
         if (!$user) {
             $this->command->warn('Nenhum utilizador encontrado. Criar um utilizador primeiro.');
             return;
