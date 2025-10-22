@@ -94,19 +94,75 @@ class ProductHistoryController extends Controller
     {
         $user = $item->user ? ($item->user->nome ?? $item->user->name) : 'Sistema';
         $qty = $item->quantity_delta ?? 0;
+
+        // mapeamento de campos técnicos para rótulos amigáveis
+        $fieldNames = [
+            'designacao' => 'Designação',
+            'descritivo' => 'Descritivo',
+            'num_lote' => 'Lote',
+            'num_documento' => 'Documento Nº',
+            'data_expiracao' => 'Data de Expiração',
+            'data_producao' => 'Data de Produção',
+            'obs' => 'Observação',
+            'prateleira_id' => 'Prateleira',
+            'qtd' => 'Quantidade',
+            'qtd_embalagem' => 'Qtd. por Embalagem',
+        ];
+
         switch ($item->action) {
             case 'stock_in':
-                return "{$user} adicionou {$qty} unidades";
+                $from = $item->payload['from_product_id'] ?? null;
+                $lote = $item->payload['num_lote'] ?? null;
+                $area = $item->meta['area_hospitalar_id'] ?? null;
+                $parts = [];
+                $parts[] = "{$user} adicionou " . abs($qty) . " unidades";
+                if ($lote) $parts[] = "lote: {$lote}";
+                if ($from) $parts[] = "(origem produto #{$from})";
+                if ($area) $parts[] = "para a área #{$area}";
+                return implode(' ', $parts);
+
             case 'stock_out':
-                return "{$user} removeu " . abs($qty) . " unidades";
+                $toArea = $item->payload['to_area'] ?? $item->meta['area_hospitalar_id'] ?? null;
+                $lote = $item->payload['num_lote'] ?? null;
+                $parts = [];
+                $parts[] = "{$user} deu baixa de " . abs($qty) . " unidades";
+                if ($lote) $parts[] = "lote: {$lote}";
+                if ($toArea) $parts[] = "para a área #{$toArea}";
+                return implode(' ', $parts);
+
             case 'created':
+                $designacao = $item->payload['designacao'] ?? null;
+                $descritivo = $item->payload['descritivo'] ?? null;
+                if ($designacao) {
+                    return "{$user} adicionou um novo produto: {$designacao}" . ($descritivo ? " ({$descritivo})" : '');
+                }
                 return "{$user} criou o produto";
+
             case 'updated':
+                $changes = $item->changes ?? [];
+                if (is_array($changes) && count($changes) > 0) {
+                    $pieces = [];
+                    foreach ($changes as $field => $vals) {
+                        $label = $fieldNames[$field] ?? ucfirst(str_replace('_', ' ', $field));
+                        $old = is_array($vals) && array_key_exists('old', $vals) ? $vals['old'] : (is_array($vals) ? json_encode($vals) : $vals);
+                        $new = is_array($vals) && array_key_exists('new', $vals) ? $vals['new'] : '';
+                        $oldStr = $old === null ? 'n/a' : (string)$old;
+                        $newStr = $new === null ? 'n/a' : (string)$new;
+                        $pieces[] = "{$label}: '{$oldStr}' → '{$newStr}'";
+                    }
+                    $joined = implode('; ', $pieces);
+                    return "{$user} atualizou o produto — {$joined}";
+                }
+                // fallback genérico
                 return "{$user} atualizou o produto";
+
             case 'deleted':
-                return "{$user} eliminou o produto";
+                $designacao = $item->payload['designacao'] ?? null;
+                return $designacao ? "{$user} eliminou o produto {$designacao}" : "{$user} eliminou o produto";
+
             case 'transfer':
-                return "{$user} realizou uma transferência ({$qty} unidades)";
+                return "{$user} realizou uma transferência ({abs($qty)} unidades)";
+
             default:
                 return ucfirst($item->action) . ' por ' . $user;
         }
