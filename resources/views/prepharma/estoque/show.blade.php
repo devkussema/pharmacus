@@ -304,7 +304,7 @@
                     <tr class="action-row">
                         <td colspan="11">
                             <div class="action-buttons">
-                                <button class="btn btn-success btn-add" data-id="${data.produto.id}">Adicionar</button>
+                                <button class="btn btn-success btn-add" data-id="${data.produto.id}" data-descritivo="${data.produto.descritivo}">Adicionar</button>
                                 <button class="btn btn-primary btn-editar" data-id="${data.produto.id}">Editar</button>
                                 <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-qtd="${getCaixa(data.produto.descritivo)}">Dar Baixa</button>
                                 <button class="btn btn-danger btn-eliminar-item" data-id="${data.produto.id}">Eliminar</button>
@@ -480,16 +480,14 @@
                 document.body.insertAdjacentHTML('beforeend', modalHtml);
 
                 // listeners para recalcular total automaticamente
+
                 function calcTotal() {
                     var caixa = parseInt(document.getElementById('add_caixa').value || 0, 10);
                     var caixinha = parseInt(document.getElementById('add_caixinha').value || 0, 10);
                     var unidade = parseInt(document.getElementById('add_unidade').value || 0, 10);
 
-                    // Se caixinha ou unidade for zero, assumimos divisores 1 para evitar divisão por zero
-                    var factorCaixinha = caixinha > 0 ? caixinha : 1;
-                    var factorUnidade = unidade > 0 ? unidade : 1;
-
-                    var total = (caixa * factorCaixinha * factorUnidade) + (caixinha * factorUnidade) + unidade;
+                    // A equação correta: caixa * caixinha * unidade
+                    var total = (caixa || 0) * (caixinha || 0) * (unidade || 0);
                     document.getElementById('add_total').value = total;
                 }
 
@@ -506,6 +504,7 @@
             var target = e.target.closest('.btn-add');
             if (!target) return;
             var produtoId = target.getAttribute('data-id');
+            var descritivo = target.getAttribute('data-descritivo') || '';
             document.getElementById('add_produto_id').value = produtoId;
 
             // resetar campos
@@ -514,6 +513,22 @@
                 if (!el) return;
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = el.id === 'add_total' ? '0' : '';
             });
+
+            // preencher caixinha e unidade com valores existentes no DB (descritivo)
+            if (descritivo) {
+                var parts = descritivo.split('x');
+                var caixaVal = parts[0] ? parts[0].replace(/^0+/, '') : '';
+                var caixinhaVal = parts[1] ? parts[1].replace(/^0+/, '') : '';
+                var unidadeVal = parts[2] ? parts[2].replace(/^0+/, '') : '';
+
+                if (document.getElementById('add_caixinha')) document.getElementById('add_caixinha').value = caixinhaVal || 0;
+                if (document.getElementById('add_unidade')) document.getElementById('add_unidade').value = unidadeVal || 0;
+                // opcional: preenche caixa com 0 para que usuário escolha quantidade a adicionar
+                if (document.getElementById('add_caixa')) document.getElementById('add_caixa').value = 0;
+
+                // recalcula total com os valores predefinidos
+                calcTotal();
+            }
 
             var modal = new bootstrap.Modal(document.getElementById('modalAdicionarEstoque'));
             modal.show();
