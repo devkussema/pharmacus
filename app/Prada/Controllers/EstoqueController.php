@@ -18,6 +18,7 @@ use App\Models\{
     UserAreaHospitalar as UAH
 };
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
 use App\Traits\{AtividadeTrait, GenerateTrait};
 use Carbon\Carbon;
 
@@ -652,46 +653,111 @@ class EstoqueController extends Controller
             'prateleira_id' => $produtoOrig->prateleira_id,
         ];
 
-        // Cria novo ProdutoEstoque com o descritivo e metadados
-        $novoPE = PE::create($dadosPE);
+        // Tentar mesclar com produto existente quando embalagem compatível
+        DB::beginTransaction();
+        try {
+            $merged = false;
 
-        // Cria saldo com quantidade informada
-        SE::create([
-            'produto_estoque_id' => $novoPE->id,
-            'qtd' => $units
-        ]);
+            // Normalizar e parse do descritivo atual e do original (tolerante a 'X' maiúsculo e espaços)
+            $normalize = function ($s) {
+                $s = (string) $s;
+                $s = str_replace('X', 'x', $s);
+                $s = preg_replace('/[^0-9x]/', '', $s);
+                return $s;
+            };
 
-        // Determinar farmacia/area do usuário atual (mesma lógica do store)
-        $farmacia_id = '';
-        if (@auth()->user()->isFarmacia) {
-            $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
-        } elseif (@auth()->user()->farmacia) {
-            $farmacia_id = auth()->user()->farmacia->farmacia_id;
+            $partsNewRaw = explode('x', $normalize($descritivo));
+            $partsOrigRaw = explode('x', $normalize($produtoOrig->descritivo ?? ''));
+            $partsNew = array_map('intval', array_map('trim', $partsNewRaw));
+            $partsOrig = array_map('intval', array_map('trim', $partsOrigRaw));
+
+            if (count($partsNew) === 3 && count($partsOrig) === 3) {
+                // se caixinha e unidade coincidem, somamos as caixas (respeitando zeros)
+                if ($partsNew[1] === $partsOrig[1] && $partsNew[2] === $partsOrig[2]) {
+                    $newCaixa = $partsOrig[0] + $partsNew[0];
+                    $newDescritivo = "{$newCaixa}x{$partsOrig[1]}x{$partsOrig[2]}";
+
+                    // atualizar produto original e saldo de forma segura
+                    $produtoOrig->descritivo = $newDescritivo;
+                    $produtoOrig->save();
+
+                    $saldo = $produtoOrig->saldo()->first();
+                    if ($saldo) {
+                        $saldo->qtd = $saldo->qtd + $units;
+                        $saldo->save();
+                    } else {
+                        $produtoOrig->saldo()->create(['qtd' => $units]);
+                    }
+
+                    // activity
+                    $meta = [
+                        'model_type' => PE::class,
+                        'model_id' => $produtoOrig->id,
+                        'ip_address' => request()->ip(),
+                        'route' => request()->path(),
+                        'http_method' => request()->method(),
+                        'level' => 'info',
+                        'snapshot_after' => $produtoOrig->toArray(),
+                    ];
+                    self::startAtv("Adicionou {$units} unidades ao produto existente {$produtoOrig->designacao}", null, $meta);
+
+                    DB::commit();
+
+                    return response()->json([
+                        'message' => "{$units} unidades adicionadas ao produto existente",
+                        'produto_id' => $produtoOrig->id,
+                        'novo_descritivo' => $produtoOrig->descritivo
+                    ], 200);
+                }
+            }
+
+            // fallback: criar novo ProdutoEstoque com o descritivo e metadados
+            $novoPE = PE::create($dadosPE);
+
+            // Cria saldo com quantidade informada
+            SE::create([
+                'produto_estoque_id' => $novoPE->id,
+                'qtd' => $units
+            ]);
+
+            // Determinar farmacia/area do usuário atual (mesma lógica do store)
+            $farmacia_id = '';
+            if (@auth()->user()->isFarmacia) {
+                $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
+            } elseif (@auth()->user()->farmacia) {
+                $farmacia_id = auth()->user()->farmacia->farmacia_id;
+            }
+
+            // Cria registro na tabela Estoque associando a area/farmacia
+            Estoque::create([
+                'produto_estoque_id' => $novoPE->id,
+                'farmacia_id' => $farmacia_id,
+                'area_hospitalar_id' => $area_id
+            ]);
+
+            $meta = [
+                'model_type' => PE::class,
+                'model_id' => $novoPE->id,
+                'ip_address' => request()->ip(),
+                'route' => request()->path(),
+                'http_method' => request()->method(),
+                'level' => 'info',
+                'snapshot_after' => $novoPE->toArray(),
+            ];
+            self::startAtv("Adicionou entrada de estoque ({$units} unidades) para {$novoPE->designacao}", null, $meta);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => "{$units} unidades registadas com sucesso",
+                'produto_id' => $novoPE->id,
+                'novo_descritivo' => $novoPE->descritivo
+            ], 201);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            logger()->error('Falha ao adicionar estoque: ' . $e->getMessage());
+            return response()->json(['message' => 'Erro ao processar pedido'], 500);
         }
-
-        // Cria registro na tabela Estoque associando a area/farmacia
-        Estoque::create([
-            'produto_estoque_id' => $novoPE->id,
-            'farmacia_id' => $farmacia_id,
-            'area_hospitalar_id' => $area_id
-        ]);
-
-        $meta = [
-            'model_type' => PE::class,
-            'model_id' => $novoPE->id,
-            'ip_address' => request()->ip(),
-            'route' => request()->path(),
-            'http_method' => request()->method(),
-            'level' => 'info',
-            'snapshot_after' => $novoPE->toArray(),
-        ];
-        self::startAtv("Adicionou entrada de estoque ({$units} unidades) para {$novoPE->designacao}", null, $meta);
-
-        return response()->json([
-            'message' => "{$units} unidades registadas com sucesso",
-            'produto_id' => $novoPE->id,
-            'novo_descritivo' => $novoPE->descritivo
-        ], 201);
     }
 
     public function baixa(Request $request)
