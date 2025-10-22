@@ -304,10 +304,21 @@
                     <tr class="action-row">
                         <td colspan="11">
                             <div class="action-buttons">
-                                <button class="btn btn-success btn-add" data-id="${data.produto.id}" data-descritivo="${data.produto.descritivo}">Adicionar</button>
-                                <button class="btn btn-primary btn-editar" data-id="${data.produto.id}">Editar</button>
-                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-qtd="${getCaixa(data.produto.descritivo)}">Dar Baixa</button>
-                                <button class="btn btn-danger btn-eliminar-item" data-id="${data.produto.id}">Eliminar</button>
+                                <button class="btn btn-success btn-add" data-id="${data.produto.id}" data-descritivo="${data.produto.descritivo}" title="Adicionar" aria-label="Adicionar">
+                                    <i class="fa fa-plus me-1" aria-hidden="true"></i> Adicionar
+                                </button>
+                                <button class="btn btn-primary btn-editar" data-id="${data.produto.id}" title="Editar" aria-label="Editar">
+                                    <i class="fa fa-edit me-1" aria-hidden="true"></i> Editar
+                                </button>
+                                <button class="btn btn-outline-info btn-historico" data-id="${data.produto.id}" title="Ver Histórico" aria-label="Histórico">
+                                    <i class="fa fa-history me-1"></i> Histórico
+                                </button>
+                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-qtd="${getCaixa(data.produto.descritivo)}" title="Dar Baixa" aria-label="Dar Baixa">
+                                    <i class="fa fa-arrow-down me-1" aria-hidden="true"></i> Dar Baixa
+                                </button>
+                                <button class="btn btn-danger btn-eliminar-item" data-id="${data.produto.id}" title="Eliminar" aria-label="Eliminar">
+                                    <i class="fa fa-trash me-1" aria-hidden="true"></i> Eliminar
+                                </button>
                             </div>
                         </td>
                     </tr>`;
