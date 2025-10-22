@@ -1,7 +1,7 @@
 <style>
     /* ========== Offcanvas Largura e Layout ========== */
     .offcanvas-history { 
-        --bs-offcanvas-width: min(42vw, 680px);
+        --bs-offcanvas-width: min(48vw, 860px);
         box-shadow: -4px 0 24px rgba(0,0,0,0.12);
     }
 
@@ -242,12 +242,28 @@
     
     <div class="offcanvas-body p-3">
         <div class="history-toolbar">
-            <div class="input-group">
-                <span class="input-group-text"><i class="fa fa-search"></i></span>
-                <input id="history_search" class="form-control" placeholder="Pesquisar no histórico..." />
-                <button id="history_refresh" class="btn" title="Atualizar">
-                    <i class="fa fa-sync"></i>
-                </button>
+            <div class="d-flex gap-2 align-items-center mb-2">
+                <div class="flex-fill">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        <input id="history_search" class="form-control" placeholder="Pesquisar no histórico..." />
+                        <button id="history_refresh" class="btn" title="Atualizar">
+                            <i class="fa fa-sync"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 align-items-center">
+                <input id="history_from" type="date" class="form-control form-control-sm" placeholder="De" />
+                <input id="history_to" type="date" class="form-control form-control-sm" placeholder="Até" />
+                <select id="history_per_page" class="form-select form-select-sm" style="width:95px;">
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <button id="history_apply" class="btn btn-sm btn-primary">Aplicar</button>
             </div>
         </div>
 
@@ -286,6 +302,12 @@
         <div id="history_empty" style="display:none;">
             <i class="fa fa-inbox fa-3x"></i>
             <div>Nenhum histórico encontrado para este produto.</div>
+        </div>
+
+        <!-- Paginação e estado -->
+        <div id="history_pagination" class="d-flex justify-content-between align-items-center mt-2">
+            <div id="history_pagination_info" class="text-muted small">&nbsp;</div>
+            <div id="history_pagination_controls"></div>
         </div>
 
         <div class="mt-3 text-end">

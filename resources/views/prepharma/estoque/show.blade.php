@@ -350,61 +350,142 @@
                     'transfer': 'fa-exchange-alt'
                 };
 
-                // Para já apenas populamos com layout de loading; se existir endpoint, podemos buscar
-                fetch(`/api/product-history/${produtoId}`).then(function(resp) {
-                    if (!resp.ok) throw new Error('no-data');
-                    return resp.json();
-                }).then(function(json) {
-                    var list = json.data || json;
+                // Carregar histórico com filtros e paginação
+                var currentHistoryRequest = null;
+
+                function renderHistoryItems(list, meta) {
+                    timeline.innerHTML = '';
                     if (!list || list.length === 0) {
                         document.getElementById('history_empty').style.display = 'block';
                         document.getElementById('offcanvasRightSubtitle').innerText = 'Sem registos';
-                    } else {
-                        document.getElementById('offcanvasRightSubtitle').innerText = list.length + ' ' + (list.length === 1 ? 'registo' : 'registos');
-                        list.forEach(function(item, idx) {
-                            var qty = item.quantity_delta || 0;
-                            var qtyClass = qty > 0 ? 'positive' : (qty < 0 ? 'negative' : 'neutral');
-                            var qtyText = qty > 0 ? '+'+qty+' un' : (qty < 0 ? qty+' un' : '—');
-                            var action = item.action || 'updated';
-                            var icon = actionIcons[action] || 'fa-circle';
-                            var userName = item.user ? item.user.name : 'Sistema';
-                            var timeAgo = item.created_at || 'data desconhecida';
-                            
-                            var el = document.createElement('div');
-                            el.className = 'history-item';
-                            el.style.animationDelay = (idx * 0.05) + 's';
-                            el.innerHTML = `
-                                <div class="d-flex gap-3 align-items-start">
-                                    <div class="history-badge action-${action}">
-                                        <i class="fa ${icon}"></i>
-                                    </div>
-                                    <div class="history-content">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <div>
-                                                <div class="history-action-title">${action.replace('_', ' ')}</div>
-                                                <div class="history-meta">
-                                                    <span class="history-user">
-                                                        <i class="fa fa-user-circle"></i> ${userName}
-                                                    </span>
-                                                    <span class="history-time">
-                                                        <i class="fa fa-clock"></i> ${timeAgo}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <span class="history-qty ${qtyClass}">${qtyText}</span>
-                                        </div>
-                                        ${item.payload && item.payload.num_lote ? '<div class="history-message">Lote: <strong>'+item.payload.num_lote+'</strong>' + (item.payload.obs ? ' • ' + item.payload.obs : '') + '</div>' : ''}
-                                    </div>
-                                </div>`;
-                            timeline.appendChild(el);
-                        });
+                        document.getElementById('history_pagination_info').innerText = '';
+                        document.getElementById('history_pagination_controls').innerHTML = '';
+                        return;
                     }
-                }).catch(function() {
-                    document.getElementById('history_empty').style.display = 'block';
-                    document.getElementById('offcanvasRightSubtitle').innerText = 'Erro ao carregar';
-                }).finally(function() {
-                    offcanvas.show();
+
+                    document.getElementById('history_empty').style.display = 'none';
+                    document.getElementById('offcanvasRightSubtitle').innerText = (meta && meta.total ? meta.total : list.length) + ' ' + ((meta && meta.total === 1) || list.length === 1 ? 'registo' : 'registos');
+
+                    list.forEach(function(item, idx) {
+                        var qty = item.quantity_delta || 0;
+                        var qtyClass = qty > 0 ? 'positive' : (qty < 0 ? 'negative' : 'neutral');
+                        var qtyText = qty > 0 ? '+'+qty+' un' : (qty < 0 ? qty+' un' : '—');
+                        var action = item.action || 'updated';
+                        var icon = actionIcons[action] || 'fa-circle';
+                        var userName = item.user ? item.user.name : 'Sistema';
+                        var timeAgo = item.created_at_human || item.created_at || 'data desconhecida';
+                        var createdFmt = item.created_at_fmt || item.created_at || '';
+
+                        var el = document.createElement('div');
+                        el.className = 'history-item';
+                        el.style.animationDelay = (idx * 0.05) + 's';
+                        el.innerHTML = `
+                            <div class="d-flex gap-3 align-items-start">
+                                <div class="history-badge action-${action}">
+                                    <i class="fa ${icon}"></i>
+                                </div>
+                                <div class="history-content">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <div class="history-action-title">${(action || '').replace('_', ' ')}</div>
+                                            <div class="history-meta">
+                                                <span class="history-user">
+                                                    <i class="fa fa-user-circle"></i> ${userName}
+                                                </span>
+                                                <span class="history-time">
+                                                    <i class="fa fa-clock"></i> ${createdFmt}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="history-qty ${qtyClass}">${qtyText}</span>
+                                    </div>
+                                    ${item.payload && item.payload.num_lote ? '<div class="history-message">Lote: <strong>'+item.payload.num_lote+'</strong>' + (item.payload.obs ? ' • ' + item.payload.obs : '') + '</div>' : ''}
+                                </div>
+                            </div>`;
+                        timeline.appendChild(el);
+                    });
+
+                    // Render pagination controls se meta existir
+                    var controls = document.getElementById('history_pagination_controls');
+                    var info = document.getElementById('history_pagination_info');
+                    controls.innerHTML = '';
+                    info.innerText = '';
+                    if (meta && meta.total !== undefined) {
+                        info.innerText = `Mostrando ${meta.from || 1} a ${meta.to || list.length} de ${meta.total}`;
+
+                        var ul = document.createElement('div');
+                        ul.className = 'btn-group';
+
+                        var prev = document.createElement('button');
+                        prev.className = 'btn btn-sm btn-outline-secondary';
+                        prev.innerText = 'Anterior';
+                        prev.disabled = !meta.prev_page_url;
+                        prev.addEventListener('click', function() { loadProductHistory(meta.current_page - 1); });
+
+                        var next = document.createElement('button');
+                        next.className = 'btn btn-sm btn-outline-secondary';
+                        next.innerText = 'Próximo';
+                        next.disabled = !meta.next_page_url;
+                        next.addEventListener('click', function() { loadProductHistory(meta.current_page + 1); });
+
+                        ul.appendChild(prev);
+                        ul.appendChild(next);
+                        controls.appendChild(ul);
+                    }
+                }
+
+                function buildQueryParams(page) {
+                    var q = document.getElementById('history_search').value || '';
+                    var from = document.getElementById('history_from').value || '';
+                    var to = document.getElementById('history_to').value || '';
+                    var per_page = document.getElementById('history_per_page').value || '';
+                    var params = new URLSearchParams();
+                    if (q) params.append('q', q);
+                    if (from) params.append('from', from);
+                    if (to) params.append('to', to);
+                    if (per_page) params.append('per_page', per_page);
+                    if (page) params.append('page', page);
+                    return params.toString();
+                }
+
+                function loadProductHistory(page) {
+                    var qs = buildQueryParams(page);
+                    if (currentHistoryRequest) currentHistoryRequest.abort();
+                    currentHistoryRequest = new AbortController();
+                    var signal = currentHistoryRequest.signal;
+
+                    document.getElementById('offcanvasRightSubtitle').innerText = 'Carregando histórico...';
+                    timeline.innerHTML = '';
+
+                    fetch(`/api/product-history/${produtoId}?${qs}`, { signal: signal }).then(function(resp) {
+                        if (!resp.ok) throw new Error('no-data');
+                        return resp.json();
+                    }).then(function(json) {
+                        var data = json.data || [];
+                        var meta = json.meta || {};
+                        renderHistoryItems(data, meta);
+                    }).catch(function(err) {
+                        if (err.name === 'AbortError') return; // requisição cancelada
+                        document.getElementById('history_empty').style.display = 'block';
+                        document.getElementById('offcanvasRightSubtitle').innerText = 'Erro ao carregar';
+                    }).finally(function() {
+                        offcanvas.show();
+                    });
+                }
+
+                // Ações do toolbar
+                document.getElementById('history_refresh').onclick = function() { loadProductHistory(1); };
+                document.getElementById('history_apply').onclick = function() { loadProductHistory(1); };
+
+                // debounce para busca por texto
+                var searchTimer = null;
+                document.getElementById('history_search').addEventListener('input', function() {
+                    clearTimeout(searchTimer);
+                    searchTimer = setTimeout(function() { loadProductHistory(1); }, 450);
                 });
+
+                // carregar primeira página
+                loadProductHistory(1);
             });
 
             // Evento para abrir a modal de confirmação ao clicar em "Eliminar"
