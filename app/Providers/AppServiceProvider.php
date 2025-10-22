@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use App\Models\ProdutoEstoque;
+use App\Observers\ProdutoEstoqueObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,5 +28,8 @@ class AppServiceProvider extends ServiceProvider
         View::addNamespace('prepharma_auth', resource_path('views/auth/prepharma'));
         View::addNamespace('prepharma', resource_path('views/prepharma'));
         View::addNamespace('admin', app_path('Views'));
+
+        // Registrar observer para histórico de produtos
+        ProdutoEstoque::observe(ProdutoEstoqueObserver::class);
     }
 }

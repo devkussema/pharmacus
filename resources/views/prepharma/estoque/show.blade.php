@@ -549,6 +549,27 @@
                 var total = parseInt(document.getElementById('add_total').value || 0, 10);
                 fd.set('units', total);
 
+                // incluir area_hospitalar_id no payload se estiver disponível na página
+                try {
+                    var areaInput = document.createElement('input');
+                    areaInput.type = 'hidden';
+                    areaInput.name = 'area_hospitalar_id';
+                    areaInput.value = '{{ $area_id ?? '' }}';
+                    fd.append(areaInput.name, areaInput.value);
+                } catch (e) {
+                    // continue sem area
+                }
+
+                // Bloquear envio se total for 0
+                if (total <= 0) {
+                    feedbackEl.style.display = 'block';
+                    feedbackEl.className = 'alert alert-danger';
+                    feedbackEl.innerText = 'O total deve ser maior que zero antes de submeter.';
+                    Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = false; });
+                    btnSpinner.style.display = 'none';
+                    return;
+                }
+
                 var btn = document.getElementById('add_submit_btn');
                 var btnText = document.getElementById('add_submit_text');
                 var btnSpinner = document.getElementById('add_submit_spinner');

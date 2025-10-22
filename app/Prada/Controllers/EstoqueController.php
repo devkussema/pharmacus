@@ -604,6 +604,7 @@ class EstoqueController extends Controller
             'num_lote' => 'nullable|string',
             'fornecedor' => 'nullable|string',
             'obs' => 'nullable|string',
+            'area_hospitalar_id' => 'nullable|exists:areas_hospitalares,id',
         ]);
 
         // informações do produto original (para copiar metadados)
@@ -614,6 +615,23 @@ class EstoqueController extends Controller
 
         $descritivo = $request->descritivo;
         $units = intval($request->units);
+
+        // Validar que unidades a adicionar seja maior que zero
+        if ($units <= 0) {
+            return response()->json(['message' => 'O total de unidades deve ser maior que zero.'], 422);
+        }
+
+        // Determinar area hospitalar: preferir valor vindo do request, senão usar area do user;
+        // se nenhuma estiver disponível, retornamos erro 422 para que frontend peça seleção.
+        $area_id = $request->input('area_hospitalar_id');
+        if (!$area_id) {
+            $userAh = auth()->user()->area_hospitalar ?? null;
+            if ($userAh && isset($userAh->area_hospitalar_id)) {
+                $area_id = $userAh->area_hospitalar_id;
+            } else {
+                return response()->json(['message' => 'Área hospitalar não informada. Selecione a área antes de adicionar entrada.'], 422);
+            }
+        }
 
         // Monta os dados do novo ProdutoEstoque (copiando meta do original)
         $dadosPE = [
@@ -655,7 +673,7 @@ class EstoqueController extends Controller
         Estoque::create([
             'produto_estoque_id' => $novoPE->id,
             'farmacia_id' => $farmacia_id,
-            'area_hospitalar_id' => request()->input('area_hospitalar_id') ?? auth()->user()->area_hospitalar->area_hospitalar_id ?? null
+            'area_hospitalar_id' => $area_id
         ]);
 
         $meta = [
