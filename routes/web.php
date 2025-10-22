@@ -82,7 +82,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('/dashboard', [DashStock::class, 'index'])->name('stock.dashboard');
     });
 
-    Route::prefix('documents')->group(function () {
+    Route::prefix('documentos')->group(function () {
         Route::get('/', [DocumentsController::class, 'index'])->name('documents.index');
         Route::get('/create', [DocumentsController::class, 'create'])->name('documents.create');
         Route::post('/', [DocumentsController::class, 'store'])->name('documents.store');
