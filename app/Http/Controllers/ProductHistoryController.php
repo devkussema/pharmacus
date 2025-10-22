@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ProductHistory;
 use App\Models\ProdutoEstoque;
+use App\Models\AreaHospitalar;
 
 class ProductHistoryController extends Controller
 {
@@ -67,7 +68,7 @@ class ProductHistoryController extends Controller
                 'user' => $item->user ? ['id' => $item->user->id, 'name' => $item->user->nome ?? $item->user->name] : null,
                 'created_at' => $item->created_at ? $item->created_at->toIso8601String() : null,
                 'created_at_human' => $item->created_at ? $item->created_at->diffForHumans() : null,
-                'created_at_fmt' => $item->created_at ? $item->created_at->format('d-m-Y H:i') : null,
+                'created_at_fmt' => $item->created_at ? $item->created_at->format('d/m/Y H:i') : null,
                 // resumo em português legível
                 'summary_pt' => $this->makeSummaryPt($item),
             ];
@@ -92,7 +93,7 @@ class ProductHistoryController extends Controller
      */
     protected function makeSummaryPt(ProductHistory $item): string
     {
-        $user = $item->user ? ($item->user->nome ?? $item->user->name) : 'Sistema';
+    $user = $item->user ? ($item->user->nome ?? $item->user->name) : 'Sistema';
         $qty = $item->quantity_delta ?? 0;
 
         // mapeamento de campos técnicos para rótulos amigáveis
@@ -113,47 +114,57 @@ class ProductHistoryController extends Controller
             case 'stock_in':
                 $from = $item->payload['from_product_id'] ?? null;
                 $lote = $item->payload['num_lote'] ?? null;
-                $area = $item->meta['area_hospitalar_id'] ?? null;
-                $parts = [];
-                $parts[] = "{$user} adicionou " . abs($qty) . " unidades";
-                if ($lote) $parts[] = "lote: {$lote}";
-                if ($from) $parts[] = "(origem produto #{$from})";
-                if ($area) $parts[] = "para a área #{$area}";
-                return implode(' ', $parts);
+                $areaId = $item->meta['area_hospitalar_id'] ?? null;
+                $areaName = null;
+                if ($areaId) {
+                    $ah = AreaHospitalar::find($areaId);
+                    $areaName = $ah ? $ah->nome : null;
+                }
+                $phrase = "{$user} recebeu " . abs($qty) . " unidades";
+                if ($lote) $phrase .= " (lote {$lote})";
+                if ($from) $phrase .= " de outro produto";
+                if ($areaName) $phrase .= " na {$areaName}";
+                return $phrase;
 
             case 'stock_out':
-                $toArea = $item->payload['to_area'] ?? $item->meta['area_hospitalar_id'] ?? null;
+                $toAreaId = $item->payload['to_area'] ?? $item->meta['area_hospitalar_id'] ?? null;
                 $lote = $item->payload['num_lote'] ?? null;
-                $parts = [];
-                $parts[] = "{$user} deu baixa de " . abs($qty) . " unidades";
-                if ($lote) $parts[] = "lote: {$lote}";
-                if ($toArea) $parts[] = "para a área #{$toArea}";
-                return implode(' ', $parts);
+                $areaName = null;
+                if ($toAreaId) {
+                    $ah = AreaHospitalar::find($toAreaId);
+                    $areaName = $ah ? $ah->nome : null;
+                }
+                $phrase = "{$user} deu baixa de " . abs($qty) . " unidades";
+                if ($lote) $phrase .= " (lote {$lote})";
+                if ($areaName) $phrase .= " para {$areaName}";
+                return $phrase;
 
             case 'created':
                 $designacao = $item->payload['designacao'] ?? null;
                 $descritivo = $item->payload['descritivo'] ?? null;
                 if ($designacao) {
-                    return "{$user} adicionou um novo produto: {$designacao}" . ($descritivo ? " ({$descritivo})" : '');
+                    return "{$user} adicionou o produto '{$designacao}'" . ($descritivo ? " ({$descritivo})" : '');
                 }
                 return "{$user} criou o produto";
 
             case 'updated':
                 $changes = $item->changes ?? [];
                 if (is_array($changes) && count($changes) > 0) {
-                    $pieces = [];
-                    foreach ($changes as $field => $vals) {
-                        $label = $fieldNames[$field] ?? ucfirst(str_replace('_', ' ', $field));
-                        $old = is_array($vals) && array_key_exists('old', $vals) ? $vals['old'] : (is_array($vals) ? json_encode($vals) : $vals);
-                        $new = is_array($vals) && array_key_exists('new', $vals) ? $vals['new'] : '';
-                        $oldStr = $old === null ? 'n/a' : (string)$old;
-                        $newStr = $new === null ? 'n/a' : (string)$new;
-                        $pieces[] = "{$label}: '{$oldStr}' → '{$newStr}'";
+                    $fields = array_keys($changes);
+                    $labels = array_map(function ($f) use ($fieldNames) {
+                        return $fieldNames[$f] ?? ucfirst(str_replace('_', ' ', $f));
+                    }, $fields);
+                    $count = count($labels);
+                    if ($count === 1) {
+                        return "{$user} atualizou o campo: {$labels[0]}";
                     }
-                    $joined = implode('; ', $pieces);
-                    return "{$user} atualizou o produto — {$joined}";
+                    // até 3 campos listados, o resto agrupa
+                    $listed = array_slice($labels, 0, 3);
+                    $rest = $count - count($listed);
+                    $joined = implode(', ', $listed);
+                    if ($rest > 0) $joined .= " e mais {$rest}";
+                    return "{$user} atualizou {$count} campos: {$joined}";
                 }
-                // fallback genérico
                 return "{$user} atualizou o produto";
 
             case 'deleted':
