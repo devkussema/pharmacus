@@ -52,4 +52,14 @@ class ProdutoEstoque extends Model
     {
         return $this->hasOne(StatusEstoque::class, 'produto_id');
     }
+
+    /**
+     * Histórico de operações deste produto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function histories()
+    {
+        return $this->hasMany(ProductHistory::class, 'product_id');
+    }
 }

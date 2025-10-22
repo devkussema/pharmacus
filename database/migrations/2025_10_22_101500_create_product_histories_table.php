@@ -17,9 +17,12 @@ return new class extends Migration
             $table->uuid('id')->primary();
 
             // Referências principais
-            $table->uuid('product_id')->nullable()->index();
+            // produto_estoques usa id autoincrement (unsignedBigInteger)
+            $table->unsignedBigInteger('product_id')->nullable()->index();
+            // farmácias usam UUID
             $table->uuid('farmacia_id')->nullable()->index();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            // utilizadores usam UUID na aplicação
+            $table->uuid('user_id')->nullable()->index();
 
             // Tipo de acção realizada
             $table->enum('action', ['created', 'updated', 'deleted', 'restored', 'stock_in', 'stock_out', 'price_change', 'transfer', 'adjustment'])->index();
@@ -46,12 +49,17 @@ return new class extends Migration
             // Índices para consultas comuns
             $table->index(['product_id', 'action']);
             $table->index(['farmacia_id', 'created_at']);
+
+            // Chaves estrangeiras compatíveis com tipos das tabelas existentes
+            $table->foreign('product_id')->references('id')->on('produto_estoques')->onDelete('set null');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('farmacia_id')->references('id')->on('farmacias')->onDelete('set null');
         });
     }
 
-    /**
+    /** 
      * Reverse the migrations.
-     *
+     * 
      * @return void
      */
     public function down(): void

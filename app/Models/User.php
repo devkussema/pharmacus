@@ -82,6 +82,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Históricos criados por este utilizador
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function productHistories()
+    {
+        return $this->hasMany(ProductHistory::class, 'user_id');
+    }
+
+    /**
      * Relação com o pivot UserAreaHospitalar.
      *
      * Um utilizador pode ter várias entradas em UserAreaHospitalar,
