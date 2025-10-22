@@ -332,10 +332,23 @@
                 var offcanvasEl = document.getElementById('offcanvasRight');
                 var offcanvas = new bootstrap.Offcanvas(offcanvasEl);
 
-                // limpar conteúdo anterior
-                document.getElementById('history_timeline').innerHTML = '';
+                // limpar conteúdo anterior (menos o exemplo)
+                var timeline = document.getElementById('history_timeline');
+                var examples = timeline.querySelectorAll('.history-item');
+                Array.from(examples).forEach(function(ex) { ex.remove(); });
+                
                 document.getElementById('history_empty').style.display = 'none';
                 document.getElementById('offcanvasRightSubtitle').innerText = 'Carregando histórico...';
+
+                // Mapeamento de ícones por ação
+                var actionIcons = {
+                    'created': 'fa-plus-circle',
+                    'updated': 'fa-edit',
+                    'stock_in': 'fa-arrow-down',
+                    'stock_out': 'fa-arrow-up',
+                    'deleted': 'fa-trash',
+                    'transfer': 'fa-exchange-alt'
+                };
 
                 // Para já apenas populamos com layout de loading; se existir endpoint, podemos buscar
                 fetch(`/api/product-history/${produtoId}`).then(function(resp) {
@@ -347,26 +360,43 @@
                         document.getElementById('history_empty').style.display = 'block';
                         document.getElementById('offcanvasRightSubtitle').innerText = 'Sem registos';
                     } else {
-                        document.getElementById('offcanvasRightSubtitle').innerText = list.length + ' registos';
-                        list.forEach(function(item) {
+                        document.getElementById('offcanvasRightSubtitle').innerText = list.length + ' ' + (list.length === 1 ? 'registo' : 'registos');
+                        list.forEach(function(item, idx) {
+                            var qty = item.quantity_delta || 0;
+                            var qtyClass = qty > 0 ? 'positive' : (qty < 0 ? 'negative' : 'neutral');
+                            var qtyText = qty > 0 ? '+'+qty+' un' : (qty < 0 ? qty+' un' : '—');
+                            var action = item.action || 'updated';
+                            var icon = actionIcons[action] || 'fa-circle';
+                            var userName = item.user ? item.user.name : 'Sistema';
+                            var timeAgo = item.created_at || 'data desconhecida';
+                            
                             var el = document.createElement('div');
-                            el.className = 'd-flex mb-3';
-                            var qty = item.quantity_delta ? (item.quantity_delta > 0 ? '+'+item.quantity_delta : item.quantity_delta) : '';
+                            el.className = 'history-item';
+                            el.style.animationDelay = (idx * 0.05) + 's';
                             el.innerHTML = `
-                                <div class="me-3">
-                                    <span class="badge bg-secondary rounded-circle" style="width:38px; height:38px; display:flex; align-items:center; justify-content:center;">H</span>
-                                </div>
-                                <div class="flex-fill">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <strong class="history-action">${item.action}</strong>
-                                            <div class="text-muted small history-meta">por ${item.user ? item.user.name : 'Sistema'} — ${item.created_at}</div>
-                                        </div>
-                                        <div class="text-end small text-muted history-qty">${qty}</div>
+                                <div class="d-flex gap-3 align-items-start">
+                                    <div class="history-badge action-${action}">
+                                        <i class="fa ${icon}"></i>
                                     </div>
-                                    <div class="history-message mt-1">${item.payload && item.payload.num_lote ? 'Lote: <strong>'+item.payload.num_lote+'</strong>' : ''}</div>
+                                    <div class="history-content">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <div class="history-action-title">${action.replace('_', ' ')}</div>
+                                                <div class="history-meta">
+                                                    <span class="history-user">
+                                                        <i class="fa fa-user-circle"></i> ${userName}
+                                                    </span>
+                                                    <span class="history-time">
+                                                        <i class="fa fa-clock"></i> ${timeAgo}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <span class="history-qty ${qtyClass}">${qtyText}</span>
+                                        </div>
+                                        ${item.payload && item.payload.num_lote ? '<div class="history-message">Lote: <strong>'+item.payload.num_lote+'</strong>' + (item.payload.obs ? ' • ' + item.payload.obs : '') + '</div>' : ''}
+                                    </div>
                                 </div>`;
-                            document.getElementById('history_timeline').appendChild(el);
+                            timeline.appendChild(el);
                         });
                     }
                 }).catch(function() {
