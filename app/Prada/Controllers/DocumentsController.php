@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Controlador de Documentos
@@ -95,6 +96,35 @@ class DocumentsController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            // Depuração temporária: se a req tiver debug_upload=1 retornamos diagnostics em JSON
+            if ($request->get('debug_upload')) {
+                $files = $request->allFiles();
+                $filesSummary = [];
+                foreach ($files as $key => $f) {
+                    if ($f instanceof \Illuminate\Http\UploadedFile) {
+                        $filesSummary[$key] = [
+                            'clientName' => $f->getClientOriginalName(),
+                            'size' => $f->getSize(),
+                            'isValid' => $f->isValid(),
+                            'realPath' => $f->getRealPath(),
+                            'mime' => $f->getClientMimeType(),
+                        ];
+                    } else {
+                        $filesSummary[$key] = 'not uploadedfile instance';
+                    }
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'debug' => true,
+                    'files' => $filesSummary,
+                    'php' => [
+                        'upload_max_filesize' => ini_get('upload_max_filesize'),
+                        'post_max_size' => ini_get('post_max_size'),
+                        'memory_limit' => ini_get('memory_limit'),
+                    ],
+                ]);
+            }
             // Verificar presença do ficheiro antes da validação (Validator::make pode não considerar files corretamente)
             if (!$request->hasFile('file')) {
                 return response()->json([
@@ -129,6 +159,23 @@ class DocumentsController extends Controller
 
             $validated = $validator->validated();
 
+
+            // Diagnostics: registar quais ficheiros chegaram no request
+            try {
+                Log::info('Request files keys', array_keys($request->allFiles()));
+                $allFiles = $request->allFiles();
+                if (isset($allFiles['file'])) {
+                    $tmp = $allFiles['file'];
+                    Log::info('UploadedFile diagnostics', [
+                        'clientName' => method_exists($tmp, 'getClientOriginalName') ? $tmp->getClientOriginalName() : null,
+                        'size' => method_exists($tmp, 'getSize') ? $tmp->getSize() : null,
+                        'isValid' => method_exists($tmp, 'isValid') ? $tmp->isValid() : null,
+                    ]);
+                }
+            } catch (\Throwable $t) {
+                Log::warning('Erro ao registar diagnostics dos ficheiros: ' . $t->getMessage());
+            }
+
             $file = $request->file('file');
 
             // Verificações adicionais de segurança/diagnóstico
@@ -154,9 +201,45 @@ class DocumentsController extends Controller
             $filePath = 'documents/' . date('Y/m') . '/' . $storedName;
 
             // Fazer upload do ficheiro para o disk 'public'
-            // Usamos Storage::disk para podermos obter o caminho final e calcular o hash a partir do ficheiro armazenado
-            $file->storeAs('public/' . dirname($filePath), basename($filePath));
-            $storedFullPath = Storage::disk('public')->path($filePath);
+            // Usamos o terceiro parâmetro 'public' para garantir que vai para storage/app/public
+            $realPath = $file->getRealPath();
+            Log::info('Upload diagnostics', [
+                'originalName' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'isValid' => $file->isValid(),
+                'realPath' => $realPath,
+                'php_upload_max_filesize' => ini_get('upload_max_filesize'),
+                'php_post_max_size' => ini_get('post_max_size'),
+            ]);
+
+            $storedFullPath = null;
+            try {
+                // Garantir diretório existe em storage/app/public
+                $destinationDir = storage_path('app/public/' . dirname($filePath));
+                if (!is_dir($destinationDir)) {
+                    mkdir($destinationDir, 0755, true);
+                }
+
+                // Mover ficheiro para o destino (usa move_uploaded_file internamente)
+                $moved = $file->move($destinationDir, $storedName);
+                if ($moved === false) {
+                    throw new \RuntimeException('Não foi possível mover o ficheiro para o destino.');
+                }
+
+                $storedFullPath = $destinationDir . DIRECTORY_SEPARATOR . $storedName;
+            } catch (\Throwable $e) {
+                Log::error('Erro ao armazenar ficheiro (move)', [
+                    'message' => $e->getMessage(),
+                    'originalName' => $file->getClientOriginalName(),
+                    'realPath' => $realPath,
+                    'filePath' => $filePath,
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao armazenar ficheiro: ' . $e->getMessage(),
+                ], 500);
+            }
 
             // Processar tags
             $tags = null;
