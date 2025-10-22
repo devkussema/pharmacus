@@ -203,8 +203,147 @@
 	</div>
 </div>
 
+<!-- Container de Notificações Personalizadas -->
+<div id="notificationContainer" class="notification-container"></div>
+
 @push('styles')
 <style>
+	/* Sistema de Notificações Personalizadas */
+	.notification-container {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		z-index: 9999;
+		max-width: 400px;
+	}
+
+	.custom-notification {
+		background: white;
+		border-radius: 12px;
+		box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+		margin-bottom: 15px;
+		padding: 16px 20px;
+		border-left: 4px solid #007bff;
+		transform: translateX(100%);
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		opacity: 0;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.custom-notification.show {
+		transform: translateX(0);
+		opacity: 1;
+	}
+
+	.custom-notification.success {
+		border-left-color: #28a745;
+	}
+
+	.custom-notification.error {
+		border-left-color: #dc3545;
+	}
+
+	.custom-notification.warning {
+		border-left-color: #ffc107;
+	}
+
+	.custom-notification.info {
+		border-left-color: #17a2b8;
+	}
+
+	.notification-content {
+		display: flex;
+		align-items: flex-start;
+		gap: 12px;
+	}
+
+	.notification-icon {
+		font-size: 20px;
+		margin-top: 2px;
+		flex-shrink: 0;
+	}
+
+	.notification-icon.success {
+		color: #28a745;
+	}
+
+	.notification-icon.error {
+		color: #dc3545;
+	}
+
+	.notification-icon.warning {
+		color: #ffc107;
+	}
+
+	.notification-icon.info {
+		color: #17a2b8;
+	}
+
+	.notification-text {
+		flex: 1;
+	}
+
+	.notification-title {
+		font-weight: 600;
+		font-size: 14px;
+		margin-bottom: 4px;
+		color: #333;
+	}
+
+	.notification-message {
+		font-size: 13px;
+		color: #666;
+		line-height: 1.4;
+	}
+
+	.notification-close {
+		background: none;
+		border: none;
+		font-size: 18px;
+		color: #999;
+		cursor: pointer;
+		padding: 0;
+		width: 20px;
+		height: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		transition: all 0.2s;
+		flex-shrink: 0;
+	}
+
+	.notification-close:hover {
+		background: #f8f9fa;
+		color: #666;
+	}
+
+	.notification-progress {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 3px;
+		background: linear-gradient(90deg, #007bff, #0056b3);
+		transition: width 0.1s linear;
+	}
+
+	.notification-progress.success {
+		background: linear-gradient(90deg, #28a745, #1e7e34);
+	}
+
+	.notification-progress.error {
+		background: linear-gradient(90deg, #dc3545, #c82333);
+	}
+
+	.notification-progress.warning {
+		background: linear-gradient(90deg, #ffc107, #e0a800);
+	}
+
+	.notification-progress.info {
+		background: linear-gradient(90deg, #17a2b8, #138496);
+	}
+
 	/* Smart Upload Zone */
 	.smart-upload-card {
 		border: none;
@@ -460,6 +599,116 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+	// === SISTEMA DE NOTIFICAÇÕES PERSONALIZADAS ===
+	class NotificationSystem {
+		constructor() {
+			this.container = document.getElementById('notificationContainer');
+			this.notifications = [];
+		}
+
+		show(message, type = 'info', title = null, duration = 5000) {
+			const notification = this.create(message, type, title, duration);
+			this.container.appendChild(notification);
+			
+			// Trigger animation
+			requestAnimationFrame(() => {
+				notification.classList.add('show');
+				this.startProgress(notification, duration);
+			});
+
+			// Auto remove
+			setTimeout(() => {
+				this.remove(notification);
+			}, duration);
+
+			return notification;
+		}
+
+		create(message, type, title, duration) {
+			const id = 'notification-' + Date.now() + Math.random();
+			const iconMap = {
+				success: 'fa-check-circle',
+				error: 'fa-exclamation-circle', 
+				warning: 'fa-exclamation-triangle',
+				info: 'fa-info-circle'
+			};
+
+			const titleMap = {
+				success: title || 'Sucesso!',
+				error: title || 'Erro!',
+				warning: title || 'Atenção!',
+				info: title || 'Informação'
+			};
+
+			const notification = document.createElement('div');
+			notification.className = `custom-notification ${type}`;
+			notification.id = id;
+			notification.innerHTML = `
+				<div class="notification-content">
+					<i class="fa ${iconMap[type]} notification-icon ${type}"></i>
+					<div class="notification-text">
+						<div class="notification-title">${titleMap[type]}</div>
+						<div class="notification-message">${message}</div>
+					</div>
+					<button class="notification-close" onclick="notificationSystem.remove(document.getElementById('${id}'))">
+						<i class="fa fa-times"></i>
+					</button>
+				</div>
+				<div class="notification-progress ${type}" style="width: 100%"></div>
+			`;
+
+			return notification;
+		}
+
+		startProgress(notification, duration) {
+			const progressBar = notification.querySelector('.notification-progress');
+			let width = 100;
+			const decrement = 100 / (duration / 50);
+
+			const timer = setInterval(() => {
+				width -= decrement;
+				if (width <= 0) {
+					clearInterval(timer);
+					progressBar.style.width = '0%';
+				} else {
+					progressBar.style.width = width + '%';
+				}
+			}, 50);
+		}
+
+		remove(notification) {
+			if (notification && notification.parentNode) {
+				notification.style.transform = 'translateX(100%)';
+				notification.style.opacity = '0';
+				setTimeout(() => {
+					if (notification.parentNode) {
+						notification.parentNode.removeChild(notification);
+					}
+				}, 400);
+			}
+		}
+
+		success(message, title = null) {
+			return this.show(message, 'success', title);
+		}
+
+		error(message, title = null) {
+			return this.show(message, 'error', title);
+		}
+
+		warning(message, title = null) {
+			return this.show(message, 'warning', title);
+		}
+
+		info(message, title = null) {
+			return this.show(message, 'info', title);
+		}
+	}
+
+	// Instância global do sistema de notificações
+	window.notificationSystem = new NotificationSystem();
+
+	// === ELEMENTOS PRINCIPAIS ===
 	const dropZone = document.getElementById('dropZone');
 	const fileInput = document.getElementById('fileInput');
 	const documentModalElement = document.getElementById('documentModal');
@@ -470,7 +719,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let currentFiles = [];
 	let isHandlingFiles = false;
 
-	// Drag & Drop Events
+	// === EVENTOS DRAG & DROP ===
 	dropZone.addEventListener('click', (e) => {
 		e.preventDefault();
 		fileInput.click();
@@ -499,6 +748,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	fileInput.addEventListener('change', (e) => {
 		if (!isHandlingFiles) {
 			handleFiles(e.target.files);
+		}
+	});
+
+	// === INICIALIZAÇÃO ===
+	notificationSystem.info('Sistema de upload carregado e pronto para uso!', 'Sistema iniciado');
 		}
 		// Reset file input
 		e.target.value = '';
@@ -735,12 +989,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		const accessLevel = formData.get('access_level');
 		
 		if (!name || !documentType || !documentDate || !accessLevel) {
-			alert('Por favor, preencha todos os campos obrigatórios.');
+			notificationSystem.error(
+				'Por favor, preencha todos os campos obrigatórios: Nome, Tipo, Data e Nível de Acesso.',
+				'Campos obrigatórios'
+			);
 			return;
 		}
 		
 		if (!currentFile) {
-			alert('Por favor, selecione um ficheiro.');
+			notificationSystem.warning(
+				'Por favor, selecione um ficheiro para fazer upload.',
+				'Ficheiro necessário'
+			);
 			return;
 		}
 		
@@ -766,6 +1026,11 @@ document.addEventListener('DOMContentLoaded', function() {
 				saveBtn.classList.remove('btn-primary');
 				saveBtn.classList.add('btn-success');
 				
+				notificationSystem.success(
+					'Documento carregado e guardado com sucesso! Redirecionando...',
+					'Upload concluído'
+				);
+				
 				setTimeout(() => {
 					documentModal.hide();
 					// Redirecionar para a listagem
@@ -773,14 +1038,20 @@ document.addEventListener('DOMContentLoaded', function() {
 				}, 1500);
 			} else {
 				// Mostrar erro
-				alert('Erro: ' + data.message);
+				notificationSystem.error(
+					data.message || 'Erro desconhecido ao guardar documento.',
+					'Erro no servidor'
+				);
 				saveBtn.innerHTML = originalText;
 				saveBtn.disabled = false;
 			}
 		})
 		.catch(error => {
 			console.error('Erro ao guardar documento:', error);
-			alert('Erro ao guardar documento. Tente novamente.');
+			notificationSystem.error(
+				`Erro de conexão: ${error.message}. Verifique sua conexão e tente novamente.`,
+				'Erro de comunicação'
+			);
 			saveBtn.innerHTML = originalText;
 			saveBtn.disabled = false;
 		});

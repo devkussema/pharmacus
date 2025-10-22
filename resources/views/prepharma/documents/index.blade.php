@@ -272,8 +272,147 @@
 	</div>
 </div>
 
+<!-- Container de Notificações Personalizadas -->
+<div id="notificationContainer" class="notification-container"></div>
+
 @push('styles')
 <style>
+	/* Sistema de Notificações Personalizadas */
+	.notification-container {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		z-index: 9999;
+		max-width: 400px;
+	}
+
+	.custom-notification {
+		background: white;
+		border-radius: 12px;
+		box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+		margin-bottom: 15px;
+		padding: 16px 20px;
+		border-left: 4px solid #007bff;
+		transform: translateX(100%);
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		opacity: 0;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.custom-notification.show {
+		transform: translateX(0);
+		opacity: 1;
+	}
+
+	.custom-notification.success {
+		border-left-color: #28a745;
+	}
+
+	.custom-notification.error {
+		border-left-color: #dc3545;
+	}
+
+	.custom-notification.warning {
+		border-left-color: #ffc107;
+	}
+
+	.custom-notification.info {
+		border-left-color: #17a2b8;
+	}
+
+	.notification-content {
+		display: flex;
+		align-items: flex-start;
+		gap: 12px;
+	}
+
+	.notification-icon {
+		font-size: 20px;
+		margin-top: 2px;
+		flex-shrink: 0;
+	}
+
+	.notification-icon.success {
+		color: #28a745;
+	}
+
+	.notification-icon.error {
+		color: #dc3545;
+	}
+
+	.notification-icon.warning {
+		color: #ffc107;
+	}
+
+	.notification-icon.info {
+		color: #17a2b8;
+	}
+
+	.notification-text {
+		flex: 1;
+	}
+
+	.notification-title {
+		font-weight: 600;
+		font-size: 14px;
+		margin-bottom: 4px;
+		color: #333;
+	}
+
+	.notification-message {
+		font-size: 13px;
+		color: #666;
+		line-height: 1.4;
+	}
+
+	.notification-close {
+		background: none;
+		border: none;
+		font-size: 18px;
+		color: #999;
+		cursor: pointer;
+		padding: 0;
+		width: 20px;
+		height: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		transition: all 0.2s;
+		flex-shrink: 0;
+	}
+
+	.notification-close:hover {
+		background: #f8f9fa;
+		color: #666;
+	}
+
+	.notification-progress {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 3px;
+		background: linear-gradient(90deg, #007bff, #0056b3);
+		transition: width 0.1s linear;
+	}
+
+	.notification-progress.success {
+		background: linear-gradient(90deg, #28a745, #1e7e34);
+	}
+
+	.notification-progress.error {
+		background: linear-gradient(90deg, #dc3545, #c82333);
+	}
+
+	.notification-progress.warning {
+		background: linear-gradient(90deg, #ffc107, #e0a800);
+	}
+
+	.notification-progress.info {
+		background: linear-gradient(90deg, #17a2b8, #138496);
+	}
+
 	/* Smart Filters com IA */
 	.smart-filters {
 		position: relative;
@@ -538,49 +677,154 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-	console.log('DOM loaded - initializing scripts');
-	
-	// View Toggle
-	const btnList = document.getElementById('btnList');
-	const btnGrid = document.getElementById('btnGrid');
-	const viewList = document.getElementById('viewList');
-	const viewGrid = document.getElementById('viewGrid');
+document.addEventListener('DOMContentLoaded', function() {
+	console.log('Documents page loaded');
 
-	function setViewMode(mode) {
-		console.log('Setting view mode:', mode);
-		[btnList, btnGrid].forEach(btn => btn.classList.remove('active'));
-		
-		if (mode === 'grid') {
-			viewList.classList.add('d-none');
-			viewGrid.classList.remove('d-none');
-			btnGrid.classList.add('active');
-		} else {
-			viewGrid.classList.add('d-none');
-			viewList.classList.remove('d-none');
-			btnList.classList.add('active');
+	// === SISTEMA DE NOTIFICAÇÕES PERSONALIZADAS ===
+	class NotificationSystem {
+		constructor() {
+			this.container = document.getElementById('notificationContainer');
+			this.notifications = [];
 		}
-		
-		try { localStorage.setItem('docsViewMode', mode); } catch(e) {}
+
+		show(message, type = 'info', title = null, duration = 5000) {
+			const notification = this.create(message, type, title, duration);
+			this.container.appendChild(notification);
+			
+			// Trigger animation
+			requestAnimationFrame(() => {
+				notification.classList.add('show');
+				this.startProgress(notification, duration);
+			});
+
+			// Auto remove
+			setTimeout(() => {
+				this.remove(notification);
+			}, duration);
+
+			return notification;
+		}
+
+		create(message, type, title, duration) {
+			const id = 'notification-' + Date.now() + Math.random();
+			const iconMap = {
+				success: 'fa-check-circle',
+				error: 'fa-exclamation-circle', 
+				warning: 'fa-exclamation-triangle',
+				info: 'fa-info-circle'
+			};
+
+			const titleMap = {
+				success: title || 'Sucesso!',
+				error: title || 'Erro!',
+				warning: title || 'Atenção!',
+				info: title || 'Informação'
+			};
+
+			const notification = document.createElement('div');
+			notification.className = `custom-notification ${type}`;
+			notification.id = id;
+			notification.innerHTML = `
+				<div class="notification-content">
+					<i class="fa ${iconMap[type]} notification-icon ${type}"></i>
+					<div class="notification-text">
+						<div class="notification-title">${titleMap[type]}</div>
+						<div class="notification-message">${message}</div>
+					</div>
+					<button class="notification-close" onclick="notificationSystem.remove(document.getElementById('${id}'))">
+						<i class="fa fa-times"></i>
+					</button>
+				</div>
+				<div class="notification-progress ${type}" style="width: 100%"></div>
+			`;
+
+			return notification;
+		}
+
+		startProgress(notification, duration) {
+			const progressBar = notification.querySelector('.notification-progress');
+			let width = 100;
+			const decrement = 100 / (duration / 50);
+
+			const timer = setInterval(() => {
+				width -= decrement;
+				if (width <= 0) {
+					clearInterval(timer);
+					progressBar.style.width = '0%';
+				} else {
+					progressBar.style.width = width + '%';
+				}
+			}, 50);
+		}
+
+		remove(notification) {
+			if (notification && notification.parentNode) {
+				notification.style.transform = 'translateX(100%)';
+				notification.style.opacity = '0';
+				setTimeout(() => {
+					if (notification.parentNode) {
+						notification.parentNode.removeChild(notification);
+					}
+				}, 400);
+			}
+		}
+
+		success(message, title = null) {
+			return this.show(message, 'success', title);
+		}
+
+		error(message, title = null) {
+			return this.show(message, 'error', title);
+		}
+
+		warning(message, title = null) {
+			return this.show(message, 'warning', title);
+		}
+
+		info(message, title = null) {
+			return this.show(message, 'info', title);
+		}
 	}
 
-	if (btnList && btnGrid) {
-		btnList.addEventListener('click', () => setViewMode('list'));
-		btnGrid.addEventListener('click', () => setViewMode('grid'));
-		setViewMode(localStorage.getItem('docsViewMode') || 'grid');
-	}
+	// Instância global do sistema de notificações
+	window.notificationSystem = new NotificationSystem();
 
-	// Search and Filter
+	// === ELEMENTOS DOM ===
 	const searchInput = document.getElementById('docSearch');
 	const filterChips = document.querySelectorAll('.filter-chip');
-	let currentFilter = 'all';
+	const btnGrid = document.getElementById('btnGrid');
+	const btnList = document.getElementById('btnList');
+	const viewGrid = document.getElementById('viewGrid');
+	const viewList = document.getElementById('viewList');
 
-	function filterDocs() {
-		console.log('Filtering docs with query:', searchInput.value, 'filter:', currentFilter);
-		const query = searchInput.value.toLowerCase().trim();
-		const gridItems = document.querySelectorAll('#viewGrid .col-lg-3');
-		const listRows = document.querySelectorAll('#viewList tbody tr');
+	// === VARIÁVEIS DE ESTADO ===
+	let currentFilter = 'all';
+	let currentView = 'grid';
+
+	console.log('Elements found:', {
+		searchInput: !!searchInput,
+		filterChips: filterChips.length,
+		btnGrid: !!btnGrid,
+		btnList: !!btnList,
+		viewGrid: !!viewGrid,
+		viewList: !!viewList
+	});
+
+	// === FUNÇÃO DE ATUALIZAÇÃO DE ESTATÍSTICAS ===
+	function updateStats() {
+		const visibleCards = document.querySelectorAll('#viewGrid .col-lg-3:not([style*="display: none"])').length;
+		const visibleRows = document.querySelectorAll('#viewList tbody tr:not([style*="display: none"])').length;
 		
+		console.log('Visible items:', currentView === 'grid' ? visibleCards : visibleRows);
+	}
+
+	// === FUNÇÃO DE FILTROS ===
+	function filterDocs() {
+		const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+		const gridItems = document.querySelectorAll('#viewGrid .col-lg-3');
+		const listRows = document.querySelectorAll('#viewList tbody tr[data-type]');
+		
+		console.log('Filtering with query:', query, 'filter:', currentFilter);
 		console.log('Found grid items:', gridItems.length, 'list rows:', listRows.length);
 		
 		// Filter grid
@@ -603,6 +847,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
 		// Filter list
 		listRows.forEach(row => {
+			// Skip empty rows
+			if (row.children.length < 2) return;
+			
 			const name = row.dataset.name || '';
 			const type = row.dataset.type || '';
 			const matchesSearch = !query || name.includes(query);
@@ -614,9 +861,14 @@ document.addEventListener('DOMContentLoaded', function(){
 		updateStats();
 	}
 
+	// === EVENT LISTENERS ===
+
 	// Search input
 	if (searchInput) {
-		searchInput.addEventListener('input', filterDocs);
+		searchInput.addEventListener('input', function() {
+			console.log('Search input changed:', this.value);
+			filterDocs();
+		});
 	}
 
 	// Filter chips
@@ -635,6 +887,56 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 	});
 
+	// View toggle buttons
+	if (btnGrid && btnList && viewGrid && viewList) {
+		btnGrid.addEventListener('click', function() {
+			console.log('Grid view selected');
+			
+			// Update buttons
+			btnGrid.classList.add('active');
+			btnGrid.classList.remove('btn-outline-primary');
+			btnGrid.classList.add('btn-primary');
+			
+			btnList.classList.remove('active');
+			btnList.classList.remove('btn-primary');
+			btnList.classList.add('btn-outline-primary');
+			
+			// Update views
+			viewGrid.classList.remove('d-none');
+			viewList.classList.add('d-none');
+			
+			currentView = 'grid';
+			updateStats();
+		});
+
+		btnList.addEventListener('click', function() {
+			console.log('List view selected');
+			
+			// Update buttons
+			btnList.classList.add('active');
+			btnList.classList.remove('btn-outline-primary');
+			btnList.classList.add('btn-primary');
+			
+			btnGrid.classList.remove('active');
+			btnGrid.classList.remove('btn-primary');
+			btnGrid.classList.add('btn-outline-primary');
+			
+			// Update views
+			viewList.classList.remove('d-none');
+			viewGrid.classList.add('d-none');
+			
+			currentView = 'list';
+			updateStats();
+		});
+	}
+			
+			currentView = 'list';
+			updateStats();
+		});
+	}
+
+	// === FUNCIONALIDADES DE PREVIEW E AÇÕES ===
+
 	// Preview Modal
 	document.addEventListener('click', function(e) {
 		if (e.target.matches('.btn-preview') || e.target.closest('.btn-preview')) {
@@ -644,9 +946,16 @@ document.addEventListener('DOMContentLoaded', function(){
 			const previewUrl = btn.getAttribute('data-url');
 			
 			if (previewUrl) {
+				notificationSystem.info('Carregando pré-visualização...', 'A processar');
+				
 				// Fazer requisição AJAX para obter dados do documento
 				fetch(previewUrl)
-					.then(response => response.json())
+					.then(response => {
+						if (!response.ok) {
+							throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+						}
+						return response.json();
+					})
 					.then(data => {
 						const previewName = document.getElementById('previewName');
 						const previewContent = document.getElementById('previewContent');
@@ -699,6 +1008,8 @@ document.addEventListener('DOMContentLoaded', function(){
 								</div>
 							`;
 						}
+
+						notificationSystem.success('Pré-visualização carregada com sucesso!', 'Documento pronto');
 					})
 					.catch(error => {
 						console.error('Erro ao carregar preview:', error);
@@ -707,16 +1018,145 @@ document.addEventListener('DOMContentLoaded', function(){
 							previewContent.innerHTML = `
 								<div class="text-center text-danger">
 									<i class="fa fa-exclamation-triangle fa-3x mb-3"></i>
-									<p>Erro ao carregar pré-visualização</p>
+									<h5>Erro ao carregar pré-visualização</h5>
+									<p>Não foi possível carregar os detalhes do documento.</p>
+									<small class="text-muted">Erro: ${error.message}</small>
 								</div>
 							`;
 						}
+						
+						notificationSystem.error(
+							`Não foi possível carregar a pré-visualização. ${error.message}`,
+							'Erro de conexão'
+						);
 					});
+			} else {
+				notificationSystem.warning(
+					'URL de pré-visualização não encontrada. Verifique a configuração do documento.',
+					'Dados insuficientes'
+				);
 			}
 		}
 	});
 
 	// Delete functionality
+	document.addEventListener('click', function(e) {
+		if (e.target.matches('.btn-delete') || e.target.closest('.btn-delete')) {
+			e.preventDefault();
+			const btn = e.target.matches('.btn-delete') ? e.target : e.target.closest('.btn-delete');
+			const deleteUrl = btn.getAttribute('data-url');
+			
+			if (!deleteUrl) {
+				notificationSystem.warning(
+					'URL de eliminação não encontrada. Verifique a configuração do documento.',
+					'Dados insuficientes'
+				);
+				return;
+			}
+
+			// Criar modal personalizada de confirmação
+			const confirmModal = document.createElement('div');
+			confirmModal.className = 'modal fade';
+			confirmModal.innerHTML = `
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header bg-danger text-white">
+							<h5 class="modal-title">
+								<i class="fa fa-exclamation-triangle me-2"></i>Confirmar Eliminação
+							</h5>
+							<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+						</div>
+						<div class="modal-body text-center">
+							<i class="fa fa-trash fa-3x text-danger mb-3"></i>
+							<h6>Tem certeza que deseja eliminar este documento?</h6>
+							<p class="text-muted mb-4">Esta ação não pode ser desfeita. O documento será movido para a lixeira.</p>
+							<div class="d-grid gap-2 d-md-flex justify-content-md-center">
+								<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+									<i class="fa fa-times me-2"></i>Cancelar
+								</button>
+								<button type="button" class="btn btn-danger" id="confirmDelete">
+									<i class="fa fa-trash me-2"></i>Sim, Eliminar
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			`;
+
+			document.body.appendChild(confirmModal);
+			const modal = new bootstrap.Modal(confirmModal);
+			modal.show();
+
+			// Configurar confirmação
+			confirmModal.querySelector('#confirmDelete').addEventListener('click', function() {
+				const confirmBtn = this;
+				const originalText = confirmBtn.innerHTML;
+				
+				confirmBtn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>A eliminar...';
+				confirmBtn.disabled = true;
+
+				fetch(deleteUrl, {
+					method: 'DELETE',
+					headers: {
+						'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+						'Content-Type': 'application/json',
+					}
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+					}
+					return response.json();
+				})
+				.then(data => {
+					if (data.success) {
+						// Fechar modal
+						modal.hide();
+						
+						// Remover elemento da página com animação
+						const card = btn.closest('.col-lg-3, .col-md-4, .col-sm-6, tr');
+						if (card) {
+							card.style.animation = 'ai-exit 0.3s ease-in forwards';
+							setTimeout(() => {
+								card.remove();
+								updateStats();
+							}, 300);
+						}
+						
+						// Mostrar notificação de sucesso
+						notificationSystem.success(
+							data.message || 'Documento eliminado com sucesso!',
+							'Operação concluída'
+						);
+					} else {
+						throw new Error(data.message || 'Erro desconhecido');
+					}
+				})
+				.catch(error => {
+					console.error('Erro ao eliminar documento:', error);
+					confirmBtn.innerHTML = originalText;
+					confirmBtn.disabled = false;
+					
+					notificationSystem.error(
+						`Não foi possível eliminar o documento. ${error.message}`,
+						'Erro na eliminação'
+					);
+				});
+			});
+
+			// Limpar modal após fechar
+			confirmModal.addEventListener('hidden.bs.modal', function() {
+				document.body.removeChild(confirmModal);
+			});
+		}
+	});
+
+	// Inicialização
+	console.log('Document system initialized successfully');
+	notificationSystem.info('Sistema de documentos carregado e pronto para uso!', 'Sistema iniciado');
+});
+</script>
+@endpush	// Delete functionality
 	document.addEventListener('click', function(e) {
 		if (e.target.matches('.btn-delete') || e.target.closest('.btn-delete')) {
 			e.preventDefault();
