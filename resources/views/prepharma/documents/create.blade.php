@@ -746,8 +746,9 @@
 
                 const documentModal = new bootstrap.Modal(documentModalElement);
 
-                let currentFiles = [];
-                let isHandlingFiles = false;
+                // Tornar variáveis acessíveis a funções fora deste escopo
+                window.currentFiles = [];
+                window.isHandlingFiles = false;
 
                 // === EVENTOS DRAG & DROP ===
                 dropZone.addEventListener('click', (e) => {
@@ -774,13 +775,13 @@
                     if (dropZone) {
                         dropZone.classList.remove('drag-over');
                     }
-                    if (!isHandlingFiles) {
+                    if (!window.isHandlingFiles) {
                         handleFiles(e.dataTransfer.files);
                     }
                 });
 
                 fileInput.addEventListener('change', (e) => {
-                    if (!isHandlingFiles) {
+                    if (!window.isHandlingFiles) {
                         handleFiles(e.target.files);
                     }
                     // Reset file input
@@ -793,7 +794,7 @@
                 // === EVENTOS DO MODAL ===
                 documentModalElement.addEventListener('hidden.bs.modal', function () {
                     // Reset quando o modal fecha
-                    isHandlingFiles = false;
+                    window.isHandlingFiles = false;
                     if (dropZone) {
                         dropZone.classList.remove('drag-over');
                     }
@@ -803,10 +804,10 @@
 
             // Handle Files
             function handleFiles(files) {
-                if (files.length === 0 || isHandlingFiles) return;
+                if (files.length === 0 || window.isHandlingFiles) return;
 
-                isHandlingFiles = true;
-                currentFiles = Array.from(files);
+                window.isHandlingFiles = true;
+                window.currentFiles = Array.from(files);
 
                 console.log('Handling files:', files.length);
 
@@ -1098,12 +1099,13 @@
             // Variável para armazenar o ficheiro atual
             let currentFile = null;
 
-            // Cancel button event
+            // Cancel button event (fora do DOMContentLoaded, referenciar elementos dinamicamente)
             document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(btn => {
                 btn.addEventListener('click', function () {
-                    isHandlingFiles = false;
-                    if (dropZone) {
-                        dropZone.classList.remove('drag-over');
+                    window.isHandlingFiles = false;
+                    const dz = document.getElementById('dropZone');
+                    if (dz) {
+                        dz.classList.remove('drag-over');
                     }
                 });
             });
