@@ -1,7 +1,8 @@
 <style>
     /* ========== Offcanvas Largura e Layout ========== */
     .offcanvas-history { 
-        --bs-offcanvas-width: min(48vw, 860px);
+        /* Forçar largura maior e garantir override */
+        --bs-offcanvas-width: min(56vw, 920px) !important;
         box-shadow: -4px 0 24px rgba(0,0,0,0.12);
     }
 

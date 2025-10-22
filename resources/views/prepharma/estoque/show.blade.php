@@ -350,6 +350,16 @@
                     'transfer': 'fa-exchange-alt'
                 };
 
+                // Mapeamento de ações para rótulos em Português
+                var actionLabelsPT = {
+                    'created': 'Criado',
+                    'updated': 'Atualizado',
+                    'stock_in': 'Entrada de estoque',
+                    'stock_out': 'Saída de estoque',
+                    'deleted': 'Eliminado',
+                    'transfer': 'Transferência'
+                };
+
                 // Carregar histórico com filtros e paginação
                 var currentHistoryRequest = null;
 
@@ -375,6 +385,7 @@
                         var userName = item.user ? item.user.name : 'Sistema';
                         var timeAgo = item.created_at_human || item.created_at || 'data desconhecida';
                         var createdFmt = item.created_at_fmt || item.created_at || '';
+                        var labelPT = actionLabelsPT[action] || (action || '').replace('_', ' ');
 
                         var el = document.createElement('div');
                         el.className = 'history-item';
@@ -387,7 +398,7 @@
                                 <div class="history-content">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div>
-                                            <div class="history-action-title">${(action || '').replace('_', ' ')}</div>
+                                            <div class="history-action-title">${labelPT}</div>
                                             <div class="history-meta">
                                                 <span class="history-user">
                                                     <i class="fa fa-user-circle"></i> ${userName}
@@ -413,24 +424,56 @@
                     if (meta && meta.total !== undefined) {
                         info.innerText = `Mostrando ${meta.from || 1} a ${meta.to || list.length} de ${meta.total}`;
 
-                        var ul = document.createElement('div');
-                        ul.className = 'btn-group';
+                        var last = meta.last_page || 1;
+                        var current = meta.current_page || 1;
 
-                        var prev = document.createElement('button');
-                        prev.className = 'btn btn-sm btn-outline-secondary';
-                        prev.innerText = 'Anterior';
-                        prev.disabled = !meta.prev_page_url;
-                        prev.addEventListener('click', function() { loadProductHistory(meta.current_page - 1); });
+                        var group = document.createElement('div');
+                        group.className = 'btn-group';
 
-                        var next = document.createElement('button');
-                        next.className = 'btn btn-sm btn-outline-secondary';
-                        next.innerText = 'Próximo';
-                        next.disabled = !meta.next_page_url;
-                        next.addEventListener('click', function() { loadProductHistory(meta.current_page + 1); });
+                        // Primeiro
+                        var firstBtn = document.createElement('button');
+                        firstBtn.className = 'btn btn-sm btn-outline-secondary';
+                        firstBtn.innerText = 'Primeiro';
+                        firstBtn.disabled = current === 1;
+                        firstBtn.addEventListener('click', function() { loadProductHistory(1); });
+                        group.appendChild(firstBtn);
 
-                        ul.appendChild(prev);
-                        ul.appendChild(next);
-                        controls.appendChild(ul);
+                        // Anterior
+                        var prevBtn = document.createElement('button');
+                        prevBtn.className = 'btn btn-sm btn-outline-secondary';
+                        prevBtn.innerText = 'Anterior';
+                        prevBtn.disabled = current === 1;
+                        prevBtn.addEventListener('click', function() { loadProductHistory(Math.max(1, current - 1)); });
+                        group.appendChild(prevBtn);
+
+                        // Números de página (janela)
+                        var start = Math.max(1, current - 3);
+                        var end = Math.min(last, current + 3);
+                        for (var p = start; p <= end; p++) {
+                            var pBtn = document.createElement('button');
+                            pBtn.className = 'btn btn-sm ' + (p === current ? 'btn-primary' : 'btn-outline-secondary');
+                            pBtn.innerText = p;
+                            (function(pp) { pBtn.addEventListener('click', function() { loadProductHistory(pp); }); })(p);
+                            group.appendChild(pBtn);
+                        }
+
+                        // Próximo
+                        var nextBtn = document.createElement('button');
+                        nextBtn.className = 'btn btn-sm btn-outline-secondary';
+                        nextBtn.innerText = 'Próximo';
+                        nextBtn.disabled = current === last;
+                        nextBtn.addEventListener('click', function() { loadProductHistory(Math.min(last, current + 1)); });
+                        group.appendChild(nextBtn);
+
+                        // Último
+                        var lastBtn = document.createElement('button');
+                        lastBtn.className = 'btn btn-sm btn-outline-secondary';
+                        lastBtn.innerText = 'Último';
+                        lastBtn.disabled = current === last;
+                        lastBtn.addEventListener('click', function() { loadProductHistory(last); });
+                        group.appendChild(lastBtn);
+
+                        controls.appendChild(group);
                     }
                 }
 
