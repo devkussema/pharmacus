@@ -95,6 +95,14 @@ class DocumentsController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            // Verificar presença do ficheiro antes da validação (Validator::make pode não considerar files corretamente)
+            if (!$request->hasFile('file')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ficheiro não enviado. Verifique se seleccionou um ficheiro antes de submeter.'
+                ], 422);
+            }
+
             // Validação manual para garantir resposta JSON (mesmo sem header Accept)
             $validator = Validator::make($request->all(), [
                 // 5120 KB = 5 MB
@@ -122,19 +130,60 @@ class DocumentsController extends Controller
             $validated = $validator->validated();
 
             $file = $request->file('file');
+
+            // Verificações adicionais de segurança/diagnóstico
+            if (!$file || !method_exists($file, 'getRealPath')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ficheiro inválido recebido pelo servidor.'
+                ], 422);
+            }
+
+            if (!$file->isValid()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro no upload: ficheiro não é válido.'
+                ], 422);
+            }
+
+            // Nota: alguns handlers PHP usam streams temporários que não expõem getRealPath;
+            // não falhar aqui — iremos confiar no ficheiro armazenado no disk 'public' após storeAs.
             $originalName = $file->getClientOriginalName();
             $extension = $file->getClientOriginalExtension();
             $storedName = Str::uuid() . '.' . $extension;
             $filePath = 'documents/' . date('Y/m') . '/' . $storedName;
 
-            // Fazer upload do ficheiro
+            // Fazer upload do ficheiro para o disk 'public'
+            // Usamos Storage::disk para podermos obter o caminho final e calcular o hash a partir do ficheiro armazenado
             $file->storeAs('public/' . dirname($filePath), basename($filePath));
+            $storedFullPath = Storage::disk('public')->path($filePath);
 
             // Processar tags
             $tags = null;
             if ($validated['tags']) {
                 $tags = array_map('trim', explode(',', $validated['tags']));
                 $tags = array_filter($tags);
+            }
+
+            // Obter metadados a partir do ficheiro armazenado (mais robusto que confiar em getRealPath)
+            $mimeType = null;
+            $fileSize = null;
+            $hash = null;
+
+            if (file_exists($storedFullPath)) {
+                $mimeType = mime_content_type($storedFullPath) ?: $file->getMimeType();
+                $fileSize = filesize($storedFullPath) ?: $file->getSize();
+                $hash = hash_file('sha256', $storedFullPath);
+            } else {
+                // Fallback para os métodos do UploadedFile quando o ficheiro não for encontrado no disk (raro)
+                $mimeType = $file->getMimeType();
+                $fileSize = $file->getSize();
+                try {
+                    $realPath = $file->getRealPath();
+                    $hash = $realPath ? hash_file('sha256', $realPath) : null;
+                } catch (\Throwable $t) {
+                    $hash = null;
+                }
             }
 
             // Criar registo do documento
@@ -144,10 +193,10 @@ class DocumentsController extends Controller
                 'original_filename' => $originalName,
                 'stored_filename' => $storedName,
                 'file_path' => $filePath,
-                'mime_type' => $file->getMimeType(),
+                'mime_type' => $mimeType,
                 'file_extension' => strtolower($extension),
-                'file_size' => $file->getSize(),
-                'hash' => hash_file('sha256', $file->getRealPath()),
+                'file_size' => $fileSize,
+                'hash' => $hash,
                 'document_type' => $validated['document_type'],
                 'category' => $validated['category'],
                 'tags' => $tags,
