@@ -326,6 +326,57 @@
                 row.after(actionRow);
             });
 
+            // Abrir offcanvas de histórico ao clicar no botão
+            $(document).on('click', '.btn-historico', function() {
+                var produtoId = $(this).data('id');
+                var offcanvasEl = document.getElementById('offcanvasRight');
+                var offcanvas = new bootstrap.Offcanvas(offcanvasEl);
+
+                // limpar conteúdo anterior
+                document.getElementById('history_timeline').innerHTML = '';
+                document.getElementById('history_empty').style.display = 'none';
+                document.getElementById('offcanvasRightSubtitle').innerText = 'Carregando histórico...';
+
+                // Para já apenas populamos com layout de loading; se existir endpoint, podemos buscar
+                fetch(`/api/product-history/${produtoId}`).then(function(resp) {
+                    if (!resp.ok) throw new Error('no-data');
+                    return resp.json();
+                }).then(function(json) {
+                    var list = json.data || json;
+                    if (!list || list.length === 0) {
+                        document.getElementById('history_empty').style.display = 'block';
+                        document.getElementById('offcanvasRightSubtitle').innerText = 'Sem registos';
+                    } else {
+                        document.getElementById('offcanvasRightSubtitle').innerText = list.length + ' registos';
+                        list.forEach(function(item) {
+                            var el = document.createElement('div');
+                            el.className = 'd-flex mb-3';
+                            var qty = item.quantity_delta ? (item.quantity_delta > 0 ? '+'+item.quantity_delta : item.quantity_delta) : '';
+                            el.innerHTML = `
+                                <div class="me-3">
+                                    <span class="badge bg-secondary rounded-circle" style="width:38px; height:38px; display:flex; align-items:center; justify-content:center;">H</span>
+                                </div>
+                                <div class="flex-fill">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong class="history-action">${item.action}</strong>
+                                            <div class="text-muted small history-meta">por ${item.user ? item.user.name : 'Sistema'} — ${item.created_at}</div>
+                                        </div>
+                                        <div class="text-end small text-muted history-qty">${qty}</div>
+                                    </div>
+                                    <div class="history-message mt-1">${item.payload && item.payload.num_lote ? 'Lote: <strong>'+item.payload.num_lote+'</strong>' : ''}</div>
+                                </div>`;
+                            document.getElementById('history_timeline').appendChild(el);
+                        });
+                    }
+                }).catch(function() {
+                    document.getElementById('history_empty').style.display = 'block';
+                    document.getElementById('offcanvasRightSubtitle').innerText = 'Erro ao carregar';
+                }).finally(function() {
+                    offcanvas.show();
+                });
+            });
+
             // Evento para abrir a modal de confirmação ao clicar em "Eliminar"
             $(document).on('click', '.btn-eliminar-item', function() {
                 var produtoId = $(this).data('id');
@@ -735,3 +786,5 @@
         });
     </script>
 @endsection
+
+@include('prepharma.estoque._productHistory')
