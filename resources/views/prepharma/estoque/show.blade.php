@@ -481,7 +481,8 @@
 
                 // listeners para recalcular total automaticamente
 
-                function calcTotal() {
+                // tornar a função disponível globalmente para uso fora do IIFE
+                window.calcTotal = function() {
                     var caixa = parseInt(document.getElementById('add_caixa').value || 0, 10);
                     var caixinha = parseInt(document.getElementById('add_caixinha').value || 0, 10);
                     var unidade = parseInt(document.getElementById('add_unidade').value || 0, 10);
@@ -489,11 +490,11 @@
                     // A equação correta: caixa * caixinha * unidade
                     var total = (caixa || 0) * (caixinha || 0) * (unidade || 0);
                     document.getElementById('add_total').value = total;
-                }
+                };
 
                 ['add_caixa', 'add_caixinha', 'add_unidade'].forEach(function(id) {
                     document.addEventListener('input', function(ev) {
-                        if (ev.target && ev.target.id === id) calcTotal();
+                        if (ev.target && ev.target.id === id) window.calcTotal();
                     });
                 });
             }
@@ -527,7 +528,7 @@
                 if (document.getElementById('add_caixa')) document.getElementById('add_caixa').value = 0;
 
                 // recalcula total com os valores predefinidos
-                calcTotal();
+                if (window.calcTotal) window.calcTotal();
             }
 
             var modal = new bootstrap.Modal(document.getElementById('modalAdicionarEstoque'));
