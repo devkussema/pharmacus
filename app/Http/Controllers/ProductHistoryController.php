@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProductHistory;
+use App\Models\ProdutoEstoque;
 
 class ProductHistoryController extends Controller
 {
@@ -50,7 +51,10 @@ class ProductHistoryController extends Controller
             }
         }
 
-        $p = $query->paginate($perPage)->appends($request->query());
+    $p = $query->paginate($perPage)->appends($request->query());
+
+        // Obter dados do produto para cabeçalho
+        $product = ProdutoEstoque::find($id);
 
         // Transformar os items para adicionar formatações amigáveis
         $data = $p->getCollection()->map(function ($item) {
@@ -64,6 +68,8 @@ class ProductHistoryController extends Controller
                 'created_at' => $item->created_at ? $item->created_at->toIso8601String() : null,
                 'created_at_human' => $item->created_at ? $item->created_at->diffForHumans() : null,
                 'created_at_fmt' => $item->created_at ? $item->created_at->format('d-m-Y H:i') : null,
+                // resumo em português legível
+                'summary_pt' => $this->makeSummaryPt($item),
             ];
         });
 
@@ -74,6 +80,35 @@ class ProductHistoryController extends Controller
             'last_page' => $p->lastPage(),
         ];
 
-        return response()->json(['data' => $data, 'meta' => $meta], 200);
+        return response()->json([
+            'product' => $product ? ['id' => $product->id, 'designacao' => $product->designacao, 'descritivo' => $product->descritivo] : null,
+            'data' => $data,
+            'meta' => $meta
+        ], 200);
+    }
+
+    /**
+     * Gera uma frase resumida em Português para exibição rápida
+     */
+    protected function makeSummaryPt(ProductHistory $item): string
+    {
+        $user = $item->user ? ($item->user->nome ?? $item->user->name) : 'Sistema';
+        $qty = $item->quantity_delta ?? 0;
+        switch ($item->action) {
+            case 'stock_in':
+                return "{$user} adicionou {$qty} unidades";
+            case 'stock_out':
+                return "{$user} removeu " . abs($qty) . " unidades";
+            case 'created':
+                return "{$user} criou o produto";
+            case 'updated':
+                return "{$user} atualizou o produto";
+            case 'deleted':
+                return "{$user} eliminou o produto";
+            case 'transfer':
+                return "{$user} realizou uma transferência ({$qty} unidades)";
+            default:
+                return ucfirst($item->action) . ' por ' . $user;
+        }
     }
 }

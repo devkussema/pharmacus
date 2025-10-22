@@ -21,6 +21,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Traits\{AtividadeTrait, GenerateTrait};
 use Carbon\Carbon;
+use App\Models\ProductHistory;
 
 class EstoqueController extends Controller
 {
@@ -28,23 +29,35 @@ class EstoqueController extends Controller
 
     private $estoque = null;
 
+    /**
+     * Helper para retornar o usuário autenticado com tipagem para analisadores.
+     *
+     * @return \App\Models\User|null
+     */
+    protected function currentUser(): ?\App\Models\User
+    {
+        return \Illuminate\Support\Facades\Auth::user();
+    }
+
     public function index()
     {
+    /** @var \App\Models\User|null $user */
+    $user = $this->currentUser();
         $ah = AH::all();
         $estoque = "";
 
 
-        if (!auth()->user()->isFarmacia and auth()->user()->area_hospitalar->area_hospitalar_id) {
-            $area_hospitalar_id = auth()->user()->area_hospitalar->area_hospitalar_id;
-            $farmacia_id = @auth()->user()->isFarmacia->farmacia->id;
+            if (!$user->isFarmacia and ($user->area_hospitalar->area_hospitalar_id ?? false)) {
+            $area_hospitalar_id = $user->area_hospitalar->area_hospitalar_id;
+            $farmacia_id = $user->isFarmacia->farmacia->id ?? null;
 
             $estoque = Estoque::where('area_hospitalar_id', $area_hospitalar_id)
                 ->orderBy('produto_estoque_id')
                 ->get();
 
             self::calcNivelAlerta();
-            $ah = auth()->user()->area_hospitalar->area_hospitalar;
-            $area_id = auth()->user()->area_hospitalar->area_hospitalar->id;
+            $ah = $user->area_hospitalar->area_hospitalar;
+            $area_id = $user->area_hospitalar->area_hospitalar->id;
             return view('estoque.show', compact('estoque', 'ah', 'area_id'));
         }
 
@@ -124,7 +137,7 @@ class EstoqueController extends Controller
         }
         $estoque->save();
 
-        // Registrar atividade: listar campos que mudaram
+    // Registrar atividade: listar campos que mudaram
         try {
             $changes = [];
             $new = $estoque->getAttributes();
@@ -185,6 +198,7 @@ class EstoqueController extends Controller
                 ];
 
                 self::startAtv("Editou produto {$estoque->designacao} - Campos alterados: {$fields}", $structuredChanges, $meta);
+                // Observador do modelo irá registar o histórico (evita duplicação)
             } else {
                 $meta = [
                     'model_type' => PE::class,
@@ -216,7 +230,7 @@ class EstoqueController extends Controller
 
     public function myEstoque(Request $request, $id)
     {
-        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+    $farmacia_id = $this->currentUser()->isFarmacia->farmacia->id ?? $this->currentUser()->farmacia->farmacia->id;
 
         $ah = FAH::with('area_hospitalar')
             ->where('area_hospitalar_id', $id)
@@ -247,7 +261,7 @@ class EstoqueController extends Controller
 
     public function getEstoque(Request $request, $id)
     {
-        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+    $farmacia_id = $this->currentUser()->isFarmacia->farmacia->id ?? $this->currentUser()->farmacia->farmacia->id;
         $isPerm = vPerm('area_hospitalar', ['ver']);
 
         // Atualizar todas as entradas no campo 'forma' de 'produto_estoques'
@@ -276,8 +290,8 @@ class EstoqueController extends Controller
 
         self::calcNivelAlerta();
 
-        $myAreaId = @auth()->user()->area_hospitalar->area_hospitalar->id;
-        if (!$isPerm and !auth()->user()->isFarmacia and ($myAreaId != $id)) {
+        $myAreaId = @($this->currentUser()->area_hospitalar->area_hospitalar->id ?? null);
+        if (!$isPerm and !$this->currentUser()->isFarmacia and ($myAreaId != $id)) {
             return redirect()->route('estoque.myEstoque', ['id' => $myAreaId])->with('danger', 'Não tens permissão para aceder a página pretendida');
         }
 
@@ -292,7 +306,7 @@ class EstoqueController extends Controller
 
     public function apiEstoque(Request $request, $id)
     {
-        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+        $farmacia_id = $this->currentUser()->isFarmacia->farmacia->id ?? $this->currentUser()->farmacia->farmacia->id;
         $produtos = Estoque::where('area_hospitalar_id', $id)
             ->where('farmacia_id', $farmacia_id)
             ->with('produto.prateleira')
@@ -315,7 +329,7 @@ class EstoqueController extends Controller
             return response()->json(['error' => 'Produto não encontrado'], 404);
         }
 
-        // Remove o produto
+        // Remover o produto — o observer ProdutoEstoqueObserver irá registar o evento 'deleted'
         $produto->delete();
 
         return response()->json(['message' => 'Produto excluído com sucesso']);
@@ -323,10 +337,10 @@ class EstoqueController extends Controller
 
     public function getListHome()
     {
-        if (!auth()->user()->isFarmacia)
+        if (!$this->currentUser()->isFarmacia)
             return redirect()->route('home')->with('error', 'Não podes aceder esta página.');
 
-        $all_areas = FAH::with('area_hospitalar')->where('farmacia_id', auth()->user()->isFarmacia->farmacia_id)->get();
+        $all_areas = FAH::with('area_hospitalar')->where('farmacia_id', $this->currentUser()->isFarmacia->farmacia_id)->get();
 
         return view('estoque.panel', compact('all_areas'));
     }
@@ -493,7 +507,7 @@ class EstoqueController extends Controller
         $qw = ConfirmarBaixa::create([
             'area_hospitalar_de' => $id_area,
             'area_hospitalar_para' => $cb->area_hospitalar_de,
-            'texto' => auth()->user()->nome . " confirmou o estoque",
+            'texto' => ($this->currentUser()->nome ?? null) . " confirmou o estoque",
             'produto_estoque_id' => $id_produto
         ]);
 
@@ -576,7 +590,7 @@ class EstoqueController extends Controller
         foreach ($itensSelecionados as $item_id) {
             PedidoItem::create([
                 'item_id' => $item_id,
-                'user_de' => auth()->user()->id,
+                'user_de' => $this->currentUser()->id ?? null,
                 'area_de' => $area_de,
                 'area_para' => $request->input('area_para'),
                 'confirmado' => 1,
@@ -597,6 +611,8 @@ class EstoqueController extends Controller
      */
     public function adicionar(Request $request)
     {
+    /** @var \App\Models\User|null $user */
+    $user = $this->currentUser();
         // Validação dos campos esperados da modal
         $request->validate([
             'produto_id' => 'required|exists:produto_estoques,id',
@@ -626,7 +642,7 @@ class EstoqueController extends Controller
         // se nenhuma estiver disponível, retornamos erro 422 para que frontend peça seleção.
         $area_id = $request->input('area_hospitalar_id');
         if (!$area_id) {
-            $userAh = auth()->user()->area_hospitalar ?? null;
+            $userAh = $user->area_hospitalar ?? null;
             if ($userAh && isset($userAh->area_hospitalar_id)) {
                 $area_id = $userAh->area_hospitalar_id;
             } else {
@@ -722,10 +738,10 @@ class EstoqueController extends Controller
 
             // Determinar farmacia/area do usuário atual (mesma lógica do store)
             $farmacia_id = '';
-            if (@auth()->user()->isFarmacia) {
-                $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
-            } elseif (@auth()->user()->farmacia) {
-                $farmacia_id = auth()->user()->farmacia->farmacia_id;
+            if ($user->isFarmacia) {
+                $farmacia_id = $user->isFarmacia->farmacia->id;
+            } elseif ($user->farmacia) {
+                $farmacia_id = $user->farmacia->farmacia_id;
             }
 
             // Cria registro na tabela Estoque associando a area/farmacia
@@ -762,6 +778,8 @@ class EstoqueController extends Controller
 
     public function baixa(Request $request)
     {
+    /** @var \App\Models\User|null $user */
+    $user = $this->currentUser();
         $request->validate([
             'produto_id' => "required|exists:produto_estoques,id",
             'area_hospitalar_id' => "required|exists:areas_hospitalares,id",
@@ -773,10 +791,10 @@ class EstoqueController extends Controller
         ]);
 
         $farmacia_id = "";
-        if (@auth()->user()->isFarmacia) {
-            $farmacia_id = auth()->user()->isFarmacia->farmacia->id;
-        } elseif (@auth()->user()->farmacia) {
-            $farmacia_id = auth()->user()->farmacia->farmacia_id;
+        if ($user->isFarmacia) {
+            $farmacia_id = $user->isFarmacia->farmacia->id;
+        } elseif ($user->farmacia) {
+            $farmacia_id = $user->farmacia->farmacia_id;
         }
 
         $produto = PE::find($request->produto_id);
@@ -843,6 +861,23 @@ class EstoqueController extends Controller
             ]);
 
             $saldoA = $produto->saldo;
+            // registrar histórico: entrada no estoque destino (stock_in)
+            try {
+                ProductHistory::create([
+                    'product_id' => $isEstoque->produto->id,
+                    'farmacia_id' => $farmacia_id,
+                    'user_id' => $user->id ?? null,
+                    'action' => 'stock_in',
+                    'changes' => null,
+                    'payload' => ['from_product_id' => $produto->id, 'num_lote' => $isEstoque->produto->num_lote],
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->header('User-Agent'),
+                    'meta' => ['area_hospitalar_id' => $area_hospitalar_id],
+                    'quantity_delta' => $newQtdUnit,
+                ]);
+            } catch (\Throwable $e) {
+                logger()->error('Falha ao registar product_history stock_in: ' . $e->getMessage());
+            }
         } else {
             $dataProduto['descritivo'] = $newDescritivo;
             $novoProduto = PE::create($dataProduto);
@@ -865,6 +900,24 @@ class EstoqueController extends Controller
             'qtd' => $saldoRestante
         ]);
 
+        // registrar histórico: saida do produto original (stock_out)
+        try {
+                ProductHistory::create([
+                'product_id' => $produto->id,
+                'farmacia_id' => $farmacia_id,
+                'user_id' => $user->id ?? null,
+                'action' => 'stock_out',
+                'changes' => null,
+                'payload' => ['to_area' => $area_hospitalar_id, 'num_lote' => $produto->num_lote],
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->header('User-Agent'),
+                'meta' => ['saldo_before' => $antigoQtdUnit, 'saldo_after' => $saldoRestante],
+                'quantity_delta' => -1 * $newQtdUnit,
+            ]);
+        } catch (\Throwable $e) {
+            logger()->error('Falha ao registar product_history stock_out: ' . $e->getMessage());
+        }
+
         $ud = UAH::where('area_hospitalar_id', $area_hospitalar_id)
             ->where('farmacia_id', $farmacia_id)
             ->first();
@@ -883,7 +936,7 @@ class EstoqueController extends Controller
         ];
         self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$ud->area_hospitalar->nome}", null, $meta);
         self::setNotify("Confirmação de entrada de estoque", $ud->user_id);
-        $texto = auth()->user()->nome . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
+    $texto = ($this->currentUser()->nome ?? '') . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
         //self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
 
         // return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);

@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\ProdutoEstoque;
 use App\Models\ProductHistory;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Observer para ProdutoEstoque — regista alterações em product_histories
@@ -15,7 +16,8 @@ class ProdutoEstoqueObserver
 {
     protected function makeHistory(ProdutoEstoque $model, string $action, array $extra = []) : ProductHistory
     {
-        $user = auth()->user();
+    /** @var \App\Models\User|null $user */
+    $user = Auth::user();
         $changes = [];
 
         // Para created, registra o payload completo; para updated, diffs

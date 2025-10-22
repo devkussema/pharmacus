@@ -200,11 +200,17 @@
 
             $('.solicitar-produto .js-example-basic-multiple').select2();
 
-            var table = $('#table-c').DataTable({
-                ajax: {
-                    "url": "/api/produtos/{{ $ah->id }}",
-                    "dataSrc": 'data'
-                },
+            var table;
+            if ($.fn.dataTable.isDataTable('#table-c')) {
+                table = $('#table-c').DataTable();
+                // atualiza url caso a view seja reutilizada
+                table.ajax.url('/api/produtos/{{ $ah->id }}').load();
+            } else {
+                table = $('#table-c').DataTable({
+                    ajax: {
+                        "url": "/api/produtos/{{ $ah->id }}",
+                        "dataSrc": 'data'
+                    },
                 "columns": [{
                         "data": "produto.designacao"
                     },
@@ -283,7 +289,8 @@
                         "previous": "Anterior"
                     }
                 }
-            });
+                });
+            }
 
             // Função para adicionar linha extra manualmente após carregar os dados
             $('#table-c tbody').on('click', 'tr', function() {
@@ -410,7 +417,7 @@
                                         </div>
                                         <span class="history-qty ${qtyClass}">${qtyText}</span>
                                     </div>
-                                    ${item.payload && item.payload.num_lote ? '<div class="history-message">Lote: <strong>'+item.payload.num_lote+'</strong>' + (item.payload.obs ? ' • ' + item.payload.obs : '') + '</div>' : ''}
+                                    ${item.summary_pt ? '<div class="history-message">'+item.summary_pt+'</div>' : (item.payload && item.payload.num_lote ? '<div class="history-message">Lote: <strong>'+item.payload.num_lote+'</strong>' + (item.payload.obs ? ' • ' + item.payload.obs : '') + '</div>' : '')}
                                 </div>
                             </div>`;
                         timeline.appendChild(el);
@@ -509,8 +516,15 @@
                         return resp.json();
                     }).then(function(json) {
                         var data = json.data || [];
-                        var meta = json.meta || {};
-                        renderHistoryItems(data, meta);
+                            var meta = json.meta || {};
+                            // se o endpoint retornou infos do produto, atualiza header
+                            if (json.product) {
+                                var titleEl = document.getElementById('offcanvasRightLabel');
+                                var subtitleEl = document.getElementById('offcanvasRightSubtitle');
+                                if (titleEl) titleEl.innerHTML = '<i class="fa fa-history me-2"></i> ' + (json.product.designacao || 'Histórico do produto');
+                                if (subtitleEl) subtitleEl.innerText = json.product.descritivo || 'Registos de alterações, entradas e saídas';
+                            }
+                            renderHistoryItems(data, meta);
                     }).catch(function(err) {
                         if (err.name === 'AbortError') return; // requisição cancelada
                         document.getElementById('history_empty').style.display = 'block';
@@ -827,7 +841,7 @@
                     feedbackEl.style.display = 'block';
 
                     // atualizar tabela
-                    try { $('#table-c').DataTable().ajax.reload(null, false); } catch (err) {}
+                    try { if (typeof table !== 'undefined' && table.ajax) table.ajax.reload(null, false); else $('#table-c').DataTable().ajax.reload(null, false); } catch (err) {}
 
                     // fechar modal após pequeno delay para o usuário ver feedback
                     setTimeout(function() {
