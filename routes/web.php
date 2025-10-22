@@ -329,6 +329,7 @@ Route::prefix('auth')->middleware('guest')->group(function () {
 // Por favor, não alterar a estrutura da url
 Route::prefix('api')->group(function () {
     Route::get('/produtos/{id}', [EstoqueController::class, 'apiEstoque']);
+    Route::get('/product-history/{id}', [\App\Http\Controllers\ProductHistoryController::class, 'index']);
     Route::delete('/produtos_/{id}', [EstoqueController::class, 'destroy']);
     ///#
     Route::get('/status_produto/{id}', [StockController::class, 'status_produto']);
