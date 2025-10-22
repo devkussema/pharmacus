@@ -1,4 +1,23 @@
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+<style>
+    /* Largura do offcanvas ~45% da tela (máx. 720px) */
+    .offcanvas-history { --bs-offcanvas-width: min(45vw, 720px); }
+
+    /* Cabeçalho fixo para melhor usabilidade */
+    .offcanvas-history .offcanvas-header { position: sticky; top: 0; z-index: 2; background: #fff; }
+
+    /* Toolbar de busca */
+    #history_search::placeholder { color: #adb5bd; }
+
+    /* Timeline visual com linha e ponto */
+    #history_timeline .d-flex { border-left: 2px solid #e9ecef; padding-left: 12px; margin-left: 10px; position: relative; }
+    #history_timeline .d-flex::before { content: ''; position: absolute; left: -6px; top: 10px; width: 10px; height: 10px; background: #6c757d; border-radius: 50%; }
+    .history-action { text-transform: capitalize; }
+    .history-qty { min-width: 80px; }
+    .history-message { color: #495057; }
+    #history_empty i { color: #adb5bd; }
+</style>
+
+<div class="offcanvas offcanvas-end offcanvas-history" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header border-bottom">
         <div>
             <h5 id="offcanvasRightLabel" class="mb-0">Histórico do produto</h5>
