@@ -413,6 +413,55 @@ function getUnit($string) {
     }
 }
 
+/**
+ * Adiciona um número de unidades (ou caixas convertidas para unidades) ao descritivo existente
+ * e retorna o novo descritivo no mesmo formato CaixaxCaixinhaxUnidade.
+ *
+ * Regras:
+ * - $descritivo deve ter o formato "CaixaxCaixinhaxUnidade" (ex: "02x10x100").
+ * - $unitsToAdd é o número de unidades (não caixas) a adicionar.
+ * - A função converte as unidades atuais para total de unidades, soma as unidades a adicionar
+ *   e recalcula caixas/caixinhas/unidades com base nos fatores existentes (caixinha, unidade).
+ *
+ * Retorna string no mesmo formato (ex: "03x10x100").
+ *
+ * @param string $descritivo
+ * @param int $unitsToAdd
+ * @return string
+ */
+function addUnitsToDescritivo($descritivo, $unitsToAdd)
+{
+    $parts = explode('x', $descritivo);
+    if (count($parts) < 3) {
+        // se formato inválido, retorna o original
+        return $descritivo;
+    }
+
+    $caixa = intval(ltrim($parts[0], '0'));
+    $caixinha = intval(ltrim($parts[1], '0')) ?: 1;
+    $unit = intval(ltrim($parts[2], '0')) ?: 1;
+
+    // total de unidades equivalentes no descritivo atual
+    $totalUnits = ($caixa * $caixinha * $unit);
+
+    // soma as unidades a adicionar
+    $newTotal = $totalUnits + intval($unitsToAdd);
+
+    if ($newTotal <= 0) {
+        return '0x0x0';
+    }
+
+    // Recalcula caixas, caixinhas e unidades mantendo os fatores caixinha e unidade
+    $newCaixas = intdiv($newTotal, ($caixinha * $unit));
+    $restAfterCaixas = $newTotal - ($newCaixas * $caixinha * $unit);
+
+    $newCaixinhas = intdiv($restAfterCaixas, $unit);
+    $newUnits = $restAfterCaixas - ($newCaixinhas * $unit);
+
+    // Normalizar com padding se necessário (mantemos sem zeros à esquerda)
+    return "{$newCaixas}x{$newCaixinhas}x{$newUnits}";
+}
+
 function downCaixa($formato, $caixasASubtrair)
 {
     // Separar os valores do formato
@@ -874,6 +923,4 @@ if (!function_exists('getPerm')) {
 function isGerente()
 {
     return auth()->user()->grupo_id === Grupo::where('nome', 'Gerente')->first()->id;
-
-    return false;
 }

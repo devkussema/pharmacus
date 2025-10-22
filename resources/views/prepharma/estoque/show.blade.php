@@ -415,6 +415,157 @@
             }
         });
 
+        // --- Modal sofisticada para Adicionar Estoque (caixa, caixinha, unidade, lote, fornecedor, obs) ---
+        (function insertAddModal() {
+            if (!document.getElementById('modalAdicionarEstoque')) {
+                var modalHtml = `
+                <div class="modal fade" id="modalAdicionarEstoque" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Adicionar Estoque - Preencher detalhes</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formAdicionarEstoque" class="row g-3">
+                                    <input type="hidden" name="produto_id" id="add_produto_id">
+
+                                    <div class="col-md-4">
+                                        <label class="form-label">Caixas</label>
+                                        <input type="number" min="0" class="form-control" id="add_caixa" name="caixa" value="0">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Caixinhas</label>
+                                        <input type="number" min="0" class="form-control" id="add_caixinha" name="caixinha" value="0">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Unidades</label>
+                                        <input type="number" min="0" class="form-control" id="add_unidade" name="unidade" value="0">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">Total (unidades)</label>
+                                        <input type="text" readonly class="form-control" id="add_total" value="0">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Lote</label>
+                                        <input type="text" class="form-control" id="add_lote" name="num_lote">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Fornecedor</label>
+                                        <input type="text" class="form-control" id="add_fornecedor" name="fornecedor">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">Observações</label>
+                                        <textarea class="form-control" id="add_obs" name="obs" rows="3"></textarea>
+                                    </div>
+
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">Adicionar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                // listeners para recalcular total automaticamente
+                function calcTotal() {
+                    var caixa = parseInt(document.getElementById('add_caixa').value || 0, 10);
+                    var caixinha = parseInt(document.getElementById('add_caixinha').value || 0, 10);
+                    var unidade = parseInt(document.getElementById('add_unidade').value || 0, 10);
+
+                    // Se caixinha ou unidade for zero, assumimos divisores 1 para evitar divisão por zero
+                    var factorCaixinha = caixinha > 0 ? caixinha : 1;
+                    var factorUnidade = unidade > 0 ? unidade : 1;
+
+                    var total = (caixa * factorCaixinha * factorUnidade) + (caixinha * factorUnidade) + unidade;
+                    document.getElementById('add_total').value = total;
+                }
+
+                ['add_caixa', 'add_caixinha', 'add_unidade'].forEach(function(id) {
+                    document.addEventListener('input', function(ev) {
+                        if (ev.target && ev.target.id === id) calcTotal();
+                    });
+                });
+            }
+        })();
+
+        // Abrir modal ao clicar em Adicionar
+        document.addEventListener('click', function(e) {
+            var target = e.target.closest('.btn-add');
+            if (!target) return;
+            var produtoId = target.getAttribute('data-id');
+            document.getElementById('add_produto_id').value = produtoId;
+
+            // resetar campos
+            ['add_caixa','add_caixinha','add_unidade','add_total','add_lote','add_fornecedor','add_obs'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (!el) return;
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = el.id === 'add_total' ? '0' : '';
+            });
+
+            var modal = new bootstrap.Modal(document.getElementById('modalAdicionarEstoque'));
+            modal.show();
+        });
+
+        // Envio via AJAX (mantém comportamento, backend será adaptado depois)
+        document.addEventListener('submit', function(e) {
+            if (e.target && e.target.id === 'formAdicionarEstoque') {
+                e.preventDefault();
+                var form = e.target;
+                var fd = new FormData(form);
+
+                // também converter caixas/caixinhas/unidades para um campo descritivo
+                var caixa = parseInt(document.getElementById('add_caixa').value || 0, 10);
+                var caixinha = parseInt(document.getElementById('add_caixinha').value || 0, 10);
+                var unidade = parseInt(document.getElementById('add_unidade').value || 0, 10);
+                fd.set('descritivo', caixa + 'x' + caixinha + 'x' + unidade);
+                // envia também o total em unidades (campo esperado pelo controller)
+                var total = parseInt(document.getElementById('add_total').value || 0, 10);
+                fd.set('units', total);
+
+                var btn = form.querySelector('button[type="submit"]');
+                btn.disabled = true;
+
+                fetch('{{ route('estoque.adicionar') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: fd
+                }).then(function(response) {
+                    btn.disabled = false;
+                    if (!response.ok) return response.json().then(function(j) { throw j; });
+                    return response.json();
+                }).then(function(data) {
+                    var modalEl = document.getElementById('modalAdicionarEstoque');
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+
+                    alertify.success(data.message || 'Adicionado com sucesso');
+                    try { $('#table-c').DataTable().ajax.reload(null, false); } catch (err) {}
+                }).catch(function(err) {
+                    if (err && err.errors) {
+                        // mostra primeiro erro geral
+                        var first = Object.keys(err.errors)[0];
+                        alertify.error(err.errors[first][0]);
+                    } else if (err && err.message) {
+                        alertify.error(err.message);
+                    } else {
+                        alertify.error('Erro inesperado');
+                    }
+                    btn.disabled = false;
+                });
+            }
+        });
+
         document.getElementById('imprimir-pagina').addEventListener('click', function(e) {
             e.preventDefault(); // Evita que o link seja seguido imediatamente
 
