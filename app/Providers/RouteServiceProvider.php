@@ -46,6 +46,7 @@ class RouteServiceProvider extends ServiceProvider
                 Route::group([], base_path('routes/gerente.php'));
                 
                 // Rotas específicas com prefixos
+                Route::prefix('core_admin')->as('core_admin.')->group(base_path('core/routes/core_admin.php'));
                 Route::prefix('ocorrencias')->as('ocorrencia.')->group(base_path('core/routes/ocorrencia.php'));
                 Route::prefix('preview/v3')->as('preview.')->group(base_path('routes/preview.php'));
                 Route::prefix('cp')->group(app_path('Routes/cp.php'));
