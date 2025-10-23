@@ -892,6 +892,8 @@ class EstoqueController extends Controller
                 'area_hospitalar_id' => $request->area_hospitalar_id
             ]);
         }
+        // sinaliza (em memória) que a próxima alteração no modelo vem da operação de baixa
+        \App\Observers\ProdutoEstoqueObserver::markOrigin($produto->id, 'baixa');
         $produto->update([
             'descritivo' => $produtoMasDescr
         ]);
