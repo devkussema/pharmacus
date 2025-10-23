@@ -157,7 +157,7 @@
                                                 <td class="profile-image">
                                                     <a href="{{ route('u.perfil', ['username' => $user->id] ?? '#') }}">
                                                         @php
-                                                            $avatar = $user->foto_perfil ? url('storage/'.$user->foto_perfil) : assetr('assets/images/default-avatar.png');
+                                                            $avatar = $user->foto_perfil ? url('storage/'.$user->foto_perfil) : asset('prepharma/images/default-avatar.png');
                                                         @endphp
                                                         <img width="28" height="28" src="{{ $avatar }}" class="rounded-circle m-r-5" alt>
                                                         {{ $user->nome }}

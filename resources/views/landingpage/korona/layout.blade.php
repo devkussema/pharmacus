@@ -31,7 +31,7 @@
                         <div class="clearfix">
 
                             <div class="pull-left logo-box">
-                                <div class="logo"><a href="/"><img src="{{ assetr('assets/img/white__logo2.png')}}" width="48" height="48" alt> <span style="font-weight: bold; font-size: 18pt;margin-left: 10px;margin-top: 50px;color: white">Pharmatina</span></a></div>
+                                <div class="logo"><a href="/"><img src="{{ asset('prepharma/img/white__logo2.png')}}" width="48" height="48" alt> <span style="font-weight: bold; font-size: 18pt;margin-left: 10px;margin-top: 50px;color: white">Pharmatina</span></a></div>
                             </div>
 
                                <div class="nav-outer clearfix">

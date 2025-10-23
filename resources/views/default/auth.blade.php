@@ -28,7 +28,7 @@
                 </div>
                 <div class="auth-right">
                     {{-- Espaço para imagem ilustrativa --}}
-                    <img src="{{ assetr('assets/images/login/01.png') }}" alt="login-image" style="max-width:240px;opacity:.9">
+                    <img src="{{ asset('prepharma/images/login/01.png') }}" alt="login-image" style="max-width:240px;opacity:.9">
                 </div>
             </div>
         </div>

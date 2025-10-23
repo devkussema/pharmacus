@@ -36,7 +36,7 @@
                     <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
                         <div class="dash-widget">
                             <div class="dash-boxs comman-flex-center">
-                                <img src="{{ assetr('assets/img/white__logo2.png') }}" width="24" height="24" alt>
+                                <img src="{{ asset('prepharma/img/white__logo2.png') }}" width="24" height="24" alt>
                             </div>
                             <div class="dash-content dash-count">
                                 <h4>{{ $n->nivel_alerta->nome }}</h4>
@@ -72,7 +72,7 @@
                                                 <form>
                                                     <input type="text" id="search-tableq" class="form-control" placeholder="Procure aqui">
                                                     <a class="btn"><img
-                                                            src="{{ assetr('assets/img/icons/search-normal.svg') }}"
+                                                            src="{{ asset('prepharma/img/icons/search-normal.svg') }}"
                                                             alt></a>
                                                 </form>
                                             </div>
@@ -81,13 +81,13 @@
                                 </div>
                                 <div class="col-auto text-end float-end ms-auto download-grp">
                                     <a href="{{ route('print.nivel_alerta') }}" id="imprimir-pagina" target="_blank" class=" me-2">
-                                        <img src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt>
+                                        <img src="{{ asset('prepharma/img/icons/pdf-icon-01.svg') }}" alt>
                                     </a>
                                     <a href="javascript:;" class=" me-2"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt></a>
+                                            src="{{ asset('prepharma/img/icons/pdf-icon-02.svg') }}" alt></a>
                                     <a href="javascript:;" class=" me-2"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt></a>
-                                    <a href="javascript:;"><img src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}"
+                                            src="{{ asset('prepharma/img/icons/pdf-icon-03.svg') }}" alt></a>
+                                    <a href="javascript:;"><img src="{{ asset('prepharma/img/icons/pdf-icon-04.svg') }}"
                                             alt></a>
                                 </div>
                             </div>

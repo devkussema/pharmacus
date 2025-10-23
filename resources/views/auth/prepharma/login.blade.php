@@ -8,7 +8,7 @@
                 <div class="login-right-wrap">
                     <div class="account-logo">
                         <a href="index.html">
-                            <img src="{{ assetr('assets/img/white__logo2.png') }}" width="48px">
+                            <img src="{{ asset('prepharma/img/white__logo2.png') }}" width="48px">
                         </a>
                     </div>
                     <h2>Iniciar Sessão</h2>

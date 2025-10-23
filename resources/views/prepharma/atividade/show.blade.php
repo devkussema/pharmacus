@@ -96,7 +96,7 @@
                                                    title="Usuário: {{ $at->user->nome }}&#10;Data: {{ formatDataAtv($at->created_at) }}&#10;Hora: {{ formatar_horas($at->created_at) }}&#10;Atividade: {{ $at->texto }}"
                                                    data-bs-toggle="tooltip" data-bs-html="true" class="avatar">
                                                     <img alt="{{ $at->user->nome }}"
-                                                        src="{{ assetr('assets/img/white__logo2.png') }}"
+                                                        src="{{ asset('prepharma/img/white__logo2.png') }}"
                                                         class="img-fluid rounded-circle">
                                                 </a>
                                             </div>

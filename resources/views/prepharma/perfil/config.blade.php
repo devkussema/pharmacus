@@ -22,7 +22,7 @@
                     <div class="profile-view">
                         <div class="profile-img-wrap">
                             <div class="profile-img">
-                                <a href="#"><img class="avatar" src="{{ assetr('assets/img/doctor-03.jpg')}}" alt></a>
+                                <a href="#"><img class="avatar" src="{{ asset('prepharma/img/doctor-03.jpg')}}" alt></a>
                             </div>
                         </div>
                         <div class="profile-basic">

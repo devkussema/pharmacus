@@ -13,7 +13,7 @@
                 <div class="row mb-4">
                     <div class="col-md-3 text-center">
                         <div class="pharmacy-logo-container">
-                            <img id="view_logo" src="{{ assetr('assets/img/icons/pharmacy-default.svg') }}"
+                            <img id="view_logo" src="{{ asset('prepharma/img/icons/pharmacy-default.svg') }}"
                                  alt="Logo da Farmácia" class="pharmacy-logo mb-3" />
                         </div>
                         <h4 id="view_nome" class="text-primary mb-1">Nome da Farmácia</h4>

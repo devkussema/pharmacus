@@ -151,7 +151,7 @@
                     <div class="auth-logo">
                         <a href="index.html" class="logo logo-dark">
                             <span class="logo-lg">
-                                <img src="{{ assetr('assets/img/white__logo2.png')}}" alt="Logo" height="42">
+                                <img src="{{ asset('prepharma/img/white__logo2.png')}}" alt="Logo" height="42">
                             </span>
                         </a>
                     </div>

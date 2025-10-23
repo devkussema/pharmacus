@@ -32,7 +32,7 @@
                                                     <input type="text" id="search-table"
                                                         class="form-control outline-success" placeholder="Procure aqui">
                                                     <a class="btn">
-                                                        <img src="{{ assetr('assets/img/icons/search-normal.svg') }}" alt>
+                                                        <img src="{{ asset('prepharma/img/icons/search-normal.svg') }}" alt>
                                                     </a>
                                                 </form>
                                             </div>
@@ -260,14 +260,14 @@
                             </div>
                             <div class="col-auto text-end float-end ms-auto download-grp">
                                 <a href="#" id="imprimir-pagina" target="_blank" class=" me-2">
-                                    <img src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt>
+                                    <img src="{{ asset('prepharma/img/icons/pdf-icon-01.svg') }}" alt>
                                 </a>
                                 <a href="javascript:;" class=" me-2"><img
-                                        src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt></a>
+                                        src="{{ asset('prepharma/img/icons/pdf-icon-02.svg') }}" alt></a>
                                 <a href="javascript:;" class=" me-2"><img
-                                        src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt></a>
+                                        src="{{ asset('prepharma/img/icons/pdf-icon-03.svg') }}" alt></a>
                                 <a href="javascript:;" id="alert"><img
-                                        src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}" alt></a>
+                                        src="{{ asset('prepharma/img/icons/pdf-icon-04.svg') }}" alt></a>
                             </div>
                         </div>
                     </div>
@@ -390,7 +390,7 @@
                     console.log('Dados recebidos:', data);
 
                     // Preencher logo
-                    var logoSrc = "{{ assetr('assets/img/icons/pharmacy-default.svg') }}";
+                    var logoSrc = "{{ asset('prepharma/img/icons/pharmacy-default.svg') }}";
                     if (data.logo) {
                         logoSrc = "{{ url('storage') }}/" + data.logo;
                     }

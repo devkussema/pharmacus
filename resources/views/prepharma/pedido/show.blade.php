@@ -33,30 +33,30 @@
                                                     <input type="text" id="search-table" class="form-control"
                                                         placeholder="Procure aqui">
                                                     <a class="btn">
-                                                        <img src="{{ assetr('assets/img/icons/search-normal.svg') }}" alt>
+                                                        <img src="{{ asset('prepharma/img/icons/search-normal.svg') }}" alt>
                                                     </a>
                                                 </form>
                                             </div>
                                             <div class="add-group">
                                                 <a data-bs-toggle="modal" data-bs-target="#AddAH" href="javascript:void(0)"
                                                     class="btn btn-primary add-pluss ms-2">
-                                                    <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
+                                                    <img src="{{ asset('prepharma/img/icons/plus.svg') }}" alt>
                                                 </a>
                                                 <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#ver-pedido"
                                                     class="btn btn-primary doctor-refresh ms-2"><img
-                                                        src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt></a>
+                                                        src="{{ asset('prepharma/img/icons/re-fresh.svg') }}" alt></a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-auto text-end float-end ms-auto download-grp">
                                     <a href="javascript:;" class=" me-2"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt></a>
+                                            src="{{ asset('prepharma/img/icons/pdf-icon-01.svg') }}" alt></a>
                                     <a href="javascript:;" class=" me-2"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt></a>
+                                            src="{{ asset('prepharma/img/icons/pdf-icon-02.svg') }}" alt></a>
                                     <a href="javascript:;" class=" me-2"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt></a>
-                                    <a href="javascript:;"><img src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}"
+                                            src="{{ asset('prepharma/img/icons/pdf-icon-03.svg') }}" alt></a>
+                                    <a href="javascript:;"><img src="{{ asset('prepharma/img/icons/pdf-icon-04.svg') }}"
                                             alt></a>
                                 </div>
                             </div>

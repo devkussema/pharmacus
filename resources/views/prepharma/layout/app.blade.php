@@ -9,7 +9,7 @@
             : optional(@auth()->user()->farmacia->area_hospitalar)->id ?? 0;
     @endphp
     <meta name="area_id_" content="{{ $id_area_ }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ assetr('assets/img/white__logo2.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('prepharma/img/white__logo2.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @if (request()->cookie('pwa_app') === 'true')
@@ -181,7 +181,7 @@
             <div class="loader-ring"></div>
             <div class="loader-ring"></div>
             <div class="loader-ring"></div>
-            <img src="{{ assetr('assets/img/white__logo2.png') }}" alt="Logo" class="loader-logo">
+            <img src="{{ asset('prepharma/img/white__logo2.png') }}" alt="Logo" class="loader-logo">
             <div class="loader-text">
                 A carregar<span class="loader-dots"></span>
             </div>
@@ -447,7 +447,7 @@
             window.Pharmatina.assetsBase = assetsBase;
             /**
              * Constrói URL completa para um recurso usando a mesma base que assetr().
-             * Exemplo: Pharmatina.assetr('assets/img/logo.png')
+             * Exemplo: Pharmatina.asset('prepharma/img/logo.png')
              */
             window.Pharmatina.assetr = function (path) {
                 if (!path) return assetsBase;

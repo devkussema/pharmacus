@@ -8,13 +8,13 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/plugins/fontawesome/css/all.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/plugins/datatables/datatables.min.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/css/feather.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ assetr('assets/css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('prepharma/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/plugins/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('prepharma/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/plugins/datatables/datatables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/css/feather.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('prepharma/css/style.css') }}">
 </head>
 <body>
     <div class="main-wrapper">

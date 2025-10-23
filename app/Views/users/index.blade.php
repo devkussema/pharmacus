@@ -18,17 +18,17 @@
                                             <form id="js-users-search-form" onsubmit="return false;">
                                                 <input type="text" id="js-users-search" name="q" value="{{ request('q') }}" class="form-control" placeholder="Pesquisar">
                                                 <a class="btn" id="js-users-search-btn">
-                                                    <img src="{{ assetr('assets/img/icons/search-normal.svg')}}" alt>
+                                                    <img src="{{ asset('prepharma/img/icons/search-normal.svg')}}" alt>
                                                 </a>
                                             </form>
                                         </div>
                                         <div class="add-group">
                                             <a href="{{ route('cp.users.create') }}" class="btn btn-primary add-pluss ms-2">
-                                                <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
+                                                <img src="{{ asset('prepharma/img/icons/plus.svg') }}" alt>
                                             </a>
                                             <a href="javascript:;" id="js-refresh-users" class="btn btn-primary doctor-refresh ms-2">
                                                 <span id="js-refresh-spinner" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" style="display:none"></span>
-                                                <img src="{{ assetr('assets/img/icons/re-fresh.svg') }}" alt>
+                                                <img src="{{ asset('prepharma/img/icons/re-fresh.svg') }}" alt>
                                             </a>
                                         </div>
                                     </div>

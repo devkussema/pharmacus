@@ -34,16 +34,16 @@
                         </div>
                         <div class="col-auto text-end float-end ms-auto download-grp">
                             <a href="javascript:;" class=" me-2">
-                                <img src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt>
+                                <img src="{{ asset('prepharma/img/icons/pdf-icon-01.svg') }}" alt>
                             </a>
                             <a href="javascript:;" class=" me-2">
-                                <img src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt>
+                                <img src="{{ asset('prepharma/img/icons/pdf-icon-02.svg') }}" alt>
                             </a>
                             <a href="javascript:;" class=" me-2">
-                                <img src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt>
+                                <img src="{{ asset('prepharma/img/icons/pdf-icon-03.svg') }}" alt>
                             </a>
                             <a href="javascript:;">
-                                <img src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}" alt>
+                                <img src="{{ asset('prepharma/img/icons/pdf-icon-04.svg') }}" alt>
                             </a>
                         </div>
                     </div>

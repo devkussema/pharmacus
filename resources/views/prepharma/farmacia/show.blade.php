@@ -66,13 +66,13 @@
                                             <div class="profile-user-box">
                                                 <div class="profile-user-img">
                                                     @php
-                                                        $logo = $farmacia->logo ? assetr('storage/' . $farmacia->logo) : assetr('assets/img/profile-user-01.jpg');
+                                                        $logo = $farmacia->logo ? assetr('storage/' . $farmacia->logo) : asset('prepharma/img/profile-user-01.jpg');
                                                     @endphp
                                                     <img src="{{ $logo }}" alt="Logo {{ $farmacia->nome }}">
                                                     <div class="input-block doctor-up-files profile-edit-icon mb-0">
                                                         <div class="uplod d-flex">
                                                             <label class="file-upload profile-upbtn mb-0">
-                                                                <img src="{{ assetr('assets/img/icons/camera-icon.svg') }}"
+                                                                <img src="{{ asset('prepharma/img/icons/camera-icon.svg') }}"
                                                                     alt="Profile"><input type="file"></label>
                                                         </div>
                                                     </div>
@@ -314,7 +314,7 @@
                                                         <li class="activity-item" data-user-id="{{ $at->user_id }}" data-date="{{ $at->created_at->format('Y-m-d') }}" data-text="{{ strtolower($at->texto) }}">
                                                             <div class="activity-user">
                                                                 <a href="javascript:void(0)" title="Usuário: {{ $at->user->nome }}\nData: {{ formatDataAtv($at->created_at) }}\nHora: {{ formatar_horas($at->created_at) }}\nAtividade: {{ $at->texto }}" data-bs-toggle="tooltip" data-bs-html="true" class="avatar">
-                                                                    <img alt="{{ $at->user->nome }}" src="{{ assetr('assets/img/white__logo2.png') }}" class="img-fluid rounded-circle">
+                                                                    <img alt="{{ $at->user->nome }}" src="{{ asset('prepharma/img/white__logo2.png') }}" class="img-fluid rounded-circle">
                                                                 </a>
                                                             </div>
                                                             <div class="activity-content timeline-group-blk">

@@ -85,7 +85,7 @@ class UsuarioController extends Controller
                     'isFarmacia' => (bool) $user->isFarmacia,
                     'status' => (bool) $user->status,
                     'telefone' => $user->telefone ?? null,
-                    'foto_perfil' => $user->foto_perfil ? url('storage/' . $user->foto_perfil) : assetr('assets/images/default-avatar.png'),
+                    'foto_perfil' => $user->foto_perfil ? url('storage/' . $user->foto_perfil) : asset('prepharma/images/default-avatar.png'),
                     'perfil_url' => route('u.perfil', ['username' => $user->username ?? $user->id]),
                 ];
             });
@@ -302,7 +302,7 @@ class UsuarioController extends Controller
                     'isFarmacia' => (bool) $user->isFarmacia,
                     'status' => (bool) $user->status,
                     'perfil_url' => route('u.perfil', ['username' => $user->username ?? $user->id]),
-                    'foto_perfil' => $user->foto_perfil ? url('storage/' . $user->foto_perfil) : assetr('assets/images/default-avatar.png'),
+                    'foto_perfil' => $user->foto_perfil ? url('storage/' . $user->foto_perfil) : asset('prepharma/images/default-avatar.png'),
                 ]
             ], 200);
         }

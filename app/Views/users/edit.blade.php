@@ -92,7 +92,7 @@
                             <div class="input-block local-forms d-flex gap-3 align-items-center">
                                 <div>
                                     <label class="d-block mb-1">Avatar</label>
-                                    <img id="avatarPreview" src="{{ $user->foto_perfil ? asset('storage/'.$user->foto_perfil) : assetr('assets/img/profiles/avatar-01.jpg') }}" alt="avatar" width="72" height="72" class="rounded-circle border" style="object-fit:cover;">
+                                    <img id="avatarPreview" src="{{ $user->foto_perfil ? asset('storage/'.$user->foto_perfil) : asset('prepharma/img/profiles/avatar-01.jpg') }}" alt="avatar" width="72" height="72" class="rounded-circle border" style="object-fit:cover;">
                                 </div>
                                 <div class="flex-grow-1">
                                     <label>Foto de Perfil</label>

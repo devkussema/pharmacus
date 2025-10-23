@@ -8,11 +8,11 @@
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="assets/images/favicon.ico">
-    <link rel="stylesheet" href="{{ assetr('assets/css/backend-plugin.min.css')}}">
-    <link rel="stylesheet" href="{{ assetr('assets/css/backende209.css?v=1.0.0')}}">
-    <link rel="stylesheet" href="{{ assetr('assets/vendor/%40fortawesome/fontawesome-free/css/all.min.css')}}">
-    <link rel="stylesheet" href="{{ assetr('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css')}}">
-    <link rel="stylesheet" href="{{ assetr('assets/vendor/remixicon/fonts/remixicon.css')}}">
+    <link rel="stylesheet" href="{{ asset('prepharma/css/backend-plugin.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('prepharma/css/backende209.css?v=1.0.0')}}">
+    <link rel="stylesheet" href="{{ asset('prepharma/vendor/%40fortawesome/fontawesome-free/css/all.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('prepharma/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('prepharma/vendor/remixicon/fonts/remixicon.css')}}">
     <style type="text/css">
         .apexcharts-canvas {
             position: relative;
@@ -700,7 +700,7 @@
             <div class="row no-gutters height-self-center">
                 <div class="col-sm-12 text-center align-self-center">
                     <div class="iq-error position-relative">
-                        <img src="{{ assetr('assets/images/error/404.png')}}" class="img-fluid iq-error-img" alt="">
+                        <img src="{{ asset('prepharma/images/error/404.png')}}" class="img-fluid iq-error-img" alt="">
                         <h2 class="mb-0 mt-4">Oops! Página não encontrada.</h2>
                         <p>A página solicitada não existe.</p>
                         <a class="btn btn-primary d-inline-flex align-items-center mt-3" href="{{ route('home') }}"><i
@@ -712,19 +712,19 @@
     </div>
 
     <!-- Backend Bundle JavaScript -->
-    <script src="{{ assetr('assets/js/backend-bundle.min.js')}}"></script>
+    <script src="{{ asset('prepharma/js/backend-bundle.min.js')}}"></script>
 
     <!-- Table Treeview JavaScript -->
-    <script src="{{ assetr('assets/js/table-treeview.js')}}"></script>
+    <script src="{{ asset('prepharma/js/table-treeview.js')}}"></script>
 
     <!-- Chart Custom JavaScript -->
-    <script src="{{ assetr('assets/js/customizer.js')}}"></script>
+    <script src="{{ asset('prepharma/js/customizer.js')}}"></script>
 
     <!-- Chart Custom JavaScript -->
-    <script async="" src="{{ assetr('assets/js/chart-custom.js')}}"></script>
+    <script async="" src="{{ asset('prepharma/js/chart-custom.js')}}"></script>
 
     <!-- app JavaScript -->
-    <script src="{{ assetr('assets/js/app.js')}}"></script>
+    <script src="{{ asset('prepharma/js/app.js')}}"></script>
 
 
 

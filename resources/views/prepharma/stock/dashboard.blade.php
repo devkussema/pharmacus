@@ -8,7 +8,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="doctor-widget border-right-bg">
                 <a href="#" class="doctor-box-icon flex-shrink-0">
-                    <img src="{{ assetr('assets/img/white__logo2.png') }}" width="48" height="48" alt>
+                    <img src="{{ asset('prepharma/img/white__logo2.png') }}" width="48" height="48" alt>
                 </a>
                 <div class="doctor-content dash-count flex-grow-1">
                     <h4><span class="counter-up">30</span><span>/85</span><span
@@ -20,7 +20,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="doctor-widget border-right-bg">
                 <a href="#" class="doctor-box-icon flex-shrink-0">
-                    <img src="{{ assetr('assets/img/white__logo2.png') }}" width="48" height="48" alt>
+                    <img src="{{ asset('prepharma/img/white__logo2.png') }}" width="48" height="48" alt>
                 </a>
                 <div class="doctor-content dash-count flex-grow-1">
                     <h4><span class="counter-up">20</span><span>/125</span><span
@@ -32,7 +32,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="doctor-widget border-right-bg">
                 <a href="#" class="doctor-box-icon flex-shrink-0">
-                    <img src="{{ assetr('assets/img/white__logo2.png') }}" width="48" height="48" alt>
+                    <img src="{{ asset('prepharma/img/white__logo2.png') }}" width="48" height="48" alt>
                 </a>
                 <div class="doctor-content dash-count flex-grow-1">
                     <h4><span class="counter-up">12</span><span>/30</span><span
@@ -44,7 +44,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="doctor-widget">
                 <a href="#" class="doctor-box-icon flex-shrink-0">
-                    <img src="{{ assetr('assets/img/white__logo2.png') }}" width="48" height="48" alt>
+                    <img src="{{ asset('prepharma/img/white__logo2.png') }}" width="48" height="48" alt>
                 </a>
                 <div class="doctor-content dash-count flex-grow-1">
                     <h4>$<span class="counter-up">530</span><span></span><span
@@ -91,14 +91,14 @@
             <div class="card patient-structure">
                 <div class="card-body">
                     <h5>New Patients</h5>
-                    <h3>56<span class="status-green"><img src="{{ assetr('assets/img/icons/sort-icon-01.svg')}}" alt
+                    <h3>56<span class="status-green"><img src="{{ asset('prepharma/img/icons/sort-icon-01.svg')}}" alt
                                 class="me-1">60%</span></h3>
                 </div>
             </div>
             <div class="card patient-structure">
                 <div class="card-body">
                     <h5>Old Patients</h5>
-                    <h3>35<span class="status-pink"><img src="{{ assetr('assets/img/icons/sort-icon-02.svg')}}" alt
+                    <h3>35<span class="status-pink"><img src="{{ asset('prepharma/img/icons/sort-icon-02.svg')}}" alt
                                 class="me-1">-20%</span></h3>
                 </div>
             </div>
@@ -143,7 +143,7 @@
                                     <tr>
                                         <td class="table-image appoint-doctor">
                                             <img width="28" height="28" class="rounded-circle"
-                                                src="{{ assetr('assets/img/profiles/avatar-02.jpg')}}" alt>
+                                                src="{{ asset('prepharma/img/profiles/avatar-02.jpg')}}" alt>
                                             <h2>Dr.Jenny Smith</h2>
                                         </td>
                                         <td class="appoint-time text-center">
@@ -160,7 +160,7 @@
                                     <tr>
                                         <td class="table-image appoint-doctor">
                                             <img width="28" height="28" class="rounded-circle"
-                                                src="{{ assetr('assets/img/profiles/avatar-03.jpg')}}" alt>
+                                                src="{{ asset('prepharma/img/profiles/avatar-03.jpg')}}" alt>
                                             <h2>Dr.Angelica Ramos</h2>
                                         </td>
                                         <td class="appoint-time text-center">
@@ -177,7 +177,7 @@
                                     <tr>
                                         <td class="table-image appoint-doctor">
                                             <img width="28" height="28" class="rounded-circle"
-                                                src="{{ assetr('assets/img/profiles/avatar-04.jpg')}}" alt>
+                                                src="{{ asset('prepharma/img/profiles/avatar-04.jpg')}}" alt>
                                             <h2>Dr.Martin Doe</h2>
                                         </td>
                                         <td class="appoint-time text-center">
@@ -201,7 +201,7 @@
                 <div class="card wallet-widget">
                     <div class="circle-bar circle-bar2">
                         <div class="circle-graph2" data-percent="66">
-                            <b><img src="{{ assetr('assets/img/icons/timer.svg')}}" alt></b>
+                            <b><img src="{{ asset('prepharma/img/icons/timer.svg')}}" alt></b>
                         </div>
                     </div>
                     <div class="main-limit">
@@ -250,13 +250,13 @@
                                             <li class="schedule-blk mb-0 pt-2 dropdown-item">
                                                 <ul class="nav schedule-time">
                                                     <li><a href="javascript:;"><img
-                                                                src="{{ assetr('assets/img/icons/trash.svg')}}"
+                                                                src="{{ asset('prepharma/img/icons/trash.svg')}}"
                                                                 alt></a></li>
                                                     <li><a href="javascript:;"><img
-                                                                src="{{ assetr('assets/img/icons/profile.svg')}}"
+                                                                src="{{ asset('prepharma/img/icons/profile.svg')}}"
                                                                 alt></a></li>
                                                     <li><a href="javascript:;"><img
-                                                                src="{{ assetr('assets/img/icons/edit.svg')}}" alt></a>
+                                                                src="{{ asset('prepharma/img/icons/edit.svg')}}" alt></a>
                                                     </li>
                                                 </ul>
                                                 <a class="btn btn-primary appoint-start">Start

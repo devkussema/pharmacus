@@ -15,7 +15,7 @@
     @if (isAHGerente())
         <meta name="is_ah_gerente" content="{{ isAHGerente() }}">
     @endif
-    <link rel="apple-touch-icon" href="{{ assetr('assets/images/white__logo2.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('prepharma/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     @if (request()->cookie('pwa_app') === 'true')
@@ -25,9 +25,9 @@
     @endif
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ assetr('assets/images/white__logo2.png') }}" />
-    <link rel="stylesheet" href="{{ assetr('assets/css/backend-plugin.min.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/css/backende209.css?v=1.0.0') }}">
+    <link rel="shortcut icon" href="{{ asset('prepharma/images/white__logo2.png') }}" />
+    <link rel="stylesheet" href="{{ asset('prepharma/css/backend-plugin.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/css/backende209.css?v=1.0.0') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css">
@@ -84,7 +84,7 @@
 <body class="color-light">
     <!-- loader Start -->
     <div class="loader" id="loaderish" style="display: none">
-        <img src="{{ assetr('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">
+        <img src="{{ asset('prepharma/images/white__logo2.png') }}" alt="Logotipo" class="logo">
     </div>
 
     <div class="wrapper">
@@ -325,13 +325,13 @@
         }
     </script>
 
-    <script src="{{ assetr('assets/js/notifications/base.js') }}"></script>
-    <script src="{{ assetr('assets/js/dev/helpers.js') }}" async></script>
-    <script src="{{ assetr('assets/js/dev/backend-bundle.min.js') }}"></script>
-    <script src="{{ assetr('assets/js/dev/table-treeview.js') }}"></script>
-    <script src="{{ assetr('assets/js/dev/customizer.js') }}"></script>
-    <script async src="{{ assetr('assets/js/dev/chart-custom.js') }}"></script>
-    <script src="{{ assetr('assets/js/dev/app.js') }}"></script>
+    <script src="{{ asset('prepharma/js/notifications/base.js') }}"></script>
+    <script src="{{ asset('prepharma/js/dev/helpers.js') }}" async></script>
+    <script src="{{ asset('prepharma/js/dev/backend-bundle.min.js') }}"></script>
+    <script src="{{ asset('prepharma/js/dev/table-treeview.js') }}"></script>
+    <script src="{{ asset('prepharma/js/dev/customizer.js') }}"></script>
+    <script async src="{{ asset('prepharma/js/dev/chart-custom.js') }}"></script>
+    <script src="{{ asset('prepharma/js/dev/app.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/fontawesome.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

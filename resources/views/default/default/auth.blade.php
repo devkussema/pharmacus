@@ -24,17 +24,17 @@
     <meta name="author" content="Augusto Kussema">
 
     <meta name="theme-color" content="#6777ef" />
-    <link rel="apple-touch-icon" href="{{ assetr('assets/images/white__logo2.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('prepharma/images/white__logo2.png') }}">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ assetr('assets/images/white__logo2.png') }}" />
-    <link rel="stylesheet" href="{{ assetr('assets/css/backend-plugin.min.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/css/backende209.css?v=1.0.0') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/vendor/%40fortawesome/fontawesome-free/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/vendor/remixicon/fonts/remixicon.css') }}">
-    <link rel="stylesheet" href="{{ assetr('assets/css/toastr.min.css') }}">
+    <link rel="shortcut icon" href="{{ asset('prepharma/images/white__logo2.png') }}" />
+    <link rel="stylesheet" href="{{ asset('prepharma/css/backend-plugin.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/css/backende209.css?v=1.0.0') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/vendor/%40fortawesome/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/vendor/remixicon/fonts/remixicon.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/css/toastr.min.css') }}">
 
     <style>
         .loader {
@@ -74,7 +74,7 @@
 
 <body class=" ">
     <div class="loader" id="loaderish" style="display: none">
-        <img src="{{ assetr('assets/images/white__logo2.png') }}" alt="Logotipo" class="logo">
+        <img src="{{ asset('prepharma/images/white__logo2.png') }}" alt="Logotipo" class="logo">
     </div>
 
     <div class="wrapper">
@@ -111,22 +111,22 @@
 
     {{-- <script src="{{ asset('assets/js/helpers.js') }}" async></script> --}}
     <!-- Backend Bundle JavaScript -->
-    <script src="{{ assetr('assets/js/backend-bundle.min.js') }}"></script>
+    <script src="{{ asset('prepharma/js/backend-bundle.min.js') }}"></script>
 
     <!-- Table Treeview JavaScript -->
-    <script src="{{ assetr('assets/js/table-treeview.js') }}"></script>
+    <script src="{{ asset('prepharma/js/table-treeview.js') }}"></script>
 
     <!-- Chart Custom JavaScript -->
-    <script src="{{ assetr('assets/js/customizer.js') }}"></script>
+    <script src="{{ asset('prepharma/js/customizer.js') }}"></script>
 
     <!-- Chart Custom JavaScript -->
-    <script async src="{{ assetr('assets/js/chart-custom.js') }}"></script>
+    <script async src="{{ asset('prepharma/js/chart-custom.js') }}"></script>
 
     <!-- app JavaScript -->
-    <script src="{{ assetr('assets/js/app.js') }}"></script>
+    <script src="{{ asset('prepharma/js/app.js') }}"></script>
 
-    <script src="{{ assetr('assets/js/form.js') }}" async></script>
-    <script src="{{ assetr('assets/js/toastr.min.js') }}"></script>
+    <script src="{{ asset('prepharma/js/form.js') }}" async></script>
+    <script src="{{ asset('prepharma/js/toastr.min.js') }}"></script>
 
     <script src="{{ asset('/sw2.js') }}"></script>
     <script>

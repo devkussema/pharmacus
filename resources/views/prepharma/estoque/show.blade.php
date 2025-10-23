@@ -50,7 +50,7 @@
                                                     <input type="text" id="search-table"
                                                         class="form-control outline-success" placeholder="Procure aqui">
                                                     <a class="btn">
-                                                        <img src="{{ assetr('assets/img/icons/search-normal.svg') }}" alt>
+                                                        <img src="{{ asset('prepharma/img/icons/search-normal.svg') }}" alt>
                                                     </a>
                                                 </form>
                                             </div>
@@ -59,7 +59,7 @@
                                                     <button
                                                         onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'"
                                                         class="btn btn-rounded btn-outline-primary ms-2">
-                                                        <img src="{{ assetr('assets/img/icons/plus.svg') }}" alt>
+                                                        <img src="{{ asset('prepharma/img/icons/plus.svg') }}" alt>
                                                         Adicionar Produto
                                                     </button>
                                                 @endif
@@ -83,14 +83,14 @@
                                 <div class="col-auto text-end float-end ms-auto download-grp">
                                     <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}" id="imprimir-pagina"
                                         target="_blank" class=" me-2">
-                                        <img src="{{ assetr('assets/img/icons/pdf-icon-01.svg') }}" alt>
+                                        <img src="{{ asset('prepharma/img/icons/pdf-icon-01.svg') }}" alt>
                                     </a>
                                     {{-- <a href="javascript:;" class=" me-2"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-02.svg') }}" alt></a>
+                                            src="{{ asset('prepharma/img/icons/pdf-icon-02.svg') }}" alt></a>
                                     <a href="javascript:;" class=" me-2"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-03.svg') }}" alt></a>
+                                            src="{{ asset('prepharma/img/icons/pdf-icon-03.svg') }}" alt></a>
                                     <a href="javascript:;" id="alert"><img
-                                            src="{{ assetr('assets/img/icons/pdf-icon-04.svg') }}" alt></a> --}}
+                                            src="{{ asset('prepharma/img/icons/pdf-icon-04.svg') }}" alt></a> --}}
                                 </div>
                             </div>
                         </div>
