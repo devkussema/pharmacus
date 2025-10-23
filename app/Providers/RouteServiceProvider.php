@@ -34,9 +34,18 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api.php'));
 
             Route::middleware('web')->group(function () {
+                // Rotas organizadas por responsabilidade
+                Route::group([], base_path('routes/auth.php'));
+                Route::group([], base_path('routes/main.php'));
+                Route::group([], base_path('routes/admin.php'));
+                Route::group([], base_path('routes/misc.php'));
+                
+                // Rotas legacy (manter compatibilidade)
                 Route::group([], base_path('routes/web.php'));
                 Route::group([], base_path('routes/mail.php'));
                 Route::group([], base_path('routes/gerente.php'));
+                
+                // Rotas específicas com prefixos
                 Route::prefix('ocorrencias')->as('ocorrencia.')->group(base_path('core/routes/ocorrencia.php'));
                 Route::prefix('preview/v3')->as('preview.')->group(base_path('routes/preview.php'));
                 Route::prefix('cp')->group(app_path('Routes/cp.php'));
