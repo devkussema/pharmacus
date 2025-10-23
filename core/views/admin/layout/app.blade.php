@@ -4,68 +4,62 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Core Admin - @yield('title', 'Painel')</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { padding-top: 56px; }
-        .sidebar { width: 220px; }
-        .content { margin-left: 220px; }
-        .card-placeholder { height: 120px; }
-        .dark-mode { background:#1e1e2f; color:#ddd }
+        :root{
+          --bg:#ffffff; --fg:#1f2937; --muted:#6b7280; --primary:#2563eb; --card:#f9fafb; --border:#e5e7eb;
+        }
+        body.dark-mode{ --bg:#0f172a; --fg:#e5e7eb; --muted:#94a3b8; --primary:#3b82f6; --card:#111827; --border:#1f2937; }
+        body{ padding-top:56px; background:var(--bg); color:var(--fg); font-family:'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; }
+        .navbar{ background:var(--primary)!important; }
+        .sidebar{ width:240px; background:var(--bg)!important; }
+        .content{ margin-left:240px; }
+        .card{ background:var(--card); border-color:var(--border); }
+        .text-muted{ color:var(--muted)!important; }
+        .card-placeholder{ height:120px; }
+        #coreOverlay{ position:fixed; inset:0; display:none; background:rgba(0,0,0,.45); z-index:1050; align-items:center; justify-content:center }
+        /* Skeleton */
+        .skeleton{ background:linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.12), rgba(0,0,0,0.06)); animation: shimmer 1.2s infinite; background-size:200% 100%; border-radius:6px; }
+        @keyframes shimmer{ 0%{background-position:-100% 0} 100%{background-position:100% 0} }
+        .sidebar-collapsed .sidebar{ display:none }
+        .sidebar-collapsed .content{ margin-left:0 }
     </style>
     @stack('styles')
+    @yield('head')
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Core Admin</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Notificações <span class="badge bg-danger">3</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Perfil</a></li>
-            </ul>
-        </div>
+    @include('core_admin::partials.header')
+
+    <div class="d-flex">
+        @include('core_admin::partials.sidebar')
+
+        <main class="content container-fluid p-4">
+            @if(session('status'))
+                <div class="alert alert-info">{{ session('status') }}</div>
+            @endif
+
+            @yield('content')
+            <footer class="mt-5">
+                <small>© {{ date('Y') }} Pharmacus — Core Admin</small>
+            </footer>
+        </main>
     </div>
- </nav>
 
-<div class="d-flex">
-    <aside class="sidebar bg-light border-end position-fixed h-100 p-3">
-        <h6>Menu</h6>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link" href="{{ route('core_admin.dashboard') }}"><i class="fa fa-chart-pie me-2"></i> Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('core_admin.reports') }}"><i class="fa fa-file-alt me-2"></i> Relatórios</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('core_admin.users') }}"><i class="fa fa-users me-2"></i> Utilizadores</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('core_admin.products') }}"><i class="fa fa-boxes me-2"></i> Produtos</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('core_admin.settings') }}"><i class="fa fa-cog me-2"></i> Configurações</a></li>
-        </ul>
-        <hr>
-        <div>
-            <button id="toggleDark" class="btn btn-sm btn-outline-secondary">Modo escuro</button>
-        </div>
-    </aside>
+        <div id="coreOverlay"><div class="text-white">@include('core_admin::components.spinner')</div></div>
 
-    <main class="content container-fluid p-4">
-        @if(session('status'))
-            <div class="alert alert-info">{{ session('status') }}</div>
-        @endif
-
-        @yield('content')
-        <footer class="mt-5">
-            <small>© {{ date('Y') }} Pharmacus — Core Admin</small>
-        </footer>
-    </main>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.getElementById('toggleDark')?.addEventListener('click', function(){
-        document.body.classList.toggle('dark-mode');
-    });
-</script>
-@stack('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+        <script src="{{ asset('assets/core_admin.js') }}"></script>
+        <script>
+            // Inicialização de tooltips
+            const tooltipTriggerList=[].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(el=>new bootstrap.Tooltip(el));
+        </script>
+    @stack('scripts')
 </body>
 </html>
