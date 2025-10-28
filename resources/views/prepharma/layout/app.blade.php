@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="{{ asset('prepharma/plugins/datatables/datatables.min.css') }}">
 
     <link rel="stylesheet" type="text/css" href="{{ asset('prepharma/css/style.css') }}">
+    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('prepharma/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('prepharma/plugins/datatables/datatables.min.js') }}"></script>
@@ -206,29 +207,29 @@
     </audio>
     <script src="{{ asset('/sw2.js') }}"></script>
 
-    <script src="{{ asset('prepharma/js/jquery-3.7.1.min.js')}}"></script>
+    {{-- <script src="https://static.pharmatina.com/prepharma/assets/js/jquery-3.7.1.min.js"></script> --}}
 
-    <script src="{{ asset('prepharma/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/js/bootstrap.bundle.min.js"></script>
 
-    <script src="{{ asset('prepharma/js/feather.min.js')}}"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/js/feather.min.js"></script>
 
-    <script src="{{ asset('prepharma/js/jquery.slimscroll.js')}}"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/js/jquery.slimscroll.js"></script>
 
-    <script src="{{ asset('prepharma/js/select2.min.js')}}"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/js/select2.min.js"></script>
 
-    <script src="{{ asset('prepharma/plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{ asset('prepharma/plugins/datatables/datatables.min.js')}}"></script>
+    {{-- <script src="https://static.pharmatina.com/prepharma/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/plugins/datatables/datatables.min.js"></script> --}}
 
-    <script src="{{ asset('prepharma/plugins/moment/moment.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
-    <script src="{{ asset('prepharma/js/bootstrap-datetimepicker.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/plugins/moment/moment.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/js/bootstrap-datetimepicker.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
 
-    <script src="{{ asset('prepharma/js/jquery.waypoints.js')}}"></script>
-    <script src="{{ asset('prepharma/js/jquery.counterup.min.js')}}"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/js/jquery.waypoints.js"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/js/jquery.counterup.min.js"></script>
 
 
-    <script src="{{ asset('prepharma/js/circle-progress.min.js')}}"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/js/circle-progress.min.js"></script>
 
-    <script src="{{ asset('prepharma/js/app.js')}}"></script>
+    <script src="https://static.pharmatina.com/prepharma/assets/js/app.js"></script>
 
     <script src="{{ asset('prepharma/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
         data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
@@ -281,11 +282,11 @@
                         audioPlayed = 0;
 
                         // Reinicia a variável audioPlayed após 2 segundos se o cursor não se mover
-                        setTimeout(function() {
+                        /* setTimeout(function() {
                             if (!mouseMoved) {
                                 audioPlayed = false; // Reinicia a variável se o cursor não se mover
                             }
-                        }, 2000);
+                        }, 2000); */
                     }
                 },
                 error: function(xhr, status, error) {
@@ -295,7 +296,7 @@
         }
         function startRequestingPedidos() {
             buscarPedidos(); // Chama a função uma vez ao carregar a página
-            setInterval(buscarPedidos, 5000); // Chama a função a cada 5 segundos (5000 milissegundos)
+            //setInterval(buscarPedidos, 5000); // Chama a função a cada 5 segundos (5000 milissegundos)
         }
         @if (Route::currentRouteName() != "pedido" and Route::currentRouteName() != "pedido.atender")
             $(document).ready(function() {

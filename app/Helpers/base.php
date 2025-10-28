@@ -130,8 +130,9 @@ function formatDataAtv($data) {
 
 function assetr($file)
 {
-    $default_url = env('APP_URL_ASSET', 'default') . $file;
-    return $default_url;
+    $default_url = env('APP_URL_ASSET') . $file;
+    
+    return "https://static.pharmatina.com/prepharma/" . $file;
 
     // Verifica se o $default_url começa com http:// ou https://
     // if (strpos($default_url, 'http://') === 0 || strpos($default_url, 'https://') === 0) {
