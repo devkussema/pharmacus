@@ -18,9 +18,26 @@ class UsersPermissionsController extends Controller
 
         // Carrega todas as permissões existentes e nome das permissões atribuídas ao utilizador
         $permissions = Permission::orderBy('name')->get();
-        $userPermissions = $user->getPermissionNames()->toArray();
 
-        return view('admin::users.edit-permissions', compact('user', 'permissions', 'userPermissions'));
+        // Permissões atribuídas directamente ao utilizador (model_has_permissions)
+        $directPermissions = $user->getDirectPermissions()->pluck('name')->toArray();
+
+        // Permissões obtidas via roles atribuídas ao utilizador
+        $roles = $user->roles()->with('permissions')->get();
+        $rolePermissions = [];
+        $permissionRolesMap = [];
+        foreach ($roles as $role) {
+            foreach ($role->permissions as $p) {
+                $rolePermissions[$p->name] = true;
+                $permissionRolesMap[$p->name][] = $role->name;
+            }
+        }
+
+        // Todas as permissões efectivas do user (direct + via roles)
+        $effectivePermissions = array_values(array_unique(array_merge($directPermissions, array_keys($rolePermissions))));
+
+        // Usar view()->file para evitar problemas de resolução de namespace em tempo de análise.
+        return view()->file(app_path('Views/users/edit-permissions.blade.php'), compact('user', 'permissions', 'directPermissions', 'rolePermissions', 'permissionRolesMap', 'effectivePermissions'));
     }
 
     /**

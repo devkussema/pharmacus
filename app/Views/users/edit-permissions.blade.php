@@ -34,8 +34,19 @@
                                     @foreach($perms as $perm)
                                         <div class="col-6 col-md-4">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $perm->name }}" id="perm_{{ $perm->id }}" {{ in_array($perm->name, $userPermissions) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="perm_{{ $perm->id }}">{{ $perm->name }}</label>
+                                                @php
+                                                    $isDirect = in_array($perm->name, $directPermissions ?? []);
+                                                    $viaRole = isset($rolePermissions[$perm->name]);
+                                                    $rolesForPerm = $permissionRolesMap[$perm->name] ?? [];
+                                                @endphp
+
+                                                <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $perm->name }}" id="perm_{{ $perm->id }}" {{ ($isDirect || $viaRole) ? 'checked' : '' }} {{ $viaRole ? 'disabled' : '' }}>
+                                                <label class="form-check-label d-flex align-items-center" for="perm_{{ $perm->id }}">
+                                                    <span class="me-2">{{ $perm->name }}</span>
+                                                    @if($viaRole)
+                                                        <small class="badge bg-secondary ms-2" title="Permissão fornecida por role(s)">{{ implode(', ', $rolesForPerm) }}</small>
+                                                    @endif
+                                                </label>
                                             </div>
                                         </div>
                                     @endforeach
