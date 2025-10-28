@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\ProdutoApiController;
 use App\Prada\Controllers\{EstoqueController, AreaHospitalarController, FarmaciaController, UsuarioController, AuthController as PradaAuthController};
-use App\Http\Controllers\{ProductHistoryController, Stock\StockController};
+use App\Http\Controllers\ProductHistoryController;
+use App\Prada\Controllers\StockController as PradaStockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,15 +40,14 @@ Route::prefix('')->namespace('App\Http\Controllers\Api\v1')->group(function () {
 });
 
 // APIs principais do sistema
-Route::prefix('api')->group(function () {
     // APIs de produtos e estoque
     Route::get('/produtos/{id}', [EstoqueController::class, 'apiEstoque']);
     Route::get('/product-history/{id}', [ProductHistoryController::class, 'index']);
     Route::delete('/produtos_/{id}', [EstoqueController::class, 'destroy']);
     
     // Status de produtos
-    Route::get('/status_produto/{id}', [StockController::class, 'status_produto']);
-    Route::post('/status_produto/update/{id}', [StockController::class, 'update_status_produto']);
+    Route::get('/status_produto/{id}', [PradaStockController::class, 'status_produto']);
+    Route::post('/status_produto/update/{id}', [PradaStockController::class, 'update_status_produto']);
 
     // APIs de áreas hospitalares
     Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);
@@ -80,7 +80,7 @@ Route::prefix('api')->group(function () {
     Route::get('/check-session', [PradaAuthController::class, 'checkSession']);
     Route::get('/check-session-expiration', [PradaAuthController::class, 'checkSessionExpiration']);
     Route::get('/check-user-status', [PradaAuthController::class, 'checkUserStatus']);
-});
+// fim APIs principais do sistema
 
 // API de alertas (requer autenticação)
 Route::prefix('alertas')->middleware('auth')->group(function () {

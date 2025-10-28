@@ -15,6 +15,8 @@ class ProductHistoryController extends Controller
      */
     public function index(Request $request, $id)
     {
+        try {
+
         $q = $request->query('q');
         $from = $request->query('from');
         $to = $request->query('to');
@@ -86,6 +88,11 @@ class ProductHistoryController extends Controller
             'data' => $data,
             'meta' => $meta
         ], 200);
+
+        } catch (\Throwable $e) {
+            logger()->error('ProductHistoryController@index error: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['error' => 'internal_server_error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     /**

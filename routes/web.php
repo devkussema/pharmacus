@@ -4,7 +4,7 @@
  * Rotas Web Legacy - Mantidas para Compatibilidade
  * 
  * @author Augusto Kussema
- * @date 2024-01-15
+ * @date 2025-10-24
  * @note Este arquivo foi refatorado. As rotas principais foram movidas para:
  *       - routes/auth.php - Autenticação
  *       - routes/main.php - Sistema principal
