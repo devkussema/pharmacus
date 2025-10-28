@@ -96,8 +96,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table border-0 custom-table comman-table datatable mb-0 table-produto"
-                                id="table-c">
+                            <table class="table border-0 custom-table comman-table datatable mb-0 table-produto" id="table-c">
                                 <thead>
                                     <tr>
                                         <th>Designação</th>
@@ -207,10 +206,46 @@
                 table.ajax.url('/api/produtos/{{ $ah->id }}').load();
             } else {
                 table = $('#table-c').DataTable({
-                    ajax: {
-                        "url": "/api/produtos/{{ $ah->id }}",
-                        "dataSrc": 'data'
-                    },
+                var table;
+
+                // Evita o alert padrão do DataTables em caso de erro Ajax
+                // e permite tratamento customizado abaixo.
+                $.fn.dataTable.ext.errMode = function (settings, helpPage, message) {
+                    console.error('DataTables error:', message);
+                    // Não disparar alert() — mantemos apenas console e opcional toast.
+                };
+
+                if ($.fn.dataTable.isDataTable('#table-c')) {
+                    table = $('#table-c').DataTable();
+                    // atualiza url caso a view seja reutilizada
+                    table.ajax.url('/api/produtos/{{ $ah->id }}').load();
+                } else {
+                    table = $('#table-c').DataTable({
+                        // usa ajax com tratamento de dataSrc para evitar exceções quando o servidor retorna 500/HTML
+                        ajax: {
+                            url: '/api/produtos/{{ $ah->id }}',
+                            dataSrc: function (json) {
+                                // Se a resposta não for a esperada, retorna array vazio para evitar erro 'mData'
+                                if (!json) {
+                                    console.error('Resposta vazia do endpoint /api/produtos/{{ $ah->id }}');
+                                    return [];
+                                }
+                                // Se o servidor já retorna um array direto
+                                if (Array.isArray(json)) {
+                                    return json;
+                                }
+                                // DataTables server-side usual: { data: [...] }
+                                if (json.data && Array.isArray(json.data)) {
+                                    return json.data;
+                                }
+                                console.error('Resposta inesperada do endpoint /api/produtos/{{ $ah->id }}', json);
+                                return [];
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Erro Ajax DataTable /api/produtos/{{ $ah->id }}:', status, error);
+                                // aqui podemos disparar um toast mais amigável ao usuário
+                            }
+                        },
                 "columns": [{
                         "data": "produto.designacao"
                     },
@@ -896,6 +931,21 @@
             $('#DarBaixa #formBaixaEstoque #descritivo_').prop("disabled", true);
             $('#DarBaixa').modal('show');
         }
+
+        // Inicializar Select2 dentro da modal ao ser exibida (evita problemas de z-index e inicialização prematura)
+        $('#DarBaixa').on('shown.bs.modal', function() {
+            var $sel = $(this).find('select[name="area_hospitalar_id"]');
+            if ($sel.length) {
+                try {
+                    if (!$sel.hasClass('select2-hidden-accessible')) {
+                        $sel.select2({ width: '100%', dropdownParent: $(this) });
+                    }
+                } catch (e) {
+                    // se select2 não estiver disponível, ignorar silenciosamente
+                    console.warn('Select2 não disponível para o select da modal DarBaixa');
+                }
+            }
+        });
 
         document.querySelector('form#formProdutoEstoque').addEventListener('submit', function(e) {
             e.preventDefault(); // Evita o comportamento padrão do formulário
