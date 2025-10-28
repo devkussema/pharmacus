@@ -130,6 +130,11 @@
                                     <h5 class="text-muted">Nenhuma atividade encontrada</h5>
                                     <p class="text-muted">Tente ajustar os filtros de pesquisa</p>
                                 </div>
+
+                                <!-- Load more -->
+                                <div class="text-center mt-3" style="display:none;" id="loadMoreWrap">
+                                    <button id="loadMoreBtn" class="btn btn-outline-primary" style="display:none;">Carregar mais</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -153,12 +158,12 @@
             // Limit filter
             $('#limitFilter').on('change', function() {
                 // prefer AJAX reload when switching limit
-                loadCurrentType();
+                loadCurrentType(1);
             });
 
             // Type filter (Auth / Atividades)
             $('#typeFilter').on('change', function() {
-                loadCurrentType();
+                loadCurrentType(1);
             });
 
             // Export functionality
@@ -257,60 +262,53 @@
                 }
             }
 
-            // Carrega atividades de acordo com o tipo selecionado.
-            // Tenta buscar via endpoint JSON (/atividades/json?type=auth|activity&limit=XX).
-            // Se falhar, usa o filtro local no DOM como fallback.
-            async function loadCurrentType() {
+            // Carrega atividades de acordo com o tipo selecionado (com paginação ajax).
+            // page = número da página, default 1
+            async function loadCurrentType(page = 1) {
                 setLoading(true);
-                const type = $('#typeFilter').val() || 'all';
+                const type = $('#typeFilter').val() || 'activity';
                 const limit = $('#limitFilter').val() || 25;
 
-                // Se "all" ou "activity", podemos reutilizar o HTML atual
-                if (type === 'all' || type === 'activity') {
-                    // Request para servidor caso exista endpoint
-                    try {
-                        const res = await fetch(`/atividades/json?type=${type}&limit=${limit}`, { headers: { 'Accept': 'application/json' }});
-                        if (res.ok) {
-                            const json = await res.json();
-                            renderActivities(json.items || json);
-                            setLoading(false);
-                            return;
-                        }
-                    } catch (e) {
-                        // ignore and fallback to DOM filter
+                const url = `/atividades/json?type=${type}&limit=${limit}&page=${page}`;
+
+                try {
+                    const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
+                    if (!res.ok) throw new Error('no json');
+                    const json = await res.json();
+                    const items = json.items || [];
+                    const meta = json.meta || null;
+                    // append se page > 1
+                    renderActivities(items, type === 'auth' ? 'auth' : 'activity', page > 1);
+
+                    // gerenciar botão Load More
+                    if (meta && meta.current_page < meta.last_page) {
+                        $('#loadMoreBtn').data('next-page', meta.current_page + 1).show();
+                        $('#loadMoreWrap').show();
+                    } else {
+                        $('#loadMoreBtn').hide();
+                        $('#loadMoreWrap').hide();
                     }
 
+                    setLoading(false);
+                    return;
+                } catch (e) {
                     // fallback: re-show existing items and apply local filters
+                    console.warn('API /atividades/json falhou, usando fallback DOM', e);
                     $('.activity-item').show();
                     filterActivities();
                     setLoading(false);
                     return;
                 }
-
-                // type === 'auth' -> fetch auth logs
-                try {
-                    const res = await fetch(`/atividades/json?type=auth&limit=${limit}`, { headers: { 'Accept': 'application/json' }});
-                    if (!res.ok) throw new Error('no json');
-                    const json = await res.json();
-                    renderActivities(json.items || json, 'auth');
-                    setLoading(false);
-                    return;
-                } catch (e) {
-                    // if endpoint not available, show message
-                    $('#activityList').empty();
-                    $('#noResults').show().find('h5').text('Nenhuma atividade de autenticação disponível (endpoint faltando)');
-                } finally {
-                    setLoading(false);
-                }
             }
 
             // Renderiza um array de items no #activityList
-            function renderActivities(items, mode = 'activity') {
+            // append = true -> adiciona ao final (paginacao)
+            function renderActivities(items, mode = 'activity', append = false) {
                 $('#noResults').hide();
                 const $list = $('#activityList');
-                $list.empty();
+                if (!append) $list.empty();
                 if (!items || items.length === 0) {
-                    $('#noResults').show();
+                    if (!append) $('#noResults').show();
                     return;
                 }
 
@@ -500,6 +498,15 @@
                         $btn.prop('disabled', false).html(originalHtml);
                     });
             });
+
+            // Load more handler
+            $('#loadMoreBtn').on('click', function () {
+                const next = $(this).data('next-page') || 1;
+                loadCurrentType(next);
+            });
+
+            // Carrega a primeira página ao iniciar
+            loadCurrentType(1);
 
             // copiar IP com feedback visual
             $(document).on('click', '#copy_ip', function (e) {
