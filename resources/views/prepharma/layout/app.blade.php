@@ -230,7 +230,7 @@
 
     <script src="{{ asset('prepharma/js/app.js')}}"></script>
 
-    <script src="{{ asset('prepharma/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
+    <script src="{{ asset('prepharma/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
         data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
     <script>
         // Loader Control
