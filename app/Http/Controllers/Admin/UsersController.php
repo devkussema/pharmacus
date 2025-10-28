@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use App\Models\GerenteFarmacia;
 
 /**
  * Controller resource para gerir Users no painel Admin.
@@ -149,7 +150,8 @@ class UsersController extends Controller
     public function show(string $id)
     {
         $user = User::findOrFail($id);
-        return view('admin::users.show', compact('user'));
+        // Usar view()->file para evitar problemas de resolução de namespace em análise estática
+        return view()->file(app_path('Views/users/show.blade.php'), compact('user'));
     }
 
     /**
@@ -226,5 +228,43 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
     return redirect()->route('cp.users.index')->with('success', 'Utilizador removido.');
+    }
+
+    /**
+     * Sincroniza o utilizador como gerente de uma farmácia específica.
+     * Cria registo em gerente_farmacias se não existir.
+     */
+    public function syncWithFarmacia(\Illuminate\Http\Request $request, string $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Farmacia fixa (fornecida pelo pedido):
+        $farmaciaId = '11a2d86a-c885-44e4-9162-14215ef75b95';
+
+        // contato opcional (se enviado via AJAX), fallback para telefone do user
+        $contato = $request->input('contato') ?? $user->telefone ?? null;
+
+        // Se já existir, apenas redireciona
+        $exists = GerenteFarmacia::where('user_id', $user->id)->where('farmacia_id', $farmaciaId)->first();
+        if ($exists) {
+            if ($request->wantsJson()) {
+                return response()->json(['message' => 'Utilizador já está sincronizado com a farmácia como gerente.'], 200);
+            }
+            return redirect()->back()->with('info', 'Utilizador já está sincronizado com a farmácia como gerente.');
+        }
+
+        // Criar entrada
+        $gf = GerenteFarmacia::create([
+            'user_id' => $user->id,
+            'farmacia_id' => $farmaciaId,
+            'cargo' => 'Gerente',
+            'contato' => $contato,
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Utilizador sincronizado com a farmácia com sucesso.', 'gerente_id' => $gf->id], 201);
+        }
+
+        return redirect()->back()->with('success', 'Utilizador sincronizado com a farmácia com sucesso.');
     }
 }

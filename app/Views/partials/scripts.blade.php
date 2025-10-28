@@ -19,3 +19,7 @@
 <script src="{{ asset('prepharma/js/app.js') }}" type="be6558ccd95e077c3366a663-text/javascript"></script>
 <script src="{{ asset('prepharma/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
     data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
+
+{{-- Espaço para scripts específicos de cada view --}}
+@yield('scripts')
+@yield('scripts_bottom')

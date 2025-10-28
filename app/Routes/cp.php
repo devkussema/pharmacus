@@ -29,6 +29,9 @@ Route::resource('users', UsersController::class)->names([
 Route::get('users/{user}/permissions', [UsersPermissionsController::class, 'edit'])->name('cp.users.permissions.edit');
 Route::put('users/{user}/permissions', [UsersPermissionsController::class, 'update'])->name('cp.users.permissions.update');
 
+// Sync user com uma farmácia específica (cria GerenteFarmacia se não existir)
+Route::post('users/{user}/sync-farmacia', [UsersController::class, 'syncWithFarmacia'])->name('cp.users.sync.farmacia');
+
 Route::resource('area_hospitalar', AreaHospitalar::class)->names([
     'index' => 'cp.area_hospitalar.index',
     'create' => 'cp.area_hospitalar.create',

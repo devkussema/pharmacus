@@ -123,8 +123,13 @@
                         </div>
                         <div class="col-12">
                             <div class="doctor-submit text-end">
-                                <button type="submit" class="btn btn-primary submit-form me-2">Salvar</button>
-                                <a href="{{ route('cp.users.index') }}" class="btn btn-secondary">Cancelar</a>
+                                <div class="d-flex justify-content-end gap-2 align-items-center">
+                                    <button type="button" id="js-sync-farm" class="btn btn-outline-warning">Sync com Farmácia</button>
+
+                                    <button type="submit" class="btn btn-primary submit-form">Salvar</button>
+
+                                    <a href="{{ route('cp.users.index') }}" class="btn btn-secondary">Cancelar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -157,6 +162,56 @@
                         preview.src = ev.target.result;
                     };
                     reader.readAsDataURL(file);
+                });
+            });
+        })();
+    </script>
+@endsection
+
+@section('scripts_bottom')
+    <script>
+        (function(){
+            const btn = document.getElementById('js-sync-farm');
+            if (!btn) return;
+
+            btn.addEventListener('click', function(){
+                if (!confirm('Deseja sincronizar este utilizador como Gerente da farmácia?')) return;
+                btn.setAttribute('disabled', 'disabled');
+                const telefoneInput = document.querySelector('input[name="telefone"]');
+                const contato = telefoneInput ? telefoneInput.value : '';
+                const url = '{{ route("cp.users.sync.farmacia", $user->id) }}';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ contato: contato })
+                }).then(res => res.json().then(body => ({ status: res.status, body })))
+                .then(({ status, body }) => {
+                    if (status >= 200 && status < 300) {
+                        // inserir alerta na página
+                        const wrapper = document.createElement('div');
+                        wrapper.innerHTML = `<div class="alert alert-success">${body.message ?? 'Sincronizado com sucesso.'}</div>`;
+                        const container = document.querySelector('.card-body');
+                        if (container) container.prepend(wrapper);
+                        btn.setAttribute('disabled', 'disabled');
+                    } else {
+                        const wrapper = document.createElement('div');
+                        wrapper.innerHTML = `<div class="alert alert-danger">${body.message ?? 'Erro ao sincronizar.'}</div>`;
+                        const container = document.querySelector('.card-body');
+                        if (container) container.prepend(wrapper);
+                        btn.removeAttribute('disabled');
+                    }
+                }).catch(err => {
+                    console.error(err);
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = `<div class="alert alert-danger">Erro de rede ao sincronizar.</div>`;
+                    const container = document.querySelector('.card-body');
+                    if (container) container.prepend(wrapper);
+                    btn.removeAttribute('disabled');
                 });
             });
         })();
