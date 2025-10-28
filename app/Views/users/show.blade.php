@@ -29,7 +29,8 @@
 
                             <div>
                                 <a href="{{ route('cp.users.edit', $user->id) }}" class="btn btn-sm btn-primary w-100 mb-1">Editar</a>
-                                <a href="{{ route('cp.users.index') }}" class="btn btn-sm btn-outline-secondary w-100">Voltar</a>
+                                <a href="{{ route('cp.users.index') }}" class="btn btn-sm btn-outline-secondary w-100 mb-1">Voltar</a>
+                                <a href="{{ route('cp.users.permissions.edit', $user->id) }}" class="btn btn-sm btn-warning w-100">Editar permissões</a>
                             </div>
                         </div>
 
@@ -55,55 +56,45 @@
 
                             <hr>
 
-                            {{-- Tabs: Perfil / Atividades / Permissões --}}
-                            <ul class="nav nav-tabs" id="userTabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="perfil-tab" data-bs-toggle="tab" data-bs-target="#perfil" type="button" role="tab" aria-controls="perfil" aria-selected="true">Perfil</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="atividades-tab" data-bs-toggle="tab" data-bs-target="#atividades" type="button" role="tab" aria-controls="atividades" aria-selected="false">Atividades</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="permissoes-tab" data-bs-toggle="tab" data-bs-target="#permissoes" type="button" role="tab" aria-controls="permissoes" aria-selected="false">Permissões</button>
-                                </li>
-                            </ul>
+                            <div class="pt-3">
+                                <h5>Perfil</h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-4">Telefone</dt>
+                                            <dd class="col-sm-8">{{ $user->telefone ?? '—' }}</dd>
 
-                            <div class="tab-content pt-3" id="userTabsContent">
-                                <div class="tab-pane fade show active" id="perfil" role="tabpanel" aria-labelledby="perfil-tab">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <dl class="row mb-0">
-                                                <dt class="col-sm-4">Telefone</dt>
-                                                <dd class="col-sm-8">{{ $user->telefone ?? '—' }}</dd>
+                                            <dt class="col-sm-4">Telefone (sec.)</dt>
+                                            <dd class="col-sm-8">{{ $user->telefone_sec ?? '—' }}</dd>
 
-                                                <dt class="col-sm-4">Telefone (sec.)</dt>
-                                                <dd class="col-sm-8">{{ $user->telefone_sec ?? '—' }}</dd>
+                                            <dt class="col-sm-4">Grupo</dt>
+                                            <dd class="col-sm-8">{{ optional($user->grupo)->nome ?? '—' }}</dd>
+                                        </dl>
+                                    </div>
 
-                                                <dt class="col-sm-4">Grupo</dt>
-                                                <dd class="col-sm-8">{{ optional($user->grupo)->nome ?? '—' }}</dd>
-                                            </dl>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <h6>Observações</h6>
-                                            <p class="text-muted">{{ $user->observacoes ?? '—' }}</p>
-                                        </div>
+                                    <div class="col-md-6">
+                                        <h6>Observações</h6>
+                                        <p class="text-muted">{{ $user->observacoes ?? '—' }}</p>
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="atividades" role="tabpanel" aria-labelledby="atividades-tab">
-                                    <div id="js-user-activities">
-                                        <p class="text-muted">Carregando atividades...</p>
+                                <hr>
+
+                                <h5>Atividades</h5>
+                                <div id="js-user-activities" class="mb-3">
+                                    <p class="text-muted">Clique em carregar para buscar actividades recentes.</p>
+                                    <div>
+                                        <button id="js-load-activities" class="btn btn-sm btn-outline-primary">Carregar actividades</button>
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="permissoes" role="tabpanel" aria-labelledby="permissoes-tab">
-                                    <h6>Permissões</h6>
-                                    <ul>
-                                        <li>Role: <strong>{{ $user->role ?? '—' }}</strong></li>
-                                        <li>Pode cadastrar produtos: <strong>{{ !empty($user->pode_cadastrar_produtos) ? 'Sim' : 'Não' }}</strong></li>
-                                    </ul>
-                                </div>
+                                <hr>
+
+                                <h5>Permissões</h5>
+                                <ul>
+                                    <li>Role: <strong>{{ $user->role ?? '—' }}</strong></li>
+                                    <li>Pode cadastrar produtos: <strong>{{ !empty($user->pode_cadastrar_produtos) ? 'Sim' : 'Não' }}</strong></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -116,46 +107,53 @@
 @section('scripts')
     <script>
         (function () {
-            // carregar atividades via fetch quando a aba for ativada
-            const ativTab = document.getElementById('atividades-tab');
+            const btn = document.getElementById('js-load-activities');
             const activitiesContainer = document.getElementById('js-user-activities');
             let loaded = false;
 
-            ativTab.addEventListener('shown.bs.tab', function () {
+            function renderActivities(items) {
+                if (!items || items.length === 0) {
+                    activitiesContainer.innerHTML = '<p class="text-muted">Sem atividades registadas.</p>';
+                    return;
+                }
+
+                const list = document.createElement('div');
+                list.className = 'list-group';
+
+                items.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'list-group-item';
+                    el.innerHTML = `
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${item.tipo ?? 'Atividade'}</h6>
+                            <small class="text-muted">${item.created_at ?? ''}</small>
+                        </div>
+                        <p class="mb-1 text-truncate">${item.descricao ?? (item.meta? JSON.stringify(item.meta) : '')}</p>
+                    `;
+                    list.appendChild(el);
+                });
+
+                activitiesContainer.innerHTML = '';
+                activitiesContainer.appendChild(list);
+            }
+
+            btn.addEventListener('click', function () {
                 if (loaded) return;
                 loaded = true;
+                btn.setAttribute('disabled', 'disabled');
                 const userId = '{{ $user->id }}';
                 const url = '/atividades/json?user_id=' + encodeURIComponent(userId) + '&per_page=10';
 
                 fetch(url, { headers: { 'Accept': 'application/json' } })
                     .then(res => res.json())
                     .then(data => {
-                        if (!data.items || data.items.length === 0) {
-                            activitiesContainer.innerHTML = '<p class="text-muted">Sem atividades registadas.</p>';
-                            return;
-                        }
-
-                        const list = document.createElement('div');
-                        list.className = 'list-group';
-
-                        data.items.forEach(item => {
-                            const el = document.createElement('div');
-                            el.className = 'list-group-item';
-                            el.innerHTML = `
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">${item.tipo ?? 'Atividade'}</h6>
-                                    <small class="text-muted">${item.created_at ?? ''}</small>
-                                </div>
-                                <p class="mb-1 text-truncate">${item.descricao ?? (item.meta? JSON.stringify(item.meta) : '')}</p>
-                            `;
-                            list.appendChild(el);
-                        });
-
-                        activitiesContainer.innerHTML = '';
-                        activitiesContainer.appendChild(list);
+                        renderActivities(data.items || []);
                     })
                     .catch(() => {
                         activitiesContainer.innerHTML = '<p class="text-danger">Erro ao carregar atividades.</p>';
+                    })
+                    .finally(() => {
+                        btn.removeAttribute('disabled');
                     });
             });
         })();

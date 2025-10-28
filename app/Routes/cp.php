@@ -9,6 +9,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\UsersPermissionsController;
 use App\Http\Controllers\Admin\AreaHospitalar;
 
 Route::resource('dashboard', DashboardController::class)->only(['index'])->names(['index' => 'cp.admin.index']);
@@ -23,6 +24,10 @@ Route::resource('users', UsersController::class)->names([
     'update' => 'cp.users.update',
     'destroy' => 'cp.users.destroy',
 ]);
+
+// Rotas para editar permissões de um utilizador (visualizar/actualizar)
+Route::get('users/{user}/permissions', [UsersPermissionsController::class, 'edit'])->name('cp.users.permissions.edit');
+Route::put('users/{user}/permissions', [UsersPermissionsController::class, 'update'])->name('cp.users.permissions.update');
 
 Route::resource('area_hospitalar', AreaHospitalar::class)->names([
     'index' => 'cp.area_hospitalar.index',
