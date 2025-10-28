@@ -177,6 +177,14 @@
                                         @endif
                                     @endforeach
                                 </select>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" value="1" id="log_estoque" name="log_estoque">
+                                    <label class="form-check-label" for="log_estoque">
+                                        Guardar Estoque
+                                    </label>
+                                    <div class="small text-muted">Ao marcar, será registado um log das operações de estoque ligadas a esta área.</div>
+                                </div>
+
                                 <input type="hidden" name="farmacia_id" value="{{ $farmacia_->id }}">
                             </div>
                             {{-- <div class="pb-3">
