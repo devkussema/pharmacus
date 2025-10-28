@@ -199,133 +199,94 @@
 
             $('.solicitar-produto .js-example-basic-multiple').select2();
 
-            var table;
-            if ($.fn.dataTable.isDataTable('#table-c')) {
-                table = $('#table-c').DataTable();
-                // atualiza url caso a view seja reutilizada
-                table.ajax.url('/api/produtos/{{ $ah->id }}').load();
-            } else {
-                table = $('#table-c').DataTable({
-                var table;
+            // Consolidated DataTable handling for '#table-c'
+            //  - define errMode early so DataTables won't show native alerts
+            //  - provide a single initializer and expose `table` variable for later use
+            $.fn.dataTable.ext.errMode = function (settings, helpPage, message) {
+                console.error('DataTables error:', message);
+                // evitar alert() nativo do DataTables
+            };
 
-                // Evita o alert padrão do DataTables em caso de erro Ajax
-                // e permite tratamento customizado abaixo.
-                $.fn.dataTable.ext.errMode = function (settings, helpPage, message) {
-                    console.error('DataTables error:', message);
-                    // Não disparar alert() — mantemos apenas console e opcional toast.
-                };
+            var table = null;
 
+            function initTable() {
                 if ($.fn.dataTable.isDataTable('#table-c')) {
                     table = $('#table-c').DataTable();
                     // atualiza url caso a view seja reutilizada
                     table.ajax.url('/api/produtos/{{ $ah->id }}').load();
-                } else {
-                    table = $('#table-c').DataTable({
-                        // usa ajax com tratamento de dataSrc para evitar exceções quando o servidor retorna 500/HTML
-                        ajax: {
-                            url: '/api/produtos/{{ $ah->id }}',
-                            dataSrc: function (json) {
-                                // Se a resposta não for a esperada, retorna array vazio para evitar erro 'mData'
-                                if (!json) {
-                                    console.error('Resposta vazia do endpoint /api/produtos/{{ $ah->id }}');
-                                    return [];
-                                }
-                                // Se o servidor já retorna um array direto
-                                if (Array.isArray(json)) {
-                                    return json;
-                                }
-                                // DataTables server-side usual: { data: [...] }
-                                if (json.data && Array.isArray(json.data)) {
-                                    return json.data;
-                                }
-                                console.error('Resposta inesperada do endpoint /api/produtos/{{ $ah->id }}', json);
+                    return;
+                }
+
+                table = $('#table-c').DataTable({
+                    // usa ajax com tratamento de dataSrc para evitar exceções quando o servidor retorna 500/HTML
+                    ajax: {
+                        url: '/api/produtos/{{ $ah->id }}',
+                        dataSrc: function (json) {
+                            if (!json) {
+                                console.error('Resposta vazia do endpoint /api/produtos/{{ $ah->id }}');
                                 return [];
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Erro Ajax DataTable /api/produtos/{{ $ah->id }}:', status, error);
-                                // aqui podemos disparar um toast mais amigável ao usuário
+                            }
+                            if (Array.isArray(json)) return json;
+                            if (json.data && Array.isArray(json.data)) return json.data;
+                            console.error('Resposta inesperada do endpoint /api/produtos/{{ $ah->id }}', json);
+                            return [];
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Erro Ajax DataTable /api/produtos/{{ $ah->id }}:', status, error);
+                        }
+                    },
+                    columns: [{
+                            data: "produto.designacao"
+                        },
+                        { data: "produto.dosagem" },
+                        { data: "produto.forma" },
+                        {
+                            data: function(row) {
+                                let saldo = row.produto?.saldo?.qtd ?? 0;
+                                let statusStock = row.produto?.status_stock;
+                                if (statusStock) {
+                                    if (saldo <= (statusStock.critico <= 0))
+                                        return '<span class="badge bg-dark">Estoque 0</span>';
+                                    if (saldo <= (statusStock.critico ?? -1))
+                                        return '<span class="badge bg-danger">Crítico</span>';
+                                    if (saldo <= (statusStock.minimo ?? -1))
+                                        return '<span class="badge bg-warning">Mínimo</span>';
+                                    if (saldo <= (statusStock.medio ?? -1))
+                                        return '<span class="badge bg-info">Médio</span>';
+                                    if (saldo <= (statusStock.maximo ?? -1))
+                                        return '<span class="badge bg-success">Máximo</span>';
+                                    if (saldo >= (statusStock.maximo ?? -1))
+                                        return '<span class="badge bg-success">Estável</span>';
+                                }
+                                return '<span class="badge bg-secondary">Não Atribuido</span>';
                             }
                         },
-                "columns": [{
-                        "data": "produto.designacao"
-                    },
-                    {
-                        "data": "produto.dosagem"
-                    },
-                    {
-                        "data": "produto.forma"
-                    },
-                    {
-                        "data": function(row) {
-                            let saldo = row.produto?.saldo?.qtd ?? 0;
-                            let statusStock = row.produto?.status_stock; // Pode ser null
-
-                            if (statusStock) {
-                                if (saldo <= (statusStock.critico <= 0))
-                                    return '<span class="badge bg-dark">Estoque 0</span>';
-                                if (saldo <= (statusStock.critico ?? -1))
-                                    return '<span class="badge bg-danger">Crítico</span>';
-                                if (saldo <= (statusStock.minimo ?? -1))
-                                    return '<span class="badge bg-warning">Mínimo</span>';
-                                if (saldo <= (statusStock.medio ?? -1))
-                                    return '<span class="badge bg-info">Médio</span>';
-                                if (saldo <= (statusStock.maximo ?? -1))
-                                    return '<span class="badge bg-success">Máximo</span>';
-                                if (saldo >= (statusStock.maximo ?? -1))
-                                    return '<span class="badge bg-success">Estável</span>';
+                        {
+                            data: function(row) {
+                                return row.produto?.prateleira?.nome ? getCaixa(row.produto.prateleira.nome) : '--';
                             }
-
-                            return '<span class="badge bg-secondary">Não Atribuido</span>';
-                        }
-                    },
-                    {
-                        "data": function(row) {
-                            return row.produto?.prateleira?.nome ? getCaixa(row.produto.prateleira
-                                .nome) : '--';
-                        }
-                    }, // Prateleira
-                    {
-                        "data": "produto.num_lote"
-                    }, // Lote
-                    {
-                        "data": function(row) {
-                            return getCaixa(row.produto.descritivo);
-                        }
-                    }, // Qtd. Caixa
-                    {
-                        "data": "produto.saldo.qtd"
-                    }, // Qtd. Unit.
-                    {
-                        "data": function(row) {
-                            return formatDate(row.created_at);
-                        }
-                    }, // Inserido em
-                    {
-                        "data": function(row) {
-                            return formatDate(row.produto.data_expiracao);
-                        }
-                    }, // Data Expiração
-                    {
-                        "data": null,
-                        "defaultContent": ""
-                    } // Coluna vazia para ações
-                ],
-                "language": {
-                    "search": "Filtrar resultados:",
-                    "zeroRecords": "Nenhum resultado encontrado",
-                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
-                    "infoFiltered": "(filtrado de _MAX_ entradas no total)",
-                    "lengthMenu": "Mostrar _MENU_ entradas",
-                    "paginate": {
-                        "first": "Primeiro",
-                        "last": "Último",
-                        "next": "Próximo",
-                        "previous": "Anterior"
+                        },
+                        { data: "produto.num_lote" },
+                        { data: function(row) { return getCaixa(row.produto.descritivo); } },
+                        { data: "produto.saldo.qtd" },
+                        { data: function(row) { return formatDate(row.created_at); } },
+                        { data: function(row) { return formatDate(row.produto.data_expiracao); } },
+                        { data: null, defaultContent: "" }
+                    ],
+                    language: {
+                        search: "Filtrar resultados:",
+                        zeroRecords: "Nenhum resultado encontrado",
+                        info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                        infoEmpty: "Mostrando 0 a 0 de 0 entradas",
+                        infoFiltered: "(filtrado de _MAX_ entradas no total)",
+                        lengthMenu: "Mostrar _MENU_ entradas",
+                        paginate: { first: "Primeiro", last: "Último", next: "Próximo", previous: "Anterior" }
                     }
-                }
                 });
             }
+
+            // Inicializa tabela agora
+            initTable();
 
             // Função para adicionar linha extra manualmente após carregar os dados
             $('#table-c tbody').on('click', 'tr', function() {
