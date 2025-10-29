@@ -563,55 +563,120 @@
         .stock-update-widget .close-btn:hover { opacity: .9 }
     </style>
 
-    <div id="stockUpdateWidget" class="stock-update-widget" aria-hidden="true">
-        <div class="icon pulse"><i class="fa-solid fa-box-open"></i></div>
-        <div class="text">
-            <div class="title">A atualizar estoque</div>
-            <div class="msg" id="stockUpdateMsg">Pode demorar devido à internet lenta. Aguarde...</div>
+    <div id="stockUpdateWidget" class="stock-update-widget" aria-hidden="true" role="status" aria-live="polite">
+        <div style="display:flex; gap:10px; align-items:center;">
+            <div class="icon pulse"><i class="fa-solid fa-box-open fa-fw spinner-icon"></i></div>
+            <div class="text">
+                <div class="title">A atualizar estoque</div>
+                <div class="msg" id="stockUpdateMsg">A iniciar atualização...</div>
+            </div>
         </div>
-        <button class="close-btn" id="stockUpdateClose" title="Fechar" aria-label="Fechar">&times;</button>
+        <div id="stockUpdateLogs" style="margin-top:8px; width:100%; max-height:120px; overflow:auto; font-size:12px; opacity:.95; color:rgba(255,255,255,0.95); margin-left:46px; display:none;">
+            <!-- logs appended aqui via JS -->
+        </div>
     </div>
 
     <script>
         (function () {
             var widget = document.getElementById('stockUpdateWidget');
             var msgEl = document.getElementById('stockUpdateMsg');
-            var closeBtn = document.getElementById('stockUpdateClose');
+            var logsEl = document.getElementById('stockUpdateLogs');
 
-            // API global para controlar o widget
+            // mensagens cicláveis (padrão) para animação
+            var rotatingMessages = [
+                'Pode demorar devido à internet lenta. Aguarde...',
+                'A processar registros de estoque — isso pode levar alguns minutos...',
+                'Sincronizando alterações pendentes...',
+                'Verificando consistência dos lotes e saldos...'
+            ];
+            var rotateIndex = 0;
+            var rotateTimer = null;
+
+            // API global para controlar o widget e logs
             window.Pharmatina = window.Pharmatina || {};
             window.Pharmatina.showStockUpdate = function (message, options) {
                 if (message) msgEl.textContent = message;
                 widget.classList.add('show');
                 widget.setAttribute('aria-hidden', 'false');
-                // auto-hide se options.timeout definido (ms)
-                if (options && options.timeout) {
-                    setTimeout(function () { window.Pharmatina.hideStockUpdate(); }, options.timeout);
-                }
+                // mostra logs se tiver conteúdo
+                if (logsEl.children.length > 0) logsEl.style.display = 'block';
+                // iniciar rotação de mensagens
+                startRotation();
             };
             window.Pharmatina.hideStockUpdate = function () {
                 widget.classList.remove('show');
                 widget.setAttribute('aria-hidden', 'true');
+                stopRotation();
             };
             window.Pharmatina.setStockUpdateMessage = function (message) {
                 msgEl.textContent = message || '';
             };
+            window.Pharmatina.addStockLog = function (text) {
+                if (!text) return;
+                var line = document.createElement('div');
+                line.textContent = (new Date()).toLocaleTimeString() + ' — ' + text;
+                logsEl.appendChild(line);
+                logsEl.style.display = 'block';
+                // manter scroll no final
+                logsEl.scrollTop = logsEl.scrollHeight;
+            };
+            window.Pharmatina.clearStockLogs = function () {
+                logsEl.innerHTML = '';
+                logsEl.style.display = 'none';
+            };
 
-            closeBtn.addEventListener('click', function () { window.Pharmatina.hideStockUpdate(); });
-
-            // Exemplo: manter visível se uma requisição AJAX global estiver ativa
-            // (opcional) hook jQuery global ajaxStart/ajaxStop
-            if (window.jQuery) {
-                var $ = window.jQuery;
-                $(document).on('ajaxStart', function () {
-                    // detectar se a rota atual é de estoque (opcional)
-                    window.Pharmatina.showStockUpdate('A actualizar estoque... isto pode demorar');
-                });
-                $(document).on('ajaxStop', function () {
-                    // pequena latência antes de esconder
-                    setTimeout(function () { window.Pharmatina.hideStockUpdate(); }, 700);
-                });
+            function startRotation() {
+                stopRotation();
+                rotateTimer = setInterval(function () {
+                    rotateIndex = (rotateIndex + 1) % rotatingMessages.length;
+                    // anima fade
+                    msgEl.style.opacity = '0';
+                    setTimeout(function () {
+                        msgEl.textContent = rotatingMessages[rotateIndex];
+                        msgEl.style.transition = 'opacity .35s ease';
+                        msgEl.style.opacity = '1';
+                    }, 300);
+                }, 4000);
             }
+            function stopRotation() {
+                if (rotateTimer) { clearInterval(rotateTimer); rotateTimer = null; }
+            }
+
+            // Atalho global: Ctrl + Alt + X (apenas Ctrl, não Cmd) para mostrar/ocultar o widget
+            document.addEventListener('keydown', function (e) {
+                try {
+                    var ctrl = e.ctrlKey && !e.metaKey; // garantir Ctrl, não Cmd
+                    if (ctrl && e.altKey && (e.key === 'x' || e.key === 'X')) {
+                        e.preventDefault();
+                        if (widget.classList.contains('show')) {
+                            window.Pharmatina.hideStockUpdate();
+                        } else {
+                            window.Pharmatina.showStockUpdate(rotatingMessages[rotateIndex]);
+                            widget.classList.add('flash');
+                            setTimeout(function () { widget.classList.remove('flash'); }, 800);
+                        }
+                    }
+                } catch (err) { /* silencioso */ }
+            });
+
+            // efeito spinner: alterna classe para girar o icon
+            var spinnerIcon = widget.querySelector('.spinner-icon');
+            if (spinnerIcon) {
+                spinnerIcon.style.transition = 'transform .8s linear';
+                // girar continuamente quando visível
+                var spinInterval = setInterval(function () {
+                    if (widget.classList.contains('show')) {
+                        spinnerIcon.style.transform = 'rotate(360deg)';
+                        setTimeout(function () { spinnerIcon.style.transform = 'rotate(0deg)'; }, 800);
+                    }
+                }, 900);
+            }
+
+            // parar rotação quando navegar/fechar
+            window.addEventListener('beforeunload', function () { stopRotation(); });
+
+            // expor variáveis de teste
+            window.Pharmatina._stockRotate = rotatingMessages;
         })();
     </script>
 </body>
