@@ -306,7 +306,8 @@ class EstoqueController extends Controller
 
     public function apiEstoque(Request $request, $id)
     {
-        $farmacia_id = $this->currentUser()->isFarmacia->farmacia->id ?? $this->currentUser()->farmacia->farmacia->id;
+        //$farmacia_id = $this->currentUser()->isFarmacia->farmacia->id ?? $this->currentUser()->farmacia->farmacia->id;
+        $farmacia_id = "11a2d86a-c885-44e4-9162-14215ef75b95";
         $produtos = Estoque::where('area_hospitalar_id', $id)
             ->where('farmacia_id', $farmacia_id)
             ->with('produto.prateleira')
