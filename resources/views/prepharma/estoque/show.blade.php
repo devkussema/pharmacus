@@ -391,8 +391,7 @@
                         var action = item.action || 'updated';
                         var icon = actionIcons[action] || 'fa-circle';
                         var userName = item.user ? item.user.name : 'Sistema';
-                        var timeAgo = item.created_at_human || item.created_at || 'data desconhecida';
-                        var createdFmt = item.created_at_fmt || item.created_at || '';
+                        var createdFmt = item.movement_date_fmt || item.created_at_fmt || '';
                         var labelPT = actionLabelsPT[action] || (action || '').replace('_', ' ');
 
                         var el = document.createElement('div');
@@ -410,9 +409,6 @@
                                             <div class="history-meta">
                                                 <span class="history-user">
                                                     <i class="fa fa-user-circle"></i> ${userName}
-                                                </span>
-                                                <span class="history-time">
-                                                    <i class="fa fa-clock"></i> ${createdFmt}
                                                 </span>
                                             </div>
                                         </div>

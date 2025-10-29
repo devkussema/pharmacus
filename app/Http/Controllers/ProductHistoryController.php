@@ -71,6 +71,9 @@ class ProductHistoryController extends Controller
                 'created_at' => $item->created_at ? $item->created_at->toIso8601String() : null,
                 'created_at_human' => $item->created_at ? $item->created_at->diffForHumans() : null,
                 'created_at_fmt' => $item->created_at ? $item->created_at->format('d/m/Y H:i') : null,
+                'movement_date' => $item->movement_date ? $item->movement_date->toIso8601String() : null,
+                'movement_date_human' => $item->movement_date ? $item->movement_date->diffForHumans() : null,
+                'movement_date_fmt' => $item->movement_date ? $item->movement_date->format('d/m/Y H:i') : null,
                 // resumo em português legível
                 'summary_pt' => $this->makeSummaryPt($item),
             ];
@@ -115,6 +118,7 @@ class ProductHistoryController extends Controller
             'prateleira_id' => 'Prateleira',
             'qtd' => 'Quantidade',
             'qtd_embalagem' => 'Qtd. por Embalagem',
+            'updated_at' => 'Data de Actualização',
         ];
 
         switch ($item->action) {
@@ -156,8 +160,42 @@ class ProductHistoryController extends Controller
 
             case 'updated':
                 $changes = $item->changes ?? [];
+                // Se quantity_delta estiver presente, mostrar alteração em unidades (mais relevante que updated_at)
+                if ($item->quantity_delta !== null) {
+                    return "{$user} actualizou o saldo: " . abs($item->quantity_delta) . " unidades";
+                }
+
                 if (is_array($changes) && count($changes) > 0) {
+                    // Preferir mostrar mudança no descritivo como unidades
+                    if (array_key_exists('descritivo', $changes)) {
+                        $newDes = null;
+                        if (is_array($changes['descritivo']) && array_key_exists('new', $changes['descritivo'])) {
+                            $newDes = $changes['descritivo']['new'];
+                        } else {
+                            $newDes = $changes['descritivo'];
+                        }
+
+                        // calcular unidades a partir do descritivo (formato NxMxU)
+                        $units = null;
+                        try {
+                            $parts = preg_split('/[xX\s]+/', trim((string)$newDes));
+                            $parts = array_map('intval', array_filter($parts, function($v){ return $v !== ''; }));
+                            if (count($parts) === 3) {
+                                $units = $parts[0] * $parts[1] * $parts[2];
+                            }
+                        } catch (\Throwable $_) {
+                            $units = null;
+                        }
+
+                        if ($units !== null) {
+                            return "{$user} actualizou o descritivo para {$newDes} ({$units} unidades)";
+                        }
+                        return "{$user} atualizou o descritivo para {$newDes}";
+                    }
+
+                    // filtrar updated_at para não mostrar 'Updated At' cru
                     $fields = array_keys($changes);
+                    $fields = array_filter($fields, function($f){ return $f !== 'updated_at'; });
                     $labels = array_map(function ($f) use ($fieldNames) {
                         return $fieldNames[$f] ?? ucfirst(str_replace('_', ' ', $f));
                     }, $fields);
@@ -165,7 +203,6 @@ class ProductHistoryController extends Controller
                     if ($count === 1) {
                         return "{$user} atualizou o campo: {$labels[0]}";
                     }
-                    // até 3 campos listados, o resto agrupa
                     $listed = array_slice($labels, 0, 3);
                     $rest = $count - count($listed);
                     $joined = implode(', ', $listed);
