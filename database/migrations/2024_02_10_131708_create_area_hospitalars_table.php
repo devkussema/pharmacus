@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('areas_hospitalares', function (Blueprint $table) {
+        if (!Schema::hasTable('areas_hospitalares')) {
+        Schema::create('areas_hospitalares', function ($table) {
             $table->id();
             $table->string('nome')->unique();
             $table->text('descricao')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_area_hospitalar', function (Blueprint $table) {
+        if (!Schema::hasTable('user_area_hospitalar')) {
+        Schema::create('user_area_hospitalar', function ($table) {
             $table->id();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('area_hospitalar_id')->constrained('areas_hospitalares')->onDelete('cascade');
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->string('contato')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

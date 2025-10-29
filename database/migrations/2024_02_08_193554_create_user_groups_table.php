@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_grupos', function (Blueprint $table) {
+        if (!Schema::hasTable('user_grupos')) {
+        Schema::create('user_grupos', function ($table) {
             $table->id();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('grupo_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
+        }
     }
 
     /**

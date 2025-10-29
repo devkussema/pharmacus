@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        if (!Schema::hasTable('users')) {
+        Schema::create('users', function ($table) {
             $table->uuid('id')->primary(); // Definindo o id como UUID
             $table->string('nome');
             $table->string('username', 250)->unique(); // Adicionando um campo username
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+        }
     }
 
     /**

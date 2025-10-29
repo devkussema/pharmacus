@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notificacoes', function (Blueprint $table) {
+        if (!Schema::hasTable('notificacoes')) {
+        Schema::create('notificacoes', function ($table) {
             $table->id();
             $table->string('titulo');
             $table->boolean('visto');
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->timestamps();
 
         });
+        }
     }
 
     /**

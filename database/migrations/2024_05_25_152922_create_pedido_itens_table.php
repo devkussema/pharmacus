@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pedido_itens', function (Blueprint $table) {
+        if (!Schema::hasTable('pedido_itens')) {
+        Schema::create('pedido_itens', function ($table) {
             $table->id();
             $table->foreignUuid('user_de')->constrained('users')->onDelete('cascade');
             $table->foreignId('area_de')->constrained('areas_hospitalares')->onDelete('cascade');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->text('itens');
             $table->timestamps();
         });
+        }
 
         Schema::table('pedido_itens', function (Blueprint $table) {
             $table->foreignUuid('user_para')->nullable()->change();

@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permissoes', function (Blueprint $table) {
+        if (!Schema::hasTable('permissoes')) {
+        Schema::create('permissoes', function ($table) {
             $table->id();
             $table->foreignId('grupo_id')->constrained()->onDelete('cascade');
             $table->string('conteudo');
             $table->timestamps();
         });
+        }
     }
 
     /**

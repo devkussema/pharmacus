@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('atividades', function (Blueprint $table) {
+        if (!Schema::hasTable('atividades')) {
+        Schema::create('atividades', function ($table) {
             $table->id();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->text('texto');
             $table->timestamps();
         });
+        }
     }
 
     /**

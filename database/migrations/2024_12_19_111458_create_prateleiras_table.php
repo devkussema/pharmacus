@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('prateleiras', function (Blueprint $table) {
+        if (!Schema::hasTable('prateleiras')) {
+        Schema::create('prateleiras', function ($table) {
             $table->id();
             $table->string('nome'); // Cria uma coluna 'nome' (VARCHAR)
             $table->text('descricao')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

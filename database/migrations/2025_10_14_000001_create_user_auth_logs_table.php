@@ -15,7 +15,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_auth_logs', function (Blueprint $table) {
+        if (!Schema::hasTable('user_auth_logs')) {
+        Schema::create('user_auth_logs', function ($table) {
             $table->uuid('id')->primary(); // UUID for unique identification
             $table->uuid('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->enum('status', ['success', 'failure']); // Action status
             $table->timestamps(); // created_at and updated_at
         });
+        }
     }
 
     /**

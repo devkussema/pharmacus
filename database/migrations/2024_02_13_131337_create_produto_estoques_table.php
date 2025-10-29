@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('produto_estoques', function (Blueprint $table) {
+        if (!Schema::hasTable('produto_estoques')) {
+        Schema::create('produto_estoques', function ($table) {
             $table->id();
             $table->string('designacao');
             $table->string('dosagem');
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->integer('qtd_embalagem')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

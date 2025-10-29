@@ -20,7 +20,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documents', function (Blueprint $table) {
+        if (!Schema::hasTable('documents')) {
+        Schema::create('documents', function ($table) {
             $table->uuid('id')->primary();
             
             // Informações básicas do documento
@@ -90,6 +91,7 @@ return new class extends Migration
             // Comentário da tabela
             $table->comment('Tabela de documentos do sistema farmacêutico com controlo completo de metadados e acesso');
         });
+        }
     }
 
     /**

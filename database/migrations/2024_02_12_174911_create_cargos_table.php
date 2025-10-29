@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cargos', function (Blueprint $table) {
+        if (!Schema::hasTable('cargos')) {
+        Schema::create('cargos', function ($table) {
             $table->id();
             $table->string('nome')->unique();
             $table->text('descricao')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

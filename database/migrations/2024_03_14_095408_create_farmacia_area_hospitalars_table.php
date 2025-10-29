@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('farmacia_areas_hospitalares', function (Blueprint $table) {
+        if (!Schema::hasTable('farmacia_areas_hospitalares')) {
+        Schema::create('farmacia_areas_hospitalares', function ($table) {
             $table->id();
             $table->char('farmacia_id');
             $table->unsignedBigInteger('area_hospitalar_id');
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->foreign('farmacia_id')->references('id')->on('farmacias')->onDelete('cascade');
             $table->timestamps();
         });
+        }
     }
 
     /**

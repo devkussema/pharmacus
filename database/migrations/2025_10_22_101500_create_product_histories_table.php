@@ -13,7 +13,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_histories', function (Blueprint $table) {
+        if (!Schema::hasTable('product_histories')) {
+        Schema::create('product_histories', function ($table) {
             $table->uuid('id')->primary();
 
             // Referências principais
@@ -55,6 +56,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('farmacia_id')->references('id')->on('farmacias')->onDelete('set null');
         });
+        }
     }
 
     /** 

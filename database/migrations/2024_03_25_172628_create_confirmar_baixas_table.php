@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('confirmar_baixas', function (Blueprint $table) {
+        if (!Schema::hasTable('confirmar_baixas')) {
+        Schema::create('confirmar_baixas', function ($table) {
             $table->id();
             $table->unsignedBigInteger('area_hospitalar_de');
             $table->boolean('confirmado')->default(0);
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->foreign('area_hospitalar_para')->references('id')->on('areas_hospitalares')->onDelete('cascade');
             $table->timestamps();
         });
+        }
     }
 
     /**

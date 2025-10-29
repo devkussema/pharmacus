@@ -26,7 +26,8 @@ return new class extends Migration
             throw new \Exception('Error: team_foreign_key on config/permission.php not loaded. Run [php artisan config:clear] and try again.');
         }
 
-        Schema::create($tableNames['permissions'], function (Blueprint $table) {
+        if (!Schema::hasTable($tableNames['permissions'])) {
+        Schema::create($tableNames['permissions'], function ($table) {
             $table->bigIncrements('id'); // permission id
             $table->string('name');       // For MySQL 8.0 use string('name', 125);
             $table->string('guard_name'); // For MySQL 8.0 use string('guard_name', 125);
@@ -34,6 +35,7 @@ return new class extends Migration
 
             $table->unique(['name', 'guard_name']);
         });
+        }
 
         Schema::create($tableNames['roles'], function (Blueprint $table) use ($teams, $columnNames) {
             $table->bigIncrements('id'); // role id
@@ -135,10 +137,10 @@ return new class extends Migration
             throw new \Exception('Error: config/permission.php not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');
         }
 
-        Schema::drop($tableNames['role_has_permissions']);
-        Schema::drop($tableNames['model_has_roles']);
-        Schema::drop($tableNames['model_has_permissions']);
-        Schema::drop($tableNames['roles']);
-        Schema::drop($tableNames['permissions']);
+        if (Schema::hasTable($tableNames['role_has_permissions'])) { Schema::drop($tableNames['role_has_permissions']); }
+        if (Schema::hasTable($tableNames['model_has_roles'])) { Schema::drop($tableNames['model_has_roles']); }
+        if (Schema::hasTable($tableNames['model_has_permissions'])) { Schema::drop($tableNames['model_has_permissions']); }
+        if (Schema::hasTable($tableNames['roles'])) { Schema::drop($tableNames['roles']); }
+        if (Schema::hasTable($tableNames['permissions'])) { Schema::drop($tableNames['permissions']); }
     }
 };

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('status_estoque', function (Blueprint $table) {
+        if (!Schema::hasTable('status_estoque')) {
+        Schema::create('status_estoque', function ($table) {
             $table->id();
             $table->foreignId('produto_id')->constrained('produto_estoques')->onDelete('cascade');
             $table->integer('critico');
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->integer('maximo');
             $table->timestamps();
         });
+        }
     }
 
     /**

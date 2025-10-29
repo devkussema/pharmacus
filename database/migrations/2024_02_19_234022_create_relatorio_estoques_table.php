@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('relatorio_estoque_alerta', function (Blueprint $table) {
+        if (!Schema::hasTable('relatorio_estoque_alerta')) {
+        Schema::create('relatorio_estoque_alerta', function ($table) {
             $table->id();
             $table->unsignedBigInteger('nivel_alerta_id');
             $table->unsignedBigInteger('produto_estoque_id');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->foreign('nivel_alerta_id')->references('id')->on('niveis_alerta')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('produto_estoque_id')->references('id')->on('produto_estoques')->onDelete('cascade')->onUpdate('cascade');
         });
+        }
     }
 
     /**

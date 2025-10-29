@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('farmacias', function (Blueprint $table) {
+        if (!Schema::hasTable('farmacias')) {
+        Schema::create('farmacias', function ($table) {
             $table->uuid('id')->primary(); // Define o campo id como UUID e chave primária
             $table->string('nome');
             $table->text('descricao')->nullable();
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->text('obs')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

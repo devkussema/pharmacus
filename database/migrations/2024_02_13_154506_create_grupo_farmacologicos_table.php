@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grupo_farmacologicos', function (Blueprint $table) {
+        if (!Schema::hasTable('grupo_farmacologicos')) {
+        Schema::create('grupo_farmacologicos', function ($table) {
             $table->id();
             $table->string('nome')->unique();
             $table->text('descricao')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estoques', function (Blueprint $table) {
+        if (!Schema::hasTable('estoques')) {
+        Schema::create('estoques', function ($table) {
             $table->id();
             $table->string('tipo', 100)->nullable();
             $table->foreignId('produto_estoque_id')->constrained('produto_estoques')->onDelete('cascade');
             $table->timestamps();
         });
+        }
     }
 
     /**

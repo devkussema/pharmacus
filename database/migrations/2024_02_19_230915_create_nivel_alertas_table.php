@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('niveis_alerta', function (Blueprint $table) {
+        if (!Schema::hasTable('niveis_alerta')) {
+        Schema::create('niveis_alerta', function ($table) {
             $table->id();
             $table->string('nome')->unique();
             $table->timestamps();
         });
+        }
     }
 
     /**

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users_tokens', function (Blueprint $table) {
+        if (!Schema::hasTable('users_tokens')) {
+        Schema::create('users_tokens', function ($table) {
             $table->id();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->string('nome');
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

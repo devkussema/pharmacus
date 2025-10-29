@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('visitantes', function (Blueprint $table) {
+        if (!Schema::hasTable('visitantes')) {
+        Schema::create('visitantes', function ($table) {
             $table->id();
             $table->string('ip');
             $table->string('country');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->string('device');
             $table->timestamps();
         });
+        }
     }
 
     /**

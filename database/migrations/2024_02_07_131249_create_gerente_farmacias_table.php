@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gerente_farmacias', function (Blueprint $table) {
+        if (!Schema::hasTable('gerente_farmacias')) {
+        Schema::create('gerente_farmacias', function ($table) {
             $table->uuid('id')->primary(); // Define o campo id como UUID e chave primária
             //$table->uuid('user_id')->index(); // Define o campo user_id como UUID
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->string('contato')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**
