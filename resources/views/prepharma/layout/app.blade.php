@@ -33,7 +33,7 @@
 
     <link rel="stylesheet" href="{{ asset('prepharma/plugins/datatables/datatables.min.css') }}">
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('prepharma/css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://static.pharmatina.com/prepharma/assets/css/style.css">
     
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('prepharma/plugins/datatables/jquery.dataTables.min.js') }}"></script>

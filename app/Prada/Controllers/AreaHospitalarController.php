@@ -47,7 +47,8 @@ class AreaHospitalarController extends Controller
         $request->validate([
             'area_id' => 'required|exists:areas_hospitalares,id',
             'farmacia_id' => 'required|exists:farmacias,id',
-            'descricao' => 'nullable'
+            'descricao' => 'nullable',
+            'log_estoque' => 'nullable|boolean'
         ], [
             'area_id.required' => 'Selecione uma área válida', //farmacia_id
             'area_id.exists' => 'Por favor tente novamente',
@@ -57,9 +58,34 @@ class AreaHospitalarController extends Controller
         FAH::create([
             'area_hospitalar_id' => $request->area_id,
             'farmacia_id' => $request->farmacia_id,
+            'log_estoque' => $request->has('log_estoque') ? 1 : 0,
         ]);
 
         return response()->json(['message' => "Área Hospitalar cadastrada."], 201);
+    }
+
+    /**
+     * Atualiza apenas a flag log_estoque de um registro farmacia_areas_hospitalares
+     * Recebe: log_estoque (0/1)
+     * @param Request $request
+     * @param int $id FAH id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function setLogEstoque(Request $request, $id)
+    {
+        $request->validate([
+            'log_estoque' => 'required|boolean'
+        ]);
+
+        $fah = FAH::find($id);
+        if (!$fah) {
+            return response()->json(['message' => 'Registro não encontrado'], 404);
+        }
+
+        $fah->log_estoque = $request->input('log_estoque') ? 1 : 0;
+        $fah->save();
+
+        return response()->json(['message' => 'Flag atualizada', 'log_estoque' => $fah->log_estoque], 200);
     }
 
     public function addCargo(Request $request)

@@ -48,6 +48,8 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::delete('/apagar/{id}', [AreaHospitalarController::class, 'destroy'])->name('a_h.destroy');
         Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');
         Route::post('toggle-status/{id}', [AreaHospitalarController::class, 'toggleStatus'])->name('a_h.toggle_status');
+    // Atualizar flag de log de estoque para uma relação farmacia_areas_hospitalares
+    Route::post('set-log-estoque/{id}', [AreaHospitalarController::class, 'setLogEstoque'])->name('a_h.set_log_estoque');
         Route::get('/statUs', [AreaHospitalarController::class, 'getStatDia'])->name('a_h.get_stat_dia');
     });
 

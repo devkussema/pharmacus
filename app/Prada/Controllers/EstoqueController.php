@@ -798,7 +798,7 @@ class EstoqueController extends Controller
             $farmacia_id = $user->farmacia->farmacia_id;
         }
 
-        $produto = PE::find($request->produto_id);
+    $produto = PE::find($request->produto_id);
         $descritivo = $produto->descritivo;
         $qtdBaixar = $request->qtd;
 
@@ -854,44 +854,84 @@ class EstoqueController extends Controller
             ->where('area_hospitalar_id', $area_hospitalar_id)
             ->first();
 
-        if ($isEstoque) {
-            $saldoAtual = $isEstoque->produto->saldo;
-            $saldoAdd = $newQtdUnit;
-            $saldoAtual->update([
-                'qtd' => $saldoAtual->qtd + $saldoAdd
-            ]);
+        // Determinar se a área de destino guarda estoque (log_estoque)
+        $farmacia_id = '';
+        if ($user && $user->isFarmacia) {
+            $farmacia_id = $user->isFarmacia->farmacia->id ?? '';
+        } elseif ($user && $user->farmacia) {
+            $farmacia_id = $user->farmacia->farmacia_id ?? '';
+        }
 
-            $saldoA = $produto->saldo;
-            // registrar histórico: entrada no estoque destino (stock_in)
+        $destFAH = null;
+        $persistDest = true; // por padrão, persiste
+        if ($farmacia_id) {
+            $destFAH = FAH::where('farmacia_id', $farmacia_id)
+                ->where('area_hospitalar_id', $area_hospitalar_id)
+                ->first();
+            if ($destFAH && intval($destFAH->log_estoque) === 0) {
+                $persistDest = false;
+            }
+        }
+
+        if ($persistDest) {
+            if ($isEstoque) {
+                $saldoAtual = $isEstoque->produto->saldo;
+                $saldoAdd = $newQtdUnit;
+                $saldoAtual->update([
+                    'qtd' => $saldoAtual->qtd + $saldoAdd
+                ]);
+
+                $saldoA = $produto->saldo;
+                // registrar histórico: entrada no estoque destino (stock_in)
+                try {
+                    ProductHistory::create([
+                        'product_id' => $isEstoque->produto->id,
+                        'farmacia_id' => $farmacia_id,
+                        'user_id' => $user->id ?? null,
+                        'action' => 'stock_in',
+                        'changes' => null,
+                        'payload' => ['from_product_id' => $produto->id, 'num_lote' => $isEstoque->produto->num_lote],
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->header('User-Agent'),
+                        'meta' => ['area_hospitalar_id' => $area_hospitalar_id],
+                        'quantity_delta' => $newQtdUnit,
+                    ]);
+                } catch (\Throwable $e) {
+                    logger()->error('Falha ao registar product_history stock_in: ' . $e->getMessage());
+                }
+            } else {
+                $dataProduto['descritivo'] = $newDescritivo;
+                $novoProduto = PE::create($dataProduto);
+                $saldO = SE::create([
+                    'produto_estoque_id' => $novoProduto->id,
+                    'qtd' => $newQtdUnit
+                ]);
+
+                $estoque = Estoque::create([
+                    'produto_estoque_id' => $novoProduto->id,
+                    'farmacia_id' => $farmacia_id,
+                    'area_hospitalar_id' => $request->area_hospitalar_id
+                ]);
+            }
+        } else {
+            // A área de destino NÃO guarda estoque. Não persistimos entradas de estoque.
+            // Registramos apenas um histórico que indica a tentativa de transferência sem persistência.
             try {
                 ProductHistory::create([
-                    'product_id' => $isEstoque->produto->id,
+                    'product_id' => null,
                     'farmacia_id' => $farmacia_id,
                     'user_id' => $user->id ?? null,
-                    'action' => 'stock_in',
+                    'action' => 'stock_in_attempt_no_persist',
                     'changes' => null,
-                    'payload' => ['from_product_id' => $produto->id, 'num_lote' => $isEstoque->produto->num_lote],
+                    'payload' => ['from_product_id' => $produto->id, 'num_lote' => $dataProduto['num_lote']],
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->header('User-Agent'),
-                    'meta' => ['area_hospitalar_id' => $area_hospitalar_id],
+                    'meta' => ['area_hospitalar_id' => $area_hospitalar_id, 'no_persist' => true],
                     'quantity_delta' => $newQtdUnit,
                 ]);
             } catch (\Throwable $e) {
-                logger()->error('Falha ao registar product_history stock_in: ' . $e->getMessage());
+                logger()->error('Falha ao registar product_history (no persist): ' . $e->getMessage());
             }
-        } else {
-            $dataProduto['descritivo'] = $newDescritivo;
-            $novoProduto = PE::create($dataProduto);
-            $saldO = SE::create([
-                'produto_estoque_id' => $novoProduto->id,
-                'qtd' => $newQtdUnit
-            ]);
-
-            $estoque = Estoque::create([
-                'produto_estoque_id' => $novoProduto->id,
-                'farmacia_id' => $farmacia_id,
-                'area_hospitalar_id' => $request->area_hospitalar_id
-            ]);
         }
         // sinaliza (em memória) que a próxima alteração no modelo vem da operação de baixa
         \App\Observers\ProdutoEstoqueObserver::markOrigin($produto->id, 'baixa');
