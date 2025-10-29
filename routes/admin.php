@@ -47,7 +47,9 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::put('/a_h/{id}', [AreaHospitalarController::class, 'update']);
         Route::delete('/apagar/{id}', [AreaHospitalarController::class, 'destroy'])->name('a_h.destroy');
         Route::post('', [AreaHospitalarController::class, 'store'])->name('a_h.index.store');
-        Route::post('toggle-status/{id}', [AreaHospitalarController::class, 'toggleStatus'])->name('a_h.toggle_status');
+    Route::post('toggle-status/{id}', [AreaHospitalarController::class, 'toggleStatus'])->name('a_h.toggle_status');
+    // Obter uma relação FAH por id (usado pelo modal de edição)
+    Route::get('get-fah/{id}', [AreaHospitalarController::class, 'getFAH'])->name('a_h.get_fah');
     // Atualizar flag de log de estoque para uma relação farmacia_areas_hospitalares
     Route::post('set-log-estoque/{id}', [AreaHospitalarController::class, 'setLogEstoque'])->name('a_h.set_log_estoque');
         Route::get('/statUs', [AreaHospitalarController::class, 'getStatDia'])->name('a_h.get_stat_dia');

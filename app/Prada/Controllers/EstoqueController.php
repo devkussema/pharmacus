@@ -977,9 +977,23 @@ class EstoqueController extends Controller
             'level' => 'info',
             'snapshot_before' => $produto->toArray(),
         ];
-        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$ud->area_hospitalar->nome}", null, $meta);
-        self::setNotify("Confirmação de entrada de estoque", $ud->user_id);
-    $texto = ($this->currentUser()->nome ?? '') . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
+
+        // Evitar acesso a propriedades em null: UAH pode não existir
+        $udName = 'Área destinatária';
+        $udUserId = null;
+        if ($ud) {
+            if (isset($ud->area_hospitalar) && $ud->area_hospitalar) {
+                $udName = $ud->area_hospitalar->nome ?? $udName;
+            }
+            $udUserId = $ud->user_id ?? null;
+        }
+
+        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$udName}", null, $meta);
+        if ($udUserId) {
+            self::setNotify("Confirmação de entrada de estoque", $udUserId);
+        }
+
+        $texto = ($this->currentUser()->nome ?? '') . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
         //self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
 
         // return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);

@@ -114,7 +114,7 @@
                                                             </a>
                                                         @endif
                                                         <a class="dropdown-item" href="javascript:void(0)"
-                                                            onclick="modalEditarAH('{{ $a->area_hospitalar->id }}')">
+                                                            onclick="modalEditarAH('{{ $a->id }}')">
                                                             <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                                             Editar
                                                         </a>
@@ -271,6 +271,15 @@
                                     <button class="btn rounded-pill btn-primary" type="submit">Enviar</button>
                                 </div>
                             </div>
+                            <input type="hidden" id="fah_id" name="fah_id" value="">
+                            <input type="hidden" id="area_id_hidden" name="area_id" value="">
+                            <div class="mt-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="1" id="edit_log_estoque" name="log_estoque">
+                                    <label class="form-check-label" for="edit_log_estoque">Guardar Estoque</label>
+                                    <div class="small text-muted">Ao marcar, esta área registará entradas de estoque.</div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -421,26 +430,96 @@
         }
 
         function modalEditarAH(id) {
-            // RequisiÃ§Ã£o AJAX para buscar os dados da farmÃ¡cia
+            // id aqui é o id da relação FarmaciaAreaHospitalar (FAH)
             $.ajax({
-                url: 'api/get/area_hospitalar/' + id,
+                url: '{{ url('areas_hospitalares/get-fah') }}/' + id,
                 type: 'GET',
                 success: function(response) {
-                    $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/' + id);
-                    $('h4#nome_area').val(response.nome);
-                    $('#formEditarAH #nome').val(response.nome);
-                    $('#formEditarAH #descricao').val(response.descricao);
+                    // response é a FAH com relação area_hospitalar
+                    var area = response.area_hospitalar || {};
+                    $('#formEditarAH').attr('action', 'areas_hospitalares/a_h/' + (area.id || ''));
+                    $('#formEditarAH #nome').val(area.nome || '');
+                    $('#formEditarAH #descricao').val(area.descricao || '');
+                    $('#formEditarAH #fah_id').val(response.id);
+                    $('#formEditarAH #area_id_hidden').val(area.id || '');
+                    // checkbox
+                    if (parseInt(response.log_estoque) === 1) {
+                        $('#edit_log_estoque').prop('checked', true);
+                    } else {
+                        $('#edit_log_estoque').prop('checked', false);
+                    }
 
                     // Exibir o modal
                     $('#EditarAH').modal('show');
                 },
                 error: function(xhr, status, error) {
-                    // Tratar erros, se necessÃ¡rio
-                    //console.error(xhr.responseText);
-                    toastr.error("Erro ao obter dados da Ãrea Hospitalar", 'Erro');
+                    toastr.error("Erro ao obter dados da Área Hospitalar", 'Erro');
                 }
             });
         }
+
+        // Submissão AJAX do formulário de edição: atualiza AH (nome/descrição) e a flag log_estoque da FAH
+        (function () {
+            var $formEdit = $('#formEditarAH');
+            $formEdit.on('submit', function (e) {
+                e.preventDefault();
+
+                var fahId = $('#fah_id').val();
+                var areaId = $('#area_id_hidden').val();
+                var nome = $('#nome').val();
+                var descricao = $('#descricao').val();
+                var logEstoque = $('#edit_log_estoque').is(':checked') ? 1 : 0;
+
+                var $btn = $formEdit.find('button[type=submit]');
+                var originalHtml = $btn.html();
+                $btn.prop('disabled', true).html('A enviar...');
+
+                // 1) Atualiza AreaHospitalar (nome/descricao) via PUT
+                $.ajax({
+                    url: '/areas_hospitalares/a_h/' + areaId,
+                    type: 'PUT',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        nome: nome,
+                        descricao: descricao
+                    },
+                    success: function (resp) {
+                        // 2) Atualiza a flag log_estoque da FAH
+                        $.ajax({
+                            url: '/areas_hospitalares/set-log-estoque/' + fahId,
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                log_estoque: logEstoque
+                            },
+                            success: function (r2) {
+                                // fechar modal e atualizar linha (fallback: reload)
+                                $('#EditarAH').modal('hide');
+                                try {
+                                    if ($.fn.DataTable && $.fn.DataTable.isDataTable('#table-content')) {
+                                        $('#table-content').DataTable().ajax.reload();
+                                    } else {
+                                        location.reload();
+                                    }
+                                } catch (e) {
+                                    location.reload();
+                                }
+                            },
+                            error: function () {
+                                alertify.error('Erro ao atualizar flag de estoque');
+                            },
+                            complete: function () {
+                                $btn.prop('disabled', false).html(originalHtml);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        alertify.error('Erro ao actualizar Área Hospitalar');
+                        $btn.prop('disabled', false).html(originalHtml);
+                    }
+                });
+            });
+        })();
 
         // Handler AJAX para adicionar área hospitalar via modal
         (function () {

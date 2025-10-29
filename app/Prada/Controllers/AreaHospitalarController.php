@@ -241,4 +241,22 @@ class AreaHospitalarController extends Controller
 
         return response()->json($info);
     }
+
+    /**
+     * Retorna a relação FarmaciaAreaHospitalar por id (inclui area_hospitalar)
+     * usado para popular o modal de edição (AJAX)
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getFAH($id)
+    {
+        $fah = FAH::with('area_hospitalar')->find($id);
+
+        if (!$fah) {
+            return response()->json(['message' => 'Registro não encontrado'], 404);
+        }
+
+        return response()->json($fah);
+    }
 }
