@@ -496,6 +496,124 @@
         })();
     </script>
     @stack('scripts')
+    <!-- Widget de atualização de estoque (canto inferior esquerdo) -->
+    <style>
+        .stock-update-widget {
+            position: fixed;
+            left: 16px;
+            bottom: 16px;
+            z-index: 2000;
+            background: rgba(46,55,164,0.95);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            min-width: 220px;
+            max-width: 360px;
+            transform: translateY(20px) translateX(-10px) scale(0.98);
+            opacity: 0; 
+            pointer-events: none;
+            transition: transform .28s ease, opacity .28s ease;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+        .stock-update-widget.show {
+            transform: translateY(0) translateX(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .stock-update-widget .icon {
+            font-size: 20px;
+            width: 36px;
+            height: 36px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+        }
+        .stock-update-widget .text {
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+            line-height: 1.1;
+        }
+        .stock-update-widget .text .title { font-weight: 600; margin-bottom: 2px; }
+        .stock-update-widget .text .msg { font-weight: 400; opacity: .95; font-size: 12px }
+        /* pulse animation */
+        .stock-update-widget .pulse {
+            width: 36px; height: 36px; border-radius: 8px; position: relative;
+        }
+        .stock-update-widget .pulse::after {
+            content: '';
+            position: absolute; inset: 0; border-radius: 8px;
+            box-shadow: 0 0 0 0 rgba(255,255,255,0.06);
+            animation: pulse 1.6s infinite;
+            opacity: .6;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.06); }
+            70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(255,255,255,0.00); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.00); }
+        }
+        /* small dismiss button */
+        .stock-update-widget .close-btn { margin-left: auto; color: rgba(255,255,255,0.9); cursor: pointer; background: transparent; border: none; }
+        .stock-update-widget .close-btn:hover { opacity: .9 }
+    </style>
+
+    <div id="stockUpdateWidget" class="stock-update-widget" aria-hidden="true">
+        <div class="icon pulse"><i class="fa-solid fa-box-open"></i></div>
+        <div class="text">
+            <div class="title">A atualizar estoque</div>
+            <div class="msg" id="stockUpdateMsg">Pode demorar devido à internet lenta. Aguarde...</div>
+        </div>
+        <button class="close-btn" id="stockUpdateClose" title="Fechar" aria-label="Fechar">&times;</button>
+    </div>
+
+    <script>
+        (function () {
+            var widget = document.getElementById('stockUpdateWidget');
+            var msgEl = document.getElementById('stockUpdateMsg');
+            var closeBtn = document.getElementById('stockUpdateClose');
+
+            // API global para controlar o widget
+            window.Pharmatina = window.Pharmatina || {};
+            window.Pharmatina.showStockUpdate = function (message, options) {
+                if (message) msgEl.textContent = message;
+                widget.classList.add('show');
+                widget.setAttribute('aria-hidden', 'false');
+                // auto-hide se options.timeout definido (ms)
+                if (options && options.timeout) {
+                    setTimeout(function () { window.Pharmatina.hideStockUpdate(); }, options.timeout);
+                }
+            };
+            window.Pharmatina.hideStockUpdate = function () {
+                widget.classList.remove('show');
+                widget.setAttribute('aria-hidden', 'true');
+            };
+            window.Pharmatina.setStockUpdateMessage = function (message) {
+                msgEl.textContent = message || '';
+            };
+
+            closeBtn.addEventListener('click', function () { window.Pharmatina.hideStockUpdate(); });
+
+            // Exemplo: manter visível se uma requisição AJAX global estiver ativa
+            // (opcional) hook jQuery global ajaxStart/ajaxStop
+            if (window.jQuery) {
+                var $ = window.jQuery;
+                $(document).on('ajaxStart', function () {
+                    // detectar se a rota atual é de estoque (opcional)
+                    window.Pharmatina.showStockUpdate('A actualizar estoque... isto pode demorar');
+                });
+                $(document).on('ajaxStop', function () {
+                    // pequena latência antes de esconder
+                    setTimeout(function () { window.Pharmatina.hideStockUpdate(); }, 700);
+                });
+            }
+        })();
+    </script>
 </body>
 
 </html>
