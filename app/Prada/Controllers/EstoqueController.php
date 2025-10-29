@@ -978,22 +978,37 @@ class EstoqueController extends Controller
             'snapshot_before' => $produto->toArray(),
         ];
 
-        // Evitar acesso a propriedades em null: UAH pode não existir
-        $udName = 'Área destinatária';
-        $udUserId = null;
-        if ($ud) {
-            if (isset($ud->area_hospitalar) && $ud->area_hospitalar) {
-                $udName = $ud->area_hospitalar->nome ?? $udName;
-            }
-            $udUserId = $ud->user_id ?? null;
+        // Evitar acesso a propriedades em null: UAH pode não existir.
+        // Buscamos nomes de origem/destino de forma defensiva para garantir mensagem "do X para Y".
+        $originName = 'Área origem';
+        $destName = 'Área destinatária';
+        try {
+            $origin = AH::find($area_de);
+            if ($origin && isset($origin->nome)) $originName = $origin->nome;
+        } catch (\Throwable $_) {
+            // ignore
         }
 
-        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$udName}", null, $meta);
+        try {
+            // preferir UAH->area_hospitalar quando disponível
+            if ($ud && isset($ud->area_hospitalar) && $ud->area_hospitalar) {
+                $destName = $ud->area_hospitalar->nome ?? $destName;
+            } else {
+                $dest = AH::find($area_hospitalar_id);
+                if ($dest && isset($dest->nome)) $destName = $dest->nome;
+            }
+        } catch (\Throwable $_) {
+            // ignore
+        }
+
+        $udUserId = $ud->user_id ?? null;
+
+        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$destName}", null, $meta);
         if ($udUserId) {
             self::setNotify("Confirmação de entrada de estoque", $udUserId);
         }
 
-        $texto = ($this->currentUser()->nome ?? '') . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} equivalente a {$unit} unidades";
+        $texto = ($this->currentUser()->nome ?? '') . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} para {$destName}";
         //self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
 
         // return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);
