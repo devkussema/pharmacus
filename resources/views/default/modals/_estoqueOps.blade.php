@@ -34,6 +34,11 @@
                                 <input type="number" name="qtd" class="form-control" id="qtd_"
                                     placeholder="Quantidade a transferir" min="1" max="{{ @getCaixa($est->produto->descritivo) }}">
                             </div>
+
+                            <div class="form-group">
+                                <label for="movement_date">Data do movimento</label>
+                                <input type="datetime-local" name="movement_date" id="movement_date" class="form-control">
+                            </div>
                             <button type="submit" class="btn btn-primary">Enviar</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                         </form>

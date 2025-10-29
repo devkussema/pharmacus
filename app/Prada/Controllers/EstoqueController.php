@@ -785,6 +785,7 @@ class EstoqueController extends Controller
             'produto_id' => "required|exists:produto_estoques,id",
             'area_hospitalar_id' => "required|exists:areas_hospitalares,id",
             'qtd' => "required|min:1",
+            'movement_date' => 'nullable|date',
         ], [
             'produto_id.required' => "Selecione um item na tabela",
             'area_hospitalar_id.required' => "Algo deu errado, por favor atualize a página e tente de novo",
@@ -798,9 +799,19 @@ class EstoqueController extends Controller
             $farmacia_id = $user->farmacia->farmacia_id;
         }
 
-    $produto = PE::find($request->produto_id);
+        $produto = PE::find($request->produto_id);
         $descritivo = $produto->descritivo;
         $qtdBaixar = $request->qtd;
+
+        // Interpretar movement_date (opcional) vindo do formulário (datetime-local do browser)
+        $movementDate = null;
+        if ($request->filled('movement_date')) {
+            try {
+                $movementDate = Carbon::parse($request->input('movement_date'));
+            } catch (\Throwable $e) {
+                $movementDate = null;
+            }
+        }
 
         $produtoMasDescr = downCaixa($descritivo, $qtdBaixar);
 
@@ -894,6 +905,7 @@ class EstoqueController extends Controller
                         'ip_address' => request()->ip(),
                         'user_agent' => request()->header('User-Agent'),
                         'meta' => ['area_hospitalar_id' => $area_hospitalar_id],
+                        'movement_date' => $movementDate,
                         'quantity_delta' => $newQtdUnit,
                     ]);
                 } catch (\Throwable $e) {
@@ -926,8 +938,9 @@ class EstoqueController extends Controller
                     'payload' => ['from_product_id' => $produto->id, 'num_lote' => $dataProduto['num_lote']],
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->header('User-Agent'),
-                    'meta' => ['area_hospitalar_id' => $area_hospitalar_id, 'no_persist' => true],
-                    'quantity_delta' => $newQtdUnit,
+                        'meta' => ['area_hospitalar_id' => $area_hospitalar_id, 'no_persist' => true],
+                        'movement_date' => $movementDate,
+                        'quantity_delta' => $newQtdUnit,
                 ]);
             } catch (\Throwable $e) {
                 logger()->error('Falha ao registar product_history (no persist): ' . $e->getMessage());
@@ -955,6 +968,7 @@ class EstoqueController extends Controller
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->header('User-Agent'),
                 'meta' => ['saldo_before' => $antigoQtdUnit, 'saldo_after' => $saldoRestante],
+                'movement_date' => $movementDate,
                 'quantity_delta' => -1 * $newQtdUnit,
             ]);
         } catch (\Throwable $e) {

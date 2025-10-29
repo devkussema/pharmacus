@@ -167,6 +167,11 @@
                                     placeholder="Quantidade a transferir" min="1"
                                     max="{{ @getCaixa($est->produto->descritivo) }}">
                             </div>
+
+                            <div class="form-group pb-3">
+                                <label for="movement_date">Data do movimento</label>
+                                <input type="datetime-local" name="movement_date" id="movement_date" class="form-control">
+                            </div>
                             <button type="submit" class="btn btn-primary">Enviar</button>
                         </form>
                     </div>
@@ -890,6 +895,16 @@
             $('#DarBaixa #formBaixaEstoque #designacao').prop("disabled", true);
             $('#DarBaixa #formBaixaEstoque #descritivo_').val(descritivo);
             $('#DarBaixa #formBaixaEstoque #descritivo_').prop("disabled", true);
+            // set default movement_date to now (local) formatted for datetime-local
+            try {
+                const now = new Date();
+                const tzOffset = now.getTimezoneOffset() * 60000; // offset in ms
+                const localISOTime = new Date(now - tzOffset).toISOString().slice(0,16);
+                $('#DarBaixa #formBaixaEstoque #movement_date').val(localISOTime);
+            } catch (e) {
+                // ignore if element not found
+            }
+
             $('#DarBaixa').modal('show');
         }
 

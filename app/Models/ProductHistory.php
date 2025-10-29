@@ -37,6 +37,7 @@ class ProductHistory extends Model
         'user_agent',
         'meta',
         'quantity_delta',
+        'movement_date',
     ];
 
     protected $casts = [
@@ -46,6 +47,7 @@ class ProductHistory extends Model
         'quantity_delta' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'movement_date' => 'datetime',
     ];
 
     public const ACTIONS = [
