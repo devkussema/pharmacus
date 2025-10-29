@@ -13,6 +13,8 @@
                         <span> Dashboard </span>
                     </a>
                 </li>
+
+                {{-- Farmácias e Usuários são administração global (Admin only) --}}
                 @if (isAdministrator())
                     <li class="{{ Route::currentRouteName() == 'farmacia' ? 'active' : '' }}">
                         <a href="{{ route('farmacia') }}" class="sidebar-link" data-route="farmacia">
@@ -33,7 +35,8 @@
                     </li>
                 @endif
 
-                    @if (Auth::check() && (Auth::user()->hasAnyRole(['Admin','Gerente']) || Auth::user()->hasPermissionTo('funcionario.read')))
+                {{-- Funcionários: administradores, gerentes ou quem tem permissão explícita --}}
+                @if (Auth::check() && (Auth::user()->hasAnyRole(['Admin','Gerente']) || vPerm('funcionario', ['ver'])))
                     <li class="{{ Route::currentRouteName() == 'gerente.funcionarios.index' ? 'active' : '' }}">
                         <a href="{{ route('gerente.funcionarios.index') }}" class="sidebar-link" data-route="gerente.funcionarios.index">
                             <span class="menu-side">
@@ -42,9 +45,10 @@
                             <span> Funcionários </span>
                         </a>
                     </li>
-                    @endif
+                @endif
 
-                    @if (Auth::check() && (Auth::user()->hasAnyRole(['Admin','Gerente']) || Auth::user()->hasPermissionTo('areas_hospitalares.read')))
+                {{-- Áreas Hospitalares: gerentes/admins ou permissão específica --}}
+                @if (Auth::check() && (Auth::user()->hasAnyRole(['Admin','Gerente']) || vPerm('areas_hospitalares', ['ver'])))
                     <li>
                         <a href="{{ route('a_h.index') }}" class="{{ Route::currentRouteName() == 'a_h.index' ? 'active' : '' }}">
                             <span class="menu-side">
@@ -53,7 +57,7 @@
                             <span> Áreas Hospitalares </span>
                         </a>
                     </li>
-                    @endif
+                @endif
 
                 @if (Auth::user()->area_hospitalar || Auth::user()->isFarmacia)
                     <li>
