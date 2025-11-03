@@ -105,6 +105,7 @@
                                         <th>Status</th>
                                         <th>Prateleira</th>
                                         <th>Lote</th>
+                                        <th>Quantidade</th>
                                         <th>Qtd. Caixa</th>
                                         <th>Qtd. Unit.</th>
                                         <th>Inserido em</th>
@@ -272,6 +273,7 @@
                             }
                         },
                         { data: "produto.num_lote" },
+                        { data: "produto.quantidade" },
                         { data: function(row) { return getCaixa(row.produto.descritivo); } },
                         { data: "produto.saldo.qtd" },
                         { data: function(row) { return formatDate(row.created_at); } },
@@ -344,7 +346,7 @@
                 var timeline = document.getElementById('history_timeline');
                 var examples = timeline.querySelectorAll('.history-item');
                 Array.from(examples).forEach(function(ex) { ex.remove(); });
-                
+
                 document.getElementById('history_empty').style.display = 'none';
                 document.getElementById('offcanvasRightSubtitle').innerText = 'Carregando histórico...';
 
