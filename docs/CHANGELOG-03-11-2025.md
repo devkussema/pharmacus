@@ -318,7 +318,7 @@ Implementação de estilos customizados para os offcanvas.
 ## 📞 Contato e Suporte
 
 Para dúvidas, sugestões ou reportar bugs relacionados a estas melhorias:
-- **Email**: [seu-email]
+- **Email**: [dev.kussema@gmail.com]
 - **GitHub**: devkussema/pharmacus
 - **Branch**: dev
 
