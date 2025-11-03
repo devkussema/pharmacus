@@ -156,17 +156,14 @@
                             </div>
 
                             <div class="form-group pb-3">
-                                <label for="qtd_">Total de Caixas</label>
-                                <input type="text" name="descritivo" class="form-control" id="descritivo_"
-                                    min="1">
-                            </div>
-
-                            <div class="form-group pb-3">
                                 <input type="hidden" name="produto_id" id="id_produto">
-                                <label for="qtd_">Quantidade a transferir</label>
-                                <input type="number" name="qtd" class="form-control" id="qtd_"
-                                    placeholder="Quantidade a transferir" min="1"
-                                    max="{{ @getCaixa($est->produto->descritivo) }}">
+                                <input type="hidden" name="quantidade_disponivel" id="quantidade_disponivel">
+                                <label for="qtd_">Quantidade a Transferir (unidades) *</label>
+                                <input type="number" name="quantidade" class="form-control form-control-lg" id="baixa_quantidade"
+                                    placeholder="Ex: 100" min="1" required>
+                                <small class="form-text text-muted">
+                                    Informe quantas unidades deseja transferir para outra área
+                                </small>
                             </div>
 
                             <div class="form-group pb-3">
@@ -326,7 +323,7 @@
                                 <button class="btn btn-outline-info btn-historico" data-id="${data.produto.id}" title="Ver Histórico" aria-label="Histórico">
                                     <i class="fa fa-history me-1"></i> Histórico
                                 </button>
-                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-qtd="${getCaixa(data.produto.descritivo)}" title="Dar Baixa" aria-label="Dar Baixa">
+                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-quantidade="${data.produto.quantidade || 0}" title="Dar Baixa" aria-label="Dar Baixa">
                                     <i class="fa fa-arrow-down me-1" aria-hidden="true"></i> Dar Baixa
                                 </button>
                                 <button class="btn btn-danger btn-eliminar-item" data-id="${data.produto.id}" title="Eliminar" aria-label="Eliminar">
@@ -597,19 +594,28 @@
             $(document).on('click', '.btn-sincronizar', function() {
                 var produtoId = $(this).data('id');
                 var btn = $(this);
-                btn.prop('disabled', true);
+                var originalHtml = btn.html();
+
+                btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i> Sincronizando...');
 
                 $.ajax({
                     url: '{{ route('estoque.sincronizar') }}',
                     type: 'POST',
                     data: { produto_id: produtoId, _token: '{{ csrf_token() }}' },
                     success: function(response) {
-                        table.ajax.reload(null, false);
+                        btn.html('<i class="fa fa-check me-1"></i> Sincronizado!').removeClass('btn-secondary').addClass('btn-success');
+
+                        setTimeout(function() {
+                            table.ajax.reload(null, false);
+                            btn.html(originalHtml).removeClass('btn-success').addClass('btn-secondary');
+                        }, 1200);
+
                         if (window.alertify && alertify.success) {
-                            alertify.success(response.message || 'Quantidade sincronizada');
+                            alertify.success(response.message || 'Quantidade sincronizada: ' + response.quantidade);
                         }
                     },
                     error: function(xhr) {
+                        btn.html(originalHtml);
                         var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Erro ao sincronizar';
                         if (window.alertify && alertify.error) {
                             alertify.error(msg);
@@ -618,7 +624,7 @@
                         }
                     },
                     complete: function() {
-                        btn.prop('disabled', false);
+                        setTimeout(function() { btn.prop('disabled', false); }, 1200);
                     }
                 });
             });
@@ -626,9 +632,9 @@
             // Função para Dar Baixa
             $(document).on('click', '.btn-dar-baixa', function() {
                 var id = $(this).data('id');
-                var qtd = $(this).data('qtd');
+                var quantidade = $(this).data('quantidade');
                 var designacao = $(this).data('designacao');
-                modalDarBaixa(id, qtd, designacao); // Chama a função que já existia no código anterior
+                modalDarBaixa(id, null, designacao, quantidade); // passa quantidade como 4º parâmetro
             });
 
             // Função para Excluir Produto
@@ -704,22 +710,10 @@
                                 <form id="formAdicionarEstoque" class="row g-3">
                                     <input type="hidden" name="produto_id" id="add_produto_id">
 
-                                    <div class="col-md-4">
-                                        <label class="form-label">Caixas</label>
-                                        <input type="number" min="0" class="form-control" id="add_caixa" name="caixa" value="0">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Caixinhas</label>
-                                        <input type="number" min="0" class="form-control" id="add_caixinha" name="caixinha" value="0">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Unidades</label>
-                                        <input type="number" min="0" class="form-control" id="add_unidade" name="unidade" value="0">
-                                    </div>
-
                                     <div class="col-12">
-                                        <label class="form-label">Total (unidades)</label>
-                                        <input type="text" readonly class="form-control" id="add_total" value="0">
+                                        <label class="form-label fw-bold">Quantidade a Adicionar (unidades)</label>
+                                        <input type="number" min="1" class="form-control form-control-lg" id="add_quantidade" name="quantidade" value="0" required>
+                                        <small class="text-muted">Informe a quantidade total em unidades</small>
                                     </div>
 
                                     <div class="col-md-6">
@@ -734,6 +728,7 @@
                                     <div class="col-12">
                                         <label class="form-label">Observações</label>
                                         <textarea class="form-control" id="add_obs" name="obs" rows="3"></textarea>
+                                    </div>
                                     </div>
 
                                     <div class="col-12">
@@ -753,25 +748,6 @@
                 </div>`;
 
                 document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-                // listeners para recalcular total automaticamente
-
-                // tornar a função disponível globalmente para uso fora do IIFE
-                window.calcTotal = function() {
-                    var caixa = parseInt(document.getElementById('add_caixa').value || 0, 10);
-                    var caixinha = parseInt(document.getElementById('add_caixinha').value || 0, 10);
-                    var unidade = parseInt(document.getElementById('add_unidade').value || 0, 10);
-
-                    // A equação correta: caixa * caixinha * unidade
-                    var total = (caixa || 0) * (caixinha || 0) * (unidade || 0);
-                    document.getElementById('add_total').value = total;
-                };
-
-                ['add_caixa', 'add_caixinha', 'add_unidade'].forEach(function(id) {
-                    document.addEventListener('input', function(ev) {
-                        if (ev.target && ev.target.id === id) window.calcTotal();
-                    });
-                });
             }
         })();
 
@@ -780,31 +756,13 @@
             var target = e.target.closest('.btn-add');
             if (!target) return;
             var produtoId = target.getAttribute('data-id');
-            var descritivo = target.getAttribute('data-descritivo') || '';
             document.getElementById('add_produto_id').value = produtoId;
 
             // resetar campos
-            ['add_caixa','add_caixinha','add_unidade','add_total','add_lote','add_fornecedor','add_obs'].forEach(function(id) {
-                var el = document.getElementById(id);
-                if (!el) return;
-                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = el.id === 'add_total' ? '0' : '';
-            });
-
-            // preencher caixinha e unidade com valores existentes no DB (descritivo)
-            if (descritivo) {
-                var parts = descritivo.split('x');
-                var caixaVal = parts[0] ? parts[0].replace(/^0+/, '') : '';
-                var caixinhaVal = parts[1] ? parts[1].replace(/^0+/, '') : '';
-                var unidadeVal = parts[2] ? parts[2].replace(/^0+/, '') : '';
-
-                if (document.getElementById('add_caixinha')) document.getElementById('add_caixinha').value = caixinhaVal || 0;
-                if (document.getElementById('add_unidade')) document.getElementById('add_unidade').value = unidadeVal || 0;
-                // opcional: preenche caixa com 0 para que usuário escolha quantidade a adicionar
-                if (document.getElementById('add_caixa')) document.getElementById('add_caixa').value = 0;
-
-                // recalcula total com os valores predefinidos
-                if (window.calcTotal) window.calcTotal();
-            }
+            document.getElementById('add_quantidade').value = '0';
+            document.getElementById('add_lote').value = '';
+            document.getElementById('add_fornecedor').value = '';
+            document.getElementById('add_obs').value = '';
 
             var modal = new bootstrap.Modal(document.getElementById('modalAdicionarEstoque'));
             modal.show();
@@ -817,44 +775,30 @@
                 var form = e.target;
                 var fd = new FormData(form);
 
-                var caixa = parseInt(document.getElementById('add_caixa').value || 0, 10);
-                var caixinha = parseInt(document.getElementById('add_caixinha').value || 0, 10);
-                var unidade = parseInt(document.getElementById('add_unidade').value || 0, 10);
-                fd.set('descritivo', caixa + 'x' + caixinha + 'x' + unidade);
-                var total = parseInt(document.getElementById('add_total').value || 0, 10);
-                fd.set('units', total);
+                var quantidade = parseInt(document.getElementById('add_quantidade').value || 0, 10);
+                fd.set('quantidade', quantidade);
 
                 // incluir area_hospitalar_id no payload se estiver disponível na página
                 try {
-                    var areaInput = document.createElement('input');
-                    areaInput.type = 'hidden';
-                    areaInput.name = 'area_hospitalar_id';
-                    areaInput.value = '{{ $area_id ?? '' }}';
-                    fd.append(areaInput.name, areaInput.value);
-                } catch (e) {
-                    // continue sem area
-                }
+                    fd.append('area_hospitalar_id', '{{ $area_id ?? '' }}');
+                } catch (e) {}
 
-                // Bloquear envio se total for 0
-                if (total <= 0) {
-                    feedbackEl.style.display = 'block';
-                    feedbackEl.className = 'alert alert-danger';
-                    feedbackEl.innerText = 'O total deve ser maior que zero antes de submeter.';
-                    Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = false; });
-                    btnSpinner.style.display = 'none';
-                    return;
-                }
-
+                // Bloquear envio se quantidade for 0
                 var btn = document.getElementById('add_submit_btn');
-                var btnText = document.getElementById('add_submit_text');
                 var btnSpinner = document.getElementById('add_submit_spinner');
                 var feedbackEl = document.getElementById('add_feedback');
+
+                if (quantidade <= 0) {
+                    feedbackEl.style.display = 'block';
+                    feedbackEl.className = 'alert alert-danger';
+                    feedbackEl.innerText = 'A quantidade deve ser maior que zero.';
+                    return;
+                }
 
                 // disable inputs
                 Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = true; });
                 btnSpinner.style.display = 'inline-block';
                 feedbackEl.style.display = 'none';
-                feedbackEl.innerHTML = '';
 
                 fetch('{{ route('estoque.adicionar') }}', {
                     method: 'POST',
@@ -867,27 +811,22 @@
                     if (!response.ok) return response.json().then(function(j) { throw j; });
                     return response.json();
                 }).then(function(data) {
-                    // sucesso
                     feedbackEl.className = 'alert alert-success';
                     feedbackEl.innerText = data.message || 'Adicionado com sucesso';
                     feedbackEl.style.display = 'block';
 
-                    // atualizar tabela
                     try { if (typeof table !== 'undefined' && table.ajax) table.ajax.reload(null, false); else $('#table-c').DataTable().ajax.reload(null, false); } catch (err) {}
 
-                    // fechar modal após pequeno delay para o usuário ver feedback
                     setTimeout(function() {
                         var modalEl = document.getElementById('modalAdicionarEstoque');
                         var modal = bootstrap.Modal.getInstance(modalEl);
                         if (modal) modal.hide();
-                        // restore inputs
                         Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = false; });
                         btnSpinner.style.display = 'none';
                     }, 700);
                 }).catch(function(err) {
                     feedbackEl.style.display = 'block';
                     feedbackEl.className = 'alert alert-danger';
-
                     if (err && err.errors) {
                         var msgs = [];
                         for (var k in err.errors) {
@@ -899,8 +838,6 @@
                     } else {
                         feedbackEl.innerText = 'Erro inesperado';
                     }
-
-                    // restore inputs
                     Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = false; });
                     btnSpinner.style.display = 'none';
                 });
@@ -920,12 +857,16 @@
             };
         });
 
-        function modalDarBaixa(id_produto, descritivo, designacao) { //formBaixaEstoque
+        function modalDarBaixa(id_produto, descritivo, designacao, quantidade) { //formBaixaEstoque
             $('#DarBaixa #formBaixaEstoque #id_produto').val(id_produto);
             $('#DarBaixa #formBaixaEstoque #designacao').val(designacao);
             $('#DarBaixa #formBaixaEstoque #designacao').prop("disabled", true);
-            $('#DarBaixa #formBaixaEstoque #descritivo_').val(descritivo);
-            $('#DarBaixa #formBaixaEstoque #descritivo_').prop("disabled", true);
+
+            // Armazenar quantidade disponível para validação
+            $('#DarBaixa #formBaixaEstoque #quantidade_disponivel').val(quantidade || 0);
+            $('#DarBaixa #formBaixaEstoque #baixa_quantidade').attr('max', quantidade || 0);
+            $('#DarBaixa #formBaixaEstoque #baixa_quantidade').val(''); // limpar campo
+
             // set default movement_date to now (local) formatted for datetime-local
             try {
                 const now = new Date();

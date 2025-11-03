@@ -606,9 +606,10 @@ class EstoqueController extends Controller
     }
 
     /**
-     * Adiciona unidades/caixas a um produto existente via AJAX.
-     * Inputs esperados: produto_id (id do produto_estoque), units (número de unidades a adicionar)
-     * Retorna JSON { message, novo_descritivo, novo_saldo }
+     * Adiciona unidades a um produto existente via AJAX.
+     * Agora usa campo `quantidade` diretamente em vez de calcular do descritivo.
+     * Inputs esperados: produto_id, quantidade
+     * Retorna JSON { message, quantidade }
      */
     public function adicionar(Request $request)
     {
@@ -617,8 +618,7 @@ class EstoqueController extends Controller
         // Validação dos campos esperados da modal
         $request->validate([
             'produto_id' => 'required|exists:produto_estoques,id',
-            'descritivo' => 'required|string',
-            'units' => 'required|integer|min:0',
+            'quantidade' => 'required|integer|min:1',
             'num_lote' => 'nullable|string',
             'fornecedor' => 'nullable|string',
             'obs' => 'nullable|string',
@@ -631,13 +631,7 @@ class EstoqueController extends Controller
             return response()->json(['message' => 'Produto origem não encontrado'], 404);
         }
 
-        $descritivo = $request->descritivo;
-        $units = intval($request->units);
-
-        // Validar que unidades a adicionar seja maior que zero
-        if ($units <= 0) {
-            return response()->json(['message' => 'O total de unidades deve ser maior que zero.'], 422);
-        }
+        $quantidade = intval($request->quantidade);
 
         // Determinar area hospitalar: preferir valor vindo do request, senão usar area do user;
         // se nenhuma estiver disponível, retornamos erro 422 para que frontend peça seleção.
@@ -656,7 +650,8 @@ class EstoqueController extends Controller
             'designacao' => $produtoOrig->designacao,
             'dosagem' => $produtoOrig->dosagem,
             'tipo' => $produtoOrig->tipo,
-            'descritivo' => $descritivo,
+            'descritivo' => $produtoOrig->descritivo, // mantém descritivo original
+            'quantidade' => $quantidade,
             'forma' => $produtoOrig->forma,
             'confirmado' => 1,
             'origem_destino' => $produtoOrig->origem_destino,
@@ -670,71 +665,15 @@ class EstoqueController extends Controller
             'prateleira_id' => $produtoOrig->prateleira_id,
         ];
 
-        // Tentar mesclar com produto existente quando embalagem compatível
+        // Criar novo ProdutoEstoque com o valor direto de quantidade
         DB::beginTransaction();
         try {
-            $merged = false;
-
-            // Normalizar e parse do descritivo atual e do original (tolerante a 'X' maiúsculo e espaços)
-            $normalize = function ($s) {
-                $s = (string) $s;
-                $s = str_replace('X', 'x', $s);
-                $s = preg_replace('/[^0-9x]/', '', $s);
-                return $s;
-            };
-
-            $partsNewRaw = explode('x', $normalize($descritivo));
-            $partsOrigRaw = explode('x', $normalize($produtoOrig->descritivo ?? ''));
-            $partsNew = array_map('intval', array_map('trim', $partsNewRaw));
-            $partsOrig = array_map('intval', array_map('trim', $partsOrigRaw));
-
-            if (count($partsNew) === 3 && count($partsOrig) === 3) {
-                // se caixinha e unidade coincidem, somamos as caixas (respeitando zeros)
-                if ($partsNew[1] === $partsOrig[1] && $partsNew[2] === $partsOrig[2]) {
-                    $newCaixa = $partsOrig[0] + $partsNew[0];
-                    $newDescritivo = "{$newCaixa}x{$partsOrig[1]}x{$partsOrig[2]}";
-
-                    // atualizar produto original e saldo de forma segura
-                    $produtoOrig->descritivo = $newDescritivo;
-                    $produtoOrig->save();
-
-                    $saldo = $produtoOrig->saldo()->first();
-                    if ($saldo) {
-                        $saldo->qtd = $saldo->qtd + $units;
-                        $saldo->save();
-                    } else {
-                        $produtoOrig->saldo()->create(['qtd' => $units]);
-                    }
-
-                    // activity
-                    $meta = [
-                        'model_type' => PE::class,
-                        'model_id' => $produtoOrig->id,
-                        'ip_address' => request()->ip(),
-                        'route' => request()->path(),
-                        'http_method' => request()->method(),
-                        'level' => 'info',
-                        'snapshot_after' => $produtoOrig->toArray(),
-                    ];
-                    self::startAtv("Adicionou {$units} unidades ao produto existente {$produtoOrig->designacao}", null, $meta);
-
-                    DB::commit();
-
-                    return response()->json([
-                        'message' => "{$units} unidades adicionadas ao produto existente",
-                        'produto_id' => $produtoOrig->id,
-                        'novo_descritivo' => $produtoOrig->descritivo
-                    ], 200);
-                }
-            }
-
-            // fallback: criar novo ProdutoEstoque com o descritivo e metadados
             $novoPE = PE::create($dadosPE);
 
             // Cria saldo com quantidade informada
             SE::create([
                 'produto_estoque_id' => $novoPE->id,
-                'qtd' => $units
+                'qtd' => $quantidade
             ]);
 
             // Determinar farmacia/area do usuário atual (mesma lógica do store)
@@ -761,14 +700,13 @@ class EstoqueController extends Controller
                 'level' => 'info',
                 'snapshot_after' => $novoPE->toArray(),
             ];
-            self::startAtv("Adicionou entrada de estoque ({$units} unidades) para {$novoPE->designacao}", null, $meta);
+            self::startAtv("Adicionou entrada de estoque ({$quantidade} unidades) para {$novoPE->designacao}", null, $meta);
 
             DB::commit();
 
             return response()->json([
-                'message' => "{$units} unidades registadas com sucesso",
-                'produto_id' => $novoPE->id,
-                'novo_descritivo' => $novoPE->descritivo
+                'message' => "{$quantidade} unidades registadas com sucesso",
+                'quantidade' => $novoPE->quantidade
             ], 201);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -784,12 +722,12 @@ class EstoqueController extends Controller
         $request->validate([
             'produto_id' => "required|exists:produto_estoques,id",
             'area_hospitalar_id' => "required|exists:areas_hospitalares,id",
-            'qtd' => "required|min:1",
+            'quantidade' => "required|integer|min:1",
             'movement_date' => 'nullable|date',
         ], [
             'produto_id.required' => "Selecione um item na tabela",
             'area_hospitalar_id.required' => "Algo deu errado, por favor atualize a página e tente de novo",
-            'qtd.required' => "Informe uma quatidade"
+            'quantidade.required' => "Informe uma quantidade"
         ]);
 
         $farmacia_id = "";
@@ -800,8 +738,7 @@ class EstoqueController extends Controller
         }
 
         $produto = PE::find($request->produto_id);
-        $descritivo = $produto->descritivo;
-        $qtdBaixar = $request->qtd;
+        $quantidadeBaixar = intval($request->quantidade);
 
         // Interpretar movement_date (opcional) vindo do formulário (datetime-local do browser)
         $movementDate = null;
@@ -813,35 +750,19 @@ class EstoqueController extends Controller
             }
         }
 
-        $produtoMasDescr = downCaixa($descritivo, $qtdBaixar);
+        // Validar se tem quantidade suficiente no saldo
+        $saldoProduto = $produto->saldo;
+        $saldoAtual = $saldoProduto ? $saldoProduto->qtd : 0;
 
-        // if ($produtoMasDescr == 0) {
-        //     $message = "Não restará nada depois desta operação.";
-
-        //     if (request()->wantsJson()) {
-        //         return response()->json(['message' => $message], 400);
-        //     } else {
-        //         return back()->withErrors(['message' => $message]);
-        //     }
-        // }
-
-
-        $newDescritivo = newCaixa($descritivo, $qtdBaixar);
-        $newQtdUnit = getCaixaUnit($newDescritivo);
-        $antigoQtdUnit = getCaixaUnit($descritivo);
-
-        $saldoRestante = $antigoQtdUnit - $newQtdUnit;
-
-        $qt = $newQtdUnit;
-
-        $area_hospitalar_id = $request->area_hospitalar_id;
-
-        if (!($qt >= 0)) {
+        if ($quantidadeBaixar > $saldoAtual) {
             if ($request->ajax()) {
-                return response()->json(['message' => 'Deves informar uma quantidade igual ou inferior da existente'], 401);
+                return response()->json(['message' => 'Quantidade insuficiente em estoque'], 400);
             }
-            return redirect()->back()->with('error', 'Deves informar uma quantidade igual ou inferior da existente');
+            return redirect()->back()->with('error', 'Quantidade insuficiente em estoque');
         }
+
+        $saldoRestante = $saldoAtual - $quantidadeBaixar;
+        $area_hospitalar_id = $request->area_hospitalar_id;
 
         $dataProduto = [
             'designacao' => $produto->designacao,
@@ -886,13 +807,16 @@ class EstoqueController extends Controller
 
         if ($persistDest) {
             if ($isEstoque) {
-                $saldoAtual = $isEstoque->produto->saldo;
-                $saldoAdd = $newQtdUnit;
-                $saldoAtual->update([
-                    'qtd' => $saldoAtual->qtd + $saldoAdd
+                $saldoDestino = $isEstoque->produto->saldo;
+                $saldoDestino->update([
+                    'qtd' => $saldoDestino->qtd + $quantidadeBaixar
                 ]);
 
-                $saldoA = $produto->saldo;
+                // Atualizar quantidade do produto destino
+                $isEstoque->produto->update([
+                    'quantidade' => $isEstoque->produto->quantidade + $quantidadeBaixar
+                ]);
+
                 // registrar histórico: entrada no estoque destino (stock_in)
                 try {
                     ProductHistory::create([
@@ -906,20 +830,22 @@ class EstoqueController extends Controller
                         'user_agent' => request()->header('User-Agent'),
                         'meta' => ['area_hospitalar_id' => $area_hospitalar_id],
                         'movement_date' => $movementDate,
-                        'quantity_delta' => $newQtdUnit,
+                        'quantity_delta' => $quantidadeBaixar,
                     ]);
                 } catch (\Throwable $e) {
                     logger()->error('Falha ao registar product_history stock_in: ' . $e->getMessage());
                 }
             } else {
-                $dataProduto['descritivo'] = $newDescritivo;
+                $dataProduto['descritivo'] = $produto->descritivo; // mantém descritivo original
+                $dataProduto['quantidade'] = $quantidadeBaixar;
                 $novoProduto = PE::create($dataProduto);
-                $saldO = SE::create([
+
+                SE::create([
                     'produto_estoque_id' => $novoProduto->id,
-                    'qtd' => $newQtdUnit
+                    'qtd' => $quantidadeBaixar
                 ]);
 
-                $estoque = Estoque::create([
+                Estoque::create([
                     'produto_estoque_id' => $novoProduto->id,
                     'farmacia_id' => $farmacia_id,
                     'area_hospitalar_id' => $request->area_hospitalar_id
@@ -940,16 +866,16 @@ class EstoqueController extends Controller
                     'user_agent' => request()->header('User-Agent'),
                         'meta' => ['area_hospitalar_id' => $area_hospitalar_id, 'no_persist' => true],
                         'movement_date' => $movementDate,
-                        'quantity_delta' => $newQtdUnit,
+                        'quantity_delta' => $quantidadeBaixar,
                 ]);
             } catch (\Throwable $e) {
                 logger()->error('Falha ao registar product_history (no persist): ' . $e->getMessage());
             }
         }
-        // sinaliza (em memória) que a próxima alteração no modelo vem da operação de baixa
-        \App\Observers\ProdutoEstoqueObserver::markOrigin($produto->id, 'baixa');
+
+        // Atualizar produto origem: reduzir quantidade e saldo
         $produto->update([
-            'descritivo' => $produtoMasDescr
+            'quantidade' => $produto->quantidade - $quantidadeBaixar
         ]);
 
         $produto->saldo->update([
@@ -967,9 +893,9 @@ class EstoqueController extends Controller
                 'payload' => ['to_area' => $area_hospitalar_id, 'num_lote' => $produto->num_lote],
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->header('User-Agent'),
-                'meta' => ['saldo_before' => $antigoQtdUnit, 'saldo_after' => $saldoRestante],
+                'meta' => ['saldo_before' => $saldoAtual, 'saldo_after' => $saldoRestante],
                 'movement_date' => $movementDate,
-                'quantity_delta' => -1 * $newQtdUnit,
+                'quantity_delta' => -1 * $quantidadeBaixar,
             ]);
         } catch (\Throwable $e) {
             logger()->error('Falha ao registar product_history stock_out: ' . $e->getMessage());
@@ -978,9 +904,6 @@ class EstoqueController extends Controller
         $ud = UAH::where('area_hospitalar_id', $area_hospitalar_id)
             ->where('farmacia_id', $farmacia_id)
             ->first();
-
-        $caixas = getCaixa($newDescritivo);
-        $unit = getCaixaUnit($newDescritivo);
 
         $meta = [
             'model_type' => PE::class,
@@ -992,17 +915,8 @@ class EstoqueController extends Controller
             'snapshot_before' => $produto->toArray(),
         ];
 
-        // Evitar acesso a propriedades em null: UAH pode não existir.
-        // Buscamos nomes de origem/destino de forma defensiva para garantir mensagem "do X para Y".
-        $originName = 'Área origem';
+        // Determinar nome da área de destino
         $destName = 'Área destinatária';
-        try {
-            $origin = AH::find($area_de);
-            if ($origin && isset($origin->nome)) $originName = $origin->nome;
-        } catch (\Throwable $_) {
-            // ignore
-        }
-
         try {
             // preferir UAH->area_hospitalar quando disponível
             if ($ud && isset($ud->area_hospitalar) && $ud->area_hospitalar) {
@@ -1017,12 +931,12 @@ class EstoqueController extends Controller
 
         $udUserId = $ud->user_id ?? null;
 
-        self::startAtv("Deu baixa de {$caixas} caixas, o equivalente a {$unit} unidades de {$dataProduto['designacao']} para {$destName}", null, $meta);
+        self::startAtv("Deu baixa de {$quantidadeBaixar} unidades de {$dataProduto['designacao']} para {$destName}", null, $meta);
         if ($udUserId) {
             self::setNotify("Confirmação de entrada de estoque", $udUserId);
         }
 
-        $texto = ($this->currentUser()->nome ?? '') . " deu baixa de {$caixas} caixas de {$dataProduto['designacao']} para {$destName}";
+        $texto = ($this->currentUser()->nome ?? '') . " deu baixa de {$quantidadeBaixar} unidades de {$dataProduto['designacao']} para {$destName}";
         //self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
 
         // return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);
