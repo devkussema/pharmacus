@@ -13,12 +13,26 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            gap: 8px;
-            padding: 10px;
+            gap: 6px;
+            padding: 8px 12px;
         }
 
         .action-buttons button {
             margin: 0;
+            font-size: 0.8125rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .action-buttons button i {
+            font-size: 0.75rem;
+        }
+
+        .action-buttons button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
         /* Overlay de loading */
@@ -581,25 +595,25 @@
                 // Criar e inserir nova linha de ação
                 var actionRow = `
                     <tr class="action-row">
-                        <td colspan="11">
+                        <td colspan="12">
                             <div class="action-buttons">
-                                <button class="btn btn-success btn-add" data-id="${data.produto.id}" data-descritivo="${data.produto.descritivo}" title="Adicionar" aria-label="Adicionar">
-                                    <i class="fa fa-plus me-1" aria-hidden="true"></i> Adicionar
+                                <button class="btn btn-sm btn-success btn-add" data-id="${data.produto.id}" data-descritivo="${data.produto.descritivo}" title="Adicionar">
+                                    <i class="fa fa-plus"></i> Adicionar
                                 </button>
-                                <button class="btn btn-primary btn-editar" data-id="${data.produto.id}" title="Editar" aria-label="Editar">
-                                    <i class="fa fa-edit me-1" aria-hidden="true"></i> Editar
+                                <button class="btn btn-sm btn-primary btn-editar" data-id="${data.produto.id}" title="Editar">
+                                    <i class="fa fa-edit"></i> Editar
                                 </button>
-                                <button class="btn btn-secondary btn-sincronizar" data-id="${data.produto.id}" title="Sincronizar" aria-label="Sincronizar">
-                                    <i class="fa fa-sync me-1" aria-hidden="true"></i> Sincronizar
+                                <button class="btn btn-sm btn-secondary btn-sincronizar" data-id="${data.produto.id}" title="Sincronizar">
+                                    <i class="fa fa-sync"></i> Sincronizar
                                 </button>
-                                <button class="btn btn-outline-info btn-historico" data-id="${data.produto.id}" title="Ver Histórico" aria-label="Histórico">
-                                    <i class="fa fa-history me-1"></i> Histórico
+                                <button class="btn btn-sm btn-info btn-historico" data-id="${data.produto.id}" title="Histórico">
+                                    <i class="fa fa-history"></i> Histórico
                                 </button>
-                                <button class="btn btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-quantidade="${data.produto.quantidade || 0}" title="Dar Baixa" aria-label="Dar Baixa">
-                                    <i class="fa fa-arrow-down me-1" aria-hidden="true"></i> Dar Baixa
+                                <button class="btn btn-sm btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-quantidade="${data.produto.quantidade || 0}" title="Dar Baixa">
+                                    <i class="fa fa-arrow-down"></i> Dar Baixa
                                 </button>
-                                <button class="btn btn-danger btn-eliminar-item" data-id="${data.produto.id}" title="Eliminar" aria-label="Eliminar">
-                                    <i class="fa fa-trash me-1" aria-hidden="true"></i> Eliminar
+                                <button class="btn btn-sm btn-danger btn-eliminar-item" data-id="${data.produto.id}" title="Eliminar">
+                                    <i class="fa fa-trash"></i> Eliminar
                                 </button>
                             </div>
                         </td>
@@ -668,8 +682,41 @@
                         var action = item.action || 'updated';
                         var icon = actionIcons[action] || 'fa-circle';
                         var userName = item.user ? item.user.name : 'Sistema';
-                        var createdFmt = item.movement_date_fmt || item.created_at_fmt || '';
+
+                        // Formatar data profissionalmente
+                        var createdAt = item.created_at || item.movement_date;
+                        var dateFormatted = '';
+                        var timeFormatted = '';
+
+                        if (createdAt) {
+                            try {
+                                var d = new Date(createdAt);
+                                var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                                dateFormatted = d.getDate().toString().padStart(2, '0') + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+                                timeFormatted = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+                            } catch(e) {
+                                dateFormatted = item.movement_date_fmt || item.created_at_fmt || '';
+                            }
+                        }
+
                         var labelPT = actionLabelsPT[action] || (action || '').replace('_', ' ');
+
+                        // Extrair informações detalhadas
+                        var detailsHtml = '';
+                        if (item.payload) {
+                            var details = [];
+                            if (item.payload.num_lote) details.push('<strong>Lote:</strong> ' + item.payload.num_lote);
+                            if (item.payload.fornecedor) details.push('<strong>Fornecedor:</strong> ' + item.payload.fornecedor);
+                            if (item.payload.to_area) details.push('<strong>Para área:</strong> ID ' + item.payload.to_area);
+                            if (item.payload.obs) details.push('<strong>Obs:</strong> ' + item.payload.obs);
+                            if (details.length > 0) {
+                                detailsHtml = '<div class="history-message">' + details.join(' • ') + '</div>';
+                            }
+                        }
+
+                        if (!detailsHtml && item.summary_pt) {
+                            detailsHtml = '<div class="history-message">' + item.summary_pt + '</div>';
+                        }
 
                         var el = document.createElement('div');
                         el.className = 'history-item';
@@ -687,11 +734,13 @@
                                                 <span class="history-user">
                                                     <i class="fa fa-user-circle"></i> ${userName}
                                                 </span>
+                                                ${dateFormatted ? '<span class="history-time"><i class="fa fa-calendar"></i> ' + dateFormatted + '</span>' : ''}
+                                                ${timeFormatted ? '<span class="history-time"><i class="fa fa-clock"></i> ' + timeFormatted + '</span>' : ''}
                                             </div>
                                         </div>
                                         <span class="history-qty ${qtyClass}">${qtyText}</span>
                                     </div>
-                                    ${item.summary_pt ? '<div class="history-message">'+item.summary_pt+'</div>' : (item.payload && item.payload.num_lote ? '<div class="history-message">Lote: <strong>'+item.payload.num_lote+'</strong>' + (item.payload.obs ? ' • ' + item.payload.obs : '') + '</div>' : '')}
+                                    ${detailsHtml}
                                 </div>
                             </div>`;
                         timeline.appendChild(el);
