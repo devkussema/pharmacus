@@ -74,23 +74,9 @@
                         <div class="" id="repetir_">
                             <div class="" id="item_descartavelq" style="">
                                 <div class="row">
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Caixa *</label>
-                                        <input type="number" name="caixa" value="{{ getCaixa($pe->descritivo) }}" id="caixa" class="form-control">
-                                    </div>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Caixinha *</label>
-                                        <input type="number" name="caxinha" value="{{ getCaixinha($pe->descritivo) }}" id="caxinha" class="form-control">
-                                    </div>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Unidade *</label>
-                                        <input type="number" name="unidade" id="unidade" value="{{ getUnit($pe->descritivo) }}" class="form-control" onblur="setDescritivo()">
-                                    </div>
-                                    <input type="text" id="descritivo" name="descritivo" hidden>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Total</label>
-                                        <input type="number" id="qtd_total_estoque" class="form-control" name="qtd_total"
-                                            disabled="true">
+                                    <div class="col-md-6 pb-3">
+                                        <label class="mb-2">Quantidade *</label>
+                                        <input type="number" name="quantidade" value="{{ $pe->quantidade }}" id="quantidade" class="form-control" min="0" required>
                                     </div>
                                 </div>
                             </div>

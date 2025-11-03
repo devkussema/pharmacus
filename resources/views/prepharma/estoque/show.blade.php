@@ -20,7 +20,45 @@
         .action-buttons button {
             margin: 0;
         }
+
+        /* Overlay de loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
+
+    <!-- Overlay de Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
     <div class="content">
         @include('partials.session')
         <div class="page-header">
@@ -158,6 +196,10 @@
                             <div class="form-group pb-3">
                                 <input type="hidden" name="produto_id" id="id_produto">
                                 <input type="hidden" name="quantidade_disponivel" id="quantidade_disponivel">
+
+                                <label for="quantidade_atual_display">Quantidade Atual (unidades)</label>
+                                <input type="number" name="quantidade_atual_display" class="form-control form-control-lg mb-3" id="quantidade_atual_display" disabled>
+
                                 <label for="qtd_">Quantidade a Transferir (unidades) *</label>
                                 <input type="number" name="quantidade" class="form-control form-control-lg" id="baixa_quantidade"
                                     placeholder="Ex: 100" min="1" required>
@@ -341,6 +383,9 @@
                 var produtoId = $(this).data('id');
                 var offcanvasEl = document.getElementById('offcanvasRight');
                 var offcanvas = new bootstrap.Offcanvas(offcanvasEl);
+
+                // Mostrar overlay de loading
+                document.getElementById('loadingOverlay').classList.add('active');
 
                 // limpar conteúdo anterior (menos o exemplo)
                 var timeline = document.getElementById('history_timeline');
@@ -529,6 +574,8 @@
                         document.getElementById('history_empty').style.display = 'block';
                         document.getElementById('offcanvasRightSubtitle').innerText = 'Erro ao carregar';
                     }).finally(function() {
+                        // Esconder overlay quando o offcanvas for exibido
+                        document.getElementById('loadingOverlay').classList.remove('active');
                         offcanvas.show();
                         if (loader) loader.style.display = 'none';
                     });
@@ -864,6 +911,7 @@
 
             // Armazenar quantidade disponível para validação
             $('#DarBaixa #formBaixaEstoque #quantidade_disponivel').val(quantidade || 0);
+            $('#DarBaixa #formBaixaEstoque #quantidade_atual_display').val(quantidade || 0);
             $('#DarBaixa #formBaixaEstoque #baixa_quantidade').attr('max', quantidade || 0);
             $('#DarBaixa #formBaixaEstoque #baixa_quantidade').val(''); // limpar campo
 

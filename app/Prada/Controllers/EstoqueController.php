@@ -79,9 +79,7 @@ class EstoqueController extends Controller
             'designacao' => 'required',
             'tipo' => 'required',
             'dosagem' => 'nullable',
-            'caixa' => 'required',
-            'caxinha' => 'required',
-            'unidade' => 'required',
+            'quantidade' => 'required|integer|min:0',
             'num_lote' => 'required',
             'num_documento' => 'nullable',
             'data_producao' => 'nullable',
@@ -92,7 +90,9 @@ class EstoqueController extends Controller
             'prateleira_id' => 'required'
         ], [
             '*.required' => 'O campo :attribute é obrigatório.',
-            '*.nullable' => 'O campo :attribute é opcional.'
+            '*.nullable' => 'O campo :attribute é opcional.',
+            'quantidade.integer' => 'A quantidade deve ser um número inteiro.',
+            'quantidade.min' => 'A quantidade deve ser no mínimo 0.'
         ]);
 
         $estoque = PE::findOrFail($id);
@@ -103,7 +103,7 @@ class EstoqueController extends Controller
             'designacao' => $request->input('designacao'),
             'tipo' => $request->input('tipo'),
             'dosagem' => $request->input('dosagem'),
-            'descritivo' => "{$request->input('caixa')}x{$request->input('caxinha')}x{$request->input('unidade')}",
+            'quantidade' => $request->input('quantidade'),
             'num_lote' => $request->input('num_lote'),
             'num_documento' => $request->input('num_documento'),
             'data_producao' => $request->input('data_producao'),
@@ -118,11 +118,11 @@ class EstoqueController extends Controller
 
         if ($estoque->saldo) {
             $estoque->saldo->update([
-                'qtd' => $request->input('qtd_total')
+                'qtd' => $request->input('quantidade')
             ]);
         } else {
             $estoque->saldo()->create([
-                'qtd' => $request->input('qtd_total')
+                'qtd' => $request->input('quantidade')
             ]);
         }
 
