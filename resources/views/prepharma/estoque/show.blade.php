@@ -52,12 +52,248 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* ========== Modal Estilo Offcanvas ========== */
+        .modal-offcanvas-style .modal-dialog {
+            position: fixed;
+            margin: 0;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            max-width: 500px;
+            width: 100%;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .modal-offcanvas-style.show .modal-dialog {
+            transform: translateX(0);
+        }
+
+        .modal-offcanvas-style .modal-content {
+            height: 100%;
+            border: 0;
+            border-radius: 0;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+        }
+
+        .modal-offcanvas-style .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+        }
+
+        .modal-offcanvas-style .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+        }
+
+        .modal-offcanvas-style .modal-header .btn-close:hover {
+            opacity: 1;
+        }
+
+        .modal-offcanvas-style .modal-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .modal-offcanvas-style .modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal-offcanvas-style .form-label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-offcanvas-style .form-control,
+        .modal-offcanvas-style textarea {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .modal-offcanvas-style .form-control:focus,
+        .modal-offcanvas-style textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-offcanvas-style .btn {
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .modal-offcanvas-style .btn-success {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+
+        .modal-offcanvas-style .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* ========== Toast Notifications ========== */
+        .toast-container-custom {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-custom {
+            min-width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease-out;
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        .toast-custom.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast-custom.hiding {
+            animation: slideOutRight 0.3s ease-in forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        .toast-custom .toast-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .toast-custom.toast-success .toast-icon {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .toast-custom.toast-error .toast-icon {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .toast-custom.toast-info .toast-icon {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .toast-custom.toast-warning .toast-icon {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .toast-custom .toast-content {
+            flex: 1;
+        }
+
+        .toast-custom .toast-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .toast-custom.toast-success .toast-title {
+            color: #065f46;
+        }
+
+        .toast-custom.toast-error .toast-title {
+            color: #991b1b;
+        }
+
+        .toast-custom.toast-info .toast-title {
+            color: #1e40af;
+        }
+
+        .toast-custom.toast-warning .toast-title {
+            color: #92400e;
+        }
+
+        .toast-custom .toast-message {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .toast-custom .toast-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .toast-custom .toast-close:hover {
+            color: #4b5563;
+        }
+
+        /* Spinner personalizado */
+        .spinner-custom {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
     </style>
 
     <!-- Overlay de Loading -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
     </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container-custom" id="toastContainer"></div>
 
     <div class="content">
         @include('partials.session')
@@ -240,6 +476,61 @@
 
     </div>
     <script>
+        // ========== Sistema de Toast Notifications ==========
+        /**
+         * Exibe uma notificação toast elegante
+         * @author Augusto Kussema
+         * @date 03/11/2025 às 14:30 (Luanda)
+         * @param {string} message - Mensagem principal
+         * @param {string} type - Tipo: 'success', 'error', 'info', 'warning'
+         * @param {string} title - Título opcional
+         * @param {number} duration - Duração em ms (padrão: 4000)
+         */
+        function showToast(message, type = 'info', title = '', duration = 4000) {
+            const icons = {
+                success: '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>',
+                error: '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>',
+                info: '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>',
+                warning: '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>'
+            };
+
+            const titles = {
+                success: title || 'Sucesso!',
+                error: title || 'Erro!',
+                info: title || 'Informação',
+                warning: title || 'Atenção!'
+            };
+
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast-custom toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type] || icons.info}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
         $(document).ready(function() {
 
             $('.solicitar-produto .js-example-basic-multiple').select2();
@@ -618,15 +909,16 @@
                 var produtoId = $(this).data('id');
 
                 $.ajax({
-                    url: '/api/produtos_/' + produtoId, // Substitua pela sua URL de API
+                    url: '/api/produtos_/' + produtoId,
                     type: 'DELETE',
                     success: function(response) {
-                        $('#confirmDeleteModal').modal('hide'); // Fecha a modal
-                        table.ajax.reload(); // Recarrega a tabela
+                        $('#confirmDeleteModal').modal('hide');
+                        showToast('Produto eliminado com sucesso!', 'success', 'Eliminado!');
+                        table.ajax.reload();
                     },
                     error: function(xhr) {
                         console.error("Erro ao excluir: ${produtoId}", xhr.responseText);
-                        alert("Erro ao excluir o produto. ${produtoId}");
+                        showToast('Erro ao eliminar o produto', 'error', 'Erro!');
                     }
                 });
             });
@@ -643,35 +935,31 @@
                 var btn = $(this);
                 var originalHtml = btn.html();
 
-                btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i> Sincronizando...');
+                btn.prop('disabled', true).html('<span class="spinner-custom"></span> <span class="ms-2">Sincronizando...</span>');
 
                 $.ajax({
                     url: '{{ route('estoque.sincronizar') }}',
                     type: 'POST',
                     data: { produto_id: produtoId, _token: '{{ csrf_token() }}' },
                     success: function(response) {
+                        showToast(
+                            response.message || 'Quantidade sincronizada: ' + response.quantidade + ' unidades',
+                            'success',
+                            'Sincronizado!'
+                        );
+
                         btn.html('<i class="fa fa-check me-1"></i> Sincronizado!').removeClass('btn-secondary').addClass('btn-success');
 
                         setTimeout(function() {
                             table.ajax.reload(null, false);
                             btn.html(originalHtml).removeClass('btn-success').addClass('btn-secondary');
-                        }, 1200);
-
-                        if (window.alertify && alertify.success) {
-                            alertify.success(response.message || 'Quantidade sincronizada: ' + response.quantidade);
-                        }
+                            btn.prop('disabled', false);
+                        }, 1500);
                     },
                     error: function(xhr) {
-                        btn.html(originalHtml);
+                        btn.html(originalHtml).prop('disabled', false);
                         var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Erro ao sincronizar';
-                        if (window.alertify && alertify.error) {
-                            alertify.error(msg);
-                        } else {
-                            alert(msg);
-                        }
-                    },
-                    complete: function() {
-                        setTimeout(function() { btn.prop('disabled', false); }, 1200);
+                        showToast(msg, 'error', 'Erro na sincronização');
                     }
                 });
             });
@@ -746,46 +1034,77 @@
         (function insertAddModal() {
             if (!document.getElementById('modalAdicionarEstoque')) {
                 var modalHtml = `
-                <div class="modal fade" id="modalAdicionarEstoque" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
+                <div class="modal fade modal-offcanvas-style" id="modalAdicionarEstoque" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                    <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Adicionar Estoque - Preencher detalhes</h5>
+                                <div>
+                                    <h5 class="modal-title">
+                                        <i class="fa fa-plus-circle me-2"></i>
+                                        Adicionar Estoque
+                                    </h5>
+                                    <small style="opacity: 0.9; font-size: 0.85rem;">Preencher detalhes do produto</small>
+                                </div>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="formAdicionarEstoque" class="row g-3">
+                                <form id="formAdicionarEstoque">
                                     <input type="hidden" name="produto_id" id="add_produto_id">
 
-                                    <div class="col-12">
-                                        <label class="form-label fw-bold">Quantidade a Adicionar (unidades)</label>
-                                        <input type="number" min="1" class="form-control form-control-lg" id="add_quantidade" name="quantidade" value="0" required>
-                                        <small class="text-muted">Informe a quantidade total em unidades</small>
+                                    <div class="mb-4">
+                                        <label class="form-label">
+                                            <i class="fa fa-box me-1"></i>
+                                            Quantidade a Adicionar (unidades) *
+                                        </label>
+                                        <input type="number" min="1" class="form-control form-control-lg"
+                                               id="add_quantidade" name="quantidade" value="0"
+                                               placeholder="Ex: 500" required>
+                                        <small class="text-muted d-block mt-2">
+                                            <i class="fa fa-info-circle me-1"></i>
+                                            Informe a quantidade total em unidades
+                                        </small>
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <label class="form-label">Lote</label>
-                                        <input type="text" class="form-control" id="add_lote" name="num_lote">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Fornecedor</label>
-                                        <input type="text" class="form-control" id="add_fornecedor" name="fornecedor">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">
+                                                <i class="fa fa-barcode me-1"></i>
+                                                Lote
+                                            </label>
+                                            <input type="text" class="form-control" id="add_lote"
+                                                   name="num_lote" placeholder="Ex: L2024-001">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">
+                                                <i class="fa fa-truck me-1"></i>
+                                                Fornecedor
+                                            </label>
+                                            <input type="text" class="form-control" id="add_fornecedor"
+                                                   name="fornecedor" placeholder="Nome do fornecedor">
+                                        </div>
                                     </div>
 
-                                    <div class="col-12">
-                                        <label class="form-label">Observações</label>
-                                        <textarea class="form-control" id="add_obs" name="obs" rows="3"></textarea>
-                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">
+                                            <i class="fa fa-comment me-1"></i>
+                                            Observações
+                                        </label>
+                                        <textarea class="form-control" id="add_obs" name="obs"
+                                                  rows="3" placeholder="Observações adicionais (opcional)"></textarea>
                                     </div>
 
-                                    <div class="col-12">
-                                        <div id="add_feedback" class="mb-2" style="display:none;"></div>
-                                    </div>
-                                    <div class="col-12 text-end">
-                                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-success" id="add_submit_btn">
-                                            <span id="add_submit_text">Adicionar</span>
-                                            <span id="add_submit_spinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display:none;"></span>
+                                    <div class="d-flex gap-2 pt-3 border-top">
+                                        <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">
+                                            <i class="fa fa-times me-2"></i>Cancelar
+                                        </button>
+                                        <button type="submit" class="btn btn-success flex-fill" id="add_submit_btn">
+                                            <span id="add_submit_text">
+                                                <i class="fa fa-check me-2"></i>Adicionar
+                                            </span>
+                                            <span id="add_submit_spinner" style="display:none;">
+                                                <span class="spinner-custom"></span>
+                                                <span class="ms-2">Processando...</span>
+                                            </span>
                                         </button>
                                     </div>
                                 </form>
@@ -815,7 +1134,7 @@
             modal.show();
         });
 
-        // Envio via AJAX (melhor UX: spinner, disable inputs, feedback inline)
+        // Envio via AJAX (melhor UX: spinner, disable inputs, toast notifications)
         document.addEventListener('submit', function(e) {
             if (e.target && e.target.id === 'formAdicionarEstoque') {
                 e.preventDefault();
@@ -830,22 +1149,23 @@
                     fd.append('area_hospitalar_id', '{{ $area_id ?? '' }}');
                 } catch (e) {}
 
-                // Bloquear envio se quantidade for 0
-                var btn = document.getElementById('add_submit_btn');
-                var btnSpinner = document.getElementById('add_submit_spinner');
-                var feedbackEl = document.getElementById('add_feedback');
-
+                // Validar quantidade
                 if (quantidade <= 0) {
-                    feedbackEl.style.display = 'block';
-                    feedbackEl.className = 'alert alert-danger';
-                    feedbackEl.innerText = 'A quantidade deve ser maior que zero.';
+                    showToast('A quantidade deve ser maior que zero', 'error');
                     return;
                 }
 
-                // disable inputs
-                Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = true; });
-                btnSpinner.style.display = 'inline-block';
-                feedbackEl.style.display = 'none';
+                // UI elements
+                var btn = document.getElementById('add_submit_btn');
+                var btnText = document.getElementById('add_submit_text');
+                var btnSpinner = document.getElementById('add_submit_spinner');
+
+                // Disable form
+                Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) {
+                    i.disabled = true;
+                });
+                btnText.style.display = 'none';
+                btnSpinner.style.display = 'inline-flex';
 
                 fetch('{{ route('estoque.adicionar') }}', {
                     method: 'POST',
@@ -858,34 +1178,51 @@
                     if (!response.ok) return response.json().then(function(j) { throw j; });
                     return response.json();
                 }).then(function(data) {
-                    feedbackEl.className = 'alert alert-success';
-                    feedbackEl.innerText = data.message || 'Adicionado com sucesso';
-                    feedbackEl.style.display = 'block';
+                    showToast(data.message || 'Estoque adicionado com sucesso!', 'success');
 
-                    try { if (typeof table !== 'undefined' && table.ajax) table.ajax.reload(null, false); else $('#table-c').DataTable().ajax.reload(null, false); } catch (err) {}
+                    // Reload table
+                    try {
+                        if (typeof table !== 'undefined' && table.ajax) {
+                            table.ajax.reload(null, false);
+                        } else {
+                            $('#table-c').DataTable().ajax.reload(null, false);
+                        }
+                    } catch (err) {}
 
+                    // Close modal after short delay
                     setTimeout(function() {
                         var modalEl = document.getElementById('modalAdicionarEstoque');
                         var modal = bootstrap.Modal.getInstance(modalEl);
                         if (modal) modal.hide();
-                        Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = false; });
+
+                        // Reset form
+                        form.reset();
+                        Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) {
+                            i.disabled = false;
+                        });
+                        btnText.style.display = 'inline-flex';
                         btnSpinner.style.display = 'none';
-                    }, 700);
+                    }, 800);
                 }).catch(function(err) {
-                    feedbackEl.style.display = 'block';
-                    feedbackEl.className = 'alert alert-danger';
+                    var errorMsg = 'Erro ao adicionar estoque';
+
                     if (err && err.errors) {
                         var msgs = [];
                         for (var k in err.errors) {
                             if (err.errors.hasOwnProperty(k)) msgs.push(err.errors[k][0]);
                         }
-                        feedbackEl.innerHTML = msgs.join('<br>');
+                        errorMsg = msgs.join(', ');
                     } else if (err && err.message) {
-                        feedbackEl.innerText = err.message;
-                    } else {
-                        feedbackEl.innerText = 'Erro inesperado';
+                        errorMsg = err.message;
                     }
-                    Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) { i.disabled = false; });
+
+                    showToast(errorMsg, 'error');
+
+                    // Re-enable form
+                    Array.from(form.querySelectorAll('input, textarea, button')).forEach(function(i) {
+                        i.disabled = false;
+                    });
+                    btnText.style.display = 'inline-flex';
                     btnSpinner.style.display = 'none';
                 });
             }
