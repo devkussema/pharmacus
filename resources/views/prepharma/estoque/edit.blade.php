@@ -539,10 +539,11 @@ $(document).ready(function() {
 
     // Validação do formulário antes de submeter
     $('#editForm').on('submit', function(e) {
+        e.preventDefault();
+        
         const quantidade = parseInt($('#quantidade').val());
 
         if (isNaN(quantidade) || quantidade < 0) {
-            e.preventDefault();
             alert('Por favor, insira uma quantidade válida (maior ou igual a 0)');
             $('#quantidade').focus();
             return false;
@@ -553,11 +554,85 @@ $(document).ready(function() {
         const dataExpiracao = new Date($('input[name="data_expiracao"]').val());
 
         if (dataExpiracao <= dataProducao) {
-            e.preventDefault();
             alert('A data de expiração deve ser posterior à data de produção');
             $('input[name="data_expiracao"]').focus();
             return false;
         }
+
+        // Submit via AJAX com toast e redirecionamento
+        const form = $(this);
+        const formData = new FormData(this);
+        const submitBtn = $('button[type="submit"]');
+        const originalHtml = submitBtn.html();
+
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Atualizando...');
+
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                // Criar toast de sucesso
+                const toastHtml = `
+                    <div class="toast-custom toast-success" style="position:fixed; top:20px; right:20px; z-index:10000;">
+                        <div class="toast-icon">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="toast-content">
+                            <div class="toast-title">Sucesso!</div>
+                            <div class="toast-message">${response.message || 'Produto atualizado com sucesso! Redirecionando...'}</div>
+                        </div>
+                    </div>`;
+                
+                $('body').append(toastHtml);
+
+                // Redirecionar após 1.5 segundos
+                setTimeout(function() {
+                    const returnID = $('input[name="returnID"]').val() || '{{ $returnID }}';
+                    window.location.href = `/estoque/show/${returnID}`;
+                }, 1500);
+            },
+            error: function(xhr) {
+                let errorMsg = 'Erro ao atualizar produto';
+
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    const errorMessages = [];
+                    for (let field in errors) {
+                        errorMessages.push(errors[field][0]);
+                    }
+                    errorMsg = errorMessages.join(', ');
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                }
+
+                const toastHtml = `
+                    <div class="toast-custom toast-error" style="position:fixed; top:20px; right:20px; z-index:10000;">
+                        <div class="toast-icon">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="toast-content">
+                            <div class="toast-title">Erro!</div>
+                            <div class="toast-message">${errorMsg}</div>
+                        </div>
+                    </div>`;
+                
+                $('body').append(toastHtml);
+
+                submitBtn.prop('disabled', false).html(originalHtml);
+
+                // Remove toast após 4 segundos
+                setTimeout(function() {
+                    $('.toast-custom').remove();
+                }, 4000);
+            }
+        });
     });
 
     // Adicionar classe de animação ao focar nos inputs

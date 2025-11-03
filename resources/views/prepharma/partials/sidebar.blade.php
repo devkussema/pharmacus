@@ -35,6 +35,24 @@
                     </li>
                 @endif
 
+                {{-- Estoque: usuários com área hospitalar ou permissão específica --}}
+                @if (Auth::check() && (Auth::user()->area_hospitalar || Auth::user()->hasAnyRole(['Admin','Gerente']) || vPerm('estoque', ['ver'])))
+                    @php
+                        $areaHospitalarId = Auth::user()->area_hospitalar->area_hospitalar_id ?? 
+                                           Auth::user()->userAreaHospitalar->area_hospitalar_id ?? null;
+                    @endphp
+                    @if($areaHospitalarId)
+                        <li class="{{ Route::currentRouteName() == 'estoque.myEstoque' ? 'active' : '' }}">
+                            <a href="{{ route('estoque.myEstoque', ['id' => $areaHospitalarId]) }}" class="sidebar-link" data-route="estoque.myEstoque">
+                                <span class="menu-side">
+                                    <i class="fas fa-boxes"></i>
+                                </span>
+                                <span> Estoque </span>
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
                 {{-- Funcionários: administradores, gerentes ou quem tem permissão explícita --}}
                 @if (Auth::check() && (Auth::user()->hasAnyRole(['Admin','Gerente']) || vPerm('funcionario', ['ver'])))
                     <li class="{{ Route::currentRouteName() == 'gerente.funcionarios.index' ? 'active' : '' }}">

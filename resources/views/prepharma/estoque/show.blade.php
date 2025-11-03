@@ -4,35 +4,187 @@
 
 @section('content')
     <style>
-        .action-row {
-            background-color: #f8f9fa;
+        /* ========== Design Moderno Página Estoque ========== */
+        .estoque-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
         }
 
-        /* Coloca os botões alinhados à esquerda com espaçamento consistente */
+        .estoque-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .estoque-header h3 {
+            color: white;
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .estoque-header h3 i {
+            font-size: 1.5rem;
+        }
+
+        .estoque-card {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .estoque-card .card-body {
+            padding: 2rem;
+        }
+
+        /* Toolbar de Ações */
+        .toolbar-actions {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .toolbar-actions .search-box {
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+        }
+
+        .toolbar-actions .search-box input {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.2s;
+        }
+
+        .toolbar-actions .search-box input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .toolbar-actions .action-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-actions .btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toolbar-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toolbar-actions .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+
+        /* Tabela Moderna */
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .custom-table {
+            margin: 0;
+        }
+
+        .custom-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .custom-table thead th {
+            color: white;
+            font-weight: 600;
+            padding: 1rem;
+            border: none;
+            text-transform: uppercase;
+            font-size: 0.8125rem;
+            letter-spacing: 0.5px;
+        }
+
+        .custom-table tbody tr {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .custom-table tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+        }
+
+        .custom-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* Action Row */
+        .action-row {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e2e8f0 100%);
+            border-left: 4px solid #667eea;
+        }
+
         .action-buttons {
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            flex-wrap: wrap;
         }
 
         .action-buttons button {
             margin: 0;
-            font-size: 0.8125rem;
-            padding: 0.375rem 0.75rem;
-            border-radius: 6px;
-            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .action-buttons button i {
-            font-size: 0.75rem;
+            font-size: 0.875rem;
         }
 
-        .action-buttons button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        .action-buttons button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Badges de Status */
+        .badge {
+            padding: 0.5rem 0.875rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8125rem;
         }
 
         /* Overlay de loading */
@@ -42,7 +194,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -54,17 +207,68 @@
         }
 
         .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top: 4px solid white;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
+            width: 60px;
+            height: 60px;
+            animation: spin 0.8s linear infinite;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Breadcrumb Moderno */
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .breadcrumb-item {
+            font-size: 0.9375rem;
+            color: #718096;
+        }
+
+        .breadcrumb-item.active {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-item a:hover {
+            color: #764ba2;
+        }
+
+        /* Botões de Ferramentas (PDF, etc) */
+        .tool-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .tool-buttons a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tool-buttons a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         /* ========== Modal Estilo Offcanvas ========== */
@@ -309,119 +513,137 @@
     <!-- Toast Container -->
     <div class="toast-container-custom" id="toastContainer"></div>
 
-    <div class="content">
+    <div class="content estoque-container">
         @include('partials.session')
-        <div class="page-header">
-            <div class="row">
-                <div class="col-sm-12">
-                    <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('a_h.index') }}">Áreas Hospitalares</a></li>
-                        <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                        <li class="breadcrumb-item active">Ver todas</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('a_h.index') }}"><i class="fas fa-hospital me-1"></i>Áreas Hospitalares</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Estoque {{ $ah->nome }}</li>
+            </ol>
+        </nav>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card card-table show-entire">
-                    <div class="card-body">
-                        <div class="page-table-header mb-2">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <div class="doctor-table-blk">
-                                        <h3>Estoque {{ $ah->nome }}</h3>
-                                        <div class="doctor-search-blk mt-2">
-                                            <div class="top-nav-search table-search-blk">
-                                                <form id="form_search" method="POST">
-                                                    <input type="text" id="search-table"
-                                                        class="form-control outline-success" placeholder="Procure aqui">
-                                                    <a class="btn">
-                                                        <img src="{{ asset('prepharma/img/icons/search-normal.svg') }}" alt>
-                                                    </a>
-                                                </form>
-                                            </div>
-                                            <div class="add-group">
-                                                @if (isAdministrator() or auth()->user()->pode_cadastrar_produtos)
-                                                    <button
-                                                        onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'"
-                                                        class="btn btn-rounded btn-outline-primary ms-2">
-                                                        <img src="{{ asset('prepharma/img/icons/plus.svg') }}" alt>
-                                                        Adicionar Produto
-                                                    </button>
-                                                @endif
-                                                <button
-                                                    onclick="location.href = '{{ route('estoque.solicitar', ['id' => $ah->id]) }}';"
-                                                    class="btn btn-rounded btn-outline-success ms-2">
-                                                    <i class="fa fa-box"></i>
-                                                    Solicitar
-                                                </button>
-                                                <button
-                                                    onclick="location.href = '{{ route('estoque._minimo', ['id' => $ah->id]) }}';"
-                                                    class="btn btn-rounded btn-outline-success ms-2">
-                                                    <i class="fa fa-box"></i>
-                                                    Adicionar Estoque Minimo
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-auto text-end float-end ms-auto download-grp">
-                                    <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}" id="imprimir-pagina"
-                                        target="_blank" class=" me-2">
-                                        <img src="{{ asset('prepharma/img/icons/pdf-icon-01.svg') }}" alt>
-                                    </a>
-                                    {{-- <a href="javascript:;" class=" me-2"><img
-                                            src="{{ asset('prepharma/img/icons/pdf-icon-02.svg') }}" alt></a>
-                                    <a href="javascript:;" class=" me-2"><img
-                                            src="{{ asset('prepharma/img/icons/pdf-icon-03.svg') }}" alt></a>
-                                    <a href="javascript:;" id="alert"><img
-                                            src="{{ asset('prepharma/img/icons/pdf-icon-04.svg') }}" alt></a> --}}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="table-responsive">
-                            <table class="table border-0 custom-table comman-table datatable mb-0 table-produto" id="table-c">
-                                <thead>
-                                    <tr>
-                                        <th>Designação</th>
-                                        <th>Dosagem</th>
-                                        <th>Forma</th>
-                                        <th>Status</th>
-                                        <th>Prateleira</th>
-                                        <th>Lote</th>
-                                        <th>Quantidade</th>
-                                        <th>Qtd. Caixa</th>
-                                        <th>Qtd. Unit.</th>
-                                        <th>Inserido em</th>
-                                        <th>Data Expiração</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
+        <!-- Header com Gradiente -->
+        <div class="estoque-header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                        <i class="fas fa-boxes fa-lg text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">
+                            <i class="fas fa-warehouse"></i>
+                            Estoque {{ $ah->nome }}
+                        </h3>
+                        <small style="color: rgba(255,255,255,0.9);">Gestão completa de produtos e movimentações</small>
                     </div>
                 </div>
+                <div class="tool-buttons">
+                    <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}" 
+                       id="imprimir-pagina" 
+                       target="_blank" 
+                       title="Exportar PDF">
+                        <img src="{{ asset('prepharma/img/icons/pdf-icon-01.svg') }}" alt="PDF">
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- Modal de Confirmação -->
+        <!-- Card Principal -->
+        <div class="estoque-card">
+            <div class="card-body">
+                <!-- Toolbar de Ações -->
+                <div class="toolbar-actions">
+                    <div class="search-box">
+                        <form id="form_search" method="POST">
+                            <input type="text" 
+                                   id="search-table"
+                                   class="form-control" 
+                                   placeholder="🔍 Pesquisar produtos...">
+                        </form>
+                    </div>
+                    <div class="action-group">
+                        @if (isAdministrator() or auth()->user()->pode_cadastrar_produtos)
+                            <button onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'"
+                                    class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Adicionar Produto
+                            </button>
+                        @endif
+                        <button onclick="location.href = '{{ route('estoque.solicitar', ['id' => $ah->id]) }}';"
+                                class="btn btn-outline-success">
+                            <i class="fas fa-box"></i>
+                            Solicitar
+                        </button>
+                        <button onclick="location.href = '{{ route('estoque._minimo', ['id' => $ah->id]) }}';"
+                                class="btn btn-outline-info">
+                            <i class="fas fa-chart-line"></i>
+                            Estoque Mínimo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabela de Produtos -->
+                <div class="table-responsive">
+                    <table class="table border-0 custom-table comman-table datatable mb-0 table-produto" id="table-c">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-tag me-1"></i>Designação</th>
+                                <th><i class="fas fa-prescription-bottle me-1"></i>Dosagem</th>
+                                <th><i class="fas fa-flask me-1"></i>Forma</th>
+                                <th><i class="fas fa-signal me-1"></i>Status</th>
+                                <th><i class="fas fa-shelves me-1"></i>Prateleira</th>
+                                <th><i class="fas fa-barcode me-1"></i>Lote</th>
+                                <th><i class="fas fa-cube me-1"></i>Quantidade</th>
+                                <th><i class="fas fa-boxes me-1"></i>Qtd. Caixa</th>
+                                <th><i class="fas fa-cubes me-1"></i>Qtd. Unit.</th>
+                                <th><i class="fas fa-calendar-plus me-1"></i>Inserido em</th>
+                                <th><i class="fas fa-exclamation-triangle me-1"></i>Data Expiração</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Modal de Confirmação de Exclusão -->
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmDeleteLabel">Confirmar Exclusão</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 12px; overflow: hidden; border: none;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none;">
+                        <h5 class="modal-title" id="confirmDeleteLabel" style="font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Exclusão
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar" style="filter: brightness(0) invert(1);"></button>
                     </div>
-                    <div class="modal-body">
-                        Tem certeza que deseja excluir este produto?
+                    <div class="modal-body" style="padding: 2rem;">
+                        <div class="text-center mb-3">
+                            <div class="rounded-circle bg-danger bg-opacity-10 d-inline-flex p-3 mb-3">
+                                <i class="fas fa-trash fa-2x text-danger"></i>
+                            </div>
+                            <p class="mb-0" style="font-size: 1.125rem; color: #2d3748;">
+                                Tem certeza que deseja excluir este produto?
+                            </p>
+                            <small style="color: #718096;">Esta ação não poderá ser desfeita.</small>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Confirmar</button>
+                    <div class="modal-footer" style="border: none; padding: 1rem 2rem 2rem;">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px; padding: 0.75rem 1.5rem;">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn" style="border-radius: 8px; padding: 0.75rem 1.5rem;">
+                            <span id="delete_btn_text">
+                                <i class="fas fa-trash me-2"></i>Confirmar Exclusão
+                            </span>
+                            <span id="delete_btn_spinner" style="display:none;">
+                                <span class="spinner-custom"></span>
+                                <span class="ms-2">Excluindo...</span>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -895,18 +1117,41 @@
             // Evento para confirmar e enviar a solicitação de exclusão
             $('#confirmDeleteBtn').on('click', function() {
                 var produtoId = $(this).data('id');
+                var btn = $(this);
+                var btnText = $('#delete_btn_text');
+                var btnSpinner = $('#delete_btn_spinner');
+
+                // Disable button e mostrar spinner
+                btn.prop('disabled', true);
+                btnText.hide();
+                btnSpinner.show();
 
                 $.ajax({
                     url: '/api/produtos_/' + produtoId,
                     type: 'DELETE',
                     success: function(response) {
                         $('#confirmDeleteModal').modal('hide');
-                        showToast('Produto eliminado com sucesso!', 'success', 'Eliminado!');
-                        table.ajax.reload();
+                        showToast(response.message || 'Produto eliminado com sucesso!', 'success', 'Eliminado!');
+                        table.ajax.reload(null, false);
+                        
+                        // Reset button
+                        setTimeout(function() {
+                            btn.prop('disabled', false);
+                            btnText.show();
+                            btnSpinner.hide();
+                        }, 500);
                     },
                     error: function(xhr) {
-                        console.error("Erro ao excluir: ${produtoId}", xhr.responseText);
-                        showToast('Erro ao eliminar o produto', 'error', 'Erro!');
+                        console.error("Erro ao excluir: " + produtoId, xhr.responseText);
+                        var errorMsg = xhr.responseJSON && xhr.responseJSON.message 
+                            ? xhr.responseJSON.message 
+                            : 'Erro ao eliminar o produto';
+                        showToast(errorMsg, 'error', 'Erro!');
+                        
+                        // Reset button
+                        btn.prop('disabled', false);
+                        btnText.show();
+                        btnSpinner.hide();
                     }
                 });
             });
