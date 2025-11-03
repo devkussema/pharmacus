@@ -58,6 +58,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('obter/{id}', [EstoqueController::class, 'myEstoque'])->name('estoque.myEstoque');
         Route::get('/produto/{id}', [EstoqueController::class, 'getProduto']);
         Route::put('/produto/{id}', [EstoqueController::class, 'editarProduto']);
+        Route::get('/produto/{id}/detalhes', [EstoqueController::class, 'getDetalhes'])->name('estoque.detalhes');
         Route::get('estoque/ajax', [EstoqueController::class, 'ajaxEstoque'])->name('estoque.ajax');
         Route::get('/adicionar/{area_id}', [EstoqueController::class, 'cadastrar'])->name('estoque.cadastrar');
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');

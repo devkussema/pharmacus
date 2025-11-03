@@ -330,6 +330,29 @@ class EstoqueController extends Controller
             return response()->json(['error' => 'Produto não encontrado'], 404);
         }
 
+        // Guardar informações antes de eliminar
+        $designacao = $produto->designacao;
+        $lote = $produto->num_lote;
+        $quantidade = $produto->quantidade;
+
+        // Registrar atividade antes de eliminar
+        try {
+            $meta = [
+                'model_type' => PE::class,
+                'model_id' => $produto->id,
+                'ip_address' => request()->ip(),
+                'route' => request()->path(),
+                'http_method' => request()->method(),
+                'level' => 'warning',
+                'snapshot_before' => $produto->toArray(),
+            ];
+            self::startAtv(
+                "Eliminou produto '{$designacao}' (Lote: {$lote}, Qtd: {$quantidade}) do estoque", 
+                null, 
+                $meta
+            );
+        } catch (\Throwable $_) {}
+
         // Remover o produto — o observer ProdutoEstoqueObserver irá registar o evento 'deleted'
         $produto->delete();
 
@@ -366,33 +389,30 @@ class EstoqueController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request); exit;
         $request->validate([
             'designacao' => 'required',
             'dosagem' => 'nullable',
             'forma' => 'required',
             'tipo' => 'required',
             'farmacia_id' => 'required',
-            'caixa' => 'required',
-            'caxinha' => 'required',
-            'unidade' => 'required',
-            'qtd_total' => 'nullable',
+            'quantidade' => 'required|integer|min:1',
             'origem_destino' => 'nullable',
             'num_lote' => 'required',
-            'data_producao' => 'nullable|date|before:today', // Verifica se a data de produção é anterior à data atual
-            'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(4), // Verifica se a data de expiração é pelo menos 10 meses após a data atual
+            'data_producao' => 'nullable|date|before:today',
+            'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(4),
             'data_recepcao' => 'nullable|date|before:today',
             'num_documento' => 'nullable',
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
             'obs' => 'nullable',
-            'qtd' => 'integer|nullable',
             'prateleira_id' => 'nullable|exists:prateleiras,id',
         ], [
             'designacao.required' => 'A designação é obrigatória.',
             'farmacia_id.required' => 'Algo correu mal, atualize a página e tente novamente.',
             'dosagem.required' => 'A dosagem é obrigatória.',
-            'descritivo.required' => 'Informe as quantidades das Caixas, Caixinhas e Unidades.',
+            'quantidade.required' => 'A quantidade é obrigatória.',
+            'quantidade.integer' => 'A quantidade deve ser um número inteiro.',
+            'quantidade.min' => 'A quantidade deve ser maior que zero.',
             'forma.required' => 'A forma é obrigatória.',
             'tipo.required' => 'Selecione um tipo.',
             'origem_destino.required' => 'A origem ou destino é obrigatório.',
@@ -402,11 +422,9 @@ class EstoqueController extends Controller
             'data_producao.required' => 'A data de produção é obrigatória.',
             'data_producao.date' => 'A data de produção deve ser uma data válida.',
             'data_producao.before' => 'A data de produção deve ser anterior à data atual.',
-
             'data_recepcao.required' => 'A data de recepção é obrigatória.',
             'data_recepcao.date' => 'A data de recepção deve ser uma data válida.',
             'data_recepcao.before' => 'A data de recepção deve ser anterior à data atual.',
-
             'data_expiracao.after_or_equal' => 'A data de caducidade deve ser pelo menos 4 meses após a data atual.',
             'num_documento.required' => 'O número do documento é obrigatório.',
             'num_documento.unique' => 'Já existe um item com este número de produto.',
@@ -415,13 +433,7 @@ class EstoqueController extends Controller
             'qtd_embalagem.min' => 'A quantidade por embalagem deve ser pelo menos 1.',
         ]);
 
-        $caixa = $request->input('caixa');
-        $caxinha = $request->input('caxinha');
-        $unidade = $request->input('unidade');
-
-        $descritivo_ = $caixa."x".$caxinha."x".$unidade;
-        $descritivo = $request->input('descritivo') ?? $descritivo_;
-
+        $quantidade = $request->input('quantidade');
         $farmacia_id = $request->farmacia_id;
 
         if ($request->tipo == 'medicamento' and !$request->dosagem)
@@ -431,7 +443,7 @@ class EstoqueController extends Controller
             'designacao' => $request->designacao,
             'dosagem' => ($request->dosagem ? $request->dosagem : ''),
             'tipo' => $request->tipo,
-            'descritivo' => $descritivo,
+            'quantidade' => $quantidade,
             'forma' => $request->forma,
             'confirmado' => 1,
             'origem_destino' => $request->origem_destino,
@@ -447,15 +459,10 @@ class EstoqueController extends Controller
 
         $tipo = $request->tipo;
         $pe = PE::create($dadosPE);
-        if (!$request->qtd_total) {
-            $qtd = intval($caixa) * intval($caxinha) * intval($unidade);
-        }else{
-            $qtd = $request->qtd_total;
-        }
 
         SE::create([
             'produto_estoque_id' => $pe->id,
-            'qtd' => $qtd
+            'qtd' => $quantidade
         ]);
 
         Estoque::create([
@@ -464,7 +471,25 @@ class EstoqueController extends Controller
             'area_hospitalar_id' => $request->area_id
         ]);
 
-        $caixas = getCaixa($request->descritivo);
+        // Registrar atividade
+        try {
+            $meta = [
+                'model_type' => PE::class,
+                'model_id' => $pe->id,
+                'ip_address' => request()->ip(),
+                'route' => request()->path(),
+                'http_method' => request()->method(),
+                'level' => 'success',
+                'snapshot_after' => $pe->toArray(),
+            ];
+            self::startAtv(
+                "Cadastrou novo produto '{$pe->designacao}' (Lote: {$pe->num_lote}) com quantidade {$quantidade} no estoque", 
+                null, 
+                $meta
+            );
+        } catch (\Throwable $_) {}
+
+        $caixas = getCaixa($request->descritivo ?? "{$quantidade}x1x1");
 
         $meta = [
             'model_type' => PE::class,
@@ -1083,5 +1108,45 @@ class EstoqueController extends Controller
             'produto_id' => $produto->id,
             'quantidade' => $produto->quantidade
         ], 200);
+    }
+
+    /**
+     * Retorna detalhes completos de um produto do estoque
+     * 
+     * @param int $id ID do produto
+     * @return \Illuminate\Http\JsonResponse
+     * @author Augusto Kussema
+     * @date 2025-01-15
+     */
+    public function getDetalhes(int $id)
+    {
+        try {
+            $produto = PE::with([
+                'grupo_farmaco',
+                'estoque',
+                'prateleira',
+                'status_stock',
+                'saldo'
+            ])->find($id);
+
+            if (!$produto) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Produto não encontrado'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'produto' => $produto
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar detalhes do produto',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

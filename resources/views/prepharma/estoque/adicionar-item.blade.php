@@ -397,32 +397,17 @@
                 <div class="form-section">
                     <div class="form-section-title">
                         <i class="fas fa-boxes"></i>
-                        <span>Quantidade e Embalagem</span>
+                        <span>Quantidade</span>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label class="form-label">
-                                <i class="fas fa-box"></i>
-                                Caixa *
+                                <i class="fas fa-boxes"></i>
+                                Quantidade *
                             </label>
-                            <input type="number" name="caixa" id="caixa" class="form-control" min="1" required>
+                            <input type="number" name="quantidade" id="quantidade" class="form-control" min="1" placeholder="Digite a quantidade" required>
+                            <small class="text-muted">Informe a quantidade total do produto.</small>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-box-open"></i>
-                                Caixinha *
-                            </label>
-                            <input type="number" name="caxinha" id="caxinha" class="form-control" min="1" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-cube"></i>
-                                Unidade *
-                            </label>
-                            <input type="number" name="unidade" id="unidade" class="form-control" min="1" onchange="setQtdDescritivo()" onblur="setDescritivo()" required>
-                        </div>
-                        <input type="hidden" id="descritivo" name="descritivo">
-                        <input type="hidden" id="qtd_total_estoque" name="qtd_total">
                     </div>
                 </div>
 
@@ -720,6 +705,14 @@ $(document).ready(function() {
             return;
         }
 
+        // Validar quantidade
+        const quantidade = parseInt($('input[name="quantidade"]').val());
+        if (!quantidade || quantidade <= 0) {
+            showToast('A quantidade deve ser maior que zero', 'error');
+            $('input[name="quantidade"]').focus();
+            return;
+        }
+
         // Disable form
         form.find('input, select, textarea, button').prop('disabled', true);
         btn.prop('disabled', true);
@@ -780,23 +773,6 @@ $(document).ready(function() {
         });
     });
 });
-
-function setQtdDescritivo() {
-    const caixaValue = document.getElementById('caixa').value || 0;
-    const caxinhaValue = document.getElementById('caxinha').value || 0;
-    const unidadeValue = document.getElementById('unidade').value || 0;
-    
-    const descritivoValue = caixaValue + 'x' + caxinhaValue + 'x' + unidadeValue;
-    document.getElementById('descritivo').value = descritivoValue;
-    
-    // Calcular qtd total
-    const qtdTotal = parseInt(caixaValue) * parseInt(caxinhaValue) * parseInt(unidadeValue);
-    document.getElementById('qtd_total_estoque').value = qtdTotal;
-}
-
-function setDescritivo() {
-    setQtdDescritivo();
-}
 </script>
 
 @endsection

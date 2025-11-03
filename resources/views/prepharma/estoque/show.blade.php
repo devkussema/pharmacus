@@ -160,18 +160,19 @@
 
         .action-buttons button {
             margin: 0;
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            font-size: 0.75rem;
+            padding: 0.375rem 0.625rem;
+            border-radius: 6px;
             font-weight: 600;
             transition: all 0.2s;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
+            white-space: nowrap;
         }
 
         .action-buttons button i {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
         }
 
         .action-buttons button:hover:not(:disabled) {
@@ -591,15 +592,10 @@
                             <tr>
                                 <th><i class="fas fa-tag me-1"></i>Designação</th>
                                 <th><i class="fas fa-prescription-bottle me-1"></i>Dosagem</th>
-                                <th><i class="fas fa-flask me-1"></i>Forma</th>
                                 <th><i class="fas fa-signal me-1"></i>Status</th>
-                                <th><i class="fas fa-shelves me-1"></i>Prateleira</th>
-                                <th><i class="fas fa-barcode me-1"></i>Lote</th>
                                 <th><i class="fas fa-cube me-1"></i>Quantidade</th>
-                                <th><i class="fas fa-boxes me-1"></i>Qtd. Caixa</th>
-                                <th><i class="fas fa-cubes me-1"></i>Qtd. Unit.</th>
-                                <th><i class="fas fa-calendar-plus me-1"></i>Inserido em</th>
-                                <th><i class="fas fa-exclamation-triangle me-1"></i>Data Expiração</th>
+                                <th><i class="fas fa-barcode me-1"></i>Lote</th>
+                                <th><i class="fas fa-exclamation-triangle me-1"></i>Expiração</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -750,7 +746,6 @@
                             data: "produto.designacao"
                         },
                         { data: "produto.dosagem" },
-                        { data: "produto.forma" },
                         {
                             data: function(row) {
                                 let saldo = row.produto?.saldo?.qtd ?? 0;
@@ -772,16 +767,8 @@
                                 return '<span class="badge bg-secondary">Não Atribuido</span>';
                             }
                         },
-                        {
-                            data: function(row) {
-                                return row.produto?.prateleira?.nome ? getCaixa(row.produto.prateleira.nome) : '--';
-                            }
-                        },
-                        { data: "produto.num_lote" },
                         { data: "produto.quantidade" },
-                        { data: function(row) { return getCaixa(row.produto.descritivo); } },
-                        { data: "produto.saldo.qtd" },
-                        { data: function(row) { return formatDate(row.created_at); } },
+                        { data: "produto.num_lote" },
                         { data: function(row) { return formatDate(row.produto.data_expiracao); } },
                         { data: null, defaultContent: "" }
                     ],
@@ -817,9 +804,12 @@
                 // Criar e inserir nova linha de ação
                 var actionRow = `
                     <tr class="action-row">
-                        <td colspan="12">
+                        <td colspan="7">
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-success btn-add" data-id="${data.produto.id}" data-descritivo="${data.produto.descritivo}" title="Adicionar">
+                                <button class="btn btn-sm btn-info btn-detalhes" data-id="${data.produto.id}" title="Ver Detalhes">
+                                    <i class="fa fa-info-circle"></i> Detalhes
+                                </button>
+                                <button class="btn btn-sm btn-success btn-add" data-id="${data.produto.id}" title="Adicionar">
                                     <i class="fa fa-plus"></i> Adicionar
                                 </button>
                                 <button class="btn btn-sm btn-primary btn-editar" data-id="${data.produto.id}" title="Editar">
@@ -828,11 +818,11 @@
                                 <button class="btn btn-sm btn-secondary btn-sincronizar" data-id="${data.produto.id}" title="Sincronizar">
                                     <i class="fa fa-sync"></i> Sincronizar
                                 </button>
-                                <button class="btn btn-sm btn-info btn-historico" data-id="${data.produto.id}" title="Histórico">
+                                <button class="btn btn-sm btn-dark btn-historico" data-id="${data.produto.id}" title="Histórico">
                                     <i class="fa fa-history"></i> Histórico
                                 </button>
                                 <button class="btn btn-sm btn-warning btn-dar-baixa" data-id="${data.produto.id}" data-designacao="${data.produto.designacao}" data-quantidade="${data.produto.quantidade || 0}" title="Dar Baixa">
-                                    <i class="fa fa-arrow-down"></i> Dar Baixa
+                                    <i class="fa fa-arrow-down"></i> Baixa
                                 </button>
                                 <button class="btn btn-sm btn-danger btn-eliminar-item" data-id="${data.produto.id}" title="Eliminar">
                                     <i class="fa fa-trash"></i> Eliminar
@@ -1601,3 +1591,4 @@
 @include('prepharma.estoque._productHistory')
 @include('prepharma.estoque._addStock')
 @include('prepharma.estoque._darBaixa')
+@include('prepharma.estoque._productDetails')
