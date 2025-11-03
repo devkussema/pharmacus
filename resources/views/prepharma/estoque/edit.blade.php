@@ -314,14 +314,14 @@
                                 <i class="fas fa-barcode"></i>
                                 Lote
                             </label>
-                            <input type="text" class="form-control text-uppercase" value="{{ $pe->num_lote }}" name="num_lote" required>
+                            <input type="text" class="form-control text-uppercase" value="{{ $pe->num_lote }}" name="num_lote">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-file-alt"></i>
                                 Documento Nº
                             </label>
-                            <input type="text" id="cod_barras" value="{{ $pe->num_documento }}" class="form-control" name="num_documento" required>
+                            <input type="text" id="cod_barras" value="{{ $pe->num_documento }}" class="form-control" name="num_documento">
                         </div>
                     </div>
                 </div>
@@ -338,7 +338,7 @@
                                 <i class="fas fa-industry"></i>
                                 Data Produção
                             </label>
-                            <input type="date" class="form-control" value="{{ $pe->data_producao }}" name="data_producao" required>
+                            <input type="date" class="form-control" value="{{ $pe->data_producao }}" name="data_producao">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">
@@ -423,7 +423,7 @@
                                 <i class="fas fa-map-marker-alt"></i>
                                 Origem / Destino
                             </label>
-                            <input type="text" value="{{ $pe->origem_destino }}" class="form-control" name="origem_destino" required>
+                            <input type="text" value="{{ $pe->origem_destino }}" class="form-control" name="origem_destino">
                         </div>
                     </div>
                 </div>
