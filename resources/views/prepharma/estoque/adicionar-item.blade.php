@@ -305,7 +305,6 @@
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('a_h.index') }}"><i class="fas fa-hospital me-1"></i>Áreas Hospitalares</a></li>
-            {{-- <li class="breadcrumb-item"><a href="{{ route('a_h.show', ['area_id' => $area]) }}"><i class="fas fa-boxes me-1"></i>Estoque</a></li> --}}
             <li class="breadcrumb-item active" aria-current="page">Adicionar Produto</li>
         </ol>
     </nav>
@@ -326,266 +325,478 @@
     <!-- Card Principal -->
     <div class="cadastro-card">
         <div class="card-body">
-            <form method="POST" id="formCadastro" action="{{ route('estoque.store') }}">
+            <form method="POST" id="formCadastro">
                 @csrf
+                
+                @php
+                    $farmaciaUsuario = null;
+                    try {
+                        $farmaciaUsuario = auth()->user()->farmacia_id ??
+                                          auth()->user()->isFarmacia->farmacia_id ??
+                                          auth()->user()->userAreaHospitalar->farmacia_id ?? null;
+                    } catch (\Exception $e) {}
+                @endphp
+
+                @if($farmaciaUsuario)
+                    <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="{{ $farmaciaUsuario }}">
+                @else
+                    <div class="alert alert-danger">
+                        Erro: Usuário não possui farmácia associada. Contacte o administrador.
+                    </div>
+                @endif
+
+                <!-- Seção: Informações Básicas -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Informações Básicas</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="designacao">
+                                <i class="fas fa-tag"></i>
+                                Designação *
+                            </label>
+                            <input type="text" id="designacao" class="form-control" placeholder="Nome do produto" name="designacao" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="tipo_produto_estoque">
+                                <i class="fas fa-layer-group"></i>
+                                Tipo *
+                            </label>
+                            <select name="tipo" id="tipo_produto_estoque" class="form-control" required>
+                                <option value="" disabled selected>Selecionar tipo</option>
+                                <option value="descartável">Descartável</option>
+                                <option value="medicamento">Medicamento</option>
+                                <option value="liquido">Líquido</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção Condicional: Medicamento -->
+                <div id="item_medicamento" style="display:none">
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <i class="fas fa-pills"></i>
+                            <span>Detalhes do Medicamento</span>
+                        </div>
                         <div class="row">
-                            <div class="col-12">
-                                <div class="form-heading">
-                                    <h4>Adicionar Item</h4>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 pb-3">
-                                    {{-- Remover esta linha com ID hardcoded --}}
-                                    {{-- <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="11a2d86a-c885-44e4-9162-14215ef75b95"> --}}
-
-                                    {{-- Substituir por: --}}
-                                    @php
-                                        $farmaciaUsuario = null;
-                                        try {
-                                            $farmaciaUsuario = auth()->user()->farmacia_id ??
-                                                              auth()->user()->isFarmacia->farmacia_id ??
-                                                              auth()->user()->userAreaHospitalar->farmacia_id ?? null;
-                                        } catch (\Exception $e) {
-                                            // Log do erro mas continuar
-                                        }
-                                    @endphp
-
-                                    @if($farmaciaUsuario)
-                                        <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="{{ $farmaciaUsuario }}">
-                                    @else
-                                        <div class="alert alert-danger">
-                                            Erro: Usuário não possui farmácia associada. Contacte o administrador.
-                                        </div>
-                                    @endif
-
-                                    <label class="mb-2">Designação *</label>
-                                    <input type="text" id="designacao" value="{{ old('designacao') ?? old('designacao') }}" class="form-control" placeholder="" name="designacao">
-                                </div>
-                                <div class="col-md-6 pb-3">
-                                    <label class="mb-2">Tipo *</label>
-                                    <select name="tipo" style="width: 100%" id="tipo_produto_estoque" class="form-control">
-                                        <option selected disabled>Selecionar tipo</option>
-                                        <option value="descartável">Descartável</option>
-                                        <option value="medicamento">Medicamento</option>
-                                        <option value="liquido">Liquido</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="" id="item_medicamento" style="display:none">
-                                <div class="form-row">
-                                    {{-- <div class="col pb-3>
-                                                <label class="mb-2">Quantidade em Estoque *</label>
-                                                <input type="number" class="form-control" placeholder="" name="qtd">
-                                            </div> --}}
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Dosagem *</label>
-                                        <input type="text" class="form-control" value="{{ old('dosagem') ?? old('dosagem') }}" placeholder="" name="dosagem">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="" id="repetir_">
-                                <div class="" id="item_descartavelq" style="">
-                                    <div class="row">
-                                        <div class="col pb-3">
-                                            <label class="mb-2">Caixa *</label>
-                                            <input type="number" name="caixa" value="{{ old('caixa') ?? old('caixa') }}" id="caixa" class="form-control">
-                                        </div>
-                                        <div class="col pb-3">
-                                            <label class="mb-2">Caixinha *</label>
-                                            <input type="number" name="caxinha" value="{{ old('caxinha') ?? old('caxinha') }}" id="caxinha" class="form-control" >
-                                        </div>
-                                        <div class="col pb-3">
-                                            <label class="mb-2">Unidade *</label>
-                                            <input type="number" name="unidade" value="{{ old('unidade') ?? old('unidade') }}" id="unidade" class="form-control" onchange="setQtdDescritivo()" onblur="setDescritivo()">
-                                        </div>
-                                        <input type="text" id="descritivo" name="descritivo" hidden>
-                                        <div class="col pb-3">
-                                            <label class="mb-2">Total</label>
-                                            <input style="display: none" type="number" id="qtd_total_estoque" value="{{ old('qtd_total') ?? old('qtd_total') }}" class="form-control" name="qtd_total">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Lote *</label>
-                                        <input type="text" class="form-control" value="{{ old('num_lote') ?? old('num_lote') }}" name="num_lote"
-                                            style="text-transform: uppercase;">
-                                    </div>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Documento Nº *</label>
-                                        <input type="text" id="cod_barras" value="{{ old('num_documento') ?? old('num_documento') }}" class="form-control" placeholder=""
-                                            name="num_documento">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Data Produção *</label>
-                                        <input type="date" class="form-control" value="{{ old('data_producao') ?? old('data_producao') }}" name="data_producao">
-                                    </div>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Data Expiração *</label>
-                                        <input type="date" class="form-control" value="{{ old('data_expiracao') ?? old('data_expiracao') }}" name="data_expiracao">
-                                    </div>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Data Recepção</label>
-                                        <input type="date" class="form-control" value="{{ old('data_recepcao') ?? old('data_recepcao') }}" name="data_recepcao">
-                                    </div>
-                                </div>
-                                <hr>
-                            </div>
-                            <div class="" id="diverso">
-                                <div class="row">
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Forma *</label>
-                                        <select class="form-control" name="forma">
-                                            <option value="">Selecione uma forma</option>
-
-                                            <!-- Formas de Administração Oral -->
-                                            <optgroup label="Formas de Administração Oral">
-                                                <option value="Comprimidos">Comprimidos</option>
-                                                <option value="Cápsulas">Cápsulas</option>
-                                                <option value="Tabletes efervescentes">Tabletes efervescentes</option>
-                                                <option value="Pó para suspensão oral">Pó para suspensão oral</option>
-                                                <option value="Xaropes">Xaropes</option>
-                                                <option value="Soluções orais">Soluções orais</option>
-                                                <option value="Gomas mastigáveis">Gomas mastigáveis</option>
-                                                <option value="Soluções ou elixires">Soluções ou elixires</option>
-                                            </optgroup>
-
-                                            <!-- Formas de Administração Parenteral -->
-                                            <optgroup label="Formas de Administração Parenteral (fora do trato gastrointestinal)">
-                                                <option value="Injectável">Injectável</option>
-                                                <option value="Soros">Soros</option>
-                                                <option value="Implantes subcutâneos">Implantes subcutâneos</option>
-                                                <option value="Vacinas">Vacinas</option>
-                                                <option value="Pós para solução injetável">Pós para solução injetável</option>
-                                            </optgroup>
-
-                                            <!-- Formas de Administração Tópica -->
-                                            <optgroup label="Formas de Administração Tópica">
-                                                <option value="Cremes">Cremes</option>
-                                                <option value="Pomadas">Pomadas</option>
-                                                <option value="Géis">Géis</option>
-                                                <option value="Loções">Loções</option>
-                                                <option value="Pasta">Pasta</option>
-                                                <option value="Sprays tópicos">Sprays tópicos</option>
-                                                <option value="Adesivos transdérmicos">Adesivos transdérmicos</option>
-                                                <option value="Shampoos">Shampoos</option>
-                                                <option value="Sabonetes medicinais">Sabonetes medicinais</option>
-                                            </optgroup>
-
-                                            <!-- Formas de Administração Inalatória -->
-                                            <optgroup label="Formas de Administração Inalatória">
-                                                <option value="Aerossóis">Aerossóis</option>
-                                                <option value="Nebulizações">Nebulizações</option>
-                                                <option value="Inaladores de pó seco">Inaladores de pó seco</option>
-                                            </optgroup>
-
-                                            <!-- Formas de Administração Retal -->
-                                            <optgroup label="Formas de Administração Retal">
-                                                <option value="Supositórios">Supositórios</option>
-                                                <option value="Enemas">Enemas</option>
-                                                <option value="Pomadas retal">Pomadas retal</option>
-                                            </optgroup>
-
-                                            <!-- Formas de Administração Oftálmica -->
-                                            <optgroup label="Formas de Administração Oftálmica">
-                                                <option value="Colírios">Colírios</option>
-                                                <option value="Pomadas oftálmicas">Pomadas oftálmicas</option>
-                                            </optgroup>
-
-                                            <!-- Formas de Administração Nasal -->
-                                            <optgroup label="Formas de Administração Nasal">
-                                                <option value="Sprays nasais">Sprays nasais</option>
-                                                <option value="Gotas nasais">Gotas nasais</option>
-                                            </optgroup>
-
-                                            <!-- Formas de Administração Sublingual e Bucal -->
-                                            <optgroup label="Formas de Administração Sublingual e Bucal">
-                                                <option value="Comprimidos sublinguais">Comprimidos sublinguais</option>
-                                                <option value="Tabletes bucais">Tabletes bucais</option>
-                                                <option value="Pastilhas">Pastilhas</option>
-                                                <option value="Balas medicinais">Balas medicinais</option>
-                                            </optgroup>
-
-                                            <!-- Formas de Administração Vaginal -->
-                                            <optgroup label="Formas de Administração Vaginal">
-                                                <option value="Óvulos vaginais">Óvulos vaginais</option>
-                                                <option value="Creme vaginal">Creme vaginal</option>
-                                            </optgroup>
-
-                                            <optgroup label="Outros">
-                                                <option value="Descartável">Descartável</option>
-                                                <option value="Não Atribuido">Não Atribuido</option>
-                                            </optgroup>
-                                        </select>
-                                    </div>
-
-                                    <div class="col pb-3">
-                                        <label class="mb-2">G. Farmacológico *</label>
-                                        <select name="grupo_farmaco_id" style="width: 100%" id="grupo_farmaco_id_"
-                                            class="form-control selectr2">
-                                            @foreach (\App\Models\GrupoFarmacologico::orderBy('nome')->get() as $gf)
-                                                <option value="{{ $gf->id }}">{{ $gf->nome }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col pb-3">
-                                        <label class="mb-2">Origem / Destino *</label>
-                                        <input type="text" class="form-control" value="{{ old('origem_destino') ?? old('origem_destino') }}" name="origem_destino">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 pb-3">
-                                    <label class="mb-2">Área Hospitalar</label>
-                                    <select name="area_id" style="width: 100%" id="area_id_" class="form-control select2">
-                                        @foreach (App\Models\FarmaciaAreaHospitalar::where('farmacia_id', auth()->user()->isFarmacia->farmacia->id)
-                                                ->where('status', 1)
-                                                ->get() as $areas)
-                                            <option value="{{ $areas->id }}">{{ $areas->area_hospitalar->nome }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-6 pb-3">
-                                    <label class="mb-2">Prateleira</label>
-                                    <select name="prateleira_id" style="width: 100%" id="prateleira_id_" class="form-control">
-                                        @foreach (\App\Models\Prateleira::all() as $prat)
-                                            <option value="{{ $prat->id }}">{{ $prat->nome }} [{{ $prat->descricao }}]</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col pb-3">
-                                    <label class="mb-2">OBS</label>
-                                    <textarea class="form-control" value="{{ old('obs') ?? old('obs') }}" name="obs"></textarea>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-wrap align-items-ceter justify-content-center">
-                                <button class="btn rounded-pill btn-primary" type="submit">Enviar</button>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-prescription-bottle"></i>
+                                    Dosagem *
+                                </label>
+                                <input type="text" class="form-control" placeholder="Ex: 500mg" name="dosagem">
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Seção: Quantidade e Embalagem -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-boxes"></i>
+                        <span>Quantidade e Embalagem</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-box"></i>
+                                Caixa *
+                            </label>
+                            <input type="number" name="caixa" id="caixa" class="form-control" min="1" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-box-open"></i>
+                                Caixinha *
+                            </label>
+                            <input type="number" name="caxinha" id="caxinha" class="form-control" min="1" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-cube"></i>
+                                Unidade *
+                            </label>
+                            <input type="number" name="unidade" id="unidade" class="form-control" min="1" onchange="setQtdDescritivo()" onblur="setDescritivo()" required>
+                        </div>
+                        <input type="hidden" id="descritivo" name="descritivo">
+                        <input type="hidden" id="qtd_total_estoque" name="qtd_total">
+                    </div>
+                </div>
+
+                <!-- Seção: Lote e Documento -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-barcode"></i>
+                        <span>Lote e Documento</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-barcode"></i>
+                                Lote *
+                            </label>
+                            <input type="text" class="form-control text-uppercase" name="num_lote" placeholder="Ex: L2024-001" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-file-alt"></i>
+                                Documento Nº *
+                            </label>
+                            <input type="text" id="cod_barras" class="form-control" placeholder="Número do documento" name="num_documento" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção: Datas -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Datas</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-industry"></i>
+                                Data Produção *
+                            </label>
+                            <input type="date" class="form-control" name="data_producao" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Data Expiração *
+                            </label>
+                            <input type="date" class="form-control" name="data_expiracao" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-truck-loading"></i>
+                                Data Recepção
+                            </label>
+                            <input type="date" class="form-control" name="data_recepcao">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção: Características -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-cogs"></i>
+                        <span>Características do Produto</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-flask"></i>
+                                Forma *
+                            </label>
+                            <select class="form-control" name="forma" required>
+                                <option value="" disabled selected>Selecione uma forma</option>
+                                <optgroup label="Formas de Administração Oral">
+                                    <option value="Comprimidos">Comprimidos</option>
+                                    <option value="Cápsulas">Cápsulas</option>
+                                    <option value="Tabletes efervescentes">Tabletes efervescentes</option>
+                                    <option value="Pó para suspensão oral">Pó para suspensão oral</option>
+                                    <option value="Xaropes">Xaropes</option>
+                                    <option value="Soluções orais">Soluções orais</option>
+                                    <option value="Gomas mastigáveis">Gomas mastigáveis</option>
+                                    <option value="Soluções ou elixires">Soluções ou elixires</option>
+                                </optgroup>
+                                <optgroup label="Formas de Administração Parenteral">
+                                    <option value="Injectável">Injectável</option>
+                                    <option value="Soros">Soros</option>
+                                    <option value="Implantes subcutâneos">Implantes subcutâneos</option>
+                                    <option value="Vacinas">Vacinas</option>
+                                    <option value="Pós para solução injetável">Pós para solução injetável</option>
+                                </optgroup>
+                                <optgroup label="Formas de Administração Tópica">
+                                    <option value="Cremes">Cremes</option>
+                                    <option value="Pomadas">Pomadas</option>
+                                    <option value="Géis">Géis</option>
+                                    <option value="Loções">Loções</option>
+                                    <option value="Pasta">Pasta</option>
+                                    <option value="Sprays tópicos">Sprays tópicos</option>
+                                    <option value="Adesivos transdérmicos">Adesivos transdérmicos</option>
+                                    <option value="Shampoos">Shampoos</option>
+                                    <option value="Sabonetes medicinais">Sabonetes medicinais</option>
+                                </optgroup>
+                                <optgroup label="Outros">
+                                    <option value="Descartável">Descartável</option>
+                                    <option value="Não Atribuido">Não Atribuido</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-capsules"></i>
+                                G. Farmacológico *
+                            </label>
+                            <select name="grupo_farmaco_id" id="grupo_farmaco_id_" class="form-control selectr2" required>
+                                @foreach (\App\Models\GrupoFarmacologico::orderBy('nome')->get() as $gf)
+                                    <option value="{{ $gf->id }}">{{ $gf->nome }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Origem / Destino *
+                            </label>
+                            <input type="text" class="form-control" name="origem_destino" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção: Localização -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Localização</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-hospital"></i>
+                                Área Hospitalar
+                            </label>
+                            <select name="area_id" id="area_id_" class="form-control select2">
+                                @foreach (App\Models\FarmaciaAreaHospitalar::where('farmacia_id', auth()->user()->isFarmacia->farmacia->id)->where('status', 1)->get() as $areas)
+                                    <option value="{{ $areas->id }}" {{ $areas->id == $area ? 'selected' : '' }}>
+                                        {{ $areas->area_hospitalar->nome }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-shelves"></i>
+                                Prateleira
+                            </label>
+                            <select name="prateleira_id" id="prateleira_id_" class="form-control">
+                                @foreach (\App\Models\Prateleira::all() as $prat)
+                                    <option value="{{ $prat->id }}">{{ $prat->nome }} [{{ $prat->descricao }}]</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção: Observações -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-sticky-note"></i>
+                        <span>Observações</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="fas fa-comment-alt"></i>
+                                OBS
+                            </label>
+                            <textarea class="form-control" placeholder="Adicione observações opcionais..." name="obs" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="btn-action-group">
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                <i class="fas fa-times me-2"></i>
+                Cancelar
+            </button>
+            <button type="submit" form="formCadastro" class="btn btn-primary" id="submitBtn">
+                <span id="submitText">
+                    <i class="fas fa-save me-2"></i>
+                    Cadastrar
+                </span>
+                <span id="submitSpinner" style="display:none;">
+                    <span class="spinner-custom"></span>
+                    <span class="ms-2">Processando...</span>
+                </span>
+            </button>
         </div>
     </div>
 </div>
 
 <script>
-    function setQtdDescritivo() {
-        // Obter os valores dos campos
-        var caixaValue = document.getElementById('caixa').value;
-        var caxinhaValue = document.getElementById('caxinha').value;
-        var unidadeValue = document.getElementById('unidade').value;
+/**
+ * Script de Controle da Página de Cadastro de Estoque
+ *
+ * @author Augusto Kussema
+ * @date 03 Nov 2025 21:30 (Luanda)
+ * @description Controla exibição condicional de campos, AJAX, validações e toast notifications
+ */
 
-        // Construir a string descritiva
-        var descritivoValue = caixaValue + 'x' + caxinhaValue + 'x' + unidadeValue;
+// ========== Toast Notifications ==========
+function showToast(message, type = 'info', title = '', duration = 4000) {
+    const icons = {
+        success: '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>',
+        error: '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>'
+    };
 
-        // Atualizar o valor do campo descritivo
-        document.getElementById('descritivo').value = descritivoValue;
+    const titles = {
+        success: title || 'Sucesso!',
+        error: title || 'Erro!'
+    };
+
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast-custom toast-${type}`;
+    toast.innerHTML = `
+        <div class="toast-icon">${icons[type] || icons.info}</div>
+        <div class="toast-content">
+            <div class="toast-title">${titles[type]}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+        </button>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('hiding');
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+$(document).ready(function() {
+    // Inicializar Select2 nos selects específicos
+    $('.select2, .selectr2').select2({
+        width: '100%',
+        placeholder: 'Selecione uma opção'
+    });
+
+    // Função para mostrar/ocultar seção de medicamento
+    function toggleMedicamentoSection() {
+        const tipoSelecionado = $('#tipo_produto_estoque').val();
+        if (tipoSelecionado === 'medicamento') {
+            $('#item_medicamento').slideDown(300);
+        } else {
+            $('#item_medicamento').slideUp(300);
+        }
     }
+
+    // Executar quando o tipo mudar
+    $('#tipo_produto_estoque').on('change', toggleMedicamentoSection);
+
+    // Submit do formulário via AJAX
+    $('#formCadastro').on('submit', function(e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const btn = $('#submitBtn');
+        const btnText = $('#submitText');
+        const btnSpinner = $('#submitSpinner');
+        const formData = new FormData(this);
+
+        // Validar quantidade
+        const caixa = parseInt($('#caixa').val()) || 0;
+        const caxinha = parseInt($('#caxinha').val()) || 0;
+        const unidade = parseInt($('#unidade').val()) || 0;
+
+        if (caixa <= 0 || caxinha <= 0 || unidade <= 0) {
+            showToast('Por favor, insira valores válidos para Caixa, Caixinha e Unidade (maior que 0)', 'error');
+            return;
+        }
+
+        // Validar datas
+        const dataProducao = new Date($('input[name="data_producao"]').val());
+        const dataExpiracao = new Date($('input[name="data_expiracao"]').val());
+
+        if (dataExpiracao <= dataProducao) {
+            showToast('A data de expiração deve ser posterior à data de produção', 'error');
+            $('input[name="data_expiracao"]').focus();
+            return;
+        }
+
+        // Disable form
+        form.find('input, select, textarea, button').prop('disabled', true);
+        btn.prop('disabled', true);
+        btnText.hide();
+        btnSpinner.show();
+
+        $.ajax({
+            url: '{{ route('estoque.store') }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                showToast(
+                    response.message || 'Produto cadastrado com sucesso!',
+                    'success',
+                    'Sucesso!'
+                );
+
+                // Limpar formulário completamente
+                form[0].reset();
+                $('#item_medicamento').hide();
+
+                // Re-enable form
+                form.find('input, select, textarea, button').prop('disabled', false);
+                btn.prop('disabled', false);
+                btnText.show();
+                btnSpinner.hide();
+
+                // Reset Select2
+                $('.select2, .selectr2').val(null).trigger('change');
+
+                // Scroll to top suavemente
+                $('html, body').animate({ scrollTop: 0 }, 500);
+            },
+            error: function(xhr) {
+                let errorMsg = 'Erro ao cadastrar produto';
+
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    const errorMessages = [];
+                    for (let field in errors) {
+                        errorMessages.push(errors[field][0]);
+                    }
+                    errorMsg = errorMessages.join(', ');
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                }
+
+                showToast(errorMsg, 'error');
+
+                // Re-enable form
+                form.find('input, select, textarea, button').prop('disabled', false);
+                btn.prop('disabled', false);
+                btnText.show();
+                btnSpinner.hide();
+            }
+        });
+    });
+});
+
+function setQtdDescritivo() {
+    const caixaValue = document.getElementById('caixa').value || 0;
+    const caxinhaValue = document.getElementById('caxinha').value || 0;
+    const unidadeValue = document.getElementById('unidade').value || 0;
+    
+    const descritivoValue = caixaValue + 'x' + caxinhaValue + 'x' + unidadeValue;
+    document.getElementById('descritivo').value = descritivoValue;
+    
+    // Calcular qtd total
+    const qtdTotal = parseInt(caixaValue) * parseInt(caxinhaValue) * parseInt(unidadeValue);
+    document.getElementById('qtd_total_estoque').value = qtdTotal;
+}
+
+function setDescritivo() {
+    setQtdDescritivo();
+}
 </script>
+
 @endsection
