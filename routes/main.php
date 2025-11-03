@@ -2,7 +2,7 @@
 
 /**
  * Rotas do Sistema Principal (Dashboard, Estoque, Relatórios)
- * 
+ *
  * @author Augusto Kussema
  * @date 2024-01-15
  */
@@ -26,7 +26,7 @@ use App\Http\Controllers\{
 };
 
 Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
-    
+
     // Dashboard e páginas principais
     Route::get('/', [HomeController::class, 'home'])->name('home');
     Route::get('/main', [HomeController::class, 'home'])->name('main');
@@ -40,19 +40,19 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
 
     // Gestão de estoque
     Route::post('estoque/adder', [EstoqueController::class, 'store'])->name('estoque.storer');
-    
+
     Route::prefix('estoque')->middleware('is.area_hospitalar')->group(function () {
         Route::get('/', [EstoqueController::class, 'index'])->name('estoque');
         Route::get('/editar/{id}/{returnID}', [EstoqueController::class, 'edit'])->name('estoque.editar');
         Route::post('/editar/{id}/{returnID}', [EstoqueController::class, 'update'])->name('estoque.update');
         Route::get('/home', [EstoqueController::class, 'getListHome'])->name('estoque.gerente');
         Route::get('/solicitar/{id}', [EstoqueController::class, 'solicitar'])->name('estoque.solicitar');
-        
+
         // Estoque mínimo
         Route::get('/add-estoque-minimo/{id}', [StockController::class, 'add_estoque_minimo'])->name('estoque._minimo');
         Route::post('/add-estoque-minimo/{id}', [StockController::class, 'store_stock'])->name('estoque._store_stock');
         Route::get('/estoque/filtro', [StockController::class, 'filtrarEstoque'])->name('estoque.filtrar');
-        
+
         // Operações de estoque
         Route::get('/ver/{id}', [EstoqueController::class, 'getEstoque'])->name('estoque.getEstoque');
         Route::get('obter/{id}', [EstoqueController::class, 'myEstoque'])->name('estoque.myEstoque');
@@ -61,9 +61,10 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('estoque/ajax', [EstoqueController::class, 'ajaxEstoque'])->name('estoque.ajax');
         Route::get('/adicionar/{area_id}', [EstoqueController::class, 'cadastrar'])->name('estoque.cadastrar');
         Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
-        
+
         // AJAX para adicionar unidades/caixas a produto existente via descritivo
         Route::post('/adicionar', [EstoqueController::class, 'adicionar'])->name('estoque.adicionar');
+        Route::post('/sincronizar', [EstoqueController::class, 'sincronizar'])->name('estoque.sincronizar');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
         Route::post('/dar_baixa/{area_de}', [EstoqueController::class, 'dar_baixa'])->name('estoque.dar_baixa');
         Route::get('/relatorio', [EstoqueController::class, 'calcularNivelAlerta'])->name('estoque.relatorio');

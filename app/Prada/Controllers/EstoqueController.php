@@ -1111,4 +1111,63 @@ class EstoqueController extends Controller
 
         return $relatorio;
     }
+
+    /**
+     * Sincroniza o campo `quantidade` a partir do `descritivo` (ex: 2x10x5 => 100)
+     *
+     * @author Augusto Kussema
+     * @date 2025-11-03 15:45 (Luanda time)
+     *
+     * Calcula o total multiplicando os valores do descritivo e grava em `quantidade`
+     *
+     * @param Request $request (produto_id required)
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sincronizar(Request $request)
+    {
+        $request->validate([
+            'produto_id' => 'required|exists:produto_estoques,id',
+        ]);
+
+        $produto = PE::find($request->produto_id);
+        if (!$produto) {
+            return response()->json(['message' => 'Produto não encontrado'], 404);
+        }
+
+        $descritivo = $produto->descritivo ?? '';
+        $des = str_replace(['X', ' '], ['x', ''], trim($descritivo));
+        $parts = array_filter(explode('x', $des), function($v) { return $v !== ''; });
+        $values = array_map(function($v) { return intval(preg_replace('/[^0-9]/', '', $v)); }, array_values($parts));
+
+        $total = 0;
+        if (count($values) >= 3) {
+            $total = intval($values[0]) * intval($values[1]) * intval($values[2]);
+        } else {
+            $total = 1;
+            foreach ($values as $val) $total *= max(0, intval($val));
+            if (count($values) === 0) $total = 0;
+        }
+
+        $produto->quantidade = $total;
+        $produto->save();
+
+        try {
+            $meta = [
+                'model_type' => PE::class,
+                'model_id' => $produto->id,
+                'ip_address' => request()->ip(),
+                'route' => request()->path(),
+                'http_method' => request()->method(),
+                'level' => 'info',
+                'snapshot_after' => $produto->toArray(),
+            ];
+            self::startAtv("Sincronizou quantidade do produto {$produto->designacao} para {$total}", null, $meta);
+        } catch (\Throwable $_) {}
+
+        return response()->json([
+            'message' => 'Quantidade sincronizada',
+            'produto_id' => $produto->id,
+            'quantidade' => $produto->quantidade
+        ], 200);
+    }
 }

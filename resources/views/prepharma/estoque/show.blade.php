@@ -320,6 +320,9 @@
                                 <button class="btn btn-primary btn-editar" data-id="${data.produto.id}" title="Editar" aria-label="Editar">
                                     <i class="fa fa-edit me-1" aria-hidden="true"></i> Editar
                                 </button>
+                                <button class="btn btn-secondary btn-sincronizar" data-id="${data.produto.id}" title="Sincronizar" aria-label="Sincronizar">
+                                    <i class="fa fa-sync me-1" aria-hidden="true"></i> Sincronizar
+                                </button>
                                 <button class="btn btn-outline-info btn-historico" data-id="${data.produto.id}" title="Ver Histórico" aria-label="Histórico">
                                     <i class="fa fa-history me-1"></i> Histórico
                                 </button>
@@ -588,6 +591,36 @@
             $(document).on('click', '.btn-editar', function() {
                 var id = $(this).data('id');
                 window.location.href = `/estoque/editar/${id}/{{ $ah->id }}`;
+            });
+
+            // Função para Sincronizar quantidade a partir do descritivo
+            $(document).on('click', '.btn-sincronizar', function() {
+                var produtoId = $(this).data('id');
+                var btn = $(this);
+                btn.prop('disabled', true);
+
+                $.ajax({
+                    url: '{{ route('estoque.sincronizar') }}',
+                    type: 'POST',
+                    data: { produto_id: produtoId, _token: '{{ csrf_token() }}' },
+                    success: function(response) {
+                        table.ajax.reload(null, false);
+                        if (window.alertify && alertify.success) {
+                            alertify.success(response.message || 'Quantidade sincronizada');
+                        }
+                    },
+                    error: function(xhr) {
+                        var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Erro ao sincronizar';
+                        if (window.alertify && alertify.error) {
+                            alertify.error(msg);
+                        } else {
+                            alert(msg);
+                        }
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false);
+                    }
+                });
             });
 
             // Função para Dar Baixa
