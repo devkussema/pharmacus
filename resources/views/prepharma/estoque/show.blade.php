@@ -352,7 +352,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @include('estoque.modalAddProduto')
                                 </div>
                                 <div class="col-auto text-end float-end ms-auto download-grp">
                                     <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}" id="imprimir-pagina"
@@ -390,66 +389,6 @@
                                 <tbody></tbody>
                             </table>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{-- Modal para dar baixa --}}
-        <div class="modal fade" id="DarBaixa" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="tituloModal">Dar baixa</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="formBaixaEstoque" action="{{ route('estoque.baixa') }}" method="POST">
-                            @csrf
-                            @php
-                                $area_h_id = @$area_id;
-                                $farmacia_id = @auth()->user()->isFarmacia->farmacia_id
-                                    ? auth()->user()->isFarmacia->farmacia_id
-                                    : @auth()->user()->area_hospitalar->area_hospitalar->farmacia_id;
-                            @endphp
-                            <div class="form-group pb-3">
-                                <label for="qtd_">Designação</label>
-                                <input type="text" name="designacao" class="form-control" id="designacao"
-                                    min="1">
-                            </div>
-                            <div class="form-group pb-3">
-                                <label for="endereco">Área *</label>
-                                <input type="hidden" name="user_id" id="user_id">
-                                <select name="area_hospitalar_id" id="" class="form-control">
-                                    @foreach (\App\Models\FarmaciaAreaHospitalar::where('farmacia_id', $farmacia_id)->get() as $ahw)
-                                        @if ($ahw->area_hospitalar->id != $area_h_id)
-                                            <option value="{{ $ahw->area_hospitalar->id }}">
-                                                {{ $ahw->area_hospitalar->nome }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="form-group pb-3">
-                                <input type="hidden" name="produto_id" id="id_produto">
-                                <input type="hidden" name="quantidade_disponivel" id="quantidade_disponivel">
-
-                                <label for="quantidade_atual_display">Quantidade Atual (unidades)</label>
-                                <input type="number" name="quantidade_atual_display" class="form-control form-control-lg mb-3" id="quantidade_atual_display" disabled>
-
-                                <label for="qtd_">Quantidade a Transferir (unidades) *</label>
-                                <input type="number" name="quantidade" class="form-control form-control-lg" id="baixa_quantidade"
-                                    placeholder="Ex: 100" min="1" required>
-                                <small class="form-text text-muted">
-                                    Informe quantas unidades deseja transferir para outra área
-                                </small>
-                            </div>
-
-                            <div class="form-group pb-3">
-                                <label for="movement_date">Data do movimento</label>
-                                <input type="datetime-local" name="movement_date" id="movement_date" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Enviar</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -1030,97 +969,16 @@
             }
         });
 
-        // --- Modal sofisticada para Adicionar Estoque (caixa, caixinha, unidade, lote, fornecedor, obs) ---
-        (function insertAddModal() {
-            if (!document.getElementById('modalAdicionarEstoque')) {
-                var modalHtml = `
-                <div class="modal fade modal-offcanvas-style" id="modalAdicionarEstoque" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <div>
-                                    <h5 class="modal-title">
-                                        <i class="fa fa-plus-circle me-2"></i>
-                                        Adicionar Estoque
-                                    </h5>
-                                    <small style="opacity: 0.9; font-size: 0.85rem;">Preencher detalhes do produto</small>
-                                </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="formAdicionarEstoque">
-                                    <input type="hidden" name="produto_id" id="add_produto_id">
-
-                                    <div class="mb-4">
-                                        <label class="form-label">
-                                            <i class="fa fa-box me-1"></i>
-                                            Quantidade a Adicionar (unidades) *
-                                        </label>
-                                        <input type="number" min="1" class="form-control form-control-lg"
-                                               id="add_quantidade" name="quantidade" value="0"
-                                               placeholder="Ex: 500" required>
-                                        <small class="text-muted d-block mt-2">
-                                            <i class="fa fa-info-circle me-1"></i>
-                                            Informe a quantidade total em unidades
-                                        </small>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">
-                                                <i class="fa fa-barcode me-1"></i>
-                                                Lote
-                                            </label>
-                                            <input type="text" class="form-control" id="add_lote"
-                                                   name="num_lote" placeholder="Ex: L2024-001">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">
-                                                <i class="fa fa-truck me-1"></i>
-                                                Fornecedor
-                                            </label>
-                                            <input type="text" class="form-control" id="add_fornecedor"
-                                                   name="fornecedor" placeholder="Nome do fornecedor">
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label class="form-label">
-                                            <i class="fa fa-comment me-1"></i>
-                                            Observações
-                                        </label>
-                                        <textarea class="form-control" id="add_obs" name="obs"
-                                                  rows="3" placeholder="Observações adicionais (opcional)"></textarea>
-                                    </div>
-
-                                    <div class="d-flex gap-2 pt-3 border-top">
-                                        <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">
-                                            <i class="fa fa-times me-2"></i>Cancelar
-                                        </button>
-                                        <button type="submit" class="btn btn-success flex-fill" id="add_submit_btn">
-                                            <span id="add_submit_text">
-                                                <i class="fa fa-check me-2"></i>Adicionar
-                                            </span>
-                                            <span id="add_submit_spinner" style="display:none;">
-                                                <span class="spinner-custom"></span>
-                                                <span class="ms-2">Processando...</span>
-                                            </span>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-
-                document.body.insertAdjacentHTML('beforeend', modalHtml);
-            }
-        })();
-
-        // Abrir modal ao clicar em Adicionar
+        // ========== Handlers para Offcanvas Adicionar Estoque ==========
+        /**
+         * Abre o offcanvas de adicionar estoque
+         * @author Augusto Kussema
+         * @date 03/11/2025 às 16:15 (Luanda)
+         */
         document.addEventListener('click', function(e) {
             var target = e.target.closest('.btn-add');
             if (!target) return;
+
             var produtoId = target.getAttribute('data-id');
             document.getElementById('add_produto_id').value = produtoId;
 
@@ -1130,11 +988,11 @@
             document.getElementById('add_fornecedor').value = '';
             document.getElementById('add_obs').value = '';
 
-            var modal = new bootstrap.Modal(document.getElementById('modalAdicionarEstoque'));
-            modal.show();
+            var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasAddStock'));
+            offcanvas.show();
         });
 
-        // Envio via AJAX (melhor UX: spinner, disable inputs, toast notifications)
+        // Handler de submit do formulário de adicionar
         document.addEventListener('submit', function(e) {
             if (e.target && e.target.id === 'formAdicionarEstoque') {
                 e.preventDefault();
@@ -1144,7 +1002,7 @@
                 var quantidade = parseInt(document.getElementById('add_quantidade').value || 0, 10);
                 fd.set('quantidade', quantidade);
 
-                // incluir area_hospitalar_id no payload se estiver disponível na página
+                // incluir area_hospitalar_id no payload
                 try {
                     fd.append('area_hospitalar_id', '{{ $area_id ?? '' }}');
                 } catch (e) {}
@@ -1189,11 +1047,11 @@
                         }
                     } catch (err) {}
 
-                    // Close modal after short delay
+                    // Close offcanvas after short delay
                     setTimeout(function() {
-                        var modalEl = document.getElementById('modalAdicionarEstoque');
-                        var modal = bootstrap.Modal.getInstance(modalEl);
-                        if (modal) modal.hide();
+                        var offcanvasEl = document.getElementById('offcanvasAddStock');
+                        var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                        if (offcanvas) offcanvas.hide();
 
                         // Reset form
                         form.reset();
@@ -1228,56 +1086,151 @@
             }
         });
 
-        document.getElementById('imprimir-pagina').addEventListener('click', function(e) {
-            e.preventDefault(); // Evita que o link seja seguido imediatamente
+        // ========== Handlers para Offcanvas Dar Baixa ==========
+        /**
+         * Abre o offcanvas de dar baixa
+         * @author Augusto Kussema
+         * @date 03/11/2025 às 16:15 (Luanda)
+         */
+        function modalDarBaixa(id_produto, descritivo, designacao, quantidade) {
+            document.getElementById('baixa_produto_id').value = id_produto;
+            document.getElementById('baixa_designacao_display').textContent = designacao || '—';
+            document.getElementById('baixa_qtd_display').textContent = quantidade || 0;
+            document.getElementById('baixa_quantidade_disponivel').value = quantidade || 0;
+            document.getElementById('baixa_quantidade').value = '';
+            document.getElementById('baixa_quantidade').setAttribute('max', quantidade || 0);
 
-            // Redireciona para a página específica em uma nova aba
-            var novaAba = window.open(this.href, '_blank');
-
-            // Espera até que a página seja completamente carregada na nova aba
-            novaAba.onload = function() {
-                // Imprime a página
-                novaAba.print();
-            };
-        });
-
-        function modalDarBaixa(id_produto, descritivo, designacao, quantidade) { //formBaixaEstoque
-            $('#DarBaixa #formBaixaEstoque #id_produto').val(id_produto);
-            $('#DarBaixa #formBaixaEstoque #designacao').val(designacao);
-            $('#DarBaixa #formBaixaEstoque #designacao').prop("disabled", true);
-
-            // Armazenar quantidade disponível para validação
-            $('#DarBaixa #formBaixaEstoque #quantidade_disponivel').val(quantidade || 0);
-            $('#DarBaixa #formBaixaEstoque #quantidade_atual_display').val(quantidade || 0);
-            $('#DarBaixa #formBaixaEstoque #baixa_quantidade').attr('max', quantidade || 0);
-            $('#DarBaixa #formBaixaEstoque #baixa_quantidade').val(''); // limpar campo
-
-            // set default movement_date to now (local) formatted for datetime-local
+            // set default movement_date to now (local)
             try {
                 const now = new Date();
-                const tzOffset = now.getTimezoneOffset() * 60000; // offset in ms
+                const tzOffset = now.getTimezoneOffset() * 60000;
                 const localISOTime = new Date(now - tzOffset).toISOString().slice(0,16);
-                $('#DarBaixa #formBaixaEstoque #movement_date').val(localISOTime);
+                document.getElementById('baixa_movement_date').value = localISOTime;
             } catch (e) {
                 // ignore if element not found
             }
 
-            $('#DarBaixa').modal('show');
+            var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasDarBaixa'));
+            offcanvas.show();
         }
 
-        // Inicializar Select2 dentro da modal ao ser exibida (evita problemas de z-index e inicialização prematura)
-        $('#DarBaixa').on('shown.bs.modal', function() {
-            var $sel = $(this).find('select[name="area_hospitalar_id"]');
-            if ($sel.length) {
-                try {
-                    if (!$sel.hasClass('select2-hidden-accessible')) {
-                        $sel.select2({ width: '100%', dropdownParent: $(this) });
+        // Handler de submit do formulário de dar baixa (AJAX)
+        document.addEventListener('submit', function(e) {
+            if (e.target && e.target.id === 'formBaixaEstoque') {
+                e.preventDefault();
+                var form = e.target;
+                var fd = new FormData(form);
+
+                var quantidade = parseInt(document.getElementById('baixa_quantidade').value || 0, 10);
+                var quantidadeDisponivel = parseInt(document.getElementById('baixa_quantidade_disponivel').value || 0, 10);
+
+                // Validações
+                if (quantidade <= 0) {
+                    showToast('A quantidade deve ser maior que zero', 'error');
+                    return;
+                }
+
+                if (quantidade > quantidadeDisponivel) {
+                    showToast(`Quantidade insuficiente. Disponível: ${quantidadeDisponivel} unidades`, 'error');
+                    return;
+                }
+
+                // UI elements
+                var btn = document.getElementById('baixa_submit_btn');
+                var btnText = document.getElementById('baixa_submit_text');
+                var btnSpinner = document.getElementById('baixa_submit_spinner');
+
+                // Disable form
+                Array.from(form.querySelectorAll('input, select, button')).forEach(function(i) {
+                    i.disabled = true;
+                });
+                btnText.style.display = 'none';
+                btnSpinner.style.display = 'inline-flex';
+
+                fetch('{{ route('estoque.baixa') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: fd
+                }).then(function(response) {
+                    if (!response.ok) return response.json().then(function(j) { throw j; });
+                    return response.json();
+                }).then(function(data) {
+                    showToast(data.message || 'Baixa realizada com sucesso!', 'success', 'Transferido!');
+
+                    // Reload table
+                    try {
+                        if (typeof table !== 'undefined' && table.ajax) {
+                            table.ajax.reload(null, false);
+                        } else {
+                            $('#table-c').DataTable().ajax.reload(null, false);
+                        }
+                    } catch (err) {}
+
+                    // Close offcanvas after short delay
+                    setTimeout(function() {
+                        var offcanvasEl = document.getElementById('offcanvasDarBaixa');
+                        var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                        if (offcanvas) offcanvas.hide();
+
+                        // Reset form
+                        form.reset();
+                        Array.from(form.querySelectorAll('input, select, button')).forEach(function(i) {
+                            i.disabled = false;
+                        });
+                        btnText.style.display = 'inline-flex';
+                        btnSpinner.style.display = 'none';
+                    }, 800);
+                }).catch(function(err) {
+                    var errorMsg = 'Erro ao dar baixa';
+
+                    if (err && err.errors) {
+                        var msgs = [];
+                        for (var k in err.errors) {
+                            if (err.errors.hasOwnProperty(k)) msgs.push(err.errors[k][0]);
+                        }
+                        errorMsg = msgs.join(', ');
+                    } else if (err && err.message) {
+                        errorMsg = err.message;
                     }
+
+                    showToast(errorMsg, 'error');
+
+                    // Re-enable form
+                    Array.from(form.querySelectorAll('input, select, button')).forEach(function(i) {
+                        i.disabled = false;
+                    });
+                    btnText.style.display = 'inline-flex';
+                    btnSpinner.style.display = 'none';
+                });
+            }
+        });
+
+        // Inicializar Select2 no offcanvas quando aberto
+        document.getElementById('offcanvasDarBaixa').addEventListener('shown.bs.offcanvas', function() {
+            var $sel = $('#baixa_area_select');
+            if ($sel.length && !$sel.hasClass('select2-hidden-accessible')) {
+                try {
+                    $sel.select2({
+                        width: '100%',
+                        dropdownParent: $('#offcanvasDarBaixa'),
+                        placeholder: 'Selecionar área...'
+                    });
                 } catch (e) {
-                    // se select2 não estiver disponível, ignorar silenciosamente
-                    console.warn('Select2 não disponível para o select da modal DarBaixa');
+                    console.warn('Select2 não disponível');
                 }
             }
+        });
+
+        // Handler para imprimir
+        document.getElementById('imprimir-pagina').addEventListener('click', function(e) {
+            e.preventDefault();
+            var novaAba = window.open(this.href, '_blank');
+            novaAba.onload = function() {
+                novaAba.print();
+            };
         });
 
         document.querySelector('form#formProdutoEstoque').addEventListener('submit', function(e) {
@@ -1352,3 +1305,5 @@
 @endsection
 
 @include('prepharma.estoque._productHistory')
+@include('prepharma.estoque._addStock')
+@include('prepharma.estoque._darBaixa')
