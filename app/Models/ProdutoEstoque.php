@@ -5,27 +5,66 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\GrupoFarmacologico;
+use App\Models\Estoque;
+use App\Models\SaldoEstoque;
+use App\Models\Prateleira;
+// Not importing StatusStock/History directly to avoid hard dependency in case models are named differently.
+
+/**
+ * ProdutoEstoque
+ *
+ * author: Augusto Kussema
+ * data: 2025-11-03 14:30 (Luanda time)
+ *
+ * Breve descrição: Modelo que representa uma entrada de produto no estoque. Mantém o campo
+ * `descritivo` conforme solicitado e introduz o campo `quantidade` em substituição ao
+ * antigo `qtd_embalagem`.
+ */
 class ProdutoEstoque extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * Combinei campos antigos e novos para compatibilidade com o restante da aplicação.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
+        'produto_id',
         'designacao',
         'dosagem',
         'forma',
         'origem_destino',
+        'descritivo',
+        'quantidade',
         'num_lote',
         'data_expiracao',
         'data_producao',
         'data_recepcao',
-        'num_documento',
+        'validade',
+        'fornecedor',
+        'status',
         'obs',
-        'qtd_embalagem',
-        'confirmado',
-        'descritivo',
         'tipo',
         'grupo_farmaco_id',
-        'prateleira_id'
+        'confirmado',
+        'prateleira_id',
+    ];
+
+    /**
+     * Attribute casting.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'validade' => 'date',
+        'data_expiracao' => 'date',
+        'data_producao' => 'date',
+        'data_recepcao' => 'date',
+        'quantidade' => 'integer',
     ];
 
     public function grupo_farmaco()
@@ -45,7 +84,7 @@ class ProdutoEstoque extends Model
 
     public function prateleira()
     {
-        return $this->belongsTo(Prateleira::class);
+        return $this->belongsTo(Prateleira::class, 'prateleira_id');
     }
 
     public function status_stock()
