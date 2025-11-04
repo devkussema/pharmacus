@@ -153,31 +153,66 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 1.5rem;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
             flex-wrap: wrap;
         }
 
         .action-buttons button {
             margin: 0;
-            font-size: 0.75rem;
-            padding: 0.375rem 0.625rem;
-            border-radius: 6px;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.55rem;
+            border-radius: 5px;
             font-weight: 600;
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 0.375rem;
+            gap: 0.3rem;
             white-space: nowrap;
         }
 
         .action-buttons button i {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
 
         .action-buttons button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+        }
+        
+        /* Ajustes de largura das colunas da tabela */
+        .table-produto thead th:nth-child(1) { width: 25%; min-width: 200px; } /* Designação */
+        .table-produto thead th:nth-child(2) { width: 12%; min-width: 100px; } /* Dosagem */
+        .table-produto thead th:nth-child(3) { width: 12%; min-width: 110px; text-align: center; } /* Status */
+        .table-produto thead th:nth-child(4) { width: 10%; min-width: 90px; text-align: center; } /* Quantidade */
+        .table-produto thead th:nth-child(5) { width: 15%; min-width: 120px; } /* Lote */
+        .table-produto thead th:nth-child(6) { width: 13%; min-width: 110px; } /* Expiração */
+        .table-produto thead th:nth-child(7) { width: 13%; min-width: 100px; } /* Ações */
+        
+        .table-produto tbody td:nth-child(3),
+        .table-produto tbody td:nth-child(4) {
+            text-align: center;
+        }
+        
+        /* Botão Sincronizar Global */
+        #btnSincronizarGlobal {
+            display: none;
+            animation: fadeInDown 0.3s ease-in-out;
+        }
+        
+        #btnSincronizarGlobal.show {
+            display: inline-flex;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Badges de Status */
@@ -565,6 +600,17 @@
                         </form>
                     </div>
                     <div class="action-group">
+                        <!-- Botão Sincronizar Global (toggle com CTRL/CMD+ALT+S) -->
+                        <button id="btnSincronizarGlobal" 
+                                class="btn btn-outline-secondary" 
+                                title="Sincronizar todos os produtos (Ctrl/Cmd+Alt+S)">
+                            <i class="fas fa-sync"></i>
+                            <span>Sincronizar Todos</span>
+                            <span id="btnSyncSpinner" style="display:none;">
+                                <span class="spinner-custom"></span>
+                            </span>
+                        </button>
+                        
                         @if (isAdministrator() or auth()->user()->pode_cadastrar_produtos)
                             <button onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'"
                                     class="btn btn-primary">
@@ -1584,6 +1630,139 @@
                         // alert('Ocorreu um erro inesperado');
                     }
                 });
+        });
+
+        // ========== Atalho de Teclado: CTRL/CMD+ALT+S ==========
+        /**
+         * Toggle do botão "Sincronizar Todos" com atalho de teclado
+         * @author Augusto Kussema
+         * @date 04/11/2025 às 09:30 (Luanda)
+         */
+        document.addEventListener('keydown', function(e) {
+            // Detectar CTRL/CMD + ALT + S
+            if ((e.ctrlKey || e.metaKey) && e.altKey && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                
+                var btn = document.getElementById('btnSincronizarGlobal');
+                if (btn) {
+                    btn.classList.toggle('show');
+                    
+                    // Feedback visual
+                    if (btn.classList.contains('show')) {
+                        showToast('Botão "Sincronizar Todos" ativado!', 'info', '', 2000);
+                    } else {
+                        showToast('Botão "Sincronizar Todos" desativado!', 'info', '', 2000);
+                    }
+                }
+            }
+        });
+
+        // ========== Handler: Sincronizar Todos os Produtos ==========
+        /**
+         * Sincroniza todos os produtos do estoque
+         * @author Augusto Kussema
+         * @date 04/11/2025 às 09:45 (Luanda)
+         */
+        document.getElementById('btnSincronizarGlobal').addEventListener('click', function() {
+            if (this.disabled) return;
+
+            // Confirmar ação
+            if (!confirm('Deseja sincronizar TODOS os produtos do estoque? Esta operação pode demorar alguns minutos.')) {
+                return;
+            }
+
+            var btn = this;
+            var btnText = btn.querySelector('span:not(#btnSyncSpinner)');
+            var btnSpinner = document.getElementById('btnSyncSpinner');
+            var btnIcon = btn.querySelector('i');
+
+            // Desabilitar botão e mostrar spinner
+            btn.disabled = true;
+            btnIcon.style.display = 'none';
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline-flex';
+
+            showToast('Iniciando sincronização de todos os produtos...', 'info', '', 3000);
+
+            // Buscar todos os IDs dos produtos via DataTable
+            var table = $('#table-c').DataTable();
+            var allData = table.rows().data();
+            var produtoIds = [];
+
+            for (var i = 0; i < allData.length; i++) {
+                if (allData[i].produto && allData[i].produto.id) {
+                    produtoIds.push(allData[i].produto.id);
+                }
+            }
+
+            if (produtoIds.length === 0) {
+                showToast('Nenhum produto encontrado para sincronizar', 'warning');
+                btn.disabled = false;
+                btnIcon.style.display = 'inline-block';
+                btnText.style.display = 'inline';
+                btnSpinner.style.display = 'none';
+                return;
+            }
+
+            // Sincronizar cada produto sequencialmente
+            var currentIndex = 0;
+            var successCount = 0;
+            var errorCount = 0;
+
+            function syncNext() {
+                if (currentIndex >= produtoIds.length) {
+                    // Finalizado
+                    btn.disabled = false;
+                    btnIcon.style.display = 'inline-block';
+                    btnText.style.display = 'inline';
+                    btnSpinner.style.display = 'none';
+
+                    // Recarregar tabela
+                    table.ajax.reload(null, false);
+
+                    // Mostrar resultado
+                    if (errorCount === 0) {
+                        showToast(`Todos os ${successCount} produtos foram sincronizados com sucesso!`, 'success', '', 5000);
+                    } else {
+                        showToast(`Sincronização concluída: ${successCount} sucesso, ${errorCount} erros`, 'warning', '', 5000);
+                    }
+                    return;
+                }
+
+                var produtoId = produtoIds[currentIndex];
+                currentIndex++;
+
+                // Atualizar feedback
+                showToast(`Sincronizando produto ${currentIndex} de ${produtoIds.length}...`, 'info', '', 1500);
+
+                // Fazer requisição de sincronização
+                fetch('{{ route('estoque.sincronizar') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        produto_id: produtoId
+                    })
+                }).then(function(response) {
+                    if (!response.ok) throw new Error('Erro na sincronização');
+                    return response.json();
+                }).then(function(data) {
+                    successCount++;
+                    // Continuar para o próximo
+                    setTimeout(syncNext, 300); // Pequeno delay entre requests
+                }).catch(function(error) {
+                    errorCount++;
+                    console.error('Erro ao sincronizar produto ' + produtoId, error);
+                    // Continuar mesmo com erro
+                    setTimeout(syncNext, 300);
+                });
+            }
+
+            // Iniciar sincronização
+            syncNext();
         });
     </script>
 @endsection
