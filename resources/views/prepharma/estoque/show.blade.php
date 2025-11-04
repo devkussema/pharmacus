@@ -179,7 +179,7 @@
             transform: translateY(-1px);
             box-shadow: 0 3px 8px rgba(0,0,0,0.12);
         }
-        
+
         /* Impedir que os botões ocupem toda a largura (algum CSS global estava forçando isso) */
         .action-buttons .btn {
             flex: none !important;
