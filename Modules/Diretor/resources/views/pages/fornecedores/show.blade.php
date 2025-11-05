@@ -13,10 +13,6 @@
             <i class="fa-solid fa-arrow-left me-2"></i>
             Voltar
         </a>
-        <a href="{{ route('diretor.fornecedores.edit', $id) }}" class="btn-modern btn-primary">
-            <i class="fa-solid fa-edit me-2"></i>
-            Editar
-        </a>
     </div>
 </div>
 

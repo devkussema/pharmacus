@@ -351,6 +351,57 @@
     color: var(--text-primary);
 }
 
+/* Melhorias visuais para o dropdown: ícone, remoção de underline e destaque do logout */
+.user-dropdown .dropdown-item {
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.user-dropdown .dropdown-item i {
+    width: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.user-dropdown .dropdown-item:hover i {
+    color: var(--text-primary);
+}
+
+.user-dropdown .dropdown-header {
+    padding: 1rem 1rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.dropdown-user-info img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.04);
+}
+
+.user-dropdown .dropdown-divider { margin: 0.5rem 0; }
+
+.user-dropdown .dropdown-item.text-danger {
+    color: var(--danger) !important;
+}
+
+.user-dropdown .dropdown-item.text-danger:hover {
+    background: rgba(220, 38, 38, 0.06);
+}
+
+/* Fundo rosa suave para o item de logout e bordas arredondadas inferiores */
+.user-dropdown li:last-child .dropdown-item.text-danger {
+    background: rgba(220,38,38,0.03);
+    border-bottom-left-radius: calc(var(--border-radius) - 4px);
+    border-bottom-right-radius: calc(var(--border-radius) - 4px);
+}
+
+/* Garantir que links dentro do dropdown não tenham sublinhado */
+.user-dropdown a { text-decoration: none; }
+
 .user-dropdown .dropdown-item.text-danger {
     color: var(--danger) !important;
 }
