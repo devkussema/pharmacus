@@ -1,0 +1,11 @@
+{
+    "name": "Diretor",
+    "alias": "diretor",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Diretor\\Providers\\DiretorServiceProvider"
+    ],
+    "files": []
+}
