@@ -8,19 +8,25 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Exibe o dashboard do módulo Diretor (lista/principal).
+     *
+     * @author Augusto Kussema
+     * @created 05-11-2025
      */
     public function index()
     {
-        return view('diretor::index');
+        return view('diretor::pages.dashboard');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostra o formulário para criar um novo recurso.
+     *
+     * @author Augusto Kussema
+     * @created 05-11-2025
      */
     public function create()
     {
-        return view('diretor::create');
+        return view('diretor::pages.create');
     }
 
     /**
@@ -29,19 +35,27 @@ class HomeController extends Controller
     public function store(Request $request) {}
 
     /**
-     * Show the specified resource.
+     * Exibe um recurso específico.
+     *
+     * @param mixed $id
+     * @author Augusto Kussema
+     * @created 05-11-2025
      */
     public function show($id)
     {
-        return view('diretor::show');
+        return view('diretor::pages.show', compact('id'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Mostra o formulário para editar o recurso.
+     *
+     * @param mixed $id
+     * @author Augusto Kussema
+     * @created 05-11-2025
      */
     public function edit($id)
     {
-        return view('diretor::edit');
+        return view('diretor::pages.edit', compact('id'));
     }
 
     /**
