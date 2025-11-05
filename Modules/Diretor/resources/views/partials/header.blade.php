@@ -299,6 +299,52 @@
     margin-top: 0.5rem;
 }
 
+/* Remover marcadores padrão da lista e ajustar espaçamento */
+.user-dropdown,
+.user-dropdown li {
+    list-style: none !important;
+    padding-left: 0 !important;
+    margin: 0 !important;
+}
+
+.user-dropdown { padding: 0; }
+
+/* Garantir que o dropdown está oculto por padrão e só mostra quando ativado.
+   Suporte para diferentes triggers: Bootstrap adiciona .show na lista ou aria-expanded no botão.
+*/
+.user-dropdown {
+    display: none !important;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 160ms var(--transition-ease), transform 160ms var(--transition-ease);
+    pointer-events: none;
+    z-index: 1050;
+}
+
+/* Mostrar quando o Bootstrap adicionar a classe .show na própria lista */
+.user-dropdown.show {
+    display: block !important;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Mostrar quando o botão estiver expandido (fallback caso o JS não adicione .show ao menu) */
+.user-btn[aria-expanded="true"] + .user-dropdown {
+    display: block !important;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Se por algum motivo o plugin adicionar .show ao pai (.user-menu), suportar também */
+.user-menu.show .user-dropdown {
+    display: block !important;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
 .user-dropdown .dropdown-header {
     padding: 1rem;
     border-bottom: 1px solid var(--border-primary);
