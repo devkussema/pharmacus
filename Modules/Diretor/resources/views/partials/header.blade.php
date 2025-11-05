@@ -294,8 +294,41 @@
     min-width: 280px;
     border: 1px solid var(--border-primary);
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-xl);
     background: var(--surface);
+    margin-top: 0.5rem;
+}
+
+.user-dropdown .dropdown-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.user-dropdown .dropdown-item {
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.user-dropdown .dropdown-item:hover {
+    background: var(--surface-hover);
+    color: var(--text-primary);
+}
+
+.user-dropdown .dropdown-item.text-danger {
+    color: var(--danger) !important;
+}
+
+.user-dropdown .dropdown-item.text-danger:hover {
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.user-dropdown .dropdown-divider {
+    margin: 0;
+    border-color: var(--border-primary);
 }
 
 .dropdown-user-info {

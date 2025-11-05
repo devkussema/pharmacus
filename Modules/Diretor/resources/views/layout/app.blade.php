@@ -140,6 +140,12 @@
             padding: 2rem;
             background: var(--bg-secondary);
             min-height: calc(100vh - var(--header-height));
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-footer {
+            margin-left: var(--sidebar-width);
         }
         
         /* Responsivo */
@@ -156,6 +162,10 @@
             }
             
             .app-main {
+                margin-left: 0;
+            }
+            
+            .app-footer {
                 margin-left: 0;
             }
             

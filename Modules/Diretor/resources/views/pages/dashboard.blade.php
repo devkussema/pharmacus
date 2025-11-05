@@ -321,7 +321,7 @@
     background: var(--surface);
     border: 1px solid var(--border-primary);
     border-radius: var(--border-radius);
-    padding: 1rem;
+    padding: 1.25rem;
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
@@ -398,17 +398,17 @@
 }
 
 .stat-value .amount {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--text-primary);
     line-height: 1;
 }
 
 .stat-label {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--text-secondary);
     font-weight: 500;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
 .stat-change {

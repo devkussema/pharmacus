@@ -103,6 +103,23 @@
     padding: 1.5rem 0;
 }
 
+.sidebar-nav-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-nav-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav-container::-webkit-scrollbar-thumb {
+    background: var(--border-secondary);
+    border-radius: 3px;
+}
+
+.sidebar-nav-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
 .sidebar-nav {
     padding: 0 1rem;
 }
@@ -143,7 +160,7 @@
 }
 
 .nav-item.active {
-    background: linear-gradient(90deg, var(--primary), transparent);
+    background: rgba(37, 99, 235, 0.1);
     color: var(--primary);
     font-weight: 600;
 }
@@ -157,6 +174,10 @@
     width: 3px;
     background: var(--primary);
     border-radius: 0 2px 2px 0;
+}
+
+.nav-item.active .nav-item-icon {
+    color: var(--primary);
 }
 
 .nav-item-icon {
