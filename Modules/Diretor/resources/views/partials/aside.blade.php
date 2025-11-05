@@ -1,11 +1,18 @@
-<aside class="bg-light border-end vh-100 position-fixed app-aside">
-    <div class="p-3">
-        <h6 class="text-muted">Menu</h6>
-        <ul class="nav nav-pills flex-column">
-            <li class="nav-item"><a class="nav-link" href="{{ route('diretor.index') }}">Visão Geral</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Inventário</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Fornecedores</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Vendas</a></li>
-        </ul>
+<aside class="position-fixed app-aside">
+    <div class="p-3 h-100 d-flex flex-column">
+        <div class="mb-4">
+            <h6 class="text-muted small">Menu</h6>
+        </div>
+
+        <nav class="nav flex-column mb-3">
+            <a class="nav-link d-flex align-items-center mb-1 text-dark" href="{{ route('diretor.index') }}"><i class="fa-solid fa-chart-pie me-2"></i>Visão Geral</a>
+            <a class="nav-link d-flex align-items-center mb-1 text-dark" href="#"><i class="fa-solid fa-boxes-stacked me-2"></i>Inventário</a>
+            <a class="nav-link d-flex align-items-center mb-1 text-dark" href="#"><i class="fa-solid fa-truck-fast me-2"></i>Fornecedores</a>
+            <a class="nav-link d-flex align-items-center mb-1 text-dark" href="#"><i class="fa-solid fa-receipt me-2"></i>Vendas</a>
+        </nav>
+
+        <div class="mt-auto small text-muted">
+            <div>&copy; {{ date('Y') }} Farmácia</div>
+        </div>
     </div>
 </aside>
