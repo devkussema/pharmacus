@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top">
+<nav class="navbar navbar-expand-lg fixed-top app-header">
     <div class="container-fluid">
-        <a class="navbar-brand text-dark" href="{{ route('diretor.index') }}"><i class="fa-solid fa-capsules me-2 text-primary"></i>Diretor - Farmácia</a>
+        <a class="navbar-brand" href="{{ route('diretor.index') }}"><i class="fa-solid fa-capsules me-2 text-primary"></i>Diretor - Farmácia</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
             <span class="navbar-toggler-icon"></span>

@@ -17,35 +17,48 @@
     <style>
         :root{
             --bg: #ffffff;
+            --surface: #ffffff;
             --panel: #f8fafc;
             --text: #1f2937;
             --muted: #6b7280;
+            --border: rgba(2,6,23,0.08);
             --accent-start: #6ee7b7;
             --accent-end: #3b82f6;
+            --header-h: 64px;
+            --aside-w: 260px;
         }
         [data-theme="dark"], .theme-dark{
             --bg: #0b1220;
+            --surface: #0f1724;
             --panel: #0f1724;
             --text: #e6eef8;
             --muted: #9aa6bf;
+            --border: rgba(230,238,248,0.08);
             --accent-start: #06b6d4;
             --accent-end: #7c3aed;
         }
 
         html,body{height:100%;font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;margin:0;background:var(--bg);color:var(--text)}
-        .navbar-brand{font-weight:700}
-        .app-aside{width:240px;background:linear-gradient(180deg,var(--panel),rgba(255,255,255,0));min-height:100vh;padding-top:1rem}
-        .content-area{margin-left:240px;padding:1.5rem}
-        @media (max-width: 991px){.content-area{margin-left:0}.app-aside{display:none}}
+
+        /* Shell para sticky footer */
+        .app-shell{min-height:100svh;display:flex;flex-direction:column;padding-top:var(--header-h)}
+        .app-content{flex:1}
+        .app-main{padding:1.5rem}
+
+        /* Header e Aside com variáveis de tema */
+        .app-header{background:var(--surface);border-bottom:1px solid var(--border);height:var(--header-h)}
+        .app-aside{width:var(--aside-w);background:var(--surface);border-right:1px solid var(--border);min-height:calc(100svh - var(--header-h));padding-top:1rem}
+        @media (max-width: 991px){.app-aside{display:none}}
 
         /* Cards com gradiente e animação */
-        .stat-card{background:linear-gradient(90deg,var(--accent-start),var(--accent-end));color:#fff;border-radius:8px;transition:transform .28s ease,box-shadow .28s ease;box-shadow:0 6px 18px rgba(15,23,42,.06)}
+        .stat-card{background:linear-gradient(120deg,var(--accent-start),var(--accent-end));color:#fff;border-radius:12px;transition:transform .28s ease,box-shadow .28s ease;box-shadow:0 10px 24px rgba(2,6,23,.12)}
         .stat-card:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(2,6,23,.18)}
         .stat-card .card-body{backdrop-filter: blur(4px);}
 
         /* table and footer tweaks */
-        .card .table thead th{border-bottom:1px solid rgba(0,0,0,.06)}
-        footer{background:transparent}
+        .card{background:var(--surface);border:1px solid var(--border)}
+        .card .table thead th{border-bottom:1px solid var(--border)}
+        footer.app-footer{background:var(--surface);border-top:1px solid var(--border)}
 
         /* small utilities */
         .muted{color:var(--muted)}
@@ -56,21 +69,35 @@
 </head>
 <body>
 
-@include('diretor::partials.header')
-
-<div class="d-flex">
-    @include('diretor::partials.aside')
-
-    <main class="flex-fill content-area">
-        @if(session('status'))
-            <div class="alert alert-success">{{ session('status') }}</div>
-        @endif
-
-        @yield('content')
-    </main>
+<!-- Preloader -->
+<div id="preloader" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="z-index:1055;background:var(--bg)">
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status"></div>
+        <div class="mt-3 fw-semibold">Carregando...</div>
+    </div>
+    <style>
+        #preloader{transition: opacity .25s ease, visibility .25s ease}
+        #preloader.hidden{opacity:0;visibility:hidden}
+    </style>
 </div>
 
-@include('diretor::partials.footer')
+@include('diretor::partials.header')
+
+<div class="app-shell">
+    <div class="app-content d-flex">
+        @include('diretor::partials.aside')
+
+        <main class="flex-fill app-main">
+            @if(session('status'))
+                <div class="alert alert-success">{{ session('status') }}</div>
+            @endif
+
+            @yield('content')
+        </main>
+    </div>
+
+    @include('diretor::partials.footer')
+</div>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -98,6 +125,12 @@
             apply(next);
         }
     })();
+
+    // Preloader hide on window load
+    window.addEventListener('load', function(){
+        const p = document.getElementById('preloader');
+        if(p){ p.classList.add('hidden'); setTimeout(()=>p.remove(), 350); }
+    });
 </script>
 
 @stack('scripts')
