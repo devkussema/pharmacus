@@ -25,3 +25,4 @@ index.php
 .htaccess
 storage/permission_migration_report.json
 storage/permission_migration_report.json
+stubs/
