@@ -467,12 +467,21 @@
             
             // Atalho de teclado para busca (Cmd+K / Ctrl+K)
             document.addEventListener('keydown', function(e) {
-                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                    e.preventDefault();
-                    const searchInput = document.querySelector('.search-input');
-                    if (searchInput) {
-                        searchInput.focus();
+                try {
+                    if ((e.metaKey || e.ctrlKey) && e.key && e.key.toLowerCase() === 'k') {
+                        e.preventDefault();
+                        const searchInput = document.querySelector('.search-input');
+                        if (searchInput) {
+                            // garantir foco sem scroll indesejado e selecionar o texto
+                            try { searchInput.focus({ preventScroll: true }); } catch (err) { searchInput.focus(); }
+                            if (typeof searchInput.select === 'function') {
+                                searchInput.select();
+                            }
+                        }
                     }
+                } catch (err) {
+                    // não quebrar a app se algo falhar
+                    console.warn('Atalho de busca falhou', err);
                 }
             });
         });

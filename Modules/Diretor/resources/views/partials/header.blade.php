@@ -290,13 +290,27 @@
     transform: rotate(180deg);
 }
 
+.user-menu { position: relative; }
+
 .user-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
     min-width: 280px;
     border: 1px solid var(--border-primary);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-xl);
     background: var(--surface);
-    margin-top: 0.5rem;
+    margin: 0;
+    padding: 0;
+    z-index: 1050;
+
+    /* oculto por padrão - usar visibility/opacity para não conflitar com scripts */
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 160ms var(--transition-ease), transform 160ms var(--transition-ease), visibility 0s linear 160ms;
+    pointer-events: none;
 }
 
 /* Remover marcadores padrão da lista e ajustar espaçamento */
@@ -307,41 +321,14 @@
     margin: 0 !important;
 }
 
-.user-dropdown { padding: 0; }
-
-/* Garantir que o dropdown está oculto por padrão e só mostra quando ativado.
-   Suporte para diferentes triggers: Bootstrap adiciona .show na lista ou aria-expanded no botão.
-*/
-.user-dropdown {
-    display: none !important;
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity 160ms var(--transition-ease), transform 160ms var(--transition-ease);
-    pointer-events: none;
-    z-index: 1050;
-}
-
-/* Mostrar quando o Bootstrap adicionar a classe .show na própria lista */
-.user-dropdown.show {
-    display: block !important;
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-
-/* Mostrar quando o botão estiver expandido (fallback caso o JS não adicione .show ao menu) */
-.user-btn[aria-expanded="true"] + .user-dropdown {
-    display: block !important;
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-
-/* Se por algum motivo o plugin adicionar .show ao pai (.user-menu), suportar também */
+/* Mostrar quando o Bootstrap adicionar a classe .show na própria lista ou quando o botão sinalizar aria-expanded */
+.user-dropdown.show,
+.user-btn[aria-expanded="true"] + .user-dropdown,
 .user-menu.show .user-dropdown {
-    display: block !important;
+    visibility: visible;
     opacity: 1;
     transform: translateY(0);
+    transition-delay: 0s;
     pointer-events: auto;
 }
 
