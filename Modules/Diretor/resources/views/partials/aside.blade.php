@@ -1,78 +1,80 @@
 <aside class="app-sidebar">
     <div class="sidebar-content">
-        <nav class="sidebar-nav">
-            <div class="nav-section">
-                <div class="nav-section-title">Dashboard</div>
-                <a href="{{ route('diretor.index') }}" class="nav-item active">
-                    <div class="nav-item-icon">
-                        <i class="fa-solid fa-chart-line"></i>
-                    </div>
-                    <span class="nav-item-text">Visão Geral</span>
-                </a>
-            </div>
-            
-            <div class="nav-section">
-                <div class="nav-section-title">Gestão</div>
-                <a href="#" class="nav-item">
-                    <div class="nav-item-icon">
-                        <i class="fa-solid fa-pills"></i>
-                    </div>
-                    <span class="nav-item-text">Medicamentos</span>
-                    <span class="nav-item-badge">245</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <div class="nav-item-icon">
-                        <i class="fa-solid fa-warehouse"></i>
-                    </div>
-                    <span class="nav-item-text">Inventário</span>
-                    <span class="nav-item-notification"></span>
-                </a>
-                <a href="#" class="nav-item">
-                    <div class="nav-item-icon">
-                        <i class="fa-solid fa-truck-field"></i>
-                    </div>
-                    <span class="nav-item-text">Fornecedores</span>
-                </a>
-            </div>
-            
-            <div class="nav-section">
-                <div class="nav-section-title">Vendas & Clientes</div>
-                <a href="#" class="nav-item">
-                    <div class="nav-item-icon">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                    </div>
-                    <span class="nav-item-text">Vendas</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <div class="nav-item-icon">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <span class="nav-item-text">Clientes</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <div class="nav-item-icon">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                    </div>
-                    <span class="nav-item-text">Faturas</span>
-                </a>
-            </div>
-            
-            <div class="nav-section">
-                <div class="nav-section-title">Relatórios</div>
-                <a href="#" class="nav-item">
-                    <div class="nav-item-icon">
-                        <i class="fa-solid fa-chart-bar"></i>
-                    </div>
-                    <span class="nav-item-text">Análise de Vendas</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <div class="nav-item-icon">
-                        <i class="fa-solid fa-chart-pie"></i>
-                    </div>
-                    <span class="nav-item-text">Performance</span>
-                </a>
-            </div>
-        </nav>
+        <div class="sidebar-nav-container">
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Dashboard</div>
+                    <a href="{{ route('diretor.index') }}" class="nav-item {{ request()->routeIs('diretor.index') ? 'active' : '' }}">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <span class="nav-item-text">Visão Geral</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Gestão</div>
+                    <a href="#" class="nav-item">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-pills"></i>
+                        </div>
+                        <span class="nav-item-text">Medicamentos</span>
+                        <span class="nav-item-badge">245</span>
+                    </a>
+                    <a href="{{ route('diretor.estoque.index') }}" class="nav-item {{ request()->routeIs('diretor.estoque.*') ? 'active' : '' }}">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-warehouse"></i>
+                        </div>
+                        <span class="nav-item-text">Estoque</span>
+                        <span class="nav-item-notification"></span>
+                    </a>
+                    <a href="{{ route('diretor.fornecedores.index') }}" class="nav-item {{ request()->routeIs('diretor.fornecedores.*') ? 'active' : '' }}">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-truck-field"></i>
+                        </div>
+                        <span class="nav-item-text">Fornecedores</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Vendas & Clientes</div>
+                    <a href="#" class="nav-item">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+                        <span class="nav-item-text">Vendas</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <span class="nav-item-text">Clientes</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <span class="nav-item-text">Faturas</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Relatórios</div>
+                    <a href="#" class="nav-item">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-chart-bar"></i>
+                        </div>
+                        <span class="nav-item-text">Análise de Vendas</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        <span class="nav-item-text">Performance</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
         
         <div class="sidebar-footer">
             <div class="sidebar-help">
@@ -93,11 +95,15 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+
+.sidebar-nav-container {
+    flex: 1;
+    overflow-y: auto;
     padding: 1.5rem 0;
 }
 
 .sidebar-nav {
-    flex: 1;
     padding: 0 1rem;
 }
 

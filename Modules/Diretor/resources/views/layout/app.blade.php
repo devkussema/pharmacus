@@ -147,14 +147,34 @@
             .app-sidebar {
                 transform: translateX(-100%);
                 transition: transform var(--transition-normal);
+                z-index: 200;
             }
             
             .app-sidebar.open {
                 transform: translateX(0);
+                box-shadow: var(--shadow-xl);
             }
             
             .app-main {
                 margin-left: 0;
+            }
+            
+            .sidebar-overlay {
+                position: fixed;
+                top: var(--header-height);
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 150;
+                opacity: 0;
+                visibility: hidden;
+                transition: all var(--transition-normal);
+            }
+            
+            .sidebar-overlay.show {
+                opacity: 1;
+                visibility: visible;
             }
         }
         
@@ -416,10 +436,35 @@
             const sidebar = document.querySelector('.app-sidebar');
             
             if (sidebarToggle && sidebar) {
+                // Criar overlay se não existir
+                let overlay = document.querySelector('.sidebar-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.className = 'sidebar-overlay';
+                    document.body.appendChild(overlay);
+                }
+                
                 sidebarToggle.addEventListener('click', () => {
                     sidebar.classList.toggle('open');
+                    overlay.classList.toggle('show');
+                });
+                
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('show');
                 });
             }
+            
+            // Atalho de teclado para busca (Cmd+K / Ctrl+K)
+            document.addEventListener('keydown', function(e) {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                    e.preventDefault();
+                    const searchInput = document.querySelector('.search-input');
+                    if (searchInput) {
+                        searchInput.focus();
+                    }
+                }
+            });
         });
         
         // Funções globais
