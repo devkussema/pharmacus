@@ -436,10 +436,49 @@
                 }
             }, 1000);
             
-            // Inicializar tooltips
-            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
-                new bootstrap.Tooltip(el);
-            });
+            // Inicializar tooltips (se Bootstrap estiver disponível)
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+                    try { new bootstrap.Tooltip(el); } catch (err) { /* ignore */ }
+                });
+            }
+
+            // Dropdown do usuário (fallback sem depender do Bootstrap JS)
+            (function() {
+                const userMenus = document.querySelectorAll('.user-menu');
+                userMenus.forEach(menu => {
+                    const btn = menu.querySelector('.user-btn');
+                    const dropdown = menu.querySelector('.user-dropdown');
+                    if (!btn || !dropdown) return;
+
+                    // Toggle on click
+                    btn.addEventListener('click', function(e) {
+                        const expanded = btn.getAttribute('aria-expanded') === 'true';
+                        btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+                        dropdown.classList.toggle('show');
+                        menu.classList.toggle('show');
+                        e.stopPropagation();
+                    });
+
+                    // Close when clicking outside
+                    document.addEventListener('click', function(ev) {
+                        if (!menu.contains(ev.target)) {
+                            btn.setAttribute('aria-expanded', 'false');
+                            dropdown.classList.remove('show');
+                            menu.classList.remove('show');
+                        }
+                    });
+
+                    // Close on ESC
+                    document.addEventListener('keydown', function(ev) {
+                        if (ev.key === 'Escape') {
+                            btn.setAttribute('aria-expanded', 'false');
+                            dropdown.classList.remove('show');
+                            menu.classList.remove('show');
+                        }
+                    });
+                });
+            })();
             
             // Sidebar toggle para mobile
             const sidebarToggle = document.querySelector('[data-sidebar-toggle]');
