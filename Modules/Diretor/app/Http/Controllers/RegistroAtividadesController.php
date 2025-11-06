@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 /**
- * Controller para gestão de atividades e logs da farmácia hospitalar
+ * Controller para gestão de registro de atividades e logs da farmácia hospitalar
  * 
  * @author Augusto Kussema
- * @date 2025-11-05
+ * @date 2025-11-06
  */
-class AtividadesController extends Controller
+class RegistroAtividadesController extends Controller
 {
     /**
      * Lista todas as atividades recentes (dispensações, entradas, movimentações)
@@ -21,7 +21,7 @@ class AtividadesController extends Controller
     public function index()
     {
         // TODO: Buscar atividades do banco de dados
-        return view('diretor::pages.atividades.index');
+        return view('diretor::pages.registro-atividades.index');
     }
 
     /**
@@ -33,6 +33,6 @@ class AtividadesController extends Controller
     public function show($id)
     {
         // TODO: Buscar atividade específica do banco
-        return view('diretor::pages.atividades.show', compact('id'));
+        return view('diretor::pages.registro-atividades.show', compact('id'));
     }
 }

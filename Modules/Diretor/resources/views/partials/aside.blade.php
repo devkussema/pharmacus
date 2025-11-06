@@ -21,11 +21,11 @@
                         <span class="nav-item-text">Estoque de Medicamentos</span>
                         <span class="nav-item-notification"></span>
                     </a>
-                    <a href="{{ route('diretor.atividades.index') }}" class="nav-item {{ request()->routeIs('diretor.atividades.*') ? 'active' : '' }}">
+                    <a href="{{ route('diretor.registro-atividades.index') }}" class="nav-item {{ request()->routeIs('diretor.registro-atividades.*') ? 'active' : '' }}">
                         <div class="nav-item-icon">
                             <i class="fa-solid fa-clock-rotate-left"></i>
                         </div>
-                        <span class="nav-item-text">Atividades</span>
+                        <span class="nav-item-text">Registro de Atividades</span>
                         <span class="nav-item-badge">156</span>
                     </a>
                     <a href="{{ route('diretor.fornecedores.index') }}" class="nav-item {{ request()->routeIs('diretor.fornecedores.*') ? 'active' : '' }}">
@@ -34,25 +34,25 @@
                         </div>
                         <span class="nav-item-text">Fornecedores</span>
                     </a>
-                    <a href="{{ route('diretor.funcionarios.index') }}" class="nav-item {{ request()->routeIs('diretor.funcionarios.*') ? 'active' : '' }}">
+                    <a href="{{ route('diretor.equipe.index') }}" class="nav-item {{ request()->routeIs('diretor.equipe.*') ? 'active' : '' }}">
                         <div class="nav-item-icon">
                             <i class="fa-solid fa-user-nurse"></i>
                         </div>
-                        <span class="nav-item-text">Funcionários</span>
+                        <span class="nav-item-text">Equipe</span>
                         <span class="nav-item-badge">24</span>
                     </a>
                 </div>
                 
                 <div class="nav-section">
                     <div class="nav-section-title">Operações</div>
-                    <a href="#" class="nav-item">
+                    <a href="{{ route('diretor.dispensacoes.index') }}" class="nav-item {{ request()->routeIs('diretor.dispensacoes.*') ? 'active' : '' }}">
                         <div class="nav-item-icon">
-                            <i class="fa-solid fa-clipboard-check"></i>
+                            <i class="fa-solid fa-hand-holding-medical"></i>
                         </div>
-                        <span class="nav-item-text">Prescrições Pendentes</span>
-                        <span class="nav-item-badge">12</span>
+                        <span class="nav-item-text">Dispensações</span>
+                        <span class="nav-item-badge">45</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <a href="{{ route('diretor.alertas.index') }}" class="nav-item {{ request()->routeIs('diretor.alertas.*') ? 'active' : '' }}">
                         <div class="nav-item-icon">
                             <i class="fa-solid fa-triangle-exclamation"></i>
                         </div>
@@ -62,18 +62,24 @@
                 </div>
                 
                 <div class="nav-section">
-                    <div class="nav-section-title">Relatórios</div>
-                    <a href="#" class="nav-item">
+                    <div class="nav-section-title">Sistema</div>
+                    <a href="{{ route('diretor.perfil') }}" class="nav-item {{ request()->routeIs('diretor.perfil') ? 'active' : '' }}">
                         <div class="nav-item-icon">
-                            <i class="fa-solid fa-chart-line"></i>
+                            <i class="fa-solid fa-user-circle"></i>
                         </div>
-                        <span class="nav-item-text">Dispensações</span>
+                        <span class="nav-item-text">Perfil</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <a href="{{ route('diretor.configuracoes') }}" class="nav-item {{ request()->routeIs('diretor.configuracoes') ? 'active' : '' }}">
                         <div class="nav-item-icon">
-                            <i class="fa-solid fa-chart-bar"></i>
+                            <i class="fa-solid fa-gear"></i>
                         </div>
-                        <span class="nav-item-text">Consumo por Setor</span>
+                        <span class="nav-item-text">Configurações</span>
+                    </a>
+                    <a href="{{ route('diretor.ajuda') }}" class="nav-item {{ request()->routeIs('diretor.ajuda') ? 'active' : '' }}">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-circle-question"></i>
+                        </div>
+                        <span class="nav-item-text">Ajuda</span>
                     </a>
                 </div>
             </nav>
