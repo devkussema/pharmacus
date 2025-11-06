@@ -504,14 +504,13 @@
                 });
             }
             
-            // Atalho de teclado para busca (Cmd+K / Ctrl+K)
+                        // Atalho de teclado para busca (Cmd+K / Ctrl+K)
             document.addEventListener('keydown', function(e) {
                 try {
                     if ((e.metaKey || e.ctrlKey) && e.key && e.key.toLowerCase() === 'k') {
                         e.preventDefault();
-                        const searchInput = document.querySelector('.search-input');
+                        const searchInput = document.querySelector('#globalSearch');
                         if (searchInput) {
-                            // garantir foco sem scroll indesejado e selecionar o texto
                             try { searchInput.focus({ preventScroll: true }); } catch (err) { searchInput.focus(); }
                             if (typeof searchInput.select === 'function') {
                                 searchInput.select();
@@ -519,10 +518,120 @@
                         }
                     }
                 } catch (err) {
-                    // não quebrar a app se algo falhar
                     console.warn('Atalho de busca falhou', err);
                 }
             });
+            
+            // Busca Global
+            let searchTimeout;
+            const globalSearchInput = document.getElementById('globalSearch');
+            const searchResultsEl = document.getElementById('searchResults');
+            
+            if (globalSearchInput && searchResultsEl) {
+                globalSearchInput.addEventListener('input', function(e) {
+                    const query = e.target.value.trim();
+                    
+                    clearTimeout(searchTimeout);
+                    
+                    if (query.length < 2) {
+                        searchResultsEl.classList.remove('active');
+                        return;
+                    }
+                    
+                    searchTimeout = setTimeout(() => {
+                        performGlobalSearch(query);
+                    }, 300);
+                });
+                
+                // Fechar ao clicar fora
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.search-container')) {
+                        searchResultsEl.classList.remove('active');
+                    }
+                });
+            }
+            
+            async function performGlobalSearch(query) {
+                const searchResultsEl = document.getElementById('searchResults');
+                
+                searchResultsEl.innerHTML = '<div class="search-result-empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Pesquisando...</p></div>';
+                searchResultsEl.classList.add('active');
+                
+                try {
+                    const response = await fetch(`{{ url('diretor/busca-global') }}?q=${encodeURIComponent(query)}`);
+                    const data = await response.json();
+                    
+                    if (!data.success || (data.produtos.length === 0 && data.paginas.length === 0)) {
+                        searchResultsEl.innerHTML = `
+                            <div class="search-result-empty">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <p>Nenhum resultado encontrado</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    let html = '';
+                    
+                    // Produtos
+                    if (data.produtos.length > 0) {
+                        html += '<div class="search-results-header">Medicamentos</div>';
+                        data.produtos.forEach(p => {
+                            html += `
+                                <a href="{{ url('diretor/estoque') }}/${p.id}" class="search-result-item">
+                                    <div class="search-result-icon produto">
+                                        <i class="fa-solid fa-pills"></i>
+                                    </div>
+                                    <div class="search-result-content">
+                                        <div class="search-result-title">${p.designacao}</div>
+                                        <div class="search-result-subtitle">${p.categoria} • Estoque: ${p.quantidade}</div>
+                                    </div>
+                                </a>
+                            `;
+                        });
+                    }
+                    
+                    // Páginas
+                    if (data.paginas.length > 0) {
+                        html += '<div class="search-results-header">Páginas</div>';
+                        data.paginas.forEach(p => {
+                            html += `
+                                <a href="${p.url}" class="search-result-item">
+                                    <div class="search-result-icon pagina">
+                                        <i class="${p.icon}"></i>
+                                    </div>
+                                    <div class="search-result-content">
+                                        <div class="search-result-title">${p.nome}</div>
+                                        <div class="search-result-subtitle">${p.descricao}</div>
+                                    </div>
+                                </a>
+                            `;
+                        });
+                    }
+                    
+                    searchResultsEl.innerHTML = html;
+                } catch (error) {
+                    console.error('Erro na busca:', error);
+                    searchResultsEl.innerHTML = `
+                        <div class="search-result-empty">
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                            <p>Erro ao pesquisar</p>
+                        </div>
+                    `;
+                }
+            }
+        });
+        
+        // Funções globais
+        window.toggleTheme = () => window.themeManager?.toggle();
+    </script>
+    
+    @stack('scripts')
+
+</body>
+</html>
+
+```
         });
         
         // Funções globais

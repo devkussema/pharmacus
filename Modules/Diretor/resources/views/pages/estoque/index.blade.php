@@ -96,9 +96,13 @@
         <div class="table-header">
             <h3>Lista de Produtos</h3>
             <div class="table-actions">
-                <button class="btn-secondary">
-                    <i class="fa-solid fa-download me-2"></i>
-                    Exportar
+                <button class="btn-secondary" onclick="exportarDados('csv')">
+                    <i class="fa-solid fa-file-csv me-2"></i>
+                    CSV
+                </button>
+                <button class="btn-secondary" onclick="exportarDados('pdf')">
+                    <i class="fa-solid fa-file-pdf me-2"></i>
+                    PDF
                 </button>
             </div>
         </div>
@@ -152,10 +156,47 @@
 
 <!-- Toast Container -->
 <div id="toastContainer" class="toast-container"></div>
+
+<!-- Offcanvas Histórico do Produto -->
+<div id="offcanvasHistorico" class="offcanvas">
+    <div class="offcanvas-content">
+        <div class="offcanvas-header">
+            <div>
+                <h3 id="offcanvasTitle">Histórico do Produto</h3>
+                <p id="offcanvasSubtitle" class="text-secondary"></p>
+            </div>
+            <button class="btn-close-offcanvas" onclick="fecharOffcanvas()">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="offcanvas-body" id="offcanvasBody">
+            <div class="text-center" style="padding: 3rem;">
+                <div class="spinner"></div>
+                <p style="color: var(--text-secondary); margin-top: 1rem;">Carregando histórico...</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="offcanvasOverlay" class="offcanvas-overlay" onclick="fecharOffcanvas()"></div>
 @endsection
 
 @push('styles')
 <style>
+.page-content {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-actions {
+    display: flex;
+    gap: 0.5rem;
+}
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -561,6 +602,179 @@
     color: var(--text-primary);
 }
 
+/* Offcanvas */
+.offcanvas {
+    position: fixed;
+    top: 0;
+    right: -600px;
+    width: 600px;
+    height: 100%;
+    background: var(--surface);
+    box-shadow: var(--shadow-xl);
+    z-index: 10001;
+    transition: right var(--transition-normal);
+}
+
+.offcanvas.active {
+    right: 0;
+}
+
+.offcanvas-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-normal);
+}
+
+.offcanvas-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.offcanvas-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.offcanvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.offcanvas-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.25rem;
+}
+
+.offcanvas-header .text-secondary {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.btn-close-offcanvas {
+    background: none;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-close-offcanvas:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.offcanvas-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.history-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.history-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-primary);
+}
+
+.history-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.history-item::before {
+    content: '';
+    position: absolute;
+    left: -1.65rem;
+    top: 0.25rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 2px solid var(--surface);
+    box-shadow: 0 0 0 2px var(--border-primary);
+}
+
+.history-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.history-action {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+.history-date {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+}
+
+.history-user {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.history-changes {
+    background: var(--bg-secondary);
+    padding: 0.75rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.history-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.history-delta.positive {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--success);
+}
+
+.history-delta.negative {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
 @media (max-width: 768px) {
     .page-header {
         flex-direction: column;
@@ -587,6 +801,11 @@
     .pagination-controls {
         flex-wrap: wrap;
         justify-content: center;
+    }
+    
+    .offcanvas {
+        width: 100%;
+        right: -100%;
     }
 }
 </style>
@@ -828,11 +1047,117 @@ function atualizarResumo(resumo) {
 
 // ==================== AÇÕES DOS BOTÕES ====================
 function verDetalhes(id) {
-    window.location.href = `{{ url('diretor/estoque') }}/${id}`;
+    abrirOffcanvas(id);
 }
 
 function dispensar(id) {
     showToast('Funcionalidade de dispensação em desenvolvimento', 'info');
+}
+
+// ==================== OFFCANVAS ====================
+async function abrirOffcanvas(id) {
+    const offcanvas = document.getElementById('offcanvasHistorico');
+    const overlay = document.getElementById('offcanvasOverlay');
+    const body = document.getElementById('offcanvasBody');
+    
+    offcanvas.classList.add('active');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Reset do conteúdo
+    body.innerHTML = `
+        <div class="text-center" style="padding: 3rem;">
+            <div class="spinner"></div>
+            <p style="color: var(--text-secondary); margin-top: 1rem;">Carregando histórico...</p>
+        </div>
+    `;
+    
+    try {
+        const response = await fetch(`{{ url('diretor/estoque/historico') }}/${id}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            const produto = data.produto;
+            const historico = data.historico;
+            
+            // Atualizar título
+            document.getElementById('offcanvasTitle').textContent = produto.designacao;
+            document.getElementById('offcanvasSubtitle').textContent = 
+                `Lote: ${produto.num_lote} | Estoque: ${produto.quantidade} unidades | Validade: ${produto.data_expiracao}`;
+            
+            // Renderizar histórico
+            if (historico.length === 0) {
+                body.innerHTML = `
+                    <div class="text-center" style="padding: 3rem;">
+                        <i class="fa-solid fa-clock-rotate-left" style="font-size: 3rem; color: var(--text-tertiary);"></i>
+                        <p style="color: var(--text-secondary); margin-top: 1rem;">Nenhum histórico disponível</p>
+                    </div>
+                `;
+            } else {
+                body.innerHTML = `
+                    <div class="history-timeline">
+                        ${historico.map(h => {
+                            const delta = h.quantidade_delta;
+                            const deltaHTML = delta ? `
+                                <span class="history-delta ${delta > 0 ? 'positive' : 'negative'}">
+                                    ${delta > 0 ? '+' : ''}${delta}
+                                </span>
+                            ` : '';
+                            
+                            return `
+                                <div class="history-item">
+                                    <div class="history-item-header">
+                                        <span class="history-action">${h.action.toUpperCase()}</span>
+                                        <span class="history-date">${h.data_relativa}</span>
+                                    </div>
+                                    <div class="history-user">
+                                        <i class="fa-solid fa-user"></i> ${h.usuario}
+                                    </div>
+                                    ${deltaHTML}
+                                    ${h.changes && Object.keys(h.changes).length > 0 ? `
+                                        <div class="history-changes">
+                                            ${Object.entries(h.changes).map(([key, val]) => 
+                                                `<div><strong>${key}:</strong> ${JSON.stringify(val)}</div>`
+                                            ).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+        } else {
+            showToast(data.message || 'Erro ao carregar histórico', 'error');
+            fecharOffcanvas();
+        }
+    } catch (error) {
+        console.error('Erro ao carregar histórico:', error);
+        showToast('Erro ao carregar histórico. Verifique sua conexão.', 'error');
+        fecharOffcanvas();
+    }
+}
+
+function fecharOffcanvas() {
+    const offcanvas = document.getElementById('offcanvasHistorico');
+    const overlay = document.getElementById('offcanvasOverlay');
+    
+    offcanvas.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// ==================== EXPORTAÇÃO ====================
+function exportarDados(formato) {
+    const params = new URLSearchParams({
+        formato: formato,
+        categoria: document.getElementById('categoria').value || '',
+        validade: document.getElementById('validade').value || ''
+    });
+    
+    const url = `{{ route('diretor.estoque.exportar') }}?${params}`;
+    window.open(url, '_blank');
+    showToast(`Exportando em ${formato.toUpperCase()}...`, 'info');
 }
 
 // ==================== EVENT LISTENERS ====================

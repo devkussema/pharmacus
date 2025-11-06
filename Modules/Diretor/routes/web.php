@@ -16,11 +16,16 @@ Route::prefix('diretor')->name('diretor.')->group(function () {
     // Dashboard principal
     Route::get('/', [HomeController::class, 'index'])->name('index');
     
+    // Busca Global
+    Route::get('/busca-global', [HomeController::class, 'buscaGlobal'])->name('busca-global');
+    
     // Gestão de Estoque (medicamentos)
     Route::get('/estoque', [EstoqueController::class, 'index'])->name('estoque.index');
     Route::get('/estoque/listar', [EstoqueController::class, 'listar'])->name('estoque.listar');
     Route::get('/estoque/categorias', [EstoqueController::class, 'categorias'])->name('estoque.categorias');
     Route::get('/estoque/status-opcoes', [EstoqueController::class, 'statusOpcoes'])->name('estoque.status-opcoes');
+    Route::get('/estoque/historico/{id}', [EstoqueController::class, 'historico'])->name('estoque.historico');
+    Route::get('/estoque/exportar', [EstoqueController::class, 'exportar'])->name('estoque.exportar');
     Route::get('/estoque/{id}', [EstoqueController::class, 'show'])->name('estoque.show');
     
     // Gestão de Fornecedores

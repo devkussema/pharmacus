@@ -323,4 +323,184 @@ class EstoqueController extends Controller
     {
         return view('diretor::pages.estoque.show', compact('id'));
     }
+
+    /**
+     * Retorna o histórico de um produto (AJAX).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @author Augusto Kussema
+     * @created 06-11-2025
+     */
+    public function historico($id)
+    {
+        try {
+            $produto = ProdutoEstoque::with(['grupo_farmaco', 'saldo'])->findOrFail($id);
+            
+            $historico = \App\Models\ProductHistory::where('product_id', $id)
+                ->with('user')
+                ->orderBy('created_at', 'desc')
+                ->take(50)
+                ->get()
+                ->map(function($h) {
+                    return [
+                        'id' => $h->id,
+                        'action' => $h->action,
+                        'usuario' => $h->user ? $h->user->name : 'Sistema',
+                        'data' => $h->created_at->format('d/m/Y H:i'),
+                        'data_relativa' => $h->created_at->diffForHumans(),
+                        'quantidade_delta' => $h->quantity_delta,
+                        'changes' => $h->changes,
+                        'summary' => $h->summary(),
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'produto' => [
+                    'id' => $produto->id,
+                    'designacao' => $produto->designacao . ($produto->dosagem ? ' ' . $produto->dosagem : ''),
+                    'num_lote' => $produto->num_lote,
+                    'categoria' => $produto->grupo_farmaco ? $produto->grupo_farmaco->nome : 'Sem Categoria',
+                    'quantidade' => $produto->quantidade,
+                    'data_expiracao' => $produto->data_expiracao ? $produto->data_expiracao->format('d/m/Y') : 'N/A',
+                ],
+                'historico' => $historico
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao carregar histórico: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Exporta os produtos em CSV ou PDF.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * @author Augusto Kussema
+     * @created 06-11-2025
+     */
+    public function exportar(Request $request)
+    {
+        try {
+            $formato = $request->get('formato', 'csv'); // csv ou pdf
+            
+            $query = ProdutoEstoque::with(['grupo_farmaco', 'saldo'])
+                ->whereHas('estoque');
+
+            // Aplicar mesmos filtros
+            if ($request->filled('categoria')) {
+                $query->where('grupo_farmaco_id', $request->categoria);
+            }
+            if ($request->filled('validade')) {
+                switch ($request->validade) {
+                    case '30':
+                        $query->whereBetween('data_expiracao', [now(), now()->addDays(30)]);
+                        break;
+                    case '60':
+                        $query->whereBetween('data_expiracao', [now(), now()->addDays(60)]);
+                        break;
+                    case 'vencidos':
+                        $query->where('data_expiracao', '<', now());
+                        break;
+                }
+            }
+
+            $produtos = $query->orderBy('designacao')->get();
+
+            if ($formato === 'csv') {
+                return $this->exportarCSV($produtos);
+            } else {
+                return $this->exportarPDF($produtos);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao exportar: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Exporta produtos para CSV.
+     *
+     * @param Collection $produtos
+     * @return \Illuminate\Http\Response
+     * @author Augusto Kussema
+     * @created 06-11-2025
+     */
+    private function exportarCSV($produtos)
+    {
+        $filename = 'estoque_' . date('Y-m-d_His') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function() use ($produtos) {
+            $file = fopen('php://output', 'w');
+            
+            // BOM para UTF-8
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            // Cabeçalhos
+            fputcsv($file, [
+                'Medicamento',
+                'Categoria',
+                'Quantidade',
+                'Lote',
+                'Validade',
+                'Fornecedor',
+                'Forma',
+                'Status'
+            ], ';');
+
+            // Dados
+            $niveisAlerta = $this->obterNiveisAlerta();
+            foreach ($produtos as $produto) {
+                $quantidade = $produto->quantidade ?? 0;
+                $status = $this->calcularStatus($quantidade, $niveisAlerta);
+                
+                fputcsv($file, [
+                    $produto->designacao . ($produto->dosagem ? ' ' . $produto->dosagem : ''),
+                    $produto->grupo_farmaco ? $produto->grupo_farmaco->nome : 'Sem Categoria',
+                    $quantidade,
+                    $produto->num_lote ?? 'N/A',
+                    $produto->data_expiracao ? $produto->data_expiracao->format('d/m/Y') : 'N/A',
+                    $produto->fornecedor ?? 'N/A',
+                    $produto->forma ?? 'N/A',
+                    $status['label']
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Exporta produtos para PDF.
+     *
+     * @param Collection $produtos
+     * @return \Illuminate\Http\Response
+     * @author Augusto Kussema
+     * @created 06-11-2025
+     */
+    private function exportarPDF($produtos)
+    {
+        // Implementação básica - pode ser melhorada com DomPDF ou similar
+        $filename = 'estoque_' . date('Y-m-d_His') . '.pdf';
+        
+        // Por enquanto, retorna HTML que pode ser impresso como PDF
+        $html = view('diretor::pages.estoque.export-pdf', compact('produtos'))->render();
+        
+        return response($html)
+            ->header('Content-Type', 'text/html')
+            ->header('Content-Disposition', "inline; filename=\"{$filename}\"");
+    }
 }

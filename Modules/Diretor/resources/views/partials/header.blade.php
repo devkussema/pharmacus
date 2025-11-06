@@ -22,9 +22,10 @@
             <div class="search-container">
                 <div class="search-input-group">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="search" class="search-input" placeholder="Pesquisar medicamentos, fornecedores..." autocomplete="off">
+                    <input type="search" id="globalSearch" class="search-input" placeholder="Pesquisar medicamentos, fornecedores..." autocomplete="off">
                     <kbd class="search-shortcut">⌘K</kbd>
                 </div>
+                <div id="searchResults" class="search-results"></div>
             </div>
         </div>
         
@@ -196,6 +197,108 @@
     font-size: 0.75rem;
     font-family: 'JetBrains Mono', monospace;
     border: 1px solid var(--border-primary);
+}
+
+.search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-xl);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.search-results.active {
+    display: block;
+}
+
+.search-results-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    letter-spacing: 0.5px;
+}
+
+.search-result-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.search-result-item:hover {
+    background: var(--surface-hover);
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.search-result-icon.produto {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+}
+
+.search-result-icon.fornecedor {
+    background: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+}
+
+.search-result-icon.pagina {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--success);
+}
+
+.search-result-content {
+    flex: 1;
+}
+
+.search-result-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.125rem;
+}
+
+.search-result-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+}
+
+.search-result-empty {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--text-tertiary);
+}
+
+.search-result-empty i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
 }
 
 .header-right {
