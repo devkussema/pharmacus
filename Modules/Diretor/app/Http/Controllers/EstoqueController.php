@@ -51,19 +51,16 @@ class EstoqueController extends Controller
             }
 
             // Filtro por validade
-            if ($request->filled('validade') && $request->validade != 'todas') {
+            if ($request->filled('validade')) {
                 switch ($request->validade) {
-                    case 'vencidos':
-                        $query->where('data_expiracao', '<', now());
-                        break;
-                    case '30dias':
+                    case '30':
                         $query->whereBetween('data_expiracao', [now(), now()->addDays(30)]);
                         break;
-                    case '90dias':
-                        $query->whereBetween('data_expiracao', [now(), now()->addDays(90)]);
+                    case '60':
+                        $query->whereBetween('data_expiracao', [now(), now()->addDays(60)]);
                         break;
-                    case 'validos':
-                        $query->where('data_expiracao', '>', now()->addDays(90));
+                    case 'vencidos':
+                        $query->where('data_expiracao', '<', now());
                         break;
                 }
             }
@@ -92,24 +89,29 @@ class EstoqueController extends Controller
             // Obter níveis de alerta para cálculo de status
             $niveisAlerta = $this->obterNiveisAlerta();
 
+            // Obter nível mínimo padrão
+            $nivelMinimoPadrao = 50; // Pode ser configurável
+
             // Processar produtos com status
-            $produtosProcessados = $produtos->map(function($produto) use ($niveisAlerta) {
+            $produtosProcessados = $produtos->map(function($produto) use ($niveisAlerta, $nivelMinimoPadrao) {
                 $quantidade = $produto->quantidade ?? 0;
                 $status = $this->calcularStatus($quantidade, $niveisAlerta);
                 
                 return [
                     'id' => $produto->id,
-                    'designacao' => $produto->designacao,
-                    'num_lote' => $produto->num_lote,
+                    'designacao' => $produto->designacao . ($produto->dosagem ? ' ' . $produto->dosagem : ''),
+                    'num_lote' => $produto->num_lote ?? 'N/A',
                     'dosagem' => $produto->dosagem,
                     'forma' => $produto->forma,
                     'categoria' => $produto->grupo_farmaco ? $produto->grupo_farmaco->nome : 'Sem Categoria',
                     'grupo_farmaco_id' => $produto->grupo_farmaco_id,
                     'quantidade' => $quantidade,
-                    'data_expiracao' => $produto->data_expiracao ? $produto->data_expiracao->format('d/m/Y') : null,
+                    'nivel_minimo' => $nivelMinimoPadrao,
+                    'validade_formatada' => $produto->data_expiracao ? $produto->data_expiracao->format('d/m/Y') : 'N/A',
                     'data_expiracao_raw' => $produto->data_expiracao,
-                    'status' => $status,
-                    'fornecedor' => $produto->fornecedor,
+                    'status_badge' => $status['label'],
+                    'status_classe' => $status['classe'],
+                    'fornecedor' => $produto->fornecedor ?? 'N/A',
                     'prateleira' => $produto->prateleira ? $produto->prateleira->codigo : null,
                 ];
             });
@@ -119,8 +121,8 @@ class EstoqueController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $produtosProcessados,
-                'pagination' => [
+                'produtos' => [
+                    'data' => $produtosProcessados,
                     'current_page' => (int) $page,
                     'per_page' => $perPage,
                     'total' => $total,
@@ -151,12 +153,23 @@ class EstoqueController extends Controller
             $categorias = GrupoFarmacologico::whereHas('produtos', function($query) {
                 $query->whereHas('estoque');
             })
+            ->withCount(['produtos' => function($query) {
+                $query->whereHas('estoque');
+            }])
             ->orderBy('nome')
             ->get(['id', 'nome']);
 
+            $categoriasFormatadas = $categorias->map(function($cat) {
+                return [
+                    'id' => $cat->id,
+                    'nome' => $cat->nome,
+                    'total_produtos' => $cat->produtos_count
+                ];
+            });
+
             return response()->json([
                 'success' => true,
-                'data' => $categorias
+                'categorias' => $categoriasFormatadas
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -180,7 +193,7 @@ class EstoqueController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $niveis
+                'status' => $niveis
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -270,7 +283,7 @@ class EstoqueController extends Controller
         $produtos = ProdutoEstoque::whereHas('estoque')->get();
         
         $total = $produtos->count();
-        $normal = 0;
+        $adequado = 0;
         $minimo = 0;
         $critico = 0;
 
@@ -280,7 +293,7 @@ class EstoqueController extends Controller
             
             switch ($status['classe']) {
                 case 'normal':
-                    $normal++;
+                    $adequado++;
                     break;
                 case 'warning':
                     $minimo++;
@@ -293,7 +306,7 @@ class EstoqueController extends Controller
 
         return [
             'total' => $total,
-            'normal' => $normal,
+            'adequado' => $adequado,
             'minimo' => $minimo,
             'critico' => $critico,
         ];

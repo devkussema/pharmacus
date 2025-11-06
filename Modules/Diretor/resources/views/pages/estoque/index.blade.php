@@ -20,27 +20,24 @@
     <!-- Filtros e Busca -->
     <div class="filters-section">
         <div class="filters-row">
+            <div class="filter-group" style="flex: 1; max-width: 400px;">
+                <label for="busca"><i class="fa-solid fa-search"></i> Buscar</label>
+                <input type="text" id="busca" class="filter-select" placeholder="Nome, lote, descrição..." style="padding-right: 2.5rem;">
+            </div>
             <div class="filter-group">
-                <label for="categoria">Categoria</label>
+                <label for="categoria"><i class="fa-solid fa-pills"></i> Categoria</label>
                 <select id="categoria" class="filter-select">
                     <option value="">Todas as categorias</option>
-                    <option value="analgesicos">Analgésicos</option>
-                    <option value="antibioticos">Antibióticos</option>
-                    <option value="vitaminas">Vitaminas</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label for="status">Status do Stock</label>
+                <label for="status"><i class="fa-solid fa-signal"></i> Status do Stock</label>
                 <select id="status" class="filter-select">
-                    <option value="">Todos</option>
-                    <option value="normal">Normal</option>
-                    <option value="baixo">Stock Baixo</option>
-                    <option value="critico">Crítico</option>
-                    <option value="esgotado">Esgotado</option>
+                    <option value="">Todos os status</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label for="validade">Validade</label>
+                <label for="validade"><i class="fa-solid fa-calendar-xmark"></i> Validade</label>
                 <select id="validade" class="filter-select">
                     <option value="">Todas</option>
                     <option value="30">Expiram em 30 dias</option>
@@ -122,65 +119,9 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
-                            <div class="product-info">
-                                <div class="product-name">Paracetamol 500mg</div>
-                                <div class="product-code">PAR-500-001</div>
-                            </div>
-                        </td>
-                        <td><span class="category-badge analgesicos">Analgésicos</span></td>
-                        <td><strong>245</strong> unidades</td>
-                        <td>50 unidades</td>
-                        <td><span class="status-badge normal">Adequado</span></td>
-                        <td>15/06/2026</td>
-                        <td><code>LT2024-089</code></td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-action" title="Ver detalhes"><i class="fa-solid fa-eye"></i></button>
-                                <button class="btn-action" title="Dispensar"><i class="fa-solid fa-hand-holding-medical"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="product-info">
-                                <div class="product-name">Ibuprofeno 400mg</div>
-                                <div class="product-code">IBU-400-002</div>
-                            </div>
-                        </td>
-                        <td><span class="category-badge anti-inflamatorios">Anti-inflamatórios</span></td>
-                        <td><strong>15</strong> unidades</td>
-                        <td>30 unidades</td>
-                        <td><span class="status-badge critical">Crítico</span></td>
-                        <td>22/03/2026</td>
-                        <td><code>LT2024-112</code></td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-action" title="Ver detalhes"><i class="fa-solid fa-eye"></i></button>
-                                <button class="btn-action danger" title="Solicitar"><i class="fa-solid fa-bell"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="product-info">
-                                <div class="product-name">Amoxicilina 875mg</div>
-                                <div class="product-code">AMO-875-003</div>
-                            </div>
-                        </td>
-                        <td><span class="category-badge antibioticos">Antibióticos</span></td>
-                        <td><strong>125</strong> unidades</td>
-                        <td>40 unidades</td>
-                        <td><span class="status-badge normal">Adequado</span></td>
-                        <td>08/12/2025</td>
-                        <td><code>LT2024-156</code></td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-action" title="Ver detalhes"><i class="fa-solid fa-eye"></i></button>
-                                <button class="btn-action" title="Dispensar"><i class="fa-solid fa-hand-holding-medical"></i></button>
-                            </div>
+                        <td colspan="8" style="text-align: center; padding: 3rem;">
+                            <div class="spinner" style="margin: 0 auto;"></div>
+                            <p style="color: var(--text-secondary); margin-top: 1rem;">Carregando produtos...</p>
                         </td>
                     </tr>
                 </tbody>
@@ -255,8 +196,16 @@
 
 .filter-group label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-group label i {
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
 }
 
 .filter-select {
@@ -266,6 +215,13 @@
     background: var(--surface);
     color: var(--text-primary);
     font-size: 0.875rem;
+    transition: all var(--transition-fast);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .stock-summary {
@@ -393,11 +349,29 @@
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
-.category-badge.analgesicos { background: rgba(34, 197, 94, 0.1); color: var(--success); }
-.category-badge.antibioticos { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
-.category-badge.anti-inflamatorios { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+.category-badge.analgesicos,
+.category-badge.analgesico { background: rgba(34, 197, 94, 0.1); color: var(--success); }
+
+.category-badge.antibioticos,
+.category-badge.antibiotico { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+
+.category-badge.anti-inflamatorios,
+.category-badge.anti-inflamatorio { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+
+.category-badge.cardiovasculares,
+.category-badge.cardiovascular { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+.category-badge.antihipertensivos,
+.category-badge.antihipertensivo { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+
+.category-badge.vitaminas,
+.category-badge.vitamina { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+/* Default para outras categorias */
+.category-badge { background: rgba(107, 114, 128, 0.1); color: #6b7280; }
 
 .status-badge {
     padding: 0.25rem 0.75rem;
@@ -697,6 +671,7 @@ async function carregarStatusOpcoes() {
 // ==================== CARREGAR PRODUTOS ====================
 let currentPage = 1;
 let currentFilters = {};
+let searchTimeout;
 
 async function carregarProdutos(page = 1) {
     showLoading();
@@ -707,7 +682,8 @@ async function carregarProdutos(page = 1) {
             page: page,
             categoria: document.getElementById('categoria').value || '',
             status: document.getElementById('status').value || '',
-            validade: document.getElementById('validade').value || ''
+            validade: document.getElementById('validade').value || '',
+            search: document.getElementById('busca').value || ''
         });
         
         const response = await fetch(`{{ route("diretor.estoque.listar") }}?${params}`);
@@ -736,7 +712,7 @@ function atualizarTabela(produtos) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="8" style="text-align: center; padding: 3rem;">
-                    <i class="fa-solid fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 1rem;"></i>
+                    <i class="fa-solid fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 1rem; display: block;"></i>
                     <p style="color: var(--text-secondary);">Nenhum produto encontrado</p>
                 </td>
             </tr>
@@ -745,30 +721,35 @@ function atualizarTabela(produtos) {
     }
     
     tbody.innerHTML = produtos.map(produto => {
-        const statusClass = produto.status_badge.toLowerCase();
-        const categoriaSlug = produto.categoria.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const statusClass = produto.status_classe || 'normal';
+        const categoriaSlug = produto.categoria.toLowerCase()
+            .replace(/\s+/g, '-')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace('á', 'a').replace('é', 'e').replace('í', 'i')
+            .replace('ó', 'o').replace('ú', 'u').replace('ç', 'c');
         
         return `
             <tr>
                 <td>
                     <div class="product-info">
                         <div class="product-name">${produto.designacao}</div>
-                        <div class="product-code">${produto.num_lote || 'N/A'}</div>
+                        <div class="product-code">${produto.num_lote}</div>
                     </div>
                 </td>
                 <td><span class="category-badge ${categoriaSlug}">${produto.categoria}</span></td>
                 <td><strong>${produto.quantidade}</strong> unidades</td>
-                <td>${produto.nivel_minimo || 'N/A'} unidades</td>
+                <td>${produto.nivel_minimo} unidades</td>
                 <td><span class="status-badge ${statusClass}">${produto.status_badge}</span></td>
                 <td>${produto.validade_formatada}</td>
-                <td><code>${produto.num_lote || 'N/A'}</code></td>
+                <td><code>${produto.num_lote}</code></td>
                 <td>
                     <div class="action-buttons">
                         <button class="btn-action" title="Ver detalhes" onclick="verDetalhes(${produto.id})">
                             <i class="fa-solid fa-eye"></i>
                         </button>
-                        <button class="btn-action" title="Dispensar" onclick="dispensar(${produto.id})">
-                            <i class="fa-solid fa-hand-holding-medical"></i>
+                        <button class="btn-action ${statusClass === 'critical' ? 'danger' : ''}" title="${statusClass === 'critical' ? 'Solicitar' : 'Dispensar'}" onclick="dispensar(${produto.id})">
+                            <i class="fa-solid fa-${statusClass === 'critical' ? 'bell' : 'hand-holding-medical'}"></i>
                         </button>
                     </div>
                 </td>
@@ -865,6 +846,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('categoria').addEventListener('change', () => carregarProdutos(1));
     document.getElementById('status').addEventListener('change', () => carregarProdutos(1));
     document.getElementById('validade').addEventListener('change', () => carregarProdutos(1));
+    
+    // Busca com debounce
+    document.getElementById('busca').addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            carregarProdutos(1);
+        }, 500); // 500ms de delay
+    });
 });
 </script>
 @endpush
