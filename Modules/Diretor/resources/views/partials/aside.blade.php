@@ -13,48 +13,51 @@
                 </div>
                 
                 <div class="nav-section">
-                    <div class="nav-section-title">Gestão</div>
-                    <a href="#" class="nav-item">
+                    <div class="nav-section-title">Gestão Hospitalar</div>
+                    <a href="{{ route('diretor.estoque.index') }}" class="nav-item {{ request()->routeIs('diretor.estoque.*') ? 'active' : '' }}">
                         <div class="nav-item-icon">
                             <i class="fa-solid fa-pills"></i>
                         </div>
-                        <span class="nav-item-text">Medicamentos</span>
-                        <span class="nav-item-badge">245</span>
-                    </a>
-                    <a href="{{ route('diretor.estoque.index') }}" class="nav-item {{ request()->routeIs('diretor.estoque.*') ? 'active' : '' }}">
-                        <div class="nav-item-icon">
-                            <i class="fa-solid fa-warehouse"></i>
-                        </div>
-                        <span class="nav-item-text">Estoque</span>
+                        <span class="nav-item-text">Estoque de Medicamentos</span>
                         <span class="nav-item-notification"></span>
+                    </a>
+                    <a href="{{ route('diretor.atividades.index') }}" class="nav-item {{ request()->routeIs('diretor.atividades.*') ? 'active' : '' }}">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <span class="nav-item-text">Atividades</span>
+                        <span class="nav-item-badge">156</span>
                     </a>
                     <a href="{{ route('diretor.fornecedores.index') }}" class="nav-item {{ request()->routeIs('diretor.fornecedores.*') ? 'active' : '' }}">
                         <div class="nav-item-icon">
-                            <i class="fa-solid fa-truck-field"></i>
+                            <i class="fa-solid fa-truck"></i>
                         </div>
                         <span class="nav-item-text">Fornecedores</span>
+                    </a>
+                    <a href="{{ route('diretor.funcionarios.index') }}" class="nav-item {{ request()->routeIs('diretor.funcionarios.*') ? 'active' : '' }}">
+                        <div class="nav-item-icon">
+                            <i class="fa-solid fa-user-nurse"></i>
+                        </div>
+                        <span class="nav-item-text">Funcionários</span>
+                        <span class="nav-item-badge">24</span>
                     </a>
                 </div>
                 
                 <div class="nav-section">
-                    <div class="nav-section-title">Vendas & Clientes</div>
+                    <div class="nav-section-title">Operações</div>
                     <a href="#" class="nav-item">
                         <div class="nav-item-icon">
-                            <i class="fa-solid fa-cart-shopping"></i>
+                            <i class="fa-solid fa-clipboard-check"></i>
                         </div>
-                        <span class="nav-item-text">Vendas</span>
+                        <span class="nav-item-text">Prescrições Pendentes</span>
+                        <span class="nav-item-badge">12</span>
                     </a>
                     <a href="#" class="nav-item">
                         <div class="nav-item-icon">
-                            <i class="fa-solid fa-users"></i>
+                            <i class="fa-solid fa-triangle-exclamation"></i>
                         </div>
-                        <span class="nav-item-text">Clientes</span>
-                    </a>
-                    <a href="#" class="nav-item">
-                        <div class="nav-item-icon">
-                            <i class="fa-solid fa-file-invoice-dollar"></i>
-                        </div>
-                        <span class="nav-item-text">Faturas</span>
+                        <span class="nav-item-text">Alertas Críticos</span>
+                        <span class="nav-item-notification"></span>
                     </a>
                 </div>
                 
@@ -62,15 +65,15 @@
                     <div class="nav-section-title">Relatórios</div>
                     <a href="#" class="nav-item">
                         <div class="nav-item-icon">
-                            <i class="fa-solid fa-chart-bar"></i>
+                            <i class="fa-solid fa-chart-line"></i>
                         </div>
-                        <span class="nav-item-text">Análise de Vendas</span>
+                        <span class="nav-item-text">Dispensações</span>
                     </a>
                     <a href="#" class="nav-item">
                         <div class="nav-item-icon">
-                            <i class="fa-solid fa-chart-pie"></i>
+                            <i class="fa-solid fa-chart-bar"></i>
                         </div>
-                        <span class="nav-item-text">Performance</span>
+                        <span class="nav-item-text">Consumo por Setor</span>
                     </a>
                 </div>
             </nav>

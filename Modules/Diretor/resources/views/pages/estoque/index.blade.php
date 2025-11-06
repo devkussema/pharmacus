@@ -51,7 +51,7 @@
         </div>
     </div>
 
-    <!-- Resumo do Estoque -->
+    <!-- Resumo do Estoque - Farmácia Hospitalar -->
     <div class="stock-summary">
         <div class="summary-card">
             <div class="summary-icon total">
@@ -59,7 +59,7 @@
             </div>
             <div class="summary-content">
                 <div class="summary-value">2.847</div>
-                <div class="summary-label">Total de Itens</div>
+                <div class="summary-label">Total de Medicamentos</div>
             </div>
         </div>
         
@@ -69,7 +69,7 @@
             </div>
             <div class="summary-content">
                 <div class="summary-value">2.756</div>
-                <div class="summary-label">Stock Normal</div>
+                <div class="summary-label">Nível Adequado</div>
             </div>
         </div>
         
@@ -79,7 +79,7 @@
             </div>
             <div class="summary-content">
                 <div class="summary-value">68</div>
-                <div class="summary-label">Stock Baixo</div>
+                <div class="summary-label">Nível Mínimo</div>
             </div>
         </div>
         
@@ -89,7 +89,7 @@
             </div>
             <div class="summary-content">
                 <div class="summary-value">23</div>
-                <div class="summary-label">Stock Crítico</div>
+                <div class="summary-label">Nível Crítico</div>
             </div>
         </div>
     </div>
@@ -110,13 +110,13 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Produto</th>
+                        <th>Medicamento</th>
                         <th>Categoria</th>
-                        <th>Stock Atual</th>
-                        <th>Stock Mínimo</th>
+                        <th>Quantidade Atual</th>
+                        <th>Nível Mínimo</th>
                         <th>Status</th>
                         <th>Validade</th>
-                        <th>Preço</th>
+                        <th>Lote</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -131,14 +131,13 @@
                         <td><span class="category-badge analgesicos">Analgésicos</span></td>
                         <td><strong>245</strong> unidades</td>
                         <td>50 unidades</td>
-                        <td><span class="status-badge normal">Normal</span></td>
+                        <td><span class="status-badge normal">Adequado</span></td>
                         <td>15/06/2026</td>
-                        <td>Kz 1.500</td>
+                        <td><code>LT2024-089</code></td>
                         <td>
                             <div class="action-buttons">
                                 <button class="btn-action" title="Ver detalhes"><i class="fa-solid fa-eye"></i></button>
-                                <button class="btn-action" title="Editar"><i class="fa-solid fa-edit"></i></button>
-                                <button class="btn-action danger" title="Remover"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-action" title="Dispensar"><i class="fa-solid fa-hand-holding-medical"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -155,12 +154,11 @@
                         <td>30 unidades</td>
                         <td><span class="status-badge critical">Crítico</span></td>
                         <td>22/03/2026</td>
-                        <td>Kz 2.200</td>
+                        <td><code>LT2024-112</code></td>
                         <td>
                             <div class="action-buttons">
                                 <button class="btn-action" title="Ver detalhes"><i class="fa-solid fa-eye"></i></button>
-                                <button class="btn-action" title="Editar"><i class="fa-solid fa-edit"></i></button>
-                                <button class="btn-action danger" title="Remover"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-action danger" title="Solicitar"><i class="fa-solid fa-bell"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -175,14 +173,13 @@
                         <td><span class="category-badge antibioticos">Antibióticos</span></td>
                         <td><strong>125</strong> unidades</td>
                         <td>40 unidades</td>
-                        <td><span class="status-badge normal">Normal</span></td>
+                        <td><span class="status-badge normal">Adequado</span></td>
                         <td>08/12/2025</td>
-                        <td>Kz 4.800</td>
+                        <td><code>LT2024-156</code></td>
                         <td>
                             <div class="action-buttons">
                                 <button class="btn-action" title="Ver detalhes"><i class="fa-solid fa-eye"></i></button>
-                                <button class="btn-action" title="Editar"><i class="fa-solid fa-edit"></i></button>
-                                <button class="btn-action danger" title="Remover"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-action" title="Dispensar"><i class="fa-solid fa-hand-holding-medical"></i></button>
                             </div>
                         </td>
                     </tr>

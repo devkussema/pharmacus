@@ -123,20 +123,20 @@
                 </div>
                 <div class="detail-body">
                     <div class="detail-item">
-                        <span class="label">Preço de Compra:</span>
-                        <span class="value">Kz 1.200</span>
+                        <span class="label">Fornecedor:</span>
+                        <span class="value">PharmaCorp Ltd</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Preço de Venda:</span>
-                        <span class="value">Kz 1.500</span>
+                        <span class="label">Lote:</span>
+                        <span class="value"><code>LT2024-089</code></span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Margem:</span>
-                        <span class="value text-success">25%</span>
+                        <span class="label">Data de Entrada:</span>
+                        <span class="value">10/01/2025</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Valor Total Stock:</span>
-                        <span class="value">Kz 367.500</span>
+                        <span class="label">Unidades Dispensadas:</span>
+                        <span class="value">155 unidades</span>
                     </div>
                 </div>
             </div>
@@ -167,13 +167,17 @@
                 </div>
                 <div class="detail-body">
                     <div class="quick-actions">
-                        <button class="action-btn full">
-                            <i class="fa-solid fa-plus"></i>
-                            Adicionar Stock
+                        <button class="action-btn full primary">
+                            <i class="fa-solid fa-hand-holding-medical"></i>
+                            Dispensar Medicamento
                         </button>
                         <button class="action-btn full">
-                            <i class="fa-solid fa-minus"></i>
-                            Remover Stock
+                            <i class="fa-solid fa-plus"></i>
+                            Registrar Entrada
+                        </button>
+                        <button class="action-btn full">
+                            <i class="fa-solid fa-bell"></i>
+                            Solicitar Reposição
                         </button>
                         <button class="action-btn full">
                             <i class="fa-solid fa-print"></i>
