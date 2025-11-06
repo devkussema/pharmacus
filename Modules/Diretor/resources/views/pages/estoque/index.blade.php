@@ -203,6 +203,14 @@
         </div>
     </div>
 </div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="spinner"></div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
 @endsection
 
 @push('styles')
@@ -483,6 +491,102 @@
     padding: 0 0.5rem;
 }
 
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    min-width: 300px;
+    padding: 1rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast.success { border-left: 4px solid var(--success); }
+.toast.error { border-left: 4px solid var(--danger); }
+.toast.warning { border-left: 4px solid var(--warning); }
+.toast.info { border-left: 4px solid var(--primary); }
+
+.toast-icon {
+    font-size: 1.25rem;
+}
+
+.toast.success .toast-icon { color: var(--success); }
+.toast.error .toast-icon { color: var(--danger); }
+.toast.warning .toast-icon { color: var(--warning); }
+.toast.info .toast-icon { color: var(--primary); }
+
+.toast-message {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 0;
+    line-height: 1;
+}
+
+.toast-close:hover {
+    color: var(--text-primary);
+}
+
 @media (max-width: 768px) {
     .page-header {
         flex-direction: column;
@@ -512,4 +616,255 @@
     }
 }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+// ==================== UTILIDADES ====================
+const showLoading = () => document.getElementById('loadingOverlay').style.display = 'flex';
+const hideLoading = () => document.getElementById('loadingOverlay').style.display = 'none';
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    toast.innerHTML = `
+        <i class="fa-solid ${icons[type]} toast-icon"></i>
+        <span class="toast-message">${message}</span>
+        <button class="toast-close" onclick="this.parentElement.remove()">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideIn 0.3s ease-out reverse';
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+}
+
+// ==================== CARREGAR CATEGORIAS ====================
+async function carregarCategorias() {
+    try {
+        const response = await fetch('{{ route("diretor.estoque.categorias") }}');
+        const data = await response.json();
+        
+        const select = document.getElementById('categoria');
+        select.innerHTML = '<option value="">Todas as categorias</option>';
+        
+        data.categorias.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = `${cat.nome} (${cat.total_produtos})`;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+        showToast('Erro ao carregar categorias', 'error');
+    }
+}
+
+// ==================== CARREGAR STATUS ====================
+async function carregarStatusOpcoes() {
+    try {
+        const response = await fetch('{{ route("diretor.estoque.status-opcoes") }}');
+        const data = await response.json();
+        
+        const select = document.getElementById('status');
+        select.innerHTML = '<option value="">Todos os status</option>';
+        
+        data.status.forEach(st => {
+            const option = document.createElement('option');
+            option.value = st.nome.toLowerCase();
+            option.textContent = st.nome;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Erro ao carregar status:', error);
+        showToast('Erro ao carregar status', 'error');
+    }
+}
+
+// ==================== CARREGAR PRODUTOS ====================
+let currentPage = 1;
+let currentFilters = {};
+
+async function carregarProdutos(page = 1) {
+    showLoading();
+    currentPage = page;
+    
+    try {
+        const params = new URLSearchParams({
+            page: page,
+            categoria: document.getElementById('categoria').value || '',
+            status: document.getElementById('status').value || '',
+            validade: document.getElementById('validade').value || ''
+        });
+        
+        const response = await fetch(`{{ route("diretor.estoque.listar") }}?${params}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            atualizarTabela(data.produtos.data);
+            atualizarPaginacao(data.produtos);
+            atualizarResumo(data.resumo);
+        } else {
+            showToast(data.message || 'Erro ao carregar produtos', 'error');
+        }
+    } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+        showToast('Erro ao carregar produtos. Verifique sua conexão.', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ==================== ATUALIZAR TABELA ====================
+function atualizarTabela(produtos) {
+    const tbody = document.querySelector('.data-table tbody');
+    
+    if (!produtos || produtos.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 3rem;">
+                    <i class="fa-solid fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 1rem;"></i>
+                    <p style="color: var(--text-secondary);">Nenhum produto encontrado</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = produtos.map(produto => {
+        const statusClass = produto.status_badge.toLowerCase();
+        const categoriaSlug = produto.categoria.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        
+        return `
+            <tr>
+                <td>
+                    <div class="product-info">
+                        <div class="product-name">${produto.designacao}</div>
+                        <div class="product-code">${produto.num_lote || 'N/A'}</div>
+                    </div>
+                </td>
+                <td><span class="category-badge ${categoriaSlug}">${produto.categoria}</span></td>
+                <td><strong>${produto.quantidade}</strong> unidades</td>
+                <td>${produto.nivel_minimo || 'N/A'} unidades</td>
+                <td><span class="status-badge ${statusClass}">${produto.status_badge}</span></td>
+                <td>${produto.validade_formatada}</td>
+                <td><code>${produto.num_lote || 'N/A'}</code></td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-action" title="Ver detalhes" onclick="verDetalhes(${produto.id})">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button class="btn-action" title="Dispensar" onclick="dispensar(${produto.id})">
+                            <i class="fa-solid fa-hand-holding-medical"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// ==================== ATUALIZAR PAGINAÇÃO ====================
+function atualizarPaginacao(pagination) {
+    const info = document.querySelector('.pagination-info');
+    const controls = document.querySelector('.pagination-controls');
+    
+    const from = pagination.from || 0;
+    const to = pagination.to || 0;
+    const total = pagination.total || 0;
+    
+    info.textContent = `Mostrando ${from}-${to} de ${total} resultados`;
+    
+    const currentPage = pagination.current_page;
+    const lastPage = pagination.last_page;
+    
+    let buttonsHTML = `
+        <button class="pagination-btn" onclick="carregarProdutos(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+            Anterior
+        </button>
+    `;
+    
+    // Primeira página
+    if (currentPage > 2) {
+        buttonsHTML += `<button class="pagination-btn" onclick="carregarProdutos(1)">1</button>`;
+        if (currentPage > 3) {
+            buttonsHTML += `<span class="pagination-dots">...</span>`;
+        }
+    }
+    
+    // Páginas ao redor da atual
+    for (let i = Math.max(1, currentPage - 1); i <= Math.min(lastPage, currentPage + 1); i++) {
+        buttonsHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                    onclick="carregarProdutos(${i})">
+                ${i}
+            </button>
+        `;
+    }
+    
+    // Última página
+    if (currentPage < lastPage - 1) {
+        if (currentPage < lastPage - 2) {
+            buttonsHTML += `<span class="pagination-dots">...</span>`;
+        }
+        buttonsHTML += `<button class="pagination-btn" onclick="carregarProdutos(${lastPage})">${lastPage}</button>`;
+    }
+    
+    buttonsHTML += `
+        <button class="pagination-btn" onclick="carregarProdutos(${currentPage + 1})" ${currentPage === lastPage ? 'disabled' : ''}>
+            Próximo
+        </button>
+    `;
+    
+    controls.innerHTML = buttonsHTML;
+}
+
+// ==================== ATUALIZAR RESUMO ====================
+function atualizarResumo(resumo) {
+    if (!resumo) return;
+    
+    const cards = document.querySelectorAll('.summary-card');
+    if (cards.length >= 4) {
+        cards[0].querySelector('.summary-value').textContent = resumo.total || 0;
+        cards[1].querySelector('.summary-value').textContent = resumo.adequado || 0;
+        cards[2].querySelector('.summary-value').textContent = resumo.minimo || 0;
+        cards[3].querySelector('.summary-value').textContent = resumo.critico || 0;
+    }
+}
+
+// ==================== AÇÕES DOS BOTÕES ====================
+function verDetalhes(id) {
+    window.location.href = `{{ url('diretor/estoque') }}/${id}`;
+}
+
+function dispensar(id) {
+    showToast('Funcionalidade de dispensação em desenvolvimento', 'info');
+}
+
+// ==================== EVENT LISTENERS ====================
+document.addEventListener('DOMContentLoaded', function() {
+    // Carregar dados iniciais
+    carregarCategorias();
+    carregarStatusOpcoes();
+    carregarProdutos(1);
+    
+    // Filtros
+    document.getElementById('categoria').addEventListener('change', () => carregarProdutos(1));
+    document.getElementById('status').addEventListener('change', () => carregarProdutos(1));
+    document.getElementById('validade').addEventListener('change', () => carregarProdutos(1));
+});
+</script>
 @endpush

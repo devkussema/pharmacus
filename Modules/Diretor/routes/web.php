@@ -18,6 +18,9 @@ Route::prefix('diretor')->name('diretor.')->group(function () {
     
     // Gestão de Estoque (medicamentos)
     Route::get('/estoque', [EstoqueController::class, 'index'])->name('estoque.index');
+    Route::get('/estoque/listar', [EstoqueController::class, 'listar'])->name('estoque.listar');
+    Route::get('/estoque/categorias', [EstoqueController::class, 'categorias'])->name('estoque.categorias');
+    Route::get('/estoque/status-opcoes', [EstoqueController::class, 'statusOpcoes'])->name('estoque.status-opcoes');
     Route::get('/estoque/{id}', [EstoqueController::class, 'show'])->name('estoque.show');
     
     // Gestão de Fornecedores
