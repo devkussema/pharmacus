@@ -96,7 +96,7 @@ class EstoqueController extends Controller
             $produtosProcessados = $produtos->map(function($produto) use ($niveisAlerta, $nivelMinimoPadrao) {
                 $quantidade = $produto->quantidade ?? 0;
                 $status = $this->calcularStatus($quantidade, $niveisAlerta);
-                
+
                 return [
                     'id' => $produto->id,
                     'designacao' => $produto->designacao . ($produto->dosagem ? ' ' . $produto->dosagem : ''),
@@ -213,7 +213,7 @@ class EstoqueController extends Controller
     private function obterNiveisAlerta(): array
     {
         $niveis = NivelAlerta::all();
-        
+
         $config = [
             'normal' => null,
             'minimo' => null,
@@ -281,7 +281,7 @@ class EstoqueController extends Controller
     private function calcularResumo(array $niveisAlerta): array
     {
         $produtos = ProdutoEstoque::whereHas('estoque')->get();
-        
+
         $total = $produtos->count();
         $adequado = 0;
         $minimo = 0;
@@ -290,7 +290,7 @@ class EstoqueController extends Controller
         foreach ($produtos as $produto) {
             $quantidade = $produto->quantidade ?? 0;
             $status = $this->calcularStatus($quantidade, $niveisAlerta);
-            
+
             switch ($status['classe']) {
                 case 'normal':
                     $adequado++;
@@ -325,6 +325,53 @@ class EstoqueController extends Controller
     }
 
     /**
+     * Retorna detalhes completos de um produto (usado na página show).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @author Augusto Kussema
+     * @created 06-11-2025
+     */
+    public function detalhes($id)
+    {
+        try {
+            $produto = ProdutoEstoque::with(['grupo_farmaco', 'saldo', 'prateleira'])->findOrFail($id);
+
+            $quantidade = $produto->quantidade ?? 0;
+            $niveisAlerta = $this->obterNiveisAlerta();
+            $status = $this->calcularStatus($quantidade, $niveisAlerta);
+
+            return response()->json([
+                'success' => true,
+                'produto' => [
+                    'id' => $produto->id,
+                    'designacao' => $produto->designacao . ($produto->dosagem ? ' ' . $produto->dosagem : ''),
+                    'categoria' => $produto->grupo_farmaco ? $produto->grupo_farmaco->nome : 'Sem Categoria',
+                    'quantidade' => $quantidade,
+                    'num_lote' => $produto->num_lote ?? 'N/A',
+                    'data_expiracao' => $produto->data_expiracao ? $produto->data_expiracao->format('d/m/Y') : 'N/A',
+                    'dosagem' => $produto->dosagem,
+                    'forma' => $produto->forma,
+                    'descritivo' => $produto->descritivo,
+                    'fornecedor' => $produto->fornecedor,
+                    'data_producao' => $produto->data_producao ? $produto->data_producao->format('d/m/Y') : null,
+                    'data_recepcao' => $produto->data_recepcao ? $produto->data_recepcao->format('d/m/Y') : null,
+                    'origem_destino' => $produto->origem_destino,
+                    'prateleira_codigo' => $produto->prateleira ? $produto->prateleira->codigo : null,
+                    'obs' => $produto->obs,
+                    'status_classe' => $status['classe'],
+                    'status_label' => $status['label'],
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao carregar detalhes: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Retorna o histórico de um produto (AJAX).
      *
      * @param int $id
@@ -336,7 +383,7 @@ class EstoqueController extends Controller
     {
         try {
             $produto = ProdutoEstoque::with(['grupo_farmaco', 'saldo'])->findOrFail($id);
-            
+
             $historico = \App\Models\ProductHistory::where('product_id', $id)
                 ->with('user')
                 ->orderBy('created_at', 'desc')
@@ -387,7 +434,7 @@ class EstoqueController extends Controller
     {
         try {
             $formato = $request->get('formato', 'csv'); // csv ou pdf
-            
+
             $query = ProdutoEstoque::with(['grupo_farmaco', 'saldo'])
                 ->whereHas('estoque');
 
@@ -435,7 +482,7 @@ class EstoqueController extends Controller
     private function exportarCSV($produtos)
     {
         $filename = 'estoque_' . date('Y-m-d_His') . '.csv';
-        
+
         $headers = [
             'Content-Type' => 'text/csv; charset=utf-8',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
@@ -443,10 +490,10 @@ class EstoqueController extends Controller
 
         $callback = function() use ($produtos) {
             $file = fopen('php://output', 'w');
-            
+
             // BOM para UTF-8
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-            
+
             // Cabeçalhos
             fputcsv($file, [
                 'Medicamento',
@@ -464,7 +511,7 @@ class EstoqueController extends Controller
             foreach ($produtos as $produto) {
                 $quantidade = $produto->quantidade ?? 0;
                 $status = $this->calcularStatus($quantidade, $niveisAlerta);
-                
+
                 fputcsv($file, [
                     $produto->designacao . ($produto->dosagem ? ' ' . $produto->dosagem : ''),
                     $produto->grupo_farmaco ? $produto->grupo_farmaco->nome : 'Sem Categoria',
@@ -495,10 +542,10 @@ class EstoqueController extends Controller
     {
         // Implementação básica - pode ser melhorada com DomPDF ou similar
         $filename = 'estoque_' . date('Y-m-d_His') . '.pdf';
-        
+
         // Por enquanto, retorna HTML que pode ser impresso como PDF
         $html = view('diretor::pages.estoque.export-pdf', compact('produtos'))->render();
-        
+
         return response($html)
             ->header('Content-Type', 'text/html')
             ->header('Content-Disposition', "inline; filename=\"{$filename}\"");

@@ -66,7 +66,7 @@
                 <div class="summary-label">Dispensações Hoje</div>
             </div>
         </div>
-        
+
         <div class="summary-card">
             <div class="summary-icon entrada">
                 <i class="fa-solid fa-box-open"></i>
@@ -76,7 +76,7 @@
                 <div class="summary-label">Entradas Registradas</div>
             </div>
         </div>
-        
+
         <div class="summary-card">
             <div class="summary-icon transferencia">
                 <i class="fa-solid fa-arrow-right-arrow-left"></i>
@@ -86,7 +86,7 @@
                 <div class="summary-label">Transferências</div>
             </div>
         </div>
-        
+
         <div class="summary-card">
             <div class="summary-icon alerta">
                 <i class="fa-solid fa-exclamation-circle"></i>
@@ -103,7 +103,7 @@
         <div class="activities-header">
             <h3>Histórico Recente</h3>
         </div>
-        
+
         <div class="activities-timeline">
             <div class="activity-item">
                 <div class="activity-time">14:32</div>
@@ -209,7 +209,10 @@
         </div>
 
         <div class="activities-footer">
-            <button class="btn-secondary">Carregar Mais Atividades</button>
+            <button class="btn-secondary" id="btnCarregarMais">
+                <i class="fa-solid fa-rotate"></i>
+                Carregar Mais Atividades
+            </button>
         </div>
     </div>
 </div>
@@ -217,6 +220,10 @@
 
 @push('styles')
 <style>
+* {
+    box-sizing: border-box;
+}
+
 .filters-section {
     margin-bottom: 1.5rem;
     padding: 1.25rem;
@@ -229,12 +236,14 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
+    width: 100%;
 }
 
 .filter-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    min-width: 0;
 }
 
 .filter-group label {
@@ -413,5 +422,313 @@
     border-top: 1px solid var(--border-primary);
     text-align: center;
 }
+
+.activities-footer .btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.activities-footer .btn-secondary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.activities-footer .btn-secondary:active {
+    transform: translateY(0);
+}
+
+.activities-footer .btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--border-primary);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 1rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+}
+
+.toast.success {
+    border-left: 4px solid var(--success);
+}
+
+.toast.error {
+    border-left: 4px solid var(--danger);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 </style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let paginaAtual = 1;
+    let carregando = false;
+
+    const filtroTipo = document.getElementById('tipo');
+    const filtroPeriodo = document.getElementById('periodo');
+    const filtroFuncionario = document.getElementById('funcionario');
+    const inputBusca = document.querySelector('.filter-input');
+    const btnCarregarMais = document.getElementById('btnCarregarMais');
+    const timelineContainer = document.querySelector('.activities-timeline');
+
+    // Carregar dados iniciais
+    carregarResumo();
+    carregarFuncionarios();
+    carregarAtividades(true);
+
+    // Event listeners para filtros
+    filtroTipo.addEventListener('change', () => {
+        paginaAtual = 1;
+        carregarAtividades(true);
+    });
+
+    filtroPeriodo.addEventListener('change', () => {
+        paginaAtual = 1;
+        carregarAtividades(true);
+    });
+
+    filtroFuncionario.addEventListener('change', () => {
+        paginaAtual = 1;
+        carregarAtividades(true);
+    });
+
+    // Debounce para busca
+    let timeoutBusca;
+    inputBusca.addEventListener('input', () => {
+        clearTimeout(timeoutBusca);
+        timeoutBusca = setTimeout(() => {
+            paginaAtual = 1;
+            carregarAtividades(true);
+        }, 500);
+    });
+
+    // Carregar mais atividades
+    btnCarregarMais.addEventListener('click', () => {
+        paginaAtual++;
+        carregarAtividades(false);
+    });
+
+    /**
+     * Carrega resumo de estatísticas
+     */
+    async function carregarResumo() {
+        try {
+            const response = await fetch('{{ route('diretor.registro-atividades.resumo') }}');
+            const data = await response.json();
+
+            if (data.success) {
+                document.querySelectorAll('.summary-value')[0].textContent = data.resumo.dispensacoes;
+                document.querySelectorAll('.summary-value')[1].textContent = data.resumo.entradas;
+                document.querySelectorAll('.summary-value')[2].textContent = data.resumo.transferencias;
+                document.querySelectorAll('.summary-value')[3].textContent = data.resumo.alertas;
+            }
+        } catch (error) {
+            console.error('Erro ao carregar resumo:', error);
+        }
+    }
+
+    /**
+     * Carrega lista de funcionários
+     */
+    async function carregarFuncionarios() {
+        try {
+            const response = await fetch('{{ route('diretor.registro-atividades.funcionarios') }}');
+            const data = await response.json();
+
+            if (data.success) {
+                const opcaoTodos = filtroFuncionario.querySelector('option[value=""]');
+                filtroFuncionario.innerHTML = '';
+                filtroFuncionario.appendChild(opcaoTodos);
+
+                data.funcionarios.forEach(func => {
+                    const option = document.createElement('option');
+                    option.value = func.id;
+                    option.textContent = func.nome;
+                    filtroFuncionario.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Erro ao carregar funcionários:', error);
+        }
+    }
+
+    /**
+     * Carrega atividades com filtros
+     */
+    async function carregarAtividades(limpar = false) {
+        if (carregando) return;
+        carregando = true;
+
+        if (limpar) {
+            timelineContainer.innerHTML = '<div class="loading-container"><div class="spinner"></div></div>';
+        } else {
+            btnCarregarMais.disabled = true;
+            btnCarregarMais.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Carregando...';
+        }
+
+        try {
+            const params = new URLSearchParams({
+                tipo: filtroTipo.value,
+                periodo: filtroPeriodo.value,
+                funcionario: filtroFuncionario.value,
+                busca: inputBusca.value,
+                pagina: paginaAtual
+            });
+
+            const response = await fetch(`{{ route('diretor.registro-atividades.listar') }}?${params}`);
+            const data = await response.json();
+
+            if (data.success) {
+                if (limpar) {
+                    timelineContainer.innerHTML = '';
+                }
+
+                data.atividades.forEach(atividade => {
+                    timelineContainer.innerHTML += criarItemAtividade(atividade);
+                });
+
+                // Controlar botão "Carregar Mais"
+                if (data.temMais) {
+                    btnCarregarMais.style.display = 'inline-flex';
+                    btnCarregarMais.disabled = false;
+                    btnCarregarMais.innerHTML = '<i class="fa-solid fa-rotate"></i> Carregar Mais Atividades';
+                } else {
+                    btnCarregarMais.style.display = 'none';
+                }
+            } else {
+                showToast(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar atividades:', error);
+            showToast('Erro ao carregar atividades', 'error');
+        } finally {
+            carregando = false;
+        }
+    }
+
+    /**
+     * Cria HTML para item de atividade
+     */
+    function criarItemAtividade(atividade) {
+        const icones = {
+            'dispensacao': 'fa-hand-holding-medical',
+            'entrada': 'fa-box-open',
+            'transferencia': 'fa-arrow-right-arrow-left',
+            'alerta': 'fa-exclamation-triangle'
+        };
+
+        let metaHtml = '';
+
+        if (atividade.usuario) {
+            metaHtml += `<span class="activity-user">
+                <i class="fa-solid fa-user"></i> ${atividade.usuario}
+            </span>`;
+        }
+
+        if (atividade.localizacao) {
+            metaHtml += `<span class="activity-location">
+                <i class="fa-solid fa-hospital"></i> ${atividade.localizacao}
+            </span>`;
+        }
+
+        if (atividade.fornecedor) {
+            metaHtml += `<span class="activity-supplier">
+                <i class="fa-solid fa-truck"></i> ${atividade.fornecedor}
+            </span>`;
+        }
+
+        if (atividade.status) {
+            metaHtml += `<span class="activity-status ${atividade.status}">
+                <i class="fa-solid fa-bell"></i> ${atividade.status_texto}
+            </span>`;
+        }
+
+        return `
+            <div class="activity-item">
+                <div class="activity-time">${atividade.hora}</div>
+                <div class="activity-icon ${atividade.tipo}">
+                    <i class="fa-solid ${icones[atividade.tipo] || 'fa-circle'}"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">${atividade.titulo}</div>
+                    <div class="activity-desc">${atividade.descricao}</div>
+                    <div class="activity-meta">${metaHtml}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Exibe toast de notificação
+     */
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+            <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+            <span>${message}</span>
+        `;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+});
+</script>
 @endpush

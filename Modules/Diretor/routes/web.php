@@ -15,47 +15,51 @@ use Modules\Diretor\Http\Controllers\AjudaController;
 Route::prefix('diretor')->name('diretor.')->group(function () {
     // Dashboard principal
     Route::get('/', [HomeController::class, 'index'])->name('index');
-    
+
     // Busca Global
     Route::get('/busca-global', [HomeController::class, 'buscaGlobal'])->name('busca-global');
-    
+
     // Gestão de Estoque (medicamentos)
     Route::get('/estoque', [EstoqueController::class, 'index'])->name('estoque.index');
     Route::get('/estoque/listar', [EstoqueController::class, 'listar'])->name('estoque.listar');
     Route::get('/estoque/categorias', [EstoqueController::class, 'categorias'])->name('estoque.categorias');
     Route::get('/estoque/status-opcoes', [EstoqueController::class, 'statusOpcoes'])->name('estoque.status-opcoes');
     Route::get('/estoque/historico/{id}', [EstoqueController::class, 'historico'])->name('estoque.historico');
+    Route::get('/estoque/detalhes/{id}', [EstoqueController::class, 'detalhes'])->name('estoque.detalhes');
     Route::get('/estoque/exportar', [EstoqueController::class, 'exportar'])->name('estoque.exportar');
     Route::get('/estoque/{id}', [EstoqueController::class, 'show'])->name('estoque.show');
-    
+
     // Gestão de Fornecedores
     Route::get('/fornecedores', [FornecedoresController::class, 'index'])->name('fornecedores.index');
     Route::get('/fornecedores/{id}', [FornecedoresController::class, 'show'])->name('fornecedores.show');
-    
+
     // Registro de Atividades (dispensações, movimentações, logs)
     Route::get('/registro-atividades', [RegistroAtividadesController::class, 'index'])->name('registro-atividades.index');
+    Route::get('/registro-atividades/listar', [RegistroAtividadesController::class, 'listar'])->name('registro-atividades.listar');
+    Route::get('/registro-atividades/resumo', [RegistroAtividadesController::class, 'resumo'])->name('registro-atividades.resumo');
+    Route::get('/registro-atividades/funcionarios', [RegistroAtividadesController::class, 'funcionarios'])->name('registro-atividades.funcionarios');
     Route::get('/registro-atividades/{id}', [RegistroAtividadesController::class, 'show'])->name('registro-atividades.show');
-    
+
     // Gestão de Equipe
     Route::get('/equipe', [EquipeController::class, 'index'])->name('equipe.index');
     Route::get('/equipe/{id}', [EquipeController::class, 'show'])->name('equipe.show');
-    
+
     // Dispensações
     Route::get('/dispensacoes', [DispensacoesController::class, 'index'])->name('dispensacoes.index');
     Route::get('/dispensacoes/{id}', [DispensacoesController::class, 'show'])->name('dispensacoes.show');
-    
+
     // Alertas Críticos
     Route::get('/alertas', [AlertasController::class, 'index'])->name('alertas.index');
     Route::get('/alertas/{id}', [AlertasController::class, 'show'])->name('alertas.show');
-    
+
     // Perfil
     Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil');
     Route::post('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
-    
+
     // Configurações
     Route::get('/configuracoes', [ConfiguracoesController::class, 'index'])->name('configuracoes');
     Route::post('/configuracoes', [ConfiguracoesController::class, 'store'])->name('configuracoes.store');
-    
+
     // Ajuda
     Route::get('/ajuda', [AjudaController::class, 'index'])->name('ajuda');
 });
