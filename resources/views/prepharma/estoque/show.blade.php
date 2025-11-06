@@ -917,7 +917,7 @@
                 Array.from(examples).forEach(function(ex) { ex.remove(); });
 
                 document.getElementById('history_empty').style.display = 'none';
-                document.getElementById('offcanvasRightSubtitle').innerText = 'Carregando histórico...';
+                document.getElementById('offcanvasRightSubtitle').innerText = 'A carregar histórico...';
 
                 // Mapeamento de ícones por ação
                 var actionIcons = {
@@ -1111,7 +1111,7 @@
                     var loader = document.getElementById('history_loader');
                     if (loader) loader.style.display = 'flex';
 
-                    document.getElementById('offcanvasRightSubtitle').innerText = 'Carregando histórico...';
+                    document.getElementById('offcanvasRightSubtitle').innerText = 'A carregar histórico...';
                     timeline.innerHTML = '';
 
                     fetch(`/api/product-history/${produtoId}?${qs}`, { signal: signal }).then(function(resp) {
@@ -1857,7 +1857,7 @@
 
                     var content = document.getElementById('productDetailsContent');
                     if (content) {
-                        content.innerHTML = `\n                            <div class="text-center py-5">\n                                <div class="spinner-border text-primary" role="status">\n                                    <span class="visually-hidden">Carregando...</span>\n                                </div>\n                            </div>`;
+                        content.innerHTML = `\n                            <div class="text-center py-5">\n                                <div class="spinner-border text-primary" role="status">\n                                    <span class="visually-hidden">A carregar...</span>\n                                </div>\n                            </div>`;
                     }
 
                     // Fetch details via vanilla fetch

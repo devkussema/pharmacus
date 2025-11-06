@@ -979,7 +979,7 @@
                     const previewUrl = btn.getAttribute('data-url');
 
                     if (previewUrl) {
-                        notificationSystem.info('Carregando pré-visualização...', 'A processar');
+                        notificationSystem.info('A carregar pré-visualização...', 'A processar');
 
                         // Fazer requisição AJAX para obter dados do documento
                         fetch(previewUrl)

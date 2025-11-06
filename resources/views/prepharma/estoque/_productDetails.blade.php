@@ -1,4 +1,4 @@
-{{-- 
+{{--
     Offcanvas de Detalhes do Produto
     Exibe informações completas do produto em estoque
     Autor: Augusto Kussema
@@ -16,7 +16,7 @@
         <div id="productDetailsContent">
             <div class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Carregando...</span>
+                    <span class="visually-hidden">A carregar...</span>
                 </div>
             </div>
         </div>
@@ -87,20 +87,20 @@
         // Handler para botão de detalhes
         $(document).on('click', '.btn-detalhes', function() {
             const produtoId = $(this).data('id');
-            
+
             // Abrir offcanvas
             const offcanvas = new bootstrap.Offcanvas(document.getElementById('productDetailsOffcanvas'));
             offcanvas.show();
-            
+
             // Loading state
             $('#productDetailsContent').html(`
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Carregando...</span>
+                        <span class="visually-hidden">A carregar...</span>
                     </div>
                 </div>
             `);
-            
+
             // Buscar detalhes via AJAX
             $.ajax({
                 url: `/estoque/produto/${produtoId}/detalhes`,
@@ -118,7 +118,7 @@
                 }
             });
         });
-        
+
         function renderProductDetails(produto) {
             let html = `
                 <!-- Informações Básicas -->
@@ -141,7 +141,7 @@
                         <span class="detail-value">${produto.tipo || '-'}</span>
                     </div>
                 </div>
-                
+
                 <!-- Classificação -->
                 <div class="detail-section">
                     <h6><i class="fa fa-tags me-2"></i>Classificação</h6>
@@ -154,7 +154,7 @@
                         <span class="detail-value">${getStatusBadge(produto.status_stock)}</span>
                     </div>
                 </div>
-                
+
                 <!-- Localização -->
                 <div class="detail-section">
                     <h6><i class="fa fa-map-marker-alt me-2"></i>Localização</h6>
@@ -167,7 +167,7 @@
                         <span class="detail-value">${produto.prateleira?.designacao || '-'}</span>
                     </div>
                 </div>
-                
+
                 <!-- Quantidades -->
                 <div class="detail-section">
                     <h6><i class="fa fa-boxes me-2"></i>Quantidades</h6>
@@ -180,7 +180,7 @@
                         <span class="detail-value">${produto.num_lote || '-'}</span>
                     </div>
                 </div>
-                
+
                 <!-- Datas -->
                 <div class="detail-section">
                     <h6><i class="fa fa-calendar-alt me-2"></i>Datas</h6>
@@ -202,7 +202,7 @@
                     </div>
                 </div>
             `;
-            
+
             // Observações (se existir)
             if (produto.obs && produto.obs.trim() !== '') {
                 html += `
@@ -214,36 +214,36 @@
                     </div>
                 `;
             }
-            
+
             $('#productDetailsContent').html(html);
         }
-        
+
         function getStatusBadge(status) {
             if (!status) return '<span class="badge bg-secondary">Indefinido</span>';
-            
+
             const colors = {
                 'Ativo': 'success',
                 'Inativo': 'secondary',
                 'Esgotado': 'danger',
                 'Crítico': 'warning'
             };
-            
+
             const color = colors[status.designacao] || 'secondary';
             return `<span class="badge bg-${color}">${status.designacao}</span>`;
         }
-        
+
         function formatDate(dateString) {
             if (!dateString) return '-';
             const date = new Date(dateString);
             return date.toLocaleDateString('pt-BR');
         }
-        
+
         function formatDateTime(dateString) {
             if (!dateString) return '-';
             const date = new Date(dateString);
             return date.toLocaleString('pt-BR');
         }
-        
+
         function showError(message) {
             $('#productDetailsContent').html(`
                 <div class="text-center py-5 px-3">

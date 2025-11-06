@@ -205,7 +205,7 @@ tail -f storage/logs/laravel.log | grep "404\|Route"
 
 ### 3. Frontend
 - ✅ Modal "Adicionar Estoque" funcionando
-- ✅ Histórico de produtos carregando
+- ✅ Histórico de produtos A carregar
 - ✅ DataTables populando corretamente
 - ✅ Login/logout funcionais
 

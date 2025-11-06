@@ -444,7 +444,7 @@
             $(document).on('click', '.btn-auth-details', function () {
                 const $btn = $(this);
                 const originalHtml = $btn.html();
-                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carregando');
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> A carregar');
 
                 const $li = $btn.closest('.activity-item');
                 const user = $li.find('h3').text();

@@ -132,7 +132,7 @@
                             <div id="table-loader-overlay"
                                 style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:10; display:flex; align-items:center; justify-content:center;">
                                 <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Carregando...</span>
+                                    <span class="visually-hidden">A carregar...</span>
                                 </div>
                             </div>
                             <table class="table border-0 custom-table comman-table datatable mb-0 table-produto align-middle"

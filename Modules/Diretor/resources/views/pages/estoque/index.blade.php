@@ -126,7 +126,7 @@
                         <tr>
                             <td colspan="8" style="text-align: center; padding: 3rem;">
                                 <div class="spinner" style="margin: 0 auto;"></div>
-                                <p style="color: var(--text-secondary); margin-top: 1rem;">Carregando produtos...</p>
+                                <p style="color: var(--text-secondary); margin-top: 1rem;">A carregar produtos...</p>
                             </td>
                         </tr>
                     </tbody>
@@ -174,7 +174,7 @@
             <div class="offcanvas-body" id="offcanvasBody">
                 <div class="text-center" style="padding: 3rem;">
                     <div class="spinner"></div>
-                    <p style="color: var(--text-secondary); margin-top: 1rem;">Carregando histórico...</p>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">A carregar histórico...</p>
                 </div>
             </div>
         </div>
@@ -184,19 +184,36 @@
 
 @push('styles')
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         .page-content {
             max-width: 100%;
             overflow-x: hidden;
+            width: 100%;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow: hidden;
         }
 
         .table-responsive {
+            width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+        }
+
+        .data-table {
+            width: 100%;
+            min-width: 800px;
         }
 
         .table-actions {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .page-header {
@@ -225,14 +242,18 @@
         }
 
         .filters-row {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
-            flex-wrap: wrap;
+            width: 100%;
         }
 
         .filter-group {
             display: flex;
             flex-direction: column;
+            gap: 0.5rem;
+            min-width: 0;
+        }
             gap: 0.5rem;
             min-width: 200px;
         }
@@ -1136,7 +1157,7 @@
             body.innerHTML = `
             <div class="text-center" style="padding: 3rem;">
                 <div class="spinner"></div>
-                <p style="color: var(--text-secondary); margin-top: 1rem;">Carregando histórico...</p>
+                <p style="color: var(--text-secondary); margin-top: 1rem;">A carregar histórico...</p>
             </div> `;
 
             try {

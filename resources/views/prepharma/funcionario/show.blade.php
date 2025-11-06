@@ -101,9 +101,9 @@
                             <!-- Loading spinner -->
                             <div id="loadingSpinner" class="text-center py-4" style="display: none;">
                                 <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Carregando...</span>
+                                    <span class="visually-hidden">A carregar...</span>
                                 </div>
-                                <p class="mt-2">Carregando funcionários...</p>
+                                <p class="mt-2">A carregar funcionários...</p>
                             </div>
 
                             <!-- Tabela -->

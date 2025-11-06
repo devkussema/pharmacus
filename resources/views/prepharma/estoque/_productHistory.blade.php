@@ -1,29 +1,29 @@
 <style>
     /* ========== Offcanvas Largura e Layout ========== */
-    .offcanvas-history { 
+    .offcanvas-history {
         /* Forçar largura maior e garantir override */
         --bs-offcanvas-width: min(56vw, 920px) !important;
         box-shadow: -4px 0 24px rgba(0,0,0,0.12);
     }
 
     /* ========== Cabeçalho Premium ========== */
-    .offcanvas-history .offcanvas-header { 
-        position: sticky; 
-        top: 0; 
-        z-index: 10; 
+    .offcanvas-history .offcanvas-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 1.5rem;
         border: none;
     }
-    .offcanvas-history .offcanvas-header h5 { 
-        color: white; 
+    .offcanvas-history .offcanvas-header h5 {
+        color: white;
         font-weight: 600;
         font-size: 1.25rem;
         margin: 0;
     }
-    .offcanvas-history .offcanvas-header small { 
-        color: rgba(255,255,255,0.85); 
+    .offcanvas-history .offcanvas-header small {
+        color: rgba(255,255,255,0.85);
         font-size: 0.875rem;
     }
     .offcanvas-history .btn-close {
@@ -240,7 +240,7 @@
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
     </div>
-    
+
     <div class="offcanvas-body p-3">
         <div class="history-toolbar">
             <div class="d-flex gap-2 align-items-center mb-2">
@@ -318,7 +318,7 @@
         <div id="history_loader" style="display:none; position:absolute; inset:0; background:rgba(255,255,255,0.7); z-index:20; align-items:center; justify-content:center;">
             <div class="text-center">
                 <div class="spinner-border text-primary" role="status"></div>
-                <div class="mt-2 text-muted">Carregando histórico...</div>
+                <div class="mt-2 text-muted">A carregar histórico...</div>
             </div>
         </div>
     </div>
