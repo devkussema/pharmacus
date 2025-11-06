@@ -338,8 +338,9 @@
 <style>
 .config-layout {
     display: grid;
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 200px 1fr;
     gap: 1.5rem;
+    align-items: start;
 }
 
 @media (max-width: 1024px) {
@@ -351,47 +352,46 @@
 .config-sidebar {
     position: sticky;
     top: 1rem;
-    height: fit-content;
 }
 
 .config-nav {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    background: var(--surface);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--border-radius);
-    padding: 0.5rem;
 }
 
 .config-nav-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem;
+    padding: 0.75rem 1rem;
     border: none;
     border-radius: var(--border-radius-sm);
-    background: transparent;
+    background: var(--surface);
     color: var(--text-secondary);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
     text-align: left;
+    border: 1px solid var(--border-primary);
 }
 
 .config-nav-item:hover {
-    background: var(--bg-secondary);
+    background: var(--surface-hover);
     color: var(--text-primary);
+    border-color: var(--primary);
 }
 
 .config-nav-item.active {
     background: var(--primary);
     color: white;
+    border-color: var(--primary);
 }
 
 .config-nav-item i {
-    width: 20px;
+    width: 18px;
+    font-size: 0.875rem;
 }
 
 .config-content {

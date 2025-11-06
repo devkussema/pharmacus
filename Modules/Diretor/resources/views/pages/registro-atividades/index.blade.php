@@ -21,9 +21,9 @@
     <div class="filters-section">
         <div class="filters-row">
             <div class="filter-group">
-                <label for="tipo">Tipo de Atividade</label>
+                <label for="tipo"><i class="fa-solid fa-filter me-2"></i>Tipo de Atividade</label>
                 <select id="tipo" class="filter-select">
-                    <option value="">Todas</option>
+                    <option value="">Todas as Atividades</option>
                     <option value="dispensacao">Dispensação</option>
                     <option value="entrada">Entrada</option>
                     <option value="transferencia">Transferência</option>
@@ -31,7 +31,7 @@
                 </select>
             </div>
             <div class="filter-group">
-                <label for="periodo">Período</label>
+                <label for="periodo"><i class="fa-solid fa-calendar me-2"></i>Período</label>
                 <select id="periodo" class="filter-select">
                     <option value="hoje">Hoje</option>
                     <option value="semana">Última Semana</option>
@@ -40,13 +40,17 @@
                 </select>
             </div>
             <div class="filter-group">
-                <label for="funcionario">Funcionário</label>
+                <label for="funcionario"><i class="fa-solid fa-user me-2"></i>Funcionário</label>
                 <select id="funcionario" class="filter-select">
-                    <option value="">Todos</option>
+                    <option value="">Todos os Funcionários</option>
                     <option value="1">Dr. João Silva</option>
                     <option value="2">Téc. Maria Santos</option>
                     <option value="3">Aux. Pedro Costa</option>
                 </select>
+            </div>
+            <div class="filter-group search-group">
+                <label><i class="fa-solid fa-search me-2"></i>Buscar</label>
+                <input type="text" class="filter-input" placeholder="Medicamento, paciente...">
             </div>
         </div>
     </div>
@@ -213,6 +217,62 @@
 
 @push('styles')
 <style>
+.filters-section {
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius);
+}
+
+.filters-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+}
+
+.filter-group label i {
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+}
+
+.filter-select,
+.filter-input {
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius-sm);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+}
+
+.filter-select:focus,
+.filter-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-group {
+    min-width: 250px;
+}
+
 .activities-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

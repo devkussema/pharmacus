@@ -11,22 +11,31 @@
 </div>
 
 <div class="page-content">
-    <div class="profile-grid">
-        <!-- Informações Pessoais -->
-        <div class="card">
-            <div class="card-header">
-                <h3>Informações Pessoais</h3>
-            </div>
-            <div class="card-body">
-                <div class="profile-photo-section">
-                    <img src="https://ui-avatars.com/api/?name=Diretor&background=2563eb&color=fff&size=120" alt="Foto do Perfil" class="profile-photo">
-                    <button class="btn-change-photo">
-                        <i class="fa-solid fa-camera"></i>
-                        Alterar Foto
-                    </button>
+    <div class="profile-layout">
+        <div class="profile-main">
+            <!-- Card de Perfil com Foto -->
+            <div class="card profile-card">
+                <div class="profile-header-section">
+                    <img src="https://ui-avatars.com/api/?name=Diretor&background=2563eb&color=fff&size=120" alt="Foto do Perfil" class="profile-photo-large">
+                    <div class="profile-header-info">
+                        <h2>Dr. António Manuel Silva</h2>
+                        <p class="profile-role-large">Diretor da Farmácia Hospitalar</p>
+                        <p class="profile-license">CRF 12345-AO</p>
+                        <button class="btn-modern btn-secondary mt-2">
+                            <i class="fa-solid fa-camera me-2"></i>
+                            Alterar Foto
+                        </button>
+                    </div>
                 </div>
+            </div>
 
-                <form class="profile-form">
+            <!-- Informações Pessoais -->
+            <div class="card">
+            <div class="card-header">
+                    <h3>Informações Pessoais</h3>
+                </div>
+                <div class="card-body">
+                    <form class="profile-form">
                     <div class="form-row">
                         <div class="form-group">
                             <label>Nome Completo</label>
@@ -76,10 +85,10 @@
             </div>
         </div>
 
-        <!-- Segurança -->
+        <!-- Segurança e Senha -->
         <div class="card">
             <div class="card-header">
-                <h3>Segurança</h3>
+                <h3>Segurança da Conta</h3>
             </div>
             <div class="card-body">
                 <form class="security-form">
@@ -231,6 +240,77 @@
 
 @push('styles')
 <style>
+.profile-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.profile-card {
+    background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+    border: none;
+    color: white;
+}
+
+.profile-header-section {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.profile-photo-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.profile-header-info h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: white;
+}
+
+.profile-role-large {
+    font-size: 1.125rem;
+    margin: 0 0 0.25rem 0;
+    opacity: 0.9;
+}
+
+.profile-license {
+    font-size: 0.875rem;
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0.8;
+    margin: 0;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.my-4 {
+    margin: 2rem 0;
+}
+
+.profile-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.profile-main > .profile-card {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 1024px) {
+    .profile-main {
+        grid-template-columns: 1fr;
+    }
+}
+
 .profile-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

@@ -21,31 +21,35 @@
     <div class="filters-section">
         <div class="filters-row">
             <div class="filter-group">
-                <label for="cargo">Cargo</label>
+                <label for="cargo"><i class="fa-solid fa-briefcase me-2"></i>Cargo</label>
                 <select id="cargo" class="filter-select">
-                    <option value="">Todos</option>
+                    <option value="">Todos os Cargos</option>
                     <option value="farmaceutico">Farmacêutico</option>
                     <option value="tecnico">Técnico em Farmácia</option>
                     <option value="auxiliar">Auxiliar de Farmácia</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label for="status">Status</label>
+                <label for="status"><i class="fa-solid fa-circle-check me-2"></i>Status</label>
                 <select id="status" class="filter-select">
-                    <option value="">Todos</option>
+                    <option value="">Todos os Status</option>
                     <option value="ativo">Ativo</option>
                     <option value="ferias">Em Férias</option>
                     <option value="afastado">Afastado</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label for="turno">Turno</label>
+                <label for="turno"><i class="fa-solid fa-clock me-2"></i>Turno</label>
                 <select id="turno" class="filter-select">
-                    <option value="">Todos</option>
+                    <option value="">Todos os Turnos</option>
                     <option value="manha">Manhã</option>
                     <option value="tarde">Tarde</option>
                     <option value="noite">Noite</option>
                 </select>
+            </div>
+            <div class="filter-group search-group">
+                <label><i class="fa-solid fa-search me-2"></i>Buscar</label>
+                <input type="text" class="filter-input" placeholder="Nome, CRF...">
             </div>
         </div>
     </div>
@@ -226,6 +230,62 @@
 
 @push('styles')
 <style>
+.filters-section {
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius);
+}
+
+.filters-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+}
+
+.filter-group label i {
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+}
+
+.filter-select,
+.filter-input {
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius-sm);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+}
+
+.filter-select:focus,
+.filter-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-group {
+    min-width: 250px;
+}
+
 .team-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

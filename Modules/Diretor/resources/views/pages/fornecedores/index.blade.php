@@ -9,6 +9,20 @@
         <p>Controle e relacionamento com parceiros comerciais</p>
     </div>
     <div class="page-actions">
+        <div class="search-filter-group">
+            <div class="search-box-suppliers">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Buscar fornecedores...">
+            </div>
+            <div class="view-toggle">
+                <button class="toggle-btn active" data-view="grid">
+                    <i class="fa-solid fa-grip"></i>
+                </button>
+                <button class="toggle-btn" data-view="list">
+                    <i class="fa-solid fa-list"></i>
+                </button>
+            </div>
+        </div>
         <button class="btn-modern btn-primary">
             <i class="fa-solid fa-plus me-2"></i>
             Novo Fornecedor
@@ -40,12 +54,12 @@
         </div>
         
         <div class="metric-card">
-            <div class="metric-icon revenue">
-                <i class="fa-solid fa-chart-line"></i>
+            <div class="metric-icon quality">
+                <i class="fa-solid fa-star"></i>
             </div>
             <div class="metric-content">
-                <div class="metric-value">Kz 2.4M</div>
-                <div class="metric-label">Valor Total Mensal</div>
+                <div class="metric-value">4.6</div>
+                <div class="metric-label">Avaliação Média</div>
             </div>
         </div>
         
@@ -61,7 +75,9 @@
     </div>
 
     <!-- Lista de Fornecedores -->
-    <div class="suppliers-grid">
+    <!-- Lista/Grid de Fornecedores -->
+    <div class="suppliers-container" data-view="grid">
+        <div class="suppliers-grid">
         <div class="supplier-card">
             <div class="supplier-header">
                 <div class="supplier-avatar">
@@ -333,6 +349,78 @@
 
 @push('styles')
 <style>
+.search-filter-group {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.search-box-suppliers {
+    position: relative;
+    width: 300px;
+}
+
+.search-box-suppliers i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+}
+
+.search-box-suppliers input {
+    width: 100%;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius-sm);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+.search-box-suppliers input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--surface);
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.toggle-btn {
+    padding: 0.625rem 0.875rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.toggle-btn:hover {
+    background: var(--surface-hover);
+    color: var(--text-primary);
+}
+
+.toggle-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.toggle-btn:not(:last-child) {
+    border-right: 1px solid var(--border-primary);
+}
+
+.suppliers-container[data-view="list"] .suppliers-grid {
+    grid-template-columns: 1fr;
+}
+
 .supplier-metrics {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -363,6 +451,10 @@
 
 .metric-icon.active { background: var(--success); }
 .metric-icon.pending { background: var(--warning); }
+.metric-icon.quality {
+    background: #f59e0b;
+}
+
 .metric-icon.revenue { background: var(--primary); }
 .metric-icon.rating { background: #f59e0b; }
 
@@ -694,4 +786,22 @@
     }
 }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+// Toggle de visualização
+document.querySelectorAll('.view-toggle .toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const view = this.dataset.view;
+        
+        // Atualizar botões
+        document.querySelectorAll('.view-toggle .toggle-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Atualizar container
+        document.querySelector('.suppliers-container').dataset.view = view;
+    });
+});
+</script>
 @endpush

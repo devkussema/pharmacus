@@ -9,6 +9,14 @@
         <p>Monitoramento de situações que requerem atenção imediata</p>
     </div>
     <div class="page-actions">
+        <div class="view-toggle">
+            <button class="toggle-btn active" data-view="list">
+                <i class="fa-solid fa-list"></i>
+            </button>
+            <button class="toggle-btn" data-view="grid">
+                <i class="fa-solid fa-grip"></i>
+            </button>
+        </div>
         <button class="btn-modern btn-secondary">
             <i class="fa-solid fa-bell-slash me-2"></i>
             Marcar Tudo Lido
@@ -59,7 +67,8 @@
     </div>
 
     <!-- Lista de Alertas -->
-    <div class="alerts-list">
+    <div class="alerts-container" data-view="list">
+        <div class="alerts-list">
         <!-- Alerta Crítico: Estoque -->
         <div class="alert-item critical">
             <div class="alert-icon">
@@ -250,12 +259,45 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
+        </div>
     </div>
 </div>
 @endsection
 
 @push('styles')
 <style>
+.view-toggle {
+    display: flex;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.toggle-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.toggle-btn:hover {
+    background: var(--surface-hover);
+    color: var(--text-primary);
+}
+
+.toggle-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.toggle-btn:not(:last-child) {
+    border-right: 1px solid var(--border-primary);
+}
+
 .alerts-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -382,6 +424,11 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+}
+
+.alerts-container[data-view="grid"] .alerts-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 }
 
 .alert-item {
@@ -581,4 +628,22 @@
     font-weight: 600;
 }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+// Toggle de visualização
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const view = this.dataset.view;
+        
+        // Atualizar botões
+        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Atualizar container
+        document.querySelector('.alerts-container').dataset.view = view;
+    });
+});
+</script>
 @endpush
