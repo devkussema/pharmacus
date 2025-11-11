@@ -294,7 +294,12 @@
                             <span class="history-qty positive">+40 un</span>
                         </div>
                         <div class="history-message">
-                            Lote: <strong>LT-2025-01</strong> • Fornecedor: FarmaTech S.A.
+                            <div class="mb-1">
+                                <i class="fa fa-barcode me-1"></i> Lote: <strong>LT-2025-01</strong>
+                            </div>
+                            <div>
+                                <i class="fa fa-truck me-1"></i> Fornecedor: <strong>FarmaTech S.A.</strong>
+                            </div>
                         </div>
                     </div>
                 </div>

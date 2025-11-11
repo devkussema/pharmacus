@@ -106,41 +106,68 @@
         .table-responsive {
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            background: white;
         }
 
         .custom-table {
             margin: 0;
+            width: 100%;
         }
 
         .custom-table thead {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .custom-table thead th {
             color: white;
-            font-weight: 600;
-            padding: 1rem;
+            font-weight: 700;
+            padding: 1.125rem 1rem;
             border: none;
             text-transform: uppercase;
             font-size: 0.8125rem;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .custom-table thead th i {
+            margin-right: 0.5rem;
+            opacity: 0.9;
         }
 
         .custom-table tbody tr {
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .custom-table tbody tr:hover {
-            background: #f8f9fa;
-            transform: scale(1.01);
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.06) 0%, rgba(255,255,255,0) 100%);
+            transform: translateX(6px);
+            box-shadow: -6px 0 0 0 #667eea, 0 2px 8px rgba(102, 126, 234, 0.15);
         }
 
         .custom-table tbody td {
-            padding: 1rem;
+            padding: 1.125rem 1rem;
             vertical-align: middle;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.875rem;
+            color: #2d3748;
+            transition: padding-left 0.3s;
+        }
+
+        .custom-table tbody tr:hover td {
+            padding-left: 1.5rem;
+        }
+
+        .custom-table tbody td:first-child {
+            font-weight: 600;
+            color: #1a202c;
+            font-size: 0.9rem;
         }
 
         /* Action Row */
@@ -664,7 +691,6 @@
                                 <th><i class="fas fa-cube me-1"></i>Quantidade</th>
                                 <th><i class="fas fa-barcode me-1"></i>Lote</th>
                                 <th><i class="fas fa-exclamation-triangle me-1"></i>Expiração</th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -838,7 +864,7 @@
                         { data: "produto.quantidade" },
                         { data: "produto.num_lote" },
                         { data: function(row) { return formatDate(row.produto.data_expiracao); } },
-                        { data: null, defaultContent: "" }
+                        /* { data: null, defaultContent: "" } */
                     ],
                     language: {
                         search: "Filtrar resultados:",
