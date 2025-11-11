@@ -540,7 +540,7 @@ $(document).ready(function() {
     // Validação do formulário antes de submeter
     $('#editForm').on('submit', function(e) {
         e.preventDefault();
-        
+
         const quantidade = parseInt($('#quantidade').val());
 
         if (isNaN(quantidade) || quantidade < 0) {
@@ -587,13 +587,13 @@ $(document).ready(function() {
                             <div class="toast-message">${response.message || 'Produto atualizado com sucesso! Redirecionando...'}</div>
                         </div>
                     </div>`;
-                
+
                 $('body').append(toastHtml);
 
                 // Redirecionar após 1.5 segundos
                 setTimeout(function() {
                     const returnID = $('input[name="returnID"]').val() || '{{ $returnID }}';
-                    window.location.href = `/estoque/show/${returnID}`;
+                    window.location.href = `/estoque/ver/${returnID}`;
                 }, 1500);
             },
             error: function(xhr) {
@@ -622,7 +622,7 @@ $(document).ready(function() {
                             <div class="toast-message">${errorMsg}</div>
                         </div>
                     </div>`;
-                
+
                 $('body').append(toastHtml);
 
                 submitBtn.prop('disabled', false).html(originalHtml);
