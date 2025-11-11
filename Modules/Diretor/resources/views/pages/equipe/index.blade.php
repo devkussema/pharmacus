@@ -65,7 +65,7 @@
                 <div class="summary-label">Total de Funcionários</div>
             </div>
         </div>
-        
+
         <div class="summary-card">
             <div class="summary-icon active">
                 <i class="fa-solid fa-user-check"></i>
@@ -75,7 +75,7 @@
                 <div class="summary-label">Ativos</div>
             </div>
         </div>
-        
+
         <div class="summary-card">
             <div class="summary-icon vacation">
                 <i class="fa-solid fa-umbrella-beach"></i>
@@ -85,7 +85,7 @@
                 <div class="summary-label">Em Férias</div>
             </div>
         </div>
-        
+
         <div class="summary-card">
             <div class="summary-icon shift">
                 <i class="fa-solid fa-clock"></i>
@@ -110,7 +110,7 @@
                 <h4>Dr. João Silva</h4>
                 <p class="staff-role">Farmacêutico Responsável</p>
                 <p class="staff-license">CRF 98765-AO</p>
-                
+
                 <div class="staff-info">
                     <div class="info-item">
                         <i class="fa-solid fa-clock"></i>
@@ -121,7 +121,7 @@
                         <span>+244 923 456 789</span>
                     </div>
                 </div>
-                
+
                 <div class="staff-stats">
                     <div class="stat">
                         <div class="stat-value">156</div>
@@ -132,7 +132,7 @@
                         <div class="stat-label">Anos de Serviço</div>
                     </div>
                 </div>
-                
+
                 <div class="staff-actions">
                     <button class="btn-action"><i class="fa-solid fa-eye"></i></button>
                     <button class="btn-action"><i class="fa-solid fa-calendar"></i></button>
@@ -152,7 +152,7 @@
                 <h4>Maria Santos</h4>
                 <p class="staff-role">Técnica em Farmácia</p>
                 <p class="staff-license">TF 54321-AO</p>
-                
+
                 <div class="staff-info">
                     <div class="info-item">
                         <i class="fa-solid fa-clock"></i>
@@ -163,7 +163,7 @@
                         <span>+244 912 345 678</span>
                     </div>
                 </div>
-                
+
                 <div class="staff-stats">
                     <div class="stat">
                         <div class="stat-value">89</div>
@@ -174,7 +174,7 @@
                         <div class="stat-label">Anos de Serviço</div>
                     </div>
                 </div>
-                
+
                 <div class="staff-actions">
                     <button class="btn-action"><i class="fa-solid fa-eye"></i></button>
                     <button class="btn-action"><i class="fa-solid fa-calendar"></i></button>
@@ -194,7 +194,7 @@
                 <h4>Pedro Costa</h4>
                 <p class="staff-role">Auxiliar de Farmácia</p>
                 <p class="staff-license">AF 12345-AO</p>
-                
+
                 <div class="staff-info">
                     <div class="info-item">
                         <i class="fa-solid fa-clock"></i>
@@ -205,7 +205,7 @@
                         <span>+244 934 567 890</span>
                     </div>
                 </div>
-                
+
                 <div class="staff-stats">
                     <div class="stat">
                         <div class="stat-value">-</div>
@@ -216,7 +216,7 @@
                         <div class="stat-label">Anos de Serviço</div>
                     </div>
                 </div>
-                
+
                 <div class="staff-actions">
                     <button class="btn-action"><i class="fa-solid fa-eye"></i></button>
                     <button class="btn-action"><i class="fa-solid fa-calendar"></i></button>
@@ -232,7 +232,7 @@
 <style>
 .filters-section {
     margin-bottom: 1.5rem;
-    padding: 1.25rem;
+    padding: 1.5rem;
     background: var(--surface);
     border: 1px solid var(--border-primary);
     border-radius: var(--border-radius);
@@ -240,38 +240,47 @@
 
 .filters-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
 }
 
 .filter-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.625rem;
 }
 
 .filter-group label {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-primary);
     display: flex;
     align-items: center;
+    letter-spacing: 0.2px;
 }
 
 .filter-group label i {
-    color: var(--text-tertiary);
+    color: var(--primary);
     font-size: 0.75rem;
 }
 
 .filter-select,
 .filter-input {
-    padding: 0.625rem 0.875rem;
-    border: 1px solid var(--border-primary);
-    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-primary);
+    border-radius: 10px;
     background: var(--bg-secondary);
     color: var(--text-primary);
     font-size: 0.875rem;
-    transition: all var(--transition-fast);
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.filter-select:hover,
+.filter-input:hover {
+    border-color: var(--primary);
+    background: var(--surface);
 }
 
 .filter-select:focus,
@@ -279,7 +288,18 @@
     outline: none;
     border-color: var(--primary);
     background: var(--surface);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1), 0 4px 12px rgba(37, 99, 235, 0.15);
+    transform: translateY(-1px);
+}
+
+.filter-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%232563eb' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+    appearance: none;
 }
 
 .search-group {
