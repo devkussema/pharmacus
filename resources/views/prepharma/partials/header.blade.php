@@ -3,10 +3,6 @@
         <a href="{{ route('home') }}" class="logo">
             <img src="{{ asset('prepharma/img/white__logo2.png')}}" width="35" height="35" alt> <span>Pharmatina</span>
         </a>
-        {{-- Botão fullscreen à esquerda do header --}}
-        <button id="btn_fullscreen" class="btn btn-sm btn-light d-none d-md-inline-flex" title="Tela cheia" style="padding:.25rem .5rem;border-radius:6px;">
-            <i id="fullscreen_icon" class="fa-solid fa-expand"></i>
-        </button>
     </div>
     <a id="toggle_btn" href="javascript:void(0);"><img src="{{ asset('prepharma/img/icons/bar-icon.svg')}}" alt></a>
     <a id="mobile_btn" class="mobile_btn float-start" href="#sidebar"><img src="{{ asset('prepharma/img/icons/bar-icon.svg')}}" alt></a>

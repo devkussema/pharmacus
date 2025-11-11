@@ -385,7 +385,7 @@
                 <i class="fa-solid fa-capsules fa-2x text-brand"></i>
             </div>
             <div class="preloader-spinner"></div>
-            <div class="preloader-text">Inicializando Pharmacus...</div>
+            <div class="preloader-text">A Inicializar Pharmacus...</div>
         </div>
     </div>
 
