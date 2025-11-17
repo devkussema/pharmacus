@@ -601,7 +601,7 @@
                 </span>
                 <span id="submitSpinner" style="display:none;">
                     <span class="spinner-custom"></span>
-                    <span class="ms-2">Processando...</span>
+                    <span class="ms-2">A Processar...</span>
                 </span>
             </button>
         </div>
@@ -684,16 +684,6 @@ $(document).ready(function() {
         const btnText = $('#submitText');
         const btnSpinner = $('#submitSpinner');
         const formData = new FormData(this);
-
-        // Validar quantidade
-        const caixa = parseInt($('#caixa').val()) || 0;
-        const caxinha = parseInt($('#caxinha').val()) || 0;
-        const unidade = parseInt($('#unidade').val()) || 0;
-
-        if (caixa <= 0 || caxinha <= 0 || unidade <= 0) {
-            showToast('Por favor, insira valores válidos para Caixa, Caixinha e Unidade (maior que 0)', 'error');
-            return;
-        }
 
         // Validar datas
         const dataProducao = new Date($('input[name="data_producao"]').val());

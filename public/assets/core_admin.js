@@ -42,7 +42,7 @@
     if(!btn) return;
     const original=btn.innerHTML;
     btn.disabled=true; btn.dataset._original=original;
-    btn.innerHTML='<span class="spinner-border spinner-border-sm me-2"></span>'+ (btn.dataset.loading || 'Processando...');
+    btn.innerHTML='<span class="spinner-border spinner-border-sm me-2"></span>'+ (btn.dataset.loading || 'A Processar...');
     setTimeout(()=>{ // auto-reverte em 6s se nada reverter
       if(btn.disabled){ btn.disabled=false; btn.innerHTML=btn.dataset._original || original; }
     },6000);
