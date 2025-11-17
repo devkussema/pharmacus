@@ -327,7 +327,7 @@
         <div class="card-body">
             <form method="POST" id="formCadastro">
                 @csrf
-                
+
                 @php
                     $farmaciaUsuario = null;
                     try {
@@ -421,16 +421,16 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-barcode"></i>
-                                Lote *
+                                Lote
                             </label>
-                            <input type="text" class="form-control text-uppercase" name="num_lote" placeholder="Ex: L2024-001" required>
+                            <input type="text" class="form-control text-uppercase" name="num_lote" placeholder="Ex: L2024-001">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-file-alt"></i>
-                                Documento Nº *
+                                Documento Nº
                             </label>
-                            <input type="text" id="cod_barras" class="form-control" placeholder="Número do documento" name="num_documento" required>
+                            <input type="text" id="cod_barras" class="form-control" placeholder="Número do documento" name="num_documento">
                         </div>
                     </div>
                 </div>
@@ -445,9 +445,9 @@
                         <div class="col-md-4 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-industry"></i>
-                                Data Produção *
+                                Data Produção
                             </label>
-                            <input type="date" class="form-control" name="data_producao" required>
+                            <input type="date" class="form-control" name="data_producao">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">
@@ -528,9 +528,9 @@
                         <div class="col-md-4 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-map-marker-alt"></i>
-                                Origem / Destino *
+                                Origem / Destino
                             </label>
-                            <input type="text" class="form-control" name="origem_destino" required>
+                            <input type="text" class="form-control" name="origem_destino">
                         </div>
                     </div>
                 </div>
@@ -558,9 +558,9 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-shelves"></i>
-                                Prateleira
+                                Prateleira *
                             </label>
-                            <select name="prateleira_id" id="prateleira_id_" class="form-control">
+                            <select name="prateleira_id" id="prateleira_id_" class="form-control" required>
                                 @foreach (\App\Models\Prateleira::all() as $prat)
                                     <option value="{{ $prat->id }}">{{ $prat->nome }} [{{ $prat->descricao }}]</option>
                                 @endforeach
