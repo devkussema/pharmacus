@@ -9,9 +9,11 @@
         <p>Histórico de dispensações, movimentações e operações</p>
     </div>
     <div class="page-actions">
-        <button class="btn-export" id="btnExportar">
-            <i class="fa-solid fa-file-export me-2"></i>
-            Exportar Relatório
+        <button class="btn-modern btn-secondary" id="btnAtualizarRegistros">
+            <i class="fa-solid fa-sync me-2"></i>Atualizar
+        </button>
+        <button class="btn-modern btn-primary" id="btnExportarRelatorio">
+            <i class="fa-solid fa-file-export me-2"></i>Exportar Relatório
         </button>
     </div>
 </div>
@@ -25,37 +27,33 @@
                 <select id="tipo" class="filter-select">
                     <option value="">Todas as Atividades</option>
                     <option value="dispensacao">Dispensação</option>
-                    <option value="entrada">Entrada</option>
+                    <option value="entrada">Entrada de Estoque</option>
                     <option value="transferencia">Transferência</option>
-                    <option value="ajuste">Ajuste de Inventário</option>
+                    <option value="ajuste">Ajuste</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label for="periodo"><i class="fa-solid fa-calendar me-2"></i>Período</label>
                 <select id="periodo" class="filter-select">
                     <option value="hoje">Hoje</option>
-                    <option value="semana">Última Semana</option>
-                    <option value="mes">Último Mês</option>
-                    <option value="trimestre">Último Trimestre</option>
+                    <option value="ontem">Ontem</option>
+                    <option value="7dias">Últimos 7 dias</option>
+                    <option value="30dias">Últimos 30 dias</option>
+                    <option value="custom">Personalizado</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label for="funcionario"><i class="fa-solid fa-user me-2"></i>Funcionário</label>
                 <select id="funcionario" class="filter-select">
                     <option value="">Todos os Funcionários</option>
-                    <option value="1">Dr. João Silva</option>
-                    <option value="2">Téc. Maria Santos</option>
-                    <option value="3">Aux. Pedro Costa</option>
                 </select>
             </div>
-            <div class="filter-group search-group">
+            <div class="filter-group">
                 <label for="busca"><i class="fa-solid fa-search me-2"></i>Buscar</label>
                 <input type="text" id="busca" class="filter-input" placeholder="Medicamento, paciente, funcionário...">
             </div>
         </div>
-    </div>
-
-    <!-- Resumo de Atividades -->
+    </div>    <!-- Resumo de Atividades -->
     <div class="activities-summary">
         <div class="summary-card">
             <div class="summary-icon dispensacao">
@@ -252,7 +250,7 @@
 
 .filters-section {
     margin-bottom: 1.5rem;
-    padding: 1.25rem;
+    padding: 1.5rem;
     background: var(--surface);
     border: 1px solid var(--border-primary);
     border-radius: var(--border-radius);
@@ -260,7 +258,7 @@
 
 .filters-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
     width: 100%;
 }
@@ -268,32 +266,41 @@
 .filter-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.625rem;
     min-width: 0;
 }
 
 .filter-group label {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-primary);
     display: flex;
     align-items: center;
+    letter-spacing: 0.2px;
 }
 
 .filter-group label i {
-    color: var(--text-tertiary);
+    color: var(--primary);
     font-size: 0.75rem;
 }
 
 .filter-select,
 .filter-input {
-    padding: 0.625rem 0.875rem;
-    border: 1px solid var(--border-primary);
-    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-primary);
+    border-radius: 10px;
     background: var(--bg-secondary);
     color: var(--text-primary);
     font-size: 0.875rem;
-    transition: all var(--transition-fast);
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.filter-select:hover,
+.filter-input:hover {
+    border-color: var(--primary);
+    background: var(--surface);
 }
 
 .filter-select:focus,
@@ -301,7 +308,18 @@
     outline: none;
     border-color: var(--primary);
     background: var(--surface);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1), 0 4px 12px rgba(37, 99, 235, 0.15);
+    transform: translateY(-1px);
+}
+
+.filter-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%232563eb' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+    appearance: none;
 }
 
 .search-group {
@@ -450,34 +468,71 @@
 }
 
 .activities-footer .btn-secondary {
-    padding: 0.75rem 1.5rem;
+    padding: 0.875rem 2rem;
     background: var(--primary);
     color: white;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: 10px;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
 .activities-footer .btn-secondary:hover {
     background: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
 }
 
 .activities-footer .btn-secondary:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 .activities-footer .btn-secondary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
+}
+
+.btn-modern {
+    padding: 0.875rem 1.75rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.btn-modern.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+    color: white;
+}
+
+.btn-modern.btn-secondary {
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 2px solid var(--border-primary);
+}
+
+.btn-modern.btn-secondary:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary);
 }
 
 .loading-container {
@@ -548,7 +603,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const filtroFuncionario = document.getElementById('funcionario');
     const inputBusca = document.getElementById('busca');
     const btnCarregarMais = document.getElementById('btnCarregarMais');
-    const btnExportar = document.getElementById('btnExportar');
+    const btnExportarRelatorio = document.getElementById('btnExportarRelatorio');
+    const btnAtualizarRegistros = document.getElementById('btnAtualizarRegistros');
     const timelineContainer = document.querySelector('.activities-timeline');
 
     // Carregar dados iniciais
@@ -583,110 +639,113 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Carregar mais atividades
-    btnCarregarMais.addEventListener('click', () => {
-        paginaAtual++;
-        carregarAtividades(false);
-    });
+    if (btnCarregarMais) {
+        btnCarregarMais.addEventListener('click', () => {
+            paginaAtual++;
+            carregarAtividades(false);
+        });
+    }
 
     // Exportar relatório
-    btnExportar.addEventListener('click', () => {
-        showToast('Exportando relatório...', 'info');
-        // TODO: Implementar exportação real
-        setTimeout(() => {
-            showToast('Funcionalidade de exportação em desenvolvimento', 'warning');
-        }, 1000);
-    });
+    if (btnExportarRelatorio) {
+        btnExportarRelatorio.addEventListener('click', exportarRelatorio);
+    }
 
-    /**
-     * Carrega resumo de estatísticas
-     */
+    // Atualizar registros
+    if (btnAtualizarRegistros) {
+        btnAtualizarRegistros.addEventListener('click', () => {
+            paginaAtual = 1;
+            carregarAtividades(true);
+            showToast('Registros atualizados com sucesso!', 'success');
+        });
+    }
+
     async function carregarResumo() {
         try {
-            const response = await fetch('{{ route('diretor.registro-atividades.resumo') }}');
-            const data = await response.json();
-
-            if (data.success) {
-                document.querySelectorAll('.summary-value')[0].textContent = data.resumo.dispensacoes;
-                document.querySelectorAll('.summary-value')[1].textContent = data.resumo.entradas;
-                document.querySelectorAll('.summary-value')[2].textContent = data.resumo.transferencias;
-                document.querySelectorAll('.summary-value')[3].textContent = data.resumo.alertas;
-            }
+            // Simulação de dados
+            document.getElementById('totalDispensacoes').textContent = '156';
+            document.getElementById('totalEntradas').textContent = '12';
+            document.getElementById('totalTransferencias').textContent = '8';
+            document.getElementById('totalAlertas').textContent = '3';
         } catch (error) {
             console.error('Erro ao carregar resumo:', error);
         }
     }
 
-    /**
-     * Carrega lista de funcionários
-     */
     async function carregarFuncionarios() {
         try {
-            const response = await fetch('{{ route('diretor.registro-atividades.funcionarios') }}');
-            const data = await response.json();
+            // Simulação de dados
+            const funcionarios = [
+                { id: 1, nome: 'Dr. João Silva' },
+                { id: 2, nome: 'Maria Santos' },
+                { id: 3, nome: 'Carlos Oliveira' }
+            ];
 
-            if (data.success) {
-                const opcaoTodos = filtroFuncionario.querySelector('option[value=""]');
-                filtroFuncionario.innerHTML = '';
-                filtroFuncionario.appendChild(opcaoTodos);
-
-                data.funcionarios.forEach(func => {
-                    const option = document.createElement('option');
-                    option.value = func.id;
-                    option.textContent = func.nome;
-                    filtroFuncionario.appendChild(option);
-                });
-            }
+            funcionarios.forEach(func => {
+                const option = document.createElement('option');
+                option.value = func.id;
+                option.textContent = func.nome;
+                filtroFuncionario.appendChild(option);
+            });
         } catch (error) {
             console.error('Erro ao carregar funcionários:', error);
         }
     }
 
-    /**
-     * Carrega atividades com filtros
-     */
     async function carregarAtividades(limpar = false) {
         if (carregando) return;
         carregando = true;
 
         if (limpar) {
             timelineContainer.innerHTML = '<div class="loading-container"><div class="spinner"></div></div>';
-        } else {
-            btnCarregarMais.disabled = true;
-            btnCarregarMais.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Carregando...';
         }
 
         try {
-            const params = new URLSearchParams({
-                tipo: filtroTipo.value,
-                periodo: filtroPeriodo.value,
-                funcionario: filtroFuncionario.value,
-                busca: inputBusca.value,
-                pagina: paginaAtual
+            // Simulação de dados
+            const atividades = [
+                {
+                    id: 1,
+                    tipo: 'dispensacao',
+                    hora: '14:32',
+                    titulo: 'Dispensação de Medicamento',
+                    descricao: 'Paracetamol 500mg - 20 unidades dispensadas',
+                    usuario: 'Dr. João Silva',
+                    local: 'Enfermaria 3A',
+                    paciente: 'Maria da Silva',
+                    status: null
+                },
+                {
+                    id: 2,
+                    tipo: 'entrada',
+                    hora: '13:15',
+                    titulo: 'Entrada de Estoque',
+                    descricao: 'Lote Y8405 recebido',
+                    usuario: 'Adriano Lata',
+                    local: 'Farmácia Central',
+                    quantidade: '+45 un',
+                    status: null
+                },
+                {
+                    id: 3,
+                    tipo: 'alerta',
+                    hora: '11:20',
+                    titulo: 'Alerta Crítico',
+                    descricao: 'Dipirona 1g abaixo do nível mínimo',
+                    usuario: 'Sistema',
+                    local: 'Estoque Principal',
+                    quantidade: '8 unidades',
+                    status: 'critical'
+                }
+            ];
+
+            if (limpar) {
+                timelineContainer.innerHTML = '';
+            }
+
+            atividades.forEach(ativ => {
+                timelineContainer.insertAdjacentHTML('beforeend', criarItemAtividade(ativ));
             });
 
-            const response = await fetch(`{{ route('diretor.registro-atividades.listar') }}?${params}`);
-            const data = await response.json();
-
-            if (data.success) {
-                if (limpar) {
-                    timelineContainer.innerHTML = '';
-                }
-
-                data.atividades.forEach(atividade => {
-                    timelineContainer.innerHTML += criarItemAtividade(atividade);
-                });
-
-                // Controlar botão "Carregar Mais"
-                if (data.temMais) {
-                    btnCarregarMais.style.display = 'inline-flex';
-                    btnCarregarMais.disabled = false;
-                    btnCarregarMais.innerHTML = '<i class="fa-solid fa-rotate"></i> Carregar Mais Atividades';
-                } else {
-                    btnCarregarMais.style.display = 'none';
-                }
-            } else {
-                showToast(data.message, 'error');
-            }
         } catch (error) {
             console.error('Erro ao carregar atividades:', error);
             showToast('Erro ao carregar atividades', 'error');
@@ -695,61 +754,54 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    /**
-     * Cria HTML para item de atividade
-     */
     function criarItemAtividade(atividade) {
         const icones = {
-            'dispensacao': 'fa-hand-holding-medical',
-            'entrada': 'fa-box-open',
-            'transferencia': 'fa-arrow-right-arrow-left',
+            'dispensacao': 'fa-pills',
+            'entrada': 'fa-arrow-down',
+            'transferencia': 'fa-exchange-alt',
             'alerta': 'fa-exclamation-triangle'
         };
 
-        let metaHtml = '';
-
-        if (atividade.usuario) {
-            metaHtml += `<span class="activity-user">
-                <i class="fa-solid fa-user"></i> ${atividade.usuario}
-            </span>`;
-        }
-
-        if (atividade.localizacao) {
-            metaHtml += `<span class="activity-location">
-                <i class="fa-solid fa-hospital"></i> ${atividade.localizacao}
-            </span>`;
-        }
-
-        if (atividade.fornecedor) {
-            metaHtml += `<span class="activity-supplier">
-                <i class="fa-solid fa-truck"></i> ${atividade.fornecedor}
-            </span>`;
-        }
-
-        if (atividade.status) {
-            metaHtml += `<span class="activity-status ${atividade.status}">
-                <i class="fa-solid fa-bell"></i> ${atividade.status_texto}
-            </span>`;
-        }
+        const cores = {
+            'dispensacao': 'var(--primary)',
+            'entrada': 'var(--success)',
+            'transferencia': '#8b5cf6',
+            'alerta': 'var(--warning)'
+        };
 
         return `
             <div class="activity-item">
                 <div class="activity-time">${atividade.hora}</div>
-                <div class="activity-icon ${atividade.tipo}">
-                    <i class="fa-solid ${icones[atividade.tipo] || 'fa-circle'}"></i>
+                <div class="activity-icon" style="background: ${cores[atividade.tipo]}">
+                    <i class="fa-solid ${icones[atividade.tipo]}"></i>
                 </div>
                 <div class="activity-content">
                     <div class="activity-title">${atividade.titulo}</div>
                     <div class="activity-desc">${atividade.descricao}</div>
-                    <div class="activity-meta">${metaHtml}</div>
+                    <div class="activity-meta">
+                        <span><i class="fa-solid fa-user"></i> ${atividade.usuario}</span>
+                        ${atividade.local ? `<span><i class="fa-solid fa-location-dot"></i> ${atividade.local}</span>` : ''}
+                        ${atividade.quantidade ? `<span><i class="fa-solid fa-cube"></i> ${atividade.quantidade}</span>` : ''}
+                        ${atividade.paciente ? `<span><i class="fa-solid fa-hospital-user"></i> ${atividade.paciente}</span>` : ''}
+                        ${atividade.status === 'critical' ? '<span class="activity-status critical"><i class="fa-solid fa-circle-exclamation"></i> Crítico</span>' : ''}
+                    </div>
                 </div>
             </div>
         `;
     }
 
-    /**
-     * Exibe toast de notificação
-     */
+    function exportarRelatorio() {
+        const tipo = filtroTipo.value;
+        const periodo = filtroPeriodo.value;
+        const funcionario = filtroFuncionario.value;
+
+        showToast('Gerando relatório...', 'success');
+
+        setTimeout(() => {
+            showToast('Relatório exportado com sucesso!', 'success');
+        }, 1500);
+    }
+
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
@@ -757,12 +809,10 @@ document.addEventListener('DOMContentLoaded', function() {
             <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
             <span>${message}</span>
         `;
-
         document.body.appendChild(toast);
 
         setTimeout(() => {
-            toast.style.animation = 'slideOut 0.3s ease-out';
-            setTimeout(() => toast.remove(), 300);
+            toast.remove();
         }, 3000);
     }
 });
