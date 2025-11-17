@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Controller para gestão de registro de atividades e logs da farmácia hospitalar
- * 
+ *
  * @author Augusto Kussema
  * @date 2025-11-06
  */
@@ -101,7 +101,7 @@ class RegistroAtividadesController extends Controller
             $atividades = $historico->map(function($h) {
                 $tipo = 'dispensacao';
                 $titulo = 'Movimentação de Estoque';
-                
+
                 if (stripos($h->action, 'entrada') !== false || stripos($h->action, 'stock_in') !== false) {
                     $tipo = 'entrada';
                     $titulo = 'Entrada de Estoque';
@@ -115,7 +115,7 @@ class RegistroAtividadesController extends Controller
 
                 $quantidade = $h->quantidade_nova - $h->quantidade_antiga;
                 $descricao = '<strong>' . ($h->produto ? $h->produto->designacao : 'Produto') . '</strong>';
-                
+
                 if ($quantidade != 0) {
                     $descricao .= ' - ' . abs($quantidade) . ' unidades ' . ($quantidade > 0 ? 'recebidas' : 'dispensadas');
                 }
@@ -155,21 +155,21 @@ class RegistroAtividadesController extends Controller
         try {
             // Contar atividades do dia
             $hoje = today();
-            
+
             $dispensacoes = ProductHistory::whereDate('created_at', $hoje)
                 ->where('action', 'LIKE', '%dispensacao%')
                 ->orWhere('action', 'LIKE', '%saida%')
                 ->count();
-                
+
             $entradas = ProductHistory::whereDate('created_at', $hoje)
                 ->where('action', 'LIKE', '%entrada%')
                 ->orWhere('action', 'LIKE', '%stock_in%')
                 ->count();
-                
+
             $transferencias = ProductHistory::whereDate('created_at', $hoje)
                 ->where('action', 'LIKE', '%transferencia%')
                 ->count();
-                
+
             // Contar produtos em nível crítico
             $alertas = ProdutoEstoque::with('saldo')
                 ->whereHas('saldo', function($q) {

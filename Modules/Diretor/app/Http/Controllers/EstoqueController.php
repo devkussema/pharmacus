@@ -96,10 +96,10 @@ class EstoqueController extends Controller
             $produtosProcessados = $produtos->map(function($produto) use ($niveisAlerta, $nivelMinimoPadrao) {
                 // Obter quantidade real do saldo
                 $quantidade = $produto->saldo ? $produto->saldo->quantidade_actual : 0;
-                
+
                 // Obter nível mínimo específico ou usar padrão
                 $nivelMinimo = $produto->saldo ? $produto->saldo->nivel_minimo : $nivelMinimoPadrao;
-                
+
                 $status = $this->calcularStatus($quantidade, $niveisAlerta, $nivelMinimo);
 
                 return [

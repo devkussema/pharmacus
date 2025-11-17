@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', function() {
         paginaAtual++;
         carregarAtividades(false);
     });
-    
+
     // Exportar relatório
     btnExportar.addEventListener('click', () => {
         showToast('Exportando relatório...', 'info');
