@@ -172,9 +172,12 @@
             </div>
 
             <div class="offcanvas-body" id="offcanvasBody">
-                <div class="text-center" style="padding: 3rem;">
-                    <div class="spinner"></div>
-                    <p style="color: var(--text-secondary); margin-top: 1rem;">A carregar histórico...</p>
+                <div class="offcanvas-loading">
+                    <div class="loading-spinner">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    </div>
+                    <p class="loading-text">Carregando histórico do produto...</p>
+                    <p class="loading-subtext">Por favor aguarde</p>
                 </div>
             </div>
         </div>
@@ -780,6 +783,40 @@
             padding: 1.5rem;
         }
 
+        .offcanvas-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 3rem;
+        }
+
+        .loading-spinner i {
+            animation: fa-spin 1s linear infinite;
+        }
+
+        .loading-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 0.5rem;
+        }
+
+        .loading-subtext {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            margin: 0;
+        }
+
         .history-timeline {
             position: relative;
             padding-left: 2rem;
@@ -1153,12 +1190,16 @@
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
 
-            // Reset do conteúdo
+            // Reset do conteúdo com loader melhorado
             body.innerHTML = `
-            <div class="text-center" style="padding: 3rem;">
-                <div class="spinner"></div>
-                <p style="color: var(--text-secondary); margin-top: 1rem;">A carregar histórico...</p>
-            </div> `;
+                <div class="offcanvas-loading">
+                    <div class="loading-spinner">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    </div>
+                    <p class="loading-text">Carregando histórico do produto...</p>
+                    <p class="loading-subtext">Por favor aguarde</p>
+                </div>
+            `;
 
             try {
                 const response = await fetch(`{{ url('diretor/estoque/historico') }}/${id}`);
@@ -1168,27 +1209,90 @@
                     const produto = data.produto;
                     const historico = data.historico;
 
-                    // Atualizar título
+                    // Atualizar título com informações formatadas
                     document.getElementById('offcanvasTitle').textContent = produto.designacao;
-                    document.getElementById('offcanvasSubtitle').textContent =
-                        `Lote: ${produto.num_lote} | Estoque: ${produto.quantidade} unidades | Validade: ${produto.data_expiracao}`;
+                    document.getElementById('offcanvasSubtitle').innerHTML = `
+                        <span style="display: inline-flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                            <span style="display: inline-flex; align-items: center; gap: 0.375rem;">
+                                <i class="fa-solid fa-barcode" style="font-size: 0.75rem;"></i>
+                                <strong>Lote:</strong> ${produto.num_lote}
+                            </span>
+                            <span style="display: inline-flex; align-items: center; gap: 0.375rem;">
+                                <i class="fa-solid fa-boxes-stacked" style="font-size: 0.75rem;"></i>
+                                <strong>Estoque:</strong> ${produto.quantidade} unidades
+                            </span>
+                            <span style="display: inline-flex; align-items: center; gap: 0.375rem;">
+                                <i class="fa-solid fa-calendar-xmark" style="font-size: 0.75rem;"></i>
+                                <strong>Validade:</strong> ${produto.data_expiracao}
+                            </span>
+                        </span>
+                    `;
 
                     // Renderizar histórico
                     if (historico.length === 0) {
                         body.innerHTML = `
-                    <div class="text-center" style="padding: 3rem;">
-                        <i class="fa-solid fa-clock-rotate-left" style="font-size: 3rem; color: var(--text-tertiary);"></i>
-                        <p style="color: var(--text-secondary); margin-top: 1rem;">Nenhum histórico disponível</p>
-                    </div>
-                `;
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center;">
+                                <i class="fa-solid fa-clock-rotate-left" style="font-size: 3.5rem; color: var(--text-tertiary); margin-bottom: 1rem;"></i>
+                                <p style="font-size: 1rem; font-weight: 600; color: var(--text-secondary); margin: 0 0 0.5rem;">Nenhum histórico disponível</p>
+                                <p style="font-size: 0.875rem; color: var(--text-tertiary); margin: 0;">Este produto ainda não possui movimentações registradas</p>
+                            </div>
+                        `;
                     } else {
                         body.innerHTML = `
-                    <div class="history-timeline">
-                        ${historico.map(h => {
-                            const delta = h.quantidade_delta;
-                            const deltaHTML = delta ? `
-                                    <span class="history-delta ${delta > 0 ? 'positive' : 'negative'}">
-                                        ${delta > 0 ? '+' : ''}${delta}
+                            <div class="history-timeline">
+                                ${historico.map(h => {
+                                    const delta = h.quantidade_delta;
+                                    const deltaHTML = delta ? `
+                                        <span class="history-delta ${delta > 0 ? 'positive' : 'negative'}">
+                                            ${delta > 0 ? '+' : ''}${delta}
+                                        </span>
+                                    ` : '';
+
+                                    return `
+                                        <div class="history-item">
+                                            <div class="history-item-header">
+                                                <div class="history-action">
+                                                    <strong>${h.acao || 'Movimentação'}</strong>
+                                                    ${deltaHTML}
+                                                </div>
+                                                <div class="history-date">${h.data_formatada || 'N/A'}</div>
+                                            </div>
+                                            <div class="history-user">
+                                                <i class="fa-solid fa-user" style="font-size: 0.75rem;"></i>
+                                                ${h.usuario || 'Sistema'}
+                                            </div>
+                                            ${h.observacao ? `
+                                                <div class="history-changes">
+                                                    <i class="fa-solid fa-comment-dots" style="font-size: 0.75rem; color: var(--text-tertiary);"></i>
+                                                    ${h.observacao}
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    }
+                } else {
+                    body.innerHTML = `
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center;">
+                            <i class="fa-solid fa-exclamation-triangle" style="font-size: 3.5rem; color: var(--danger); margin-bottom: 1rem;"></i>
+                            <p style="font-size: 1rem; font-weight: 600; color: var(--text-secondary); margin: 0 0 0.5rem;">Erro ao carregar histórico</p>
+                            <p style="font-size: 0.875rem; color: var(--text-tertiary); margin: 0;">${data.message || 'Ocorreu um erro inesperado'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                body.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center;">
+                        <i class="fa-solid fa-wifi-slash" style="font-size: 3.5rem; color: var(--danger); margin-bottom: 1rem;"></i>
+                        <p style="font-size: 1rem; font-weight: 600; color: var(--text-secondary); margin: 0 0 0.5rem;">Erro de conexão</p>
+                        <p style="font-size: 0.875rem; color: var(--text-tertiary); margin: 0;">Não foi possível conectar ao servidor</p>
+                    </div>
+                `;
+            }
+        }
                                     </span>
                                 ` : '';
 

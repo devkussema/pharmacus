@@ -9,8 +9,8 @@
         <p>Histórico de dispensações, movimentações e operações</p>
     </div>
     <div class="page-actions">
-        <button class="btn-secondary">
-            <i class="fa-solid fa-download me-2"></i>
+        <button class="btn-export" id="btnExportar">
+            <i class="fa-solid fa-file-export me-2"></i>
             Exportar Relatório
         </button>
     </div>
@@ -49,8 +49,8 @@
                 </select>
             </div>
             <div class="filter-group search-group">
-                <label><i class="fa-solid fa-search me-2"></i>Buscar</label>
-                <input type="text" class="filter-input" placeholder="Medicamento, paciente...">
+                <label for="busca"><i class="fa-solid fa-search me-2"></i>Buscar</label>
+                <input type="text" id="busca" class="filter-input" placeholder="Medicamento, paciente, funcionário...">
             </div>
         </div>
     </div>
@@ -222,6 +222,32 @@
 <style>
 * {
     box-sizing: border-box;
+}
+
+.btn-export {
+    padding: 0.75rem 1.5rem;
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
+}
+
+.btn-export:hover {
+    background: #16a34a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+}
+
+.btn-export:active {
+    transform: translateY(0);
 }
 
 .filters-section {
@@ -520,8 +546,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const filtroTipo = document.getElementById('tipo');
     const filtroPeriodo = document.getElementById('periodo');
     const filtroFuncionario = document.getElementById('funcionario');
-    const inputBusca = document.querySelector('.filter-input');
+    const inputBusca = document.getElementById('busca');
     const btnCarregarMais = document.getElementById('btnCarregarMais');
+    const btnExportar = document.getElementById('btnExportar');
     const timelineContainer = document.querySelector('.activities-timeline');
 
     // Carregar dados iniciais
@@ -559,6 +586,15 @@ document.addEventListener('DOMContentLoaded', function() {
     btnCarregarMais.addEventListener('click', () => {
         paginaAtual++;
         carregarAtividades(false);
+    });
+    
+    // Exportar relatório
+    btnExportar.addEventListener('click', () => {
+        showToast('Exportando relatório...', 'info');
+        // TODO: Implementar exportação real
+        setTimeout(() => {
+            showToast('Funcionalidade de exportação em desenvolvimento', 'warning');
+        }, 1000);
     });
 
     /**
