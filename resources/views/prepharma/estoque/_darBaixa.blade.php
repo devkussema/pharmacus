@@ -73,6 +73,100 @@
         font-size: 0.8125rem;
         color: #718096;
     }
+
+    /* Form Cards */
+    .form-card {
+        background: white;
+        border-radius: 8px;
+        padding: 0;
+        margin-bottom: 1rem;
+    }
+
+    .form-card .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+        font-size: 0.9375rem;
+    }
+
+    .form-card .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+
+    .form-card .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-card .form-control-lg {
+        padding: 1rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .form-hint {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        background: #f0f9ff;
+        border-left: 3px solid #3b82f6;
+        border-radius: 4px;
+        font-size: 0.8125rem;
+        color: #1e40af;
+    }
+
+    .form-hint i {
+        font-size: 0.875rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+    }
+
+    .action-buttons .btn {
+        flex: 1;
+        padding: 0.875rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .action-buttons .btn-secondary {
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #4a5568;
+    }
+
+    .action-buttons .btn-secondary:hover {
+        background: #f8f9fa;
+        border-color: #cbd5e0;
+    }
+
+    .action-buttons .btn-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border: none;
+        color: white;
+    }
+
+    .action-buttons .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+    }
 </style>
 
 <div class="offcanvas offcanvas-end offcanvas-dar-baixa" tabindex="-1" id="offcanvasDarBaixa" aria-labelledby="offcanvasDarBaixaLabel">

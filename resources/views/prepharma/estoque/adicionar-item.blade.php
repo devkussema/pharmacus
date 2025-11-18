@@ -543,20 +543,7 @@
                         <span>Localização</span>
                     </div>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-hospital"></i>
-                                Área Hospitalar
-                            </label>
-                            <select name="area_id" id="area_id_" class="form-control select2">
-                                @foreach (App\Models\FarmaciaAreaHospitalar::where('farmacia_id', auth()->user()->isFarmacia->farmacia->id)->where('status', 1)->get() as $areas)
-                                    <option value="{{ $areas->id }}" {{ $areas->id == $area ? 'selected' : '' }}>
-                                        {{ $areas->area_hospitalar->nome }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-shelves"></i>
                                 Prateleira *
