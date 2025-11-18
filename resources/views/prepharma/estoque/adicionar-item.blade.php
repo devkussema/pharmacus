@@ -339,6 +339,7 @@
 
                 @if($farmaciaUsuario)
                     <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="{{ $farmaciaUsuario }}">
+                    <input type="hidden" name="area_id" value="{{ $ah->id ?? '' }}">
                 @else
                     <div class="alert alert-danger">
                         Erro: Usuário não possui farmácia associada. Contacte o administrador.

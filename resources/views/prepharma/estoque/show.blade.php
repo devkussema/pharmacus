@@ -649,6 +649,14 @@
                         </form>
                     </div>
                     <div class="action-group">
+                        <!-- Botão Atualizar Estoque -->
+                        <button id="btnAtualizarEstoque"
+                                class="btn btn-outline-primary"
+                                title="Atualizar lista de produtos">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Atualizar</span>
+                        </button>
+
                         <!-- Botão Sincronizar Global (toggle com CTRL/CMD+ALT+S) -->
                         <button id="btnSincronizarGlobal"
                                 class="btn btn-outline-secondary"
@@ -1599,6 +1607,38 @@
                 } catch (e) {
                     console.warn('Select2 não disponível');
                 }
+            }
+        });
+
+        // Handler para botão Atualizar Estoque
+        document.getElementById('btnAtualizarEstoque').addEventListener('click', function() {
+            const btn = this;
+            const icon = btn.querySelector('i');
+
+            // Adicionar rotação ao ícone
+            icon.classList.add('fa-spin');
+            btn.disabled = true;
+
+            try {
+                if (typeof table !== 'undefined' && table.ajax) {
+                    table.ajax.reload(function() {
+                        // Callback após reload
+                        icon.classList.remove('fa-spin');
+                        btn.disabled = false;
+                        showToast('Estoque atualizado com sucesso!', 'success', 'Atualizado!');
+                    }, false);
+                } else {
+                    $('#table-c').DataTable().ajax.reload(function() {
+                        icon.classList.remove('fa-spin');
+                        btn.disabled = false;
+                        showToast('Estoque atualizado com sucesso!', 'success', 'Atualizado!');
+                    }, false);
+                }
+            } catch (err) {
+                console.error('Erro ao atualizar:', err);
+                icon.classList.remove('fa-spin');
+                btn.disabled = false;
+                showToast('Erro ao atualizar estoque', 'error');
             }
         });
 

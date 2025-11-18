@@ -683,7 +683,7 @@
                                 <i class="fas fa-truck-loading"></i>
                                 Data Recepção
                             </label>
-                            <input type="date" class="form-control" name="data_recepcao">
+                            <input type="date" class="form-control" value="{{ $pe->data_recepcao }}" name="data_recepcao">
                         </div>
                     </div>
                 </div>

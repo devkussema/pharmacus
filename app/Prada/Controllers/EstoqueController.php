@@ -587,6 +587,196 @@ class EstoqueController extends Controller
         }
     }
 
+    /**
+     * Transferir produto individual entre áreas (via AJAX)
+     * Usado pelo offcanvas de dar baixa
+     *
+     * @author Augusto Kussema
+     * @date 18/11/2025
+     */
+    public function baixa(Request $request)
+    {
+        $request->validate([
+            'produto_id' => 'required|exists:produto_estoques,id',
+            'area_hospitalar_id' => 'required|exists:area_hospitalars,id',
+            'quantidade' => 'required|integer|min:1',
+            'user_id' => 'nullable|exists:users,id',
+            'movement_date' => 'nullable|date',
+        ], [
+            'produto_id.required' => 'Produto não especificado',
+            'produto_id.exists' => 'Produto não encontrado',
+            'area_hospitalar_id.required' => 'Selecione a área de destino',
+            'area_hospitalar_id.exists' => 'Área de destino inválida',
+            'quantidade.required' => 'Informe a quantidade',
+            'quantidade.integer' => 'A quantidade deve ser um número inteiro',
+            'quantidade.min' => 'A quantidade deve ser maior que zero',
+        ]);
+
+        $produto = PE::findOrFail($request->produto_id);
+        $quantidadeBaixar = intval($request->quantidade);
+        $area_hospitalar_id = $request->area_hospitalar_id;
+
+        // Validar quantidade disponível
+        $saldoAtual = $produto->saldo->qtd ?? 0;
+        if ($quantidadeBaixar > $saldoAtual) {
+            return response()->json([
+                'message' => "Quantidade insuficiente. Disponível: {$saldoAtual} unidades"
+            ], 422);
+        }
+
+        $saldoRestante = $saldoAtual - $quantidadeBaixar;
+        $user = $this->currentUser();
+        $movementDate = $request->movement_date ?? now();
+
+        // Determinar farmacia
+        $farmacia_id = null;
+        if ($user->isFarmacia) {
+            $farmacia_id = $user->isFarmacia->farmacia->id;
+        } elseif ($user->farmacia) {
+            $farmacia_id = $user->farmacia->farmacia_id;
+        }
+
+        DB::beginTransaction();
+        try {
+            // Dados do produto para destino
+            $dataProduto = [
+                'designacao' => $produto->designacao,
+                'dosagem' => $produto->dosagem,
+                'tipo' => $produto->tipo,
+                'forma' => $produto->forma,
+                'confirmado' => 1,
+                'origem_destino' => $produto->origem_destino,
+                'num_lote' => $produto->num_lote,
+                'data_expiracao' => $produto->data_expiracao,
+                'data_producao' => $produto->data_producao,
+                'num_documento' => $produto->num_documento,
+                'obs' => $produto->obs,
+                'qtd_embalagem' => $produto->qtd_embalagem,
+                'grupo_farmaco_id' => $produto->grupo_farmaco_id,
+                'prateleira_id' => $produto->prateleira_id,
+            ];
+
+            // Verificar se área de destino armazena estoque
+            $ud = UAH::where('area_hospitalar_id', $area_hospitalar_id)
+                ->where('farmacia_id', $farmacia_id)
+                ->first();
+
+            if ($ud && $ud->guarda_estoque) {
+                // Verificar se já existe produto igual na área destino
+                $produtoExistente = PE::where('designacao', $produto->designacao)
+                    ->where('num_lote', $produto->num_lote)
+                    ->whereHas('estoque', function($q) use ($area_hospitalar_id) {
+                        $q->where('area_hospitalar_id', $area_hospitalar_id);
+                    })
+                    ->first();
+
+                if ($produtoExistente) {
+                    // Adicionar à quantidade existente
+                    $produtoExistente->quantidade += $quantidadeBaixar;
+                    $produtoExistente->save();
+
+                    $produtoExistente->saldo->update([
+                        'qtd' => $produtoExistente->saldo->qtd + $quantidadeBaixar
+                    ]);
+
+                    // Registrar entrada no histórico
+                    ProductHistory::create([
+                        'product_id' => $produtoExistente->id,
+                        'farmacia_id' => $farmacia_id,
+                        'user_id' => $user->id ?? null,
+                        'action' => 'stock_in',
+                        'changes' => null,
+                        'payload' => ['from_product_id' => $produto->id, 'num_lote' => $produto->num_lote],
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->header('User-Agent'),
+                        'meta' => ['area_hospitalar_id' => $area_hospitalar_id],
+                        'movement_date' => $movementDate,
+                        'quantity_delta' => $quantidadeBaixar,
+                    ]);
+                } else {
+                    // Criar novo produto na área destino
+                    $dataProduto['quantidade'] = $quantidadeBaixar;
+                    $novoProduto = PE::create($dataProduto);
+
+                    SE::create([
+                        'produto_estoque_id' => $novoProduto->id,
+                        'qtd' => $quantidadeBaixar
+                    ]);
+
+                    Estoque::create([
+                        'produto_estoque_id' => $novoProduto->id,
+                        'farmacia_id' => $farmacia_id,
+                        'area_hospitalar_id' => $area_hospitalar_id
+                    ]);
+
+                    // Registrar entrada no histórico
+                    ProductHistory::create([
+                        'product_id' => $novoProduto->id,
+                        'farmacia_id' => $farmacia_id,
+                        'user_id' => $user->id ?? null,
+                        'action' => 'stock_in',
+                        'changes' => null,
+                        'payload' => ['from_product_id' => $produto->id, 'num_lote' => $produto->num_lote],
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->header('User-Agent'),
+                        'meta' => ['area_hospitalar_id' => $area_hospitalar_id],
+                        'movement_date' => $movementDate,
+                        'quantity_delta' => $quantidadeBaixar,
+                    ]);
+                }
+            }
+
+            // Atualizar produto origem: reduzir quantidade
+            $produto->update(['quantidade' => $produto->quantidade - $quantidadeBaixar]);
+            $produto->saldo->update(['qtd' => $saldoRestante]);
+
+            // Registrar saída no histórico
+            ProductHistory::create([
+                'product_id' => $produto->id,
+                'farmacia_id' => $farmacia_id,
+                'user_id' => $user->id ?? null,
+                'action' => 'stock_out',
+                'changes' => null,
+                'payload' => ['to_area' => $area_hospitalar_id, 'num_lote' => $produto->num_lote],
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->header('User-Agent'),
+                'meta' => ['saldo_before' => $saldoAtual, 'saldo_after' => $saldoRestante],
+                'movement_date' => $movementDate,
+                'quantity_delta' => -1 * $quantidadeBaixar,
+            ]);
+
+            // Registrar atividade
+            $meta = [
+                'model_type' => PE::class,
+                'model_id' => $produto->id,
+                'ip_address' => request()->ip(),
+                'route' => request()->path(),
+                'http_method' => request()->method(),
+                'level' => 'info',
+            ];
+
+            $areaDestino = \App\Models\AreaHospitalar::find($area_hospitalar_id);
+            self::startAtv(
+                "Transferiu {$quantidadeBaixar} unidades de '{$produto->designacao}' (Lote: {$produto->num_lote}) para {$areaDestino->nome}",
+                null,
+                $meta
+            );
+
+            DB::commit();
+
+            return response()->json([
+                'message' => "Transferência realizada com sucesso! {$quantidadeBaixar} unidades transferidas."
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            logger()->error('Erro ao dar baixa: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Erro ao processar transferência: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function dar_baixa(Request $request, $area_de)
     {
         $request->validate([
@@ -785,234 +975,6 @@ class EstoqueController extends Controller
         }
     }
 
-    public function baixa(Request $request)
-    {
-    /** @var \App\Models\User|null $user */
-    $user = $this->currentUser();
-        $request->validate([
-            'produto_id' => "required|exists:produto_estoques,id",
-            'area_hospitalar_id' => "required|exists:areas_hospitalares,id",
-            'quantidade' => "required|integer|min:1",
-            'movement_date' => 'nullable|date',
-        ], [
-            'produto_id.required' => "Selecione um item na tabela",
-            'area_hospitalar_id.required' => "Algo deu errado, por favor atualize a página e tente de novo",
-            'quantidade.required' => "Informe uma quantidade"
-        ]);
-
-        $farmacia_id = "";
-        if ($user->isFarmacia) {
-            $farmacia_id = $user->isFarmacia->farmacia->id;
-        } elseif ($user->farmacia) {
-            $farmacia_id = $user->farmacia->farmacia_id;
-        }
-
-        $produto = PE::find($request->produto_id);
-        $quantidadeBaixar = intval($request->quantidade);
-
-        // Interpretar movement_date (opcional) vindo do formulário (datetime-local do browser)
-        $movementDate = null;
-        if ($request->filled('movement_date')) {
-            try {
-                $movementDate = Carbon::parse($request->input('movement_date'));
-            } catch (\Throwable $e) {
-                $movementDate = null;
-            }
-        }
-
-        // Validar se tem quantidade suficiente no saldo
-        $saldoProduto = $produto->saldo;
-        $saldoAtual = $saldoProduto ? $saldoProduto->qtd : 0;
-
-        if ($quantidadeBaixar > $saldoAtual) {
-            if ($request->ajax()) {
-                return response()->json(['message' => 'Quantidade insuficiente em estoque'], 400);
-            }
-            return redirect()->back()->with('error', 'Quantidade insuficiente em estoque');
-        }
-
-        $saldoRestante = $saldoAtual - $quantidadeBaixar;
-        $area_hospitalar_id = $request->area_hospitalar_id;
-
-        $dataProduto = [
-            'designacao' => $produto->designacao,
-            'dosagem' => $produto->dosagem,
-            'forma' => $produto->forma,
-            'origem_destino' => $produto->origem_destino,
-            'num_lote' => $produto->num_lote,
-            'confirmado' => 0,
-            'data_expiracao' => $produto->data_expiracao,
-            'data_producao' => $produto->data_producao,
-            'num_documento' => $produto->num_documento,
-            'obs' => $produto->obs,
-            'qtd_embalagem' => $produto->qtd_embalagem,
-            'grupo_farmaco_id' => $produto->grupo_farmaco_id
-        ];
-
-        $isEstoque = Estoque::whereHas('produto', function ($query) use ($dataProduto, $area_hospitalar_id) {
-            $query->where('num_lote', $dataProduto['num_lote'])
-                ->where('num_documento', $dataProduto['num_documento']);
-        })
-            ->where('area_hospitalar_id', $area_hospitalar_id)
-            ->first();
-
-        // Determinar se a área de destino guarda estoque (log_estoque)
-        $farmacia_id = '';
-        if ($user && $user->isFarmacia) {
-            $farmacia_id = $user->isFarmacia->farmacia->id ?? '';
-        } elseif ($user && $user->farmacia) {
-            $farmacia_id = $user->farmacia->farmacia_id ?? '';
-        }
-
-        $destFAH = null;
-        $persistDest = true; // por padrão, persiste
-        if ($farmacia_id) {
-            $destFAH = FAH::where('farmacia_id', $farmacia_id)
-                ->where('area_hospitalar_id', $area_hospitalar_id)
-                ->first();
-            if ($destFAH && intval($destFAH->log_estoque) === 0) {
-                $persistDest = false;
-            }
-        }
-
-        if ($persistDest) {
-            if ($isEstoque) {
-                $saldoDestino = $isEstoque->produto->saldo;
-                $saldoDestino->update([
-                    'qtd' => $saldoDestino->qtd + $quantidadeBaixar
-                ]);
-
-                // Atualizar quantidade do produto destino
-                $isEstoque->produto->update([
-                    'quantidade' => $isEstoque->produto->quantidade + $quantidadeBaixar
-                ]);
-
-                // registrar histórico: entrada no estoque destino (stock_in)
-                try {
-                    ProductHistory::create([
-                        'product_id' => $isEstoque->produto->id,
-                        'farmacia_id' => $farmacia_id,
-                        'user_id' => $user->id ?? null,
-                        'action' => 'stock_in',
-                        'changes' => null,
-                        'payload' => ['from_product_id' => $produto->id, 'num_lote' => $isEstoque->produto->num_lote],
-                        'ip_address' => request()->ip(),
-                        'user_agent' => request()->header('User-Agent'),
-                        'meta' => ['area_hospitalar_id' => $area_hospitalar_id],
-                        'movement_date' => $movementDate,
-                        'quantity_delta' => $quantidadeBaixar,
-                    ]);
-                } catch (\Throwable $e) {
-                    logger()->error('Falha ao registar product_history stock_in: ' . $e->getMessage());
-                }
-            } else {
-                $dataProduto['descritivo'] = $produto->descritivo; // mantém descritivo original
-                $dataProduto['quantidade'] = $quantidadeBaixar;
-                $novoProduto = PE::create($dataProduto);
-
-                SE::create([
-                    'produto_estoque_id' => $novoProduto->id,
-                    'qtd' => $quantidadeBaixar
-                ]);
-
-                Estoque::create([
-                    'produto_estoque_id' => $novoProduto->id,
-                    'farmacia_id' => $farmacia_id,
-                    'area_hospitalar_id' => $request->area_hospitalar_id
-                ]);
-            }
-        } else {
-            // A área de destino NÃO guarda estoque. Não persistimos entradas de estoque.
-            // Registramos apenas um histórico que indica a tentativa de transferência sem persistência.
-            try {
-                ProductHistory::create([
-                    'product_id' => null,
-                    'farmacia_id' => $farmacia_id,
-                    'user_id' => $user->id ?? null,
-                    'action' => 'stock_in_attempt_no_persist',
-                    'changes' => null,
-                    'payload' => ['from_product_id' => $produto->id, 'num_lote' => $dataProduto['num_lote']],
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->header('User-Agent'),
-                        'meta' => ['area_hospitalar_id' => $area_hospitalar_id, 'no_persist' => true],
-                        'movement_date' => $movementDate,
-                        'quantity_delta' => $quantidadeBaixar,
-                ]);
-            } catch (\Throwable $e) {
-                logger()->error('Falha ao registar product_history (no persist): ' . $e->getMessage());
-            }
-        }
-
-        // Atualizar produto origem: reduzir quantidade e saldo
-        $produto->update([
-            'quantidade' => $produto->quantidade - $quantidadeBaixar
-        ]);
-
-        $produto->saldo->update([
-            'qtd' => $saldoRestante
-        ]);
-
-        // registrar histórico: saida do produto original (stock_out)
-        try {
-                ProductHistory::create([
-                'product_id' => $produto->id,
-                'farmacia_id' => $farmacia_id,
-                'user_id' => $user->id ?? null,
-                'action' => 'stock_out',
-                'changes' => null,
-                'payload' => ['to_area' => $area_hospitalar_id, 'num_lote' => $produto->num_lote],
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->header('User-Agent'),
-                'meta' => ['saldo_before' => $saldoAtual, 'saldo_after' => $saldoRestante],
-                'movement_date' => $movementDate,
-                'quantity_delta' => -1 * $quantidadeBaixar,
-            ]);
-        } catch (\Throwable $e) {
-            logger()->error('Falha ao registar product_history stock_out: ' . $e->getMessage());
-        }
-
-        $ud = UAH::where('area_hospitalar_id', $area_hospitalar_id)
-            ->where('farmacia_id', $farmacia_id)
-            ->first();
-
-        $meta = [
-            'model_type' => PE::class,
-            'model_id' => $produto->id,
-            'ip_address' => request()->ip(),
-            'route' => request()->path(),
-            'http_method' => request()->method(),
-            'level' => 'info',
-            'snapshot_before' => $produto->toArray(),
-        ];
-
-        // Determinar nome da área de destino
-        $destName = 'Área destinatária';
-        try {
-            // preferir UAH->area_hospitalar quando disponível
-            if ($ud && isset($ud->area_hospitalar) && $ud->area_hospitalar) {
-                $destName = $ud->area_hospitalar->nome ?? $destName;
-            } else {
-                $dest = AH::find($area_hospitalar_id);
-                if ($dest && isset($dest->nome)) $destName = $dest->nome;
-            }
-        } catch (\Throwable $_) {
-            // ignore
-        }
-
-        $udUserId = $ud->user_id ?? null;
-
-        self::startAtv("Deu baixa de {$quantidadeBaixar} unidades de {$dataProduto['designacao']} para {$destName}", null, $meta);
-        if ($udUserId) {
-            self::setNotify("Confirmação de entrada de estoque", $udUserId);
-        }
-
-        $texto = ($this->currentUser()->nome ?? '') . " deu baixa de {$quantidadeBaixar} unidades de {$dataProduto['designacao']} para {$destName}";
-        //self::confirmarBaixaAlert($texto, $area_hospitalar_id, $produto->id);
-
-        // return response()->json(['message' => 'Baixa concluida, a aguardar confirmação.'], 201);
-        return redirect()->back()->with('success', 'Baixa concluida.');
-    }
-
     public function calcularNivelAlerta()
     {
         $hoje = Carbon::now();
@@ -1168,7 +1130,7 @@ class EstoqueController extends Controller
         try {
             $produto = PE::with([
                 'grupo_farmaco',
-                'estoque',
+                'estoque.area_hospitalar',
                 'prateleira',
                 'status_stock',
                 'saldo'

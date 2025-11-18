@@ -96,7 +96,7 @@
                     : @auth()->user()->area_hospitalar->area_hospitalar->farmacia_id;
             @endphp
 
-            <input type="hidden" name="user_id" id="baixa_user_id">
+            <input type="hidden" name="user_id" id="baixa_user_id" value="{{ auth()->id() }}">
             <input type="hidden" name="produto_id" id="baixa_produto_id">
             <input type="hidden" name="quantidade_disponivel" id="baixa_quantidade_disponivel">
 
