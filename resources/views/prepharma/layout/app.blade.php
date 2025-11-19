@@ -803,7 +803,22 @@
             }
 
             // parar rotação quando navegar/fechar
-            window.addEventListener('beforeunload', function () { stopRotation(); });
+            window.addEventListener('beforeunload', function () {
+                stopRotation();
+                // Mostrar loading overlay ao recarregar
+                if (typeof showLoading === 'function') {
+                    showLoading();
+                }
+            });
+
+            // Detectar CMD/CTRL + R
+            document.addEventListener('keydown', function(e) {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'r') {
+                    if (typeof showLoading === 'function') {
+                        showLoading();
+                    }
+                }
+            });
 
             // expor variáveis de teste
             window.Pharmatina._stockRotate = rotatingMessages;

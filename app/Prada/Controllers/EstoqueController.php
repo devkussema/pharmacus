@@ -598,7 +598,7 @@ class EstoqueController extends Controller
     {
         $request->validate([
             'produto_id' => 'required|exists:produto_estoques,id',
-            'area_hospitalar_id' => 'required|exists:area_hospitalars,id',
+            'area_hospitalar_id' => 'required|exists:area_hospitalares,id',
             'quantidade' => 'required|integer|min:1',
             'user_id' => 'nullable|exists:users,id',
             'movement_date' => 'nullable|date',

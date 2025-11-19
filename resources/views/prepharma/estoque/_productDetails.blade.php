@@ -352,6 +352,281 @@ $(document).ready(function() {
             </div>
         `);
 
+        // Buscar detalhes via AJAX
+        $.ajax({
+            url: `/estoque/produto/${produtoId}/detalhes`,
+            method: 'GET',
+            success: function(response) {
+                if (response.success && response.produto) {
+                    renderProductDetails(response.produto);
+                } else {
+                    showError('Não foi possível carregar os detalhes do produto.');
+                }
+            },
+            error: function(xhr) {
+                console.error('Erro ao buscar detalhes:', xhr);
+                showError('Erro ao carregar detalhes. Tente novamente.');
+            }
+        });
+    });
+
+    function renderProductDetails(produto) {
+        const expiryInfo = calculateExpiry(produto.data_expiracao);
+
+        let html = `
+            <div style="padding: 1.25rem;">
+                <!-- Stats Cards -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-value">${produto.quantidade || 0}</div>
+                        <div class="stat-label">Em Estoque</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="stat-value">${produto.saldo?.qtd || 0}</div>
+                        <div class="stat-label">Saldo Disponível</div>
+                    </div>
+                </div>
+
+                ${expiryInfo.html}
+
+                <!-- IDENTIFICAÇÃO -->
+                <div class="detail-section">
+                    <h6><i class="fas fa-id-card"></i>IDENTIFICAÇÃO</h6>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-tag"></i> Designação:</span>
+                        <span class="detail-value">${produto.designacao || '-'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-prescription-bottle"></i> Dosagem:</span>
+                        <span class="detail-value">${produto.dosagem || 'Não especificada'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-flask"></i> Forma:</span>
+                        <span class="detail-value">${produto.forma || '-'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-layer-group"></i> Tipo:</span>
+                        <span class="detail-value">${formatTipo(produto.tipo)}</span>
+                    </div>
+                </div>
+
+                <!-- CLASSIFICAÇÃO -->
+                <div class="detail-section">
+                    <h6><i class="fas fa-sitemap"></i>CLASSIFICAÇÃO</h6>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-capsules"></i> Grupo Farmacológico:</span>
+                        <span class="detail-value">${produto.grupo_farmaco?.designacao || 'Não classificado'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-info-circle"></i> Status:</span>
+                        <span class="detail-value">${getStatusBadge(produto.status_stock)}</span>
+                    </div>
+                </div>
+
+                <!-- LOCALIZAÇÃO -->
+                <div class="detail-section">
+                    <h6><i class="fas fa-map-marker-alt"></i>LOCALIZAÇÃO E RASTREAMENTO</h6>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-hospital"></i> Área Hospitalar:</span>
+                        <span class="detail-value">${produto.estoque?.area_hospitalar?.nome || '-'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-warehouse"></i> Prateleira:</span>
+                        <span class="detail-value">${produto.prateleira?.designacao || 'Não atribuída'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-barcode"></i> Lote:</span>
+                        <span class="detail-value highlight">${produto.num_lote || 'Sem lote'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-file-alt"></i> Documento Nº:</span>
+                        <span class="detail-value">${produto.num_documento || 'N/A'}</span>
+                    </div>
+                </div>
+
+                <!-- QUANTIDADES -->
+                <div class="detail-section">
+                    <h6><i class="fas fa-boxes"></i>QUANTIDADES</h6>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-cubes"></i> Quantidade Total:</span>
+                        <span class="detail-value highlight">${produto.quantidade || 0} unidades</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-box"></i> Qtd. por Embalagem:</span>
+                        <span class="detail-value">${produto.qtd_embalagem || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-balance-scale"></i> Saldo Atual:</span>
+                        <span class="detail-value">${produto.saldo?.qtd || 0} unidades</span>
+                    </div>
+                </div>
+
+                <!-- DATAS -->
+                <div class="detail-section">
+                    <h6><i class="fas fa-calendar-alt"></i>DATAS IMPORTANTES</h6>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-industry"></i> Data de Produção:</span>
+                        <span class="detail-value">${formatDate(produto.data_producao)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-exclamation-triangle"></i> Data de Expiração:</span>
+                        <span class="detail-value" style="color: ${expiryInfo.color}; font-weight: 700;">
+                            ${formatDate(produto.data_expiracao)}
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-truck-loading"></i> Data de Recepção:</span>
+                        <span class="detail-value">${formatDate(produto.data_recepcao)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-clock"></i> Cadastrado em:</span>
+                        <span class="detail-value">${formatDateTime(produto.created_at)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-sync"></i> Última Atualização:</span>
+                        <span class="detail-value">${formatDateTime(produto.updated_at)}</span>
+                    </div>
+                </div>
+
+                ${produto.origem_destino ? `
+                <div class="detail-section">
+                    <h6><i class="fas fa-truck"></i>FORNECIMENTO</h6>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-map-signs"></i> Origem/Destino:</span>
+                        <span class="detail-value">${produto.origem_destino}</span>
+                    </div>
+                </div>
+                ` : ''}
+
+                ${produto.obs && produto.obs.trim() ? `
+                <div class="detail-section">
+                    <h6><i class="fas fa-comment"></i>OBSERVAÇÕES</h6>
+                    <div class="obs-box">
+                        <i class="fas fa-quote-left"></i>${produto.obs}<i class="fas fa-quote-right"></i>
+                    </div>
+                </div>
+                ` : `
+                <div class="detail-section">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <div>Nenhuma observação registrada</div>
+                    </div>
+                </div>
+                `}
+            </div>
+        `;
+
+        $('#productDetailsContent').html(html);
+    }
+
+    function calculateExpiry(expirationDate) {
+        if (!expirationDate) {
+            return { html: '', color: '#6b7280' };
+        }
+
+        const today = new Date();
+        const expiry = new Date(expirationDate);
+        const diffTime = expiry - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        let alertClass, icon, message, color;
+
+        if (diffDays < 0) {
+            alertClass = 'critical';
+            icon = 'fa-times-circle';
+            message = `Produto EXPIRADO há ${Math.abs(diffDays)} dias`;
+            color = '#dc2626';
+        } else if (diffDays <= 30) {
+            alertClass = 'critical';
+            icon = 'fa-exclamation-triangle';
+            message = `Expira em ${diffDays} dias - CRÍTICO`;
+            color = '#dc2626';
+        } else if (diffDays <= 90) {
+            alertClass = 'warning';
+            icon = 'fa-exclamation-circle';
+            message = `Expira em ${diffDays} dias - Atenção necessária`;
+            color = '#f59e0b';
+        } else {
+            alertClass = 'good';
+            icon = 'fa-check-circle';
+            message = `Validade OK - ${diffDays} dias restantes`;
+            color = '#10b981';
+        }
+
+        return {
+            html: `
+                <div class="expiry-alert ${alertClass}">
+                    <i class="fas ${icon}"></i>
+                    <span>${message}</span>
+                </div>
+            `,
+            color: color
+        };
+    }
+
+    function formatTipo(tipo) {
+        const tipos = {
+            'medicamento': 'Medicamento',
+            'descartável': 'Descartável',
+            'liquido': 'Líquido'
+        };
+        return tipos[tipo] || tipo || '-';
+    }
+
+    function getStatusBadge(status) {
+        if (!status) return '<span class="badge bg-secondary">Indefinido</span>';
+
+        const statusMap = {
+            'Estável': { color: 'success', icon: 'fa-check-circle' },
+            'Máximo': { color: 'success', icon: 'fa-arrow-up' },
+            'Médio': { color: 'warning', icon: 'fa-minus-circle' },
+            'Mínimo': { color: 'warning', icon: 'fa-arrow-down' },
+            'Crítico': { color: 'danger', icon: 'fa-exclamation-triangle' },
+            'Esgotado': { color: 'danger', icon: 'fa-times-circle' }
+        };
+
+        const statusInfo = statusMap[status.designacao] || { color: 'secondary', icon: 'fa-question-circle' };
+
+        return `<span class="badge bg-${statusInfo.color}">
+            <i class="fas ${statusInfo.icon} me-1"></i>${status.designacao}
+        </span>`;
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '<span class="text-muted">Não informada</span>';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-PT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
+    function formatDateTime(dateString) {
+        if (!dateString) return '<span class="text-muted">Não informada</span>';
+        const date = new Date(dateString);
+        return date.toLocaleString('pt-PT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function showError(message) {
+        $('#productDetailsContent').html(`
+            <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p class="text-muted fw-bold">${message}</p>
+                <button class="btn btn-sm btn-outline-primary" onclick="$('#productDetailsOffcanvas').offcanvas('hide')">
+                    Fechar
+                </button>
+            </div>
+                <p class="mt-3 text-muted fw-semibold">Carregando detalhes...</p>
+            </div>
+        `);
+
         // Buscar detalhes
         $.ajax({
             url: `/estoque/produto/${produtoId}/detalhes`,
