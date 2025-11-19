@@ -851,6 +851,33 @@
             }
         };
 
+        /**
+         * Event Listeners para Recarregamento de Página
+         * Detecta CMD+R (Mac) / CTRL+R (Windows) e beforeunload
+         * @author Augusto Kussema
+         * @date 19/11/2025
+         */
+        // Listener para beforeunload (quando a página está sendo descarregada)
+        window.addEventListener('beforeunload', function() {
+            showGlobalLoading('Recarregando', 'Aguarde enquanto a página é recarregada...');
+        });
+
+        // Listener para CMD/CTRL + R
+        document.addEventListener('keydown', function(e) {
+            // Detecta CMD (Mac) ou CTRL (Windows/Linux) + R
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'r') {
+                showGlobalLoading('Recarregando', 'Aguarde enquanto a página é recarregada...');
+            }
+        });
+
+        // Garantir que o loading seja escondido quando a página carregar
+        window.addEventListener('load', function() {
+            // Pequeno delay para evitar flash
+            setTimeout(function() {
+                hideGlobalLoading();
+            }, 300);
+        });
+
         // Uso nos AJAX:
         // $(document).ajaxStart(function() { showGlobalLoading(); });
         // $(document).ajaxStop(function() { hideGlobalLoading(); });

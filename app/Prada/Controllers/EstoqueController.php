@@ -396,6 +396,7 @@ class EstoqueController extends Controller
             'tipo' => 'required',
             'farmacia_id' => 'required',
             'quantidade' => 'required|integer|min:1',
+            'area_id' => 'required|exists:area_hospitalares,id',
             'origem_destino' => 'nullable',
             'num_lote' => 'required',
             'data_producao' => 'nullable|date|before:today',
