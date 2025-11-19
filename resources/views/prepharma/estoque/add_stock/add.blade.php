@@ -323,7 +323,7 @@
 
             var table = $('#table-c').DataTable({
                 ajax: {
-                    "url": "/api/status_produto/6",
+                    "url": "/api/status_produto/0", // será atualizado após seleção de área
                     "data": function(d) {
                         d.status = $('#filtro-status').val();
                     },
@@ -708,58 +708,49 @@
 
         function fetchAndPopulateSelectArea(id_def) {
             $.ajax({
-                url: '/api/get/areas_hospitalares/def/' + id_def,
+                url: '/api/get/areas_hospitalares/def/' + (id_def || 0),
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
                     $('#area_id_').empty(); // Limpa as opções anteriores
 
-                    // Filtra apenas a área "Armazém I"
-                    let areaSelecionada = data.find(item => item.area_hospitalar.nome === "Armazém I");
-
-                    if (areaSelecionada) {
-                        $('#area_id_').append($('<option>', {
-                            value: areaSelecionada.area_hospitalar_id,
-                            text: areaSelecionada.area_hospitalar.nome,
-                            selected: true
-                        }));
-
-                        // Criar um input hidden para garantir o envio no formulário
-                        if (!$('#area_id_hidden').length) {
-                            $('<input>').attr({
-                                type: 'hidden',
-                                id: 'area_id_hidden',
-                                name: 'area_para',
-                                value: areaSelecionada.area_hospitalar_id
-                            }).appendTo('form'); // Adiciona dentro do form
-                        } else {
-                            $('#area_id_hidden').val(areaSelecionada.area_hospitalar_id);
-                        }
-
-                        // Dispara o evento change para simular a seleção automática
-                        $('#area_id_').trigger('change');
-
-                        // Desativa o select para evitar alterações
-                        $('#area_id_').prop('disabled', true);
-
-                        // Simula a ação após a seleção
-                        var newSelect = $("#" + generateUniqueId());
-                        newSelect.select2();
-
-                        fetchAndPopulateSelect(areaSelecionada.area_hospitalar_id, newSelect);
-                    } else {
+                    if (!Array.isArray(data) || data.length === 0) {
                         $('#area_id_').append('<option disabled selected>Nenhuma área encontrada</option>');
+                        return;
                     }
+
+                    // Popular todas as FAH com o nome da AH
+                    data.forEach(function(item){
+                        var opt = $('<option>', {
+                            value: item.id, // FAH.id
+                            text: (item.area_hospitalar?.nome || ('Área '+ item.area_hospitalar_id))
+                        });
+                        opt.attr('data-ah-id', item.area_hospitalar_id);
+                        $('#area_id_').append(opt);
+                    });
+
+                    // Garantir hidden inputs para submissão (mantém compatibilidade)
+                    if (!$('#area_id_hidden').length) {
+                        $('<input>').attr({type:'hidden', id:'area_id_hidden', name:'area_id', value:''}).appendTo('form');
+                    }
+                    if (!$('#area_para_hidden').length) {
+                        $('<input>').attr({type:'hidden', id:'area_para_hidden', name:'area_para', value:''}).appendTo('form');
+                    }
+
+                    // Seleciona a primeira opção por padrão e dispara change
+                    $('#area_id_ option:first').prop('selected', true);
+                    $('#area_id_').trigger('change');
                 },
                 error: function(xhr, status, error) {
-                    console.error('Erro ao buscar itens:', error);
+                    console.error('Erro ao buscar áreas (FAH):', error);
+                    $('#area_id_').append('<option disabled selected>Erro ao carregar áreas</option>');
                 }
             });
         }
 
         // Função para popular o select de itens
         function fetchAndPopulateSelect(id, targetSelect) {
-            var endpoint = '/api/produtos/' + id;
+            var endpoint = '/api/produtos/' + id; // aqui id deve ser AH.id
             $.ajax({
                 url: endpoint,
                 type: 'GET',
@@ -786,15 +777,31 @@
             });
         }
 
+        function updateStatusTableUrl(ahId){
+            try {
+                if (ahId && table) {
+                    table.ajax.url('/api/status_produto/' + ahId).load();
+                }
+            } catch(e) { console.warn('Falha ao atualizar URL da tabela:', e); }
+        }
+
         $(document).ready(function() {
             var areaId = $('meta[name="area_id_"]').attr('content');
-            // Chama a função para buscar os itens e popular o select
+            // Carrega FAH e popula select
             fetchAndPopulateSelectArea(areaId);
 
-            // Adiciona um ouvinte de evento para o evento de mudança no select
+            // Ao mudar a seleção de área: atualiza hiddens, produtos e tabela
             $('#area_id_').on('change', function() {
-                var selectedValue = $(this).val();
-                fetchAndPopulateSelect(selectedValue, $('#select-itens'));
+                var selectedFah = $(this).val();
+                var ahId = $('#area_id_ option:selected').data('ah-id');
+                // atualiza hiddens (enviar FAH por padrão; ajuste se controller esperar AH)
+                $('#area_id_hidden').val(selectedFah || '');
+                $('#area_para_hidden').val(selectedFah || '');
+
+                // Popular itens da AH
+                if (ahId) fetchAndPopulateSelect(ahId, $('#select-itens'));
+                // Atualizar tabela status
+                if (ahId) updateStatusTableUrl(ahId);
             });
         });
 
