@@ -78,18 +78,18 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
-            display: none;
-            justify-content: center;
-            align-items: center;
+            display: none; /* ativada via .active */
             z-index: 99999;
             backdrop-filter: blur(10px);
+            /* Centralização perfeita independentemente de scroll/tamanho */
+            place-items: center;
         }
 
         .global-loading-overlay.active {
-            display: flex;
+            display: grid;
         }
 
         .global-loader-content {
@@ -100,6 +100,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            min-width: 240px;
         }
 
         .global-loader-spinner {

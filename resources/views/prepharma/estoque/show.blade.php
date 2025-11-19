@@ -936,6 +936,22 @@
                 row.after(actionRow);
             });
 
+            // Pré-carregar mapa de áreas (FAH e AH -> nome) para mensagens humanizadas do histórico
+            @php
+                try {
+                    $farmaciaCtx = auth()->user()->isFarmacia->farmacia_id ?? (auth()->user()->area_hospitalar->area_hospitalar->farmacia_id ?? null);
+                    $__areas = $farmaciaCtx
+                        ? \App\Models\FarmaciaAreaHospitalar::with('area_hospitalar')->where('farmacia_id', $farmaciaCtx)->get()
+                        : collect();
+                    $__areaMap = [];
+                    foreach ($__areas as $__a) {
+                        if ($__a->id) $__areaMap[$__a->id] = $__a->area_hospitalar->nome;
+                        if ($__a->area_hospitalar_id) $__areaMap[$__a->area_hospitalar_id] = $__a->area_hospitalar->nome;
+                    }
+                } catch (\Throwable $e) { $__areaMap = []; }
+            @endphp
+            window.AREA_MAP = @json($__areaMap);
+
             // Abrir offcanvas de histórico ao clicar no botão
             $(document).on('click', '.btn-historico', function() {
                 var produtoId = $(this).data('id');
@@ -976,8 +992,64 @@
                 // Carregar histórico com filtros e paginação
                 var currentHistoryRequest = null;
 
+                function normalizeListDedup(list) {
+                    if (!Array.isArray(list)) return [];
+                    const out = [];
+                    const keyFor = (it) => {
+                        const t = it.created_at || it.movement_date || '';
+                        const q = (it.quantity_delta ?? '').toString();
+                        const a = it.action || '';
+                        return `${t}|${q}|${a}`;
+                    };
+                    const byKey = new Map();
+                    for (const it of list) {
+                        const k = keyFor(it);
+                        if (!byKey.has(k)) byKey.set(k, []);
+                        byKey.get(k).push(it);
+                    }
+                    // Regra: se existir 'stock_out' ou 'stock_in' e também 'updated' com mesmo timestamp/qty, descartar 'updated'
+                    byKey.forEach((arr) => {
+                        const hasStockMove = arr.some(x => x.action === 'stock_out' || x.action === 'stock_in' || x.action === 'transfer');
+                        const filtered = hasStockMove ? arr.filter(x => x.action !== 'updated') : arr;
+                        filtered.forEach(x => out.push(x));
+                    });
+                    // Ordenar por data desc se necessário
+                    out.sort((a,b) => new Date(b.created_at||b.movement_date||0) - new Date(a.created_at||a.movement_date||0));
+                    return out;
+                }
+
+                function areaName(id) {
+                    return (window.AREA_MAP && window.AREA_MAP[id]) ? window.AREA_MAP[id] : `Área ${id}`;
+                }
+
+                function humanizeDetails(item) {
+                    const a = item.action || '';
+                    const p = item.payload || {};
+                    const parts = [];
+                    if (a === 'stock_out' || a === 'transfer') {
+                        if (p.to_area) parts.push(`<i class="fa fa-location-arrow me-1"></i> Transferido para: <strong>${areaName(p.to_area)}</strong>`);
+                        if (p.num_lote) parts.push(`<i class=\"fa fa-barcode me-1\"></i> Lote: <strong>${p.num_lote}</strong>`);
+                        if (p.obs) parts.push(`<i class=\"fa fa-comment me-1\"></i> ${p.obs}`);
+                    } else if (a === 'stock_in') {
+                        if (p.num_lote) parts.push(`<i class=\"fa fa-barcode me-1\"></i> Lote: <strong>${p.num_lote}</strong>`);
+                        if (p.fornecedor) parts.push(`<i class=\"fa fa-truck me-1\"></i> Fornecedor: <strong>${p.fornecedor}</strong>`);
+                        if (p.obs) parts.push(`<i class=\"fa fa-comment me-1\"></i> ${p.obs}`);
+                    } else if (a === 'updated') {
+                        if (Array.isArray(p.changed_fields) && p.changed_fields.length) {
+                            parts.push(`<i class=\"fa fa-edit me-1\"></i> Atualizações: <strong>${p.changed_fields.join(', ')}</strong>`);
+                        } else if (typeof item.quantity_delta === 'number' && item.quantity_delta !== 0) {
+                            const sign = item.quantity_delta > 0 ? '+' : '';
+                            parts.push(`<i class=\"fa fa-balance-scale me-1\"></i> Quantidade ajustada: <strong>${sign}${item.quantity_delta} un</strong>`);
+                        }
+                    } else if (p.summary_pt) {
+                        parts.push(p.summary_pt);
+                    }
+                    return parts.length ? `<div class="history-message">${parts.join(' • ')}</div>` : '';
+                }
+
                 function renderHistoryItems(list, meta) {
                     timeline.innerHTML = '';
+                    list = normalizeListDedup(list);
                     if (!list || list.length === 0) {
                         document.getElementById('history_empty').style.display = 'block';
                         document.getElementById('offcanvasRightSubtitle').innerText = 'Sem registos';
@@ -1016,21 +1088,7 @@
                         var labelPT = actionLabelsPT[action] || (action || '').replace('_', ' ');
 
                         // Extrair informações detalhadas
-                        var detailsHtml = '';
-                        if (item.payload) {
-                            var details = [];
-                            if (item.payload.num_lote) details.push('<strong>Lote:</strong> ' + item.payload.num_lote);
-                            if (item.payload.fornecedor) details.push('<strong>Fornecedor:</strong> ' + item.payload.fornecedor);
-                            if (item.payload.to_area) details.push('<strong>Para área:</strong> ID ' + item.payload.to_area);
-                            if (item.payload.obs) details.push('<strong>Obs:</strong> ' + item.payload.obs);
-                            if (details.length > 0) {
-                                detailsHtml = '<div class="history-message">' + details.join(' • ') + '</div>';
-                            }
-                        }
-
-                        if (!detailsHtml && item.summary_pt) {
-                            detailsHtml = '<div class="history-message">' + item.summary_pt + '</div>';
-                        }
+                        var detailsHtml = humanizeDetails(item);
 
                         var el = document.createElement('div');
                         el.className = 'history-item';

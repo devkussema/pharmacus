@@ -338,8 +338,19 @@
                 @endphp
 
                 @if($farmaciaUsuario)
+                    @php
+                        $__ahId = $ah->id ?? ($area ?? null);
+                        $__fah = null;
+                        try {
+                            if ($__ahId) {
+                                $__fah = \App\Models\FarmaciaAreaHospitalar::where('farmacia_id', $farmaciaUsuario)
+                                    ->where('area_hospitalar_id', $__ahId)
+                                    ->first();
+                            }
+                        } catch (\Throwable $e) { $__fah = null; }
+                    @endphp
                     <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="{{ $farmaciaUsuario }}">
-                    <input type="hidden" name="area_id" id="area_id_hidden" value="{{ $ah->id ?? '' }}">
+                    <input type="hidden" name="area_id" id="area_id_hidden" value="{{ $__fah->id ?? '' }}">
                 @else
                     <div class="alert alert-danger">
                         Erro: Usuário não possui farmácia associada. Contacte o administrador.
@@ -646,23 +657,16 @@ function showToast(message, type = 'info', title = '', duration = 4000) {
 $(document).ready(function() {
     // Garantir que o campo hidden area_id esteja definido a partir do meta do layout
     (function ensureAreaIdHidden(){
+        // Se o hidden area_id (FAH) estiver vazio, tenta inferir a partir do meta (AH)
         const metaArea = document.querySelector('meta[name="area_id_"]');
-        const areaFromMeta = metaArea ? metaArea.getAttribute('content') : '';
+        const ahFromMeta = metaArea ? metaArea.getAttribute('content') : '';
         const inputArea = document.getElementById('area_id_hidden');
-        if (inputArea) {
-            if (!inputArea.value && areaFromMeta) {
-                inputArea.value = areaFromMeta;
-            }
-        } else if (areaFromMeta) {
-            const form = document.getElementById('formCadastro');
-            if (form) {
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = 'area_id';
-                hidden.id = 'area_id_hidden';
-                hidden.value = areaFromMeta;
-                form.prepend(hidden);
-            }
+        if (inputArea && !inputArea.value && ahFromMeta) {
+            // Tenta obter FAH id via endpoint leve (se existir); se não, mantém vazio
+            fetch(`/api/fah-by-ah/${ahFromMeta}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(r => r.ok ? r.json() : null)
+                .then(j => { if (j && j.id) inputArea.value = j.id; })
+                .catch(() => {});
         }
     })();
 

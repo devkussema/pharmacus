@@ -396,7 +396,8 @@ class EstoqueController extends Controller
             'tipo' => 'required',
             'farmacia_id' => 'required',
             'quantidade' => 'required|integer|min:1',
-            'area_id' => 'required|exists:areas_hospitalares,id',
+            // agora area_id referencia FarmaciaAreaHospitalar
+            'area_id' => 'required|exists:farmacia_areas_hospitalares,id',
             'origem_destino' => 'nullable',
             'num_lote' => 'required',
             'data_producao' => 'nullable|date|before:today',
@@ -466,10 +467,19 @@ class EstoqueController extends Controller
             'qtd' => $quantidade
         ]);
 
+        // Resolver area_hospitalar a partir do ID de FarmaciaAreaHospitalar
+        try {
+            $fah = \App\Models\FarmaciaAreaHospitalar::with('area_hospitalar')->findOrFail($request->area_id);
+        } catch (\Throwable $e) {
+            return $request->ajax()
+                ? response()->json(['message' => 'Área inválida'], 422)
+                : back()->withErrors(['area_id' => 'Área inválida']);
+        }
+
         Estoque::create([
             'produto_estoque_id' => $pe->id,
             'farmacia_id' => $farmacia_id,
-            'area_hospitalar_id' => $request->area_id
+            'area_hospitalar_id' => $fah->area_hospitalar_id
         ]);
 
         // Registrar atividade
@@ -506,7 +516,7 @@ class EstoqueController extends Controller
 
         if ($request->ajax())
             return response()->json(['message' => "{$request->designacao} adicionado!"]);
-        return redirect()->route("estoque.cadastrar", ['area_id' => $request->area_id])->with("success", "{$caixas} caixas de {$request->designacao} adicionadas.");
+        return redirect()->route("estoque.cadastrar", ['area_id' => $fah->area_hospitalar_id])->with("success", "{$caixas} caixas de {$request->designacao} adicionadas.");
     }
 
     public function confirmarProduto($id_produto, $id_area)
