@@ -396,7 +396,7 @@ class EstoqueController extends Controller
             'tipo' => 'required',
             'farmacia_id' => 'required',
             'quantidade' => 'required|integer|min:1',
-            'area_id' => 'required|exists:area_hospitalares,id',
+            'area_id' => 'required|exists:areas_hospitalares,id',
             'origem_destino' => 'nullable',
             'num_lote' => 'required',
             'data_producao' => 'nullable|date|before:today',
@@ -599,7 +599,7 @@ class EstoqueController extends Controller
     {
         $request->validate([
             'produto_id' => 'required|exists:produto_estoques,id',
-            'area_hospitalar_id' => 'required|exists:area_hospitalares,id',
+            'area_hospitalar_id' => 'required|exists:areas_hospitalares,id',
             'quantidade' => 'required|integer|min:1',
             'user_id' => 'nullable|exists:users,id',
             'movement_date' => 'nullable|date',

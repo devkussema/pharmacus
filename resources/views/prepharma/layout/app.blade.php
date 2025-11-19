@@ -95,6 +95,11 @@
         .global-loader-content {
             text-align: center;
             color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .global-loader-spinner {
@@ -867,6 +872,18 @@
             // Detecta CMD (Mac) ou CTRL (Windows/Linux) + R
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'r') {
                 showGlobalLoading('Recarregando', 'Aguarde enquanto a página é recarregada...');
+            }
+        });
+
+        // Corrigir travamento ao voltar (bfcache) e garantir centralização sempre
+        window.addEventListener('pageshow', function(event) {
+            // Quando voltar do histórico (bfcache), hide overlay
+            hideGlobalLoading();
+        });
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                hideGlobalLoading();
             }
         });
 

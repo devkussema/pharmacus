@@ -339,7 +339,7 @@
 
                 @if($farmaciaUsuario)
                     <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="{{ $farmaciaUsuario }}">
-                    <input type="hidden" name="area_id" value="{{ $ah->id ?? '' }}">
+                    <input type="hidden" name="area_id" id="area_id_hidden" value="{{ $ah->id ?? '' }}">
                 @else
                     <div class="alert alert-danger">
                         Erro: Usuário não possui farmácia associada. Contacte o administrador.
@@ -644,6 +644,28 @@ function showToast(message, type = 'info', title = '', duration = 4000) {
 }
 
 $(document).ready(function() {
+    // Garantir que o campo hidden area_id esteja definido a partir do meta do layout
+    (function ensureAreaIdHidden(){
+        const metaArea = document.querySelector('meta[name="area_id_"]');
+        const areaFromMeta = metaArea ? metaArea.getAttribute('content') : '';
+        const inputArea = document.getElementById('area_id_hidden');
+        if (inputArea) {
+            if (!inputArea.value && areaFromMeta) {
+                inputArea.value = areaFromMeta;
+            }
+        } else if (areaFromMeta) {
+            const form = document.getElementById('formCadastro');
+            if (form) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'area_id';
+                hidden.id = 'area_id_hidden';
+                hidden.value = areaFromMeta;
+                form.prepend(hidden);
+            }
+        }
+    })();
+
     // Inicializar Select2 nos selects específicos
     $('.select2, .selectr2').select2({
         width: '100%',
