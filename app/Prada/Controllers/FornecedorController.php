@@ -62,12 +62,16 @@ class FornecedorController extends Controller
         // Ordenação e paginação
         $fornecedores = $query->orderBy('nome', 'asc')->get();
 
-        // Registar atividade de listagem
-        AtividadeService::registarListagem(
-            'Fornecedor',
-            $filtrosAplicados,
-            $fornecedores->count()
-        );
+        // Registar atividade de listagem (não bloqueia se falhar)
+        try {
+            AtividadeService::registarListagem(
+                'Fornecedor',
+                $filtrosAplicados,
+                $fornecedores->count()
+            );
+        } catch (\Exception $e) {
+            \Log::error('Erro ao registar atividade de listagem: ' . $e->getMessage());
+        }
 
         return response()->json(['data' => $fornecedores]);
     }
@@ -88,8 +92,12 @@ class FornecedorController extends Controller
             return response()->json(['message' => 'Fornecedor não encontrado'], 404);
         }
 
-        // Registar atividade de visualização
-        AtividadeService::registarVisualizacao('Fornecedor', $fornecedor);
+        // Registar atividade de visualização (não bloqueia se falhar)
+        try {
+            AtividadeService::registarVisualizacao('Fornecedor', $fornecedor);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao registar atividade de visualização: ' . $e->getMessage());
+        }
 
         return response()->json($fornecedor);
     }
@@ -128,8 +136,12 @@ class FornecedorController extends Controller
 
         $fornecedor = Fornecedor::create($request->all());
 
-        // Registar atividade de criação
-        AtividadeService::registarCriacao('Fornecedor', $fornecedor);
+        // Registar atividade de criação (não bloqueia se falhar)
+        try {
+            AtividadeService::registarCriacao('Fornecedor', $fornecedor);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao registar atividade de criação: ' . $e->getMessage());
+        }
 
         return response()->json([
             'message' => 'Fornecedor cadastrado com sucesso',
@@ -193,9 +205,13 @@ class FornecedorController extends Controller
 
         $fornecedor->update($request->all());
 
-        // Registar atividade de atualização com as mudanças
+        // Registar atividade de atualização com as mudanças (não bloqueia se falhar)
         if (!empty($mudancas)) {
-            AtividadeService::registarAtualizacao('Fornecedor', $fornecedor, $mudancas);
+            try {
+                AtividadeService::registarAtualizacao('Fornecedor', $fornecedor, $mudancas);
+            } catch (\Exception $e) {
+                \Log::error('Erro ao registar atividade de atualização: ' . $e->getMessage());
+            }
         }
 
         return response()->json([
@@ -220,8 +236,12 @@ class FornecedorController extends Controller
             return response()->json(['message' => 'Fornecedor não encontrado'], 404);
         }
 
-        // Registar atividade de exclusão antes de deletar
-        AtividadeService::registarExclusao('Fornecedor', $fornecedor);
+        // Registar atividade de exclusão antes de deletar (não bloqueia se falhar)
+        try {
+            AtividadeService::registarExclusao('Fornecedor', $fornecedor);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao registar atividade de exclusão: ' . $e->getMessage());
+        }
 
         $fornecedor->delete();
 
