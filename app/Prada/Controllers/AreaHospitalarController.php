@@ -223,11 +223,26 @@ class AreaHospitalarController extends Controller
 
     public function getAllMy($id_def)
     {
-        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+        // Obtém farmacia_id de forma resiliente considerando variações de relacionamentos
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $farmacia_id = null;
+        try {
+            $farmacia_id = $user->isFarmacia?->farmacia?->id
+                ?? $user->farmacia?->farmacia_id
+                ?? $user->userAreaHospitalar?->farmacia_id
+                ?? null;
+        } catch (\Throwable $e) {
+            $farmacia_id = null;
+        }
+
+        if (!$farmacia_id) {
+            return response()->json(['message' => 'Farmácia do usuário não encontrada'], 401);
+        }
+
         $all = FAH::where('farmacia_id', $farmacia_id)
-          //->where('area_hospitalar_id', '!=', $id_def)
-          ->with('area_hospitalar', 'farmacia')
-          ->get();
+            //->where('area_hospitalar_id', '!=', $id_def)
+            ->with('area_hospitalar', 'farmacia')
+            ->get();
 
         return response()->json($all);
     }

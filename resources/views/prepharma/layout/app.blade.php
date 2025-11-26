@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="{{ asset('prepharma/plugins/datatables/datatables.min.css') }}">
 
     <link rel="stylesheet" type="text/css" href="https://static.pharmatina.com/prepharma/assets/css/style.css">
-    
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('prepharma/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('prepharma/plugins/datatables/datatables.min.js') }}"></script>
@@ -71,6 +71,128 @@
             margin-bottom: 20px;
             animation: float 3s ease-in-out infinite;
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+        }
+
+        /* Global Loading Overlay Premium */
+        .global-loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+            display: none; /* ativada via .active */
+            z-index: 99999;
+            backdrop-filter: blur(10px);
+            /* Centralização perfeita independentemente de scroll/tamanho */
+            place-items: center;
+        }
+
+        .global-loading-overlay.active {
+            display: grid;
+        }
+
+        .global-loader-content {
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 240px;
+        }
+
+        .global-loader-spinner {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .global-loader-spinner::before,
+        .global-loader-spinner::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .global-loader-spinner::before {
+            width: 100%;
+            height: 100%;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .global-loader-spinner::after {
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: white;
+            border-right-color: white;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+
+        .global-loader-pulse {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .global-loader-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .global-loader-subtext {
+            font-size: 0.9375rem;
+            opacity: 0.9;
+        }
+
+        .global-loader-dots {
+            display: inline-flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .global-loader-dots span {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .global-loader-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .global-loader-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-15px);
+            }
         }
 
         .loader-ring {
@@ -176,6 +298,20 @@
 </head>
 
 <body>
+    <!-- Global Loading Overlay Premium -->
+    <div class="global-loading-overlay" id="globalLoadingOverlay">
+        <div class="global-loader-content">
+            <div class="global-loader-spinner"></div>
+            <div class="global-loader-text">Carregando</div>
+            <div class="global-loader-subtext">Por favor, aguarde...</div>
+            <div class="global-loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
     <!-- Loader -->
     {{-- <div class="loader-wrapper">
         <div class="loader-container">
@@ -514,7 +650,7 @@
             min-width: 220px;
             max-width: 360px;
             transform: translateY(20px) translateX(-10px) scale(0.98);
-            opacity: 0; 
+            opacity: 0;
             pointer-events: none;
             transition: transform .28s ease, opacity .28s ease;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
@@ -673,11 +809,96 @@
             }
 
             // parar rotação quando navegar/fechar
-            window.addEventListener('beforeunload', function () { stopRotation(); });
+            window.addEventListener('beforeunload', function () {
+                stopRotation();
+                // Mostrar loading overlay ao recarregar
+                if (typeof showLoading === 'function') {
+                    showLoading();
+                }
+            });
+
+            // Detectar CMD/CTRL + R
+            document.addEventListener('keydown', function(e) {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'r') {
+                    if (typeof showLoading === 'function') {
+                        showLoading();
+                    }
+                }
+            });
 
             // expor variáveis de teste
             window.Pharmatina._stockRotate = rotatingMessages;
         })();
+    </script>
+
+    <script>
+        /**
+         * Funções Globais de Loading Overlay
+         * @author Augusto Kussema
+         * @date 18/11/2025
+         */
+        window.showGlobalLoading = function(message = 'Carregando', subtext = 'Por favor, aguarde...') {
+            const overlay = document.getElementById('globalLoadingOverlay');
+            if (overlay) {
+                const textEl = overlay.querySelector('.global-loader-text');
+                const subtextEl = overlay.querySelector('.global-loader-subtext');
+
+                if (textEl) textEl.textContent = message;
+                if (subtextEl) subtextEl.textContent = subtext;
+
+                overlay.classList.add('active');
+            }
+        };
+
+        window.hideGlobalLoading = function() {
+            const overlay = document.getElementById('globalLoadingOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+        };
+
+        /**
+         * Event Listeners para Recarregamento de Página
+         * Detecta CMD+R (Mac) / CTRL+R (Windows) e beforeunload
+         * @author Augusto Kussema
+         * @date 19/11/2025
+         */
+        // Listener para beforeunload (quando a página está sendo descarregada)
+        window.addEventListener('beforeunload', function() {
+            showGlobalLoading('Recarregando', 'Aguarde enquanto a página é recarregada...');
+        });
+
+        // Listener para CMD/CTRL + R
+        document.addEventListener('keydown', function(e) {
+            // Detecta CMD (Mac) ou CTRL (Windows/Linux) + R
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'r') {
+                showGlobalLoading('Recarregando', 'Aguarde enquanto a página é recarregada...');
+            }
+        });
+
+        // Corrigir travamento ao voltar (bfcache) e garantir centralização sempre
+        window.addEventListener('pageshow', function(event) {
+            // Quando voltar do histórico (bfcache), hide overlay
+            hideGlobalLoading();
+        });
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                hideGlobalLoading();
+            }
+        });
+
+        // Garantir que o loading seja escondido quando a página carregar
+        window.addEventListener('load', function() {
+            // Pequeno delay para evitar flash
+            setTimeout(function() {
+                hideGlobalLoading();
+            }, 300);
+        });
+
+        // Uso nos AJAX:
+        // $(document).ajaxStart(function() { showGlobalLoading(); });
+        // $(document).ajaxStop(function() { hideGlobalLoading(); });
     </script>
 </body>
 

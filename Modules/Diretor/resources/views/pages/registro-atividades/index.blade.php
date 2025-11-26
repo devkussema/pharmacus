@@ -50,7 +50,7 @@
             </div>
             <div class="filter-group">
                 <label for="busca"><i class="fa-solid fa-search me-2"></i>Buscar</label>
-                <input type="text" id="busca" class="filter-input" placeholder="Medicamento, paciente...">
+                <input type="text" id="busca" class="filter-input" placeholder="Medicamento, paciente, funcionário...">
             </div>
         </div>
     </div>    <!-- Resumo de Atividades -->
@@ -220,6 +220,32 @@
 <style>
 * {
     box-sizing: border-box;
+}
+
+.btn-export {
+    padding: 0.75rem 1.5rem;
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
+}
+
+.btn-export:hover {
+    background: #16a34a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+}
+
+.btn-export:active {
+    transform: translateY(0);
 }
 
 .filters-section {

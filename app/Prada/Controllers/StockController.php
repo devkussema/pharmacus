@@ -115,7 +115,7 @@ class StockController extends Controller
     }
 
     public function status_produto(Request $request, $id) {
-        $farmacia_id = auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id;
+        $farmacia_id = "11a2d86a-c885-44e4-9162-14215ef75b95";
         $produtos = StatusEstoque::with('produto.prateleira')
             ->with('produto.saldo')
             ->with(['produto' => function ($query) {

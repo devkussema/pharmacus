@@ -327,7 +327,7 @@
         <div class="card-body">
             <form method="POST" id="formCadastro">
                 @csrf
-                
+
                 @php
                     $farmaciaUsuario = null;
                     try {
@@ -338,7 +338,19 @@
                 @endphp
 
                 @if($farmaciaUsuario)
+                    @php
+                        $__ahId = $ah->id ?? ($area ?? null);
+                        $__fah = null;
+                        try {
+                            if ($__ahId) {
+                                $__fah = \App\Models\FarmaciaAreaHospitalar::where('farmacia_id', $farmaciaUsuario)
+                                    ->where('area_hospitalar_id', $__ahId)
+                                    ->first();
+                            }
+                        } catch (\Throwable $e) { $__fah = null; }
+                    @endphp
                     <input type="hidden" id="inp-farmacia_id" name="farmacia_id" value="{{ $farmaciaUsuario }}">
+                    <input type="hidden" name="area_id" id="area_id_hidden" value="{{ $__fah->id ?? '' }}">
                 @else
                     <div class="alert alert-danger">
                         Erro: Usuário não possui farmácia associada. Contacte o administrador.
@@ -421,16 +433,16 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-barcode"></i>
-                                Lote *
+                                Lote
                             </label>
-                            <input type="text" class="form-control text-uppercase" name="num_lote" placeholder="Ex: L2024-001" required>
+                            <input type="text" class="form-control text-uppercase" name="num_lote" placeholder="Ex: L2024-001">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-file-alt"></i>
-                                Documento Nº *
+                                Documento Nº
                             </label>
-                            <input type="text" id="cod_barras" class="form-control" placeholder="Número do documento" name="num_documento" required>
+                            <input type="text" id="cod_barras" class="form-control" placeholder="Número do documento" name="num_documento">
                         </div>
                     </div>
                 </div>
@@ -445,9 +457,9 @@
                         <div class="col-md-4 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-industry"></i>
-                                Data Produção *
+                                Data Produção
                             </label>
-                            <input type="date" class="form-control" name="data_producao" required>
+                            <input type="date" class="form-control" name="data_producao">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">
@@ -528,9 +540,9 @@
                         <div class="col-md-4 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-map-marker-alt"></i>
-                                Origem / Destino *
+                                Origem / Destino
                             </label>
-                            <input type="text" class="form-control" name="origem_destino" required>
+                            <input type="text" class="form-control" name="origem_destino">
                         </div>
                     </div>
                 </div>
@@ -542,25 +554,12 @@
                         <span>Localização</span>
                     </div>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-hospital"></i>
-                                Área Hospitalar
-                            </label>
-                            <select name="area_id" id="area_id_" class="form-control select2">
-                                @foreach (App\Models\FarmaciaAreaHospitalar::where('farmacia_id', auth()->user()->isFarmacia->farmacia->id)->where('status', 1)->get() as $areas)
-                                    <option value="{{ $areas->id }}" {{ $areas->id == $area ? 'selected' : '' }}>
-                                        {{ $areas->area_hospitalar->nome }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label class="form-label">
                                 <i class="fas fa-shelves"></i>
-                                Prateleira
+                                Prateleira *
                             </label>
-                            <select name="prateleira_id" id="prateleira_id_" class="form-control">
+                            <select name="prateleira_id" id="prateleira_id_" class="form-control" required>
                                 @foreach (\App\Models\Prateleira::all() as $prat)
                                     <option value="{{ $prat->id }}">{{ $prat->nome }} [{{ $prat->descricao }}]</option>
                                 @endforeach
@@ -601,7 +600,7 @@
                 </span>
                 <span id="submitSpinner" style="display:none;">
                     <span class="spinner-custom"></span>
-                    <span class="ms-2">Processando...</span>
+                    <span class="ms-2">A Processar...</span>
                 </span>
             </button>
         </div>
@@ -656,6 +655,21 @@ function showToast(message, type = 'info', title = '', duration = 4000) {
 }
 
 $(document).ready(function() {
+    // Garantir que o campo hidden area_id esteja definido a partir do meta do layout
+    (function ensureAreaIdHidden(){
+        // Se o hidden area_id (FAH) estiver vazio, tenta inferir a partir do meta (AH)
+        const metaArea = document.querySelector('meta[name="area_id_"]');
+        const ahFromMeta = metaArea ? metaArea.getAttribute('content') : '';
+        const inputArea = document.getElementById('area_id_hidden');
+        if (inputArea && !inputArea.value && ahFromMeta) {
+            // Tenta obter FAH id via endpoint leve (se existir); se não, mantém vazio
+            fetch(`/api/fah-by-ah/${ahFromMeta}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(r => r.ok ? r.json() : null)
+                .then(j => { if (j && j.id) inputArea.value = j.id; })
+                .catch(() => {});
+        }
+    })();
+
     // Inicializar Select2 nos selects específicos
     $('.select2, .selectr2').select2({
         width: '100%',
@@ -684,16 +698,6 @@ $(document).ready(function() {
         const btnText = $('#submitText');
         const btnSpinner = $('#submitSpinner');
         const formData = new FormData(this);
-
-        // Validar quantidade
-        const caixa = parseInt($('#caixa').val()) || 0;
-        const caxinha = parseInt($('#caxinha').val()) || 0;
-        const unidade = parseInt($('#unidade').val()) || 0;
-
-        if (caixa <= 0 || caxinha <= 0 || unidade <= 0) {
-            showToast('Por favor, insira valores válidos para Caixa, Caixinha e Unidade (maior que 0)', 'error');
-            return;
-        }
 
         // Validar datas
         const dataProducao = new Date($('input[name="data_producao"]').val());

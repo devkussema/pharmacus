@@ -94,8 +94,13 @@ class EstoqueController extends Controller
 
             // Processar produtos com status
             $produtosProcessados = $produtos->map(function($produto) use ($niveisAlerta, $nivelMinimoPadrao) {
-                $quantidade = $produto->quantidade ?? 0;
-                $status = $this->calcularStatus($quantidade, $niveisAlerta);
+                // Obter quantidade real do saldo
+                $quantidade = $produto->saldo ? $produto->saldo->quantidade_actual : 0;
+
+                // Obter nível mínimo específico ou usar padrão
+                $nivelMinimo = $produto->saldo ? $produto->saldo->nivel_minimo : $nivelMinimoPadrao;
+
+                $status = $this->calcularStatus($quantidade, $niveisAlerta, $nivelMinimo);
 
                 return [
                     'id' => $produto->id,
@@ -106,7 +111,7 @@ class EstoqueController extends Controller
                     'categoria' => $produto->grupo_farmaco ? $produto->grupo_farmaco->nome : 'Sem Categoria',
                     'grupo_farmaco_id' => $produto->grupo_farmaco_id,
                     'quantidade' => $quantidade,
-                    'nivel_minimo' => $nivelMinimoPadrao,
+                    'nivel_minimo' => $nivelMinimo,
                     'validade_formatada' => $produto->data_expiracao ? $produto->data_expiracao->format('d/m/Y') : 'N/A',
                     'data_expiracao_raw' => $produto->data_expiracao,
                     'status_badge' => $status['label'],
@@ -239,15 +244,15 @@ class EstoqueController extends Controller
      *
      * @param int $quantidade
      * @param array $niveisAlerta
+     * @param int $nivelMinimo
      * @return array
      * @author Augusto Kussema
-     * @created 06-11-2025
+     * @updated 06-11-2025
      */
-    private function calcularStatus(int $quantidade, array $niveisAlerta): array
+    private function calcularStatus(int $quantidade, array $niveisAlerta, int $nivelMinimo = 50): array
     {
-        // Valores padrão de referência (podem ser ajustados)
-        $limiteMinimo = 50;
-        $limiteCritico = 20;
+        // Calcular limite crítico como 40% do nível mínimo
+        $limiteCritico = (int) ($nivelMinimo * 0.4);
 
         if ($quantidade <= $limiteCritico) {
             return [
@@ -255,7 +260,7 @@ class EstoqueController extends Controller
                 'label' => 'Crítico',
                 'nivel_id' => $niveisAlerta['critico']->id ?? null
             ];
-        } elseif ($quantidade <= $limiteMinimo) {
+        } elseif ($quantidade <= $nivelMinimo) {
             return [
                 'classe' => 'warning',
                 'label' => 'Mínimo',
@@ -280,7 +285,7 @@ class EstoqueController extends Controller
      */
     private function calcularResumo(array $niveisAlerta): array
     {
-        $produtos = ProdutoEstoque::whereHas('estoque')->get();
+        $produtos = ProdutoEstoque::with('saldo')->whereHas('estoque')->get();
 
         $total = $produtos->count();
         $adequado = 0;
@@ -288,8 +293,9 @@ class EstoqueController extends Controller
         $critico = 0;
 
         foreach ($produtos as $produto) {
-            $quantidade = $produto->quantidade ?? 0;
-            $status = $this->calcularStatus($quantidade, $niveisAlerta);
+            $quantidade = $produto->saldo ? $produto->saldo->quantidade_actual : 0;
+            $nivelMinimo = $produto->saldo ? $produto->saldo->nivel_minimo : 50;
+            $status = $this->calcularStatus($quantidade, $niveisAlerta, $nivelMinimo);
 
             switch ($status['classe']) {
                 case 'normal':
@@ -337,9 +343,18 @@ class EstoqueController extends Controller
         try {
             $produto = ProdutoEstoque::with(['grupo_farmaco', 'saldo', 'prateleira'])->findOrFail($id);
 
-            $quantidade = $produto->quantidade ?? 0;
+            $quantidade = $produto->saldo ? $produto->saldo->quantidade_actual : 0;
+            $nivelMinimo = $produto->saldo ? $produto->saldo->nivel_minimo : 50;
             $niveisAlerta = $this->obterNiveisAlerta();
-            $status = $this->calcularStatus($quantidade, $niveisAlerta);
+            $status = $this->calcularStatus($quantidade, $niveisAlerta, $nivelMinimo);
+
+            // Descrição do status
+            $statusDescricao = 'Níveis adequados';
+            if ($status['classe'] === 'critical') {
+                $statusDescricao = 'Reposição urgente necessária';
+            } elseif ($status['classe'] === 'warning') {
+                $statusDescricao = 'Considerar reposição em breve';
+            }
 
             return response()->json([
                 'success' => true,
@@ -348,6 +363,7 @@ class EstoqueController extends Controller
                     'designacao' => $produto->designacao . ($produto->dosagem ? ' ' . $produto->dosagem : ''),
                     'categoria' => $produto->grupo_farmaco ? $produto->grupo_farmaco->nome : 'Sem Categoria',
                     'quantidade' => $quantidade,
+                    'nivel_minimo' => $nivelMinimo,
                     'num_lote' => $produto->num_lote ?? 'N/A',
                     'data_expiracao' => $produto->data_expiracao ? $produto->data_expiracao->format('d/m/Y') : 'N/A',
                     'dosagem' => $produto->dosagem,
@@ -361,6 +377,7 @@ class EstoqueController extends Controller
                     'obs' => $produto->obs,
                     'status_classe' => $status['classe'],
                     'status_label' => $status['label'],
+                    'status_descricao' => $statusDescricao,
                 ]
             ]);
         } catch (\Exception $e) {

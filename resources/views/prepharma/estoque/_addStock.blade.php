@@ -220,7 +220,7 @@
             </span>
             <span id="add_submit_spinner" style="display:none;">
                 <span class="spinner-custom"></span>
-                <span class="ms-2">Processando...</span>
+                <span class="ms-2">A Processar...</span>
             </span>
         </button>
     </div>
