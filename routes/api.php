@@ -2,7 +2,7 @@
 
 /**
  * Rotas de API do Sistema Pharmacus
- * 
+ *
  * @author Augusto Kussema
  * @date 2024-01-15
  */
@@ -44,7 +44,7 @@ Route::prefix('')->namespace('App\Http\Controllers\Api\v1')->group(function () {
     Route::get('/produtos/{id}', [EstoqueController::class, 'apiEstoque']);
     Route::get('/product-history/{id}', [ProductHistoryController::class, 'index']);
     Route::delete('/produtos_/{id}', [EstoqueController::class, 'destroy']);
-    
+
     // Status de produtos
     Route::get('/status_produto/{id}', [PradaStockController::class, 'status_produto']);
     Route::post('/status_produto/update/{id}', [PradaStockController::class, 'update_status_produto']);
@@ -87,7 +87,7 @@ Route::prefix('alertas')->middleware('auth')->group(function () {
     Route::get('/obter', function () {
         $farmacia_id = @auth()->user()->isFarmacia->farmacia_id;
         $isArea = @auth()->user()->area_hospitalar->area_hospitalar_id;
-        
+
         if ($farmacia_id) {
             $allAreaIds = \App\Models\FarmaciaAreaHospitalar::where('farmacia_id', @$farmacia_id)->pluck('area_hospitalar_id');
             $pedidos = \App\Models\PedidoItem::whereIn('area_para', $allAreaIds)
@@ -103,3 +103,12 @@ Route::prefix('alertas')->middleware('auth')->group(function () {
 
 // Compatibilidade com APIs antigas
 Route::get('/produtos/{area_id}', [ProdutoApiController::class, 'listarPorArea']);
+
+// APIs de fornecedores
+Route::prefix('fornecedores')->group(function () {
+    Route::get('/', [\App\Prada\Controllers\FornecedorController::class, 'listar']);
+    Route::post('/', [\App\Prada\Controllers\FornecedorController::class, 'store']);
+    Route::get('/{id}', [\App\Prada\Controllers\FornecedorController::class, 'show']);
+    Route::put('/{id}', [\App\Prada\Controllers\FornecedorController::class, 'update']);
+    Route::delete('/{id}', [\App\Prada\Controllers\FornecedorController::class, 'destroy']);
+});
