@@ -16,5 +16,6 @@
         </div>
     </div>
 
+    @include('prepharma.fornecedores._lista')
 </div>
 @endsection
