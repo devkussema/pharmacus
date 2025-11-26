@@ -108,6 +108,7 @@ Route::get('/produtos/{area_id}', [ProdutoApiController::class, 'listarPorArea']
 Route::prefix('fornecedores')->group(function () {
     Route::get('/', [\App\Prada\Controllers\FornecedorController::class, 'listar']);
     Route::post('/', [\App\Prada\Controllers\FornecedorController::class, 'store']);
+    Route::get('/{id}/historico', [\App\Prada\Controllers\FornecedorController::class, 'historico']);
     Route::get('/{id}', [\App\Prada\Controllers\FornecedorController::class, 'show']);
     Route::put('/{id}', [\App\Prada\Controllers\FornecedorController::class, 'update']);
     Route::delete('/{id}', [\App\Prada\Controllers\FornecedorController::class, 'destroy']);

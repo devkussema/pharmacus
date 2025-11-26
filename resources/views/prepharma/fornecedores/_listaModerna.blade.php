@@ -636,7 +636,21 @@
     }
 
     function mostrarHistorico(id) {
-        showToast('Histórico do fornecedor em desenvolvimento', 'info');
+        showLoading();
+        $.ajax({
+            url: `/api/fornecedores/${id}/historico`,
+            type: 'GET',
+            success: function(response) {
+                hideLoading();
+                popularOffcanvasHistorico(response.data);
+                const offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasHistoricoFornecedor'));
+                offcanvas.show();
+            },
+            error: function(xhr) {
+                hideLoading();
+                showToast('Erro ao carregar histórico', 'error');
+            }
+        });
     }
 
     function showLoading() {

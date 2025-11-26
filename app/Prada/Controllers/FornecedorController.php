@@ -3,7 +3,9 @@
 namespace App\Prada\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Atividade;
 use App\Models\Fornecedor;
+use App\Services\AtividadeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -35,24 +37,37 @@ class FornecedorController extends Controller
         $query = Fornecedor::query();
 
         // Filtros
+        $filtrosAplicados = [];
+        
         if ($request->filled('nome')) {
             $query->buscar($request->nome);
+            $filtrosAplicados['nome'] = $request->nome;
         }
 
         if ($request->filled('tipo')) {
             $query->porTipo($request->tipo);
+            $filtrosAplicados['tipo'] = $request->tipo;
         }
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
+            $filtrosAplicados['status'] = $request->status;
         }
 
         if ($request->filled('avaliacao_min')) {
             $query->where('avaliacao', '>=', $request->avaliacao_min);
+            $filtrosAplicados['avaliacao_min'] = $request->avaliacao_min;
         }
 
         // Ordenação e paginação
         $fornecedores = $query->orderBy('nome', 'asc')->get();
+
+        // Registar atividade de listagem
+        AtividadeService::registarListagem(
+            'Fornecedor',
+            $filtrosAplicados,
+            $fornecedores->count()
+        );
 
         return response()->json(['data' => $fornecedores]);
     }
@@ -72,6 +87,9 @@ class FornecedorController extends Controller
         if (!$fornecedor) {
             return response()->json(['message' => 'Fornecedor não encontrado'], 404);
         }
+
+        // Registar atividade de visualização
+        AtividadeService::registarVisualizacao('Fornecedor', $fornecedor);
 
         return response()->json($fornecedor);
     }
@@ -109,6 +127,9 @@ class FornecedorController extends Controller
         }
 
         $fornecedor = Fornecedor::create($request->all());
+
+        // Registar atividade de criação
+        AtividadeService::registarCriacao('Fornecedor', $fornecedor);
 
         return response()->json([
             'message' => 'Fornecedor cadastrado com sucesso',
@@ -155,7 +176,27 @@ class FornecedorController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        // Capturar mudanças antes da atualização
+        $dadosOriginais = $fornecedor->getOriginal();
+        $dadosNovos = $request->all();
+        $mudancas = [];
+
+        foreach ($dadosNovos as $campo => $valorNovo) {
+            $valorAntigo = $dadosOriginais[$campo] ?? null;
+            if ($valorAntigo != $valorNovo) {
+                $mudancas[$campo] = [
+                    'antigo' => $valorAntigo,
+                    'novo' => $valorNovo
+                ];
+            }
+        }
+
         $fornecedor->update($request->all());
+
+        // Registar atividade de atualização com as mudanças
+        if (!empty($mudancas)) {
+            AtividadeService::registarAtualizacao('Fornecedor', $fornecedor, $mudancas);
+        }
 
         return response()->json([
             'message' => 'Fornecedor atualizado com sucesso',
@@ -179,8 +220,36 @@ class FornecedorController extends Controller
             return response()->json(['message' => 'Fornecedor não encontrado'], 404);
         }
 
+        // Registar atividade de exclusão antes de deletar
+        AtividadeService::registarExclusao('Fornecedor', $fornecedor);
+
         $fornecedor->delete();
 
         return response()->json(['message' => 'Fornecedor excluído com sucesso']);
+    }
+
+    /**
+     * Retorna o histórico de atividades de um fornecedor.
+     *
+     * @author Augusto Kussema
+     * @created 2025-11-26
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function historico($id)
+    {
+        $fornecedor = Fornecedor::find($id);
+
+        if (!$fornecedor) {
+            return response()->json(['message' => 'Fornecedor não encontrado'], 404);
+        }
+
+        // Buscar atividades relacionadas a este fornecedor
+        $atividades = Atividade::where('model_type', Fornecedor::class)
+            ->where('model_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json(['data' => $atividades]);
     }
 }
