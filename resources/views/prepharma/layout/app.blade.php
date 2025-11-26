@@ -865,14 +865,14 @@
          */
         // Listener para beforeunload (quando a página está sendo descarregada)
         window.addEventListener('beforeunload', function() {
-            showGlobalLoading('Recarregando', 'Aguarde enquanto a página é recarregada...');
+            showGlobalLoading('A carregar', 'Aguarde enquanto a página é recarregada...');
         });
 
         // Listener para CMD/CTRL + R
         document.addEventListener('keydown', function(e) {
             // Detecta CMD (Mac) ou CTRL (Windows/Linux) + R
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'r') {
-                showGlobalLoading('Recarregando', 'Aguarde enquanto a página é recarregada...');
+                showGlobalLoading('A carregar', 'Aguarde enquanto a página é recarregada...');
             }
         });
 

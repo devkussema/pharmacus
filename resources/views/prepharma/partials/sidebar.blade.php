@@ -38,7 +38,7 @@
                 {{-- Estoque: usuários com área hospitalar ou permissão específica --}}
                 @if (Auth::check() && (Auth::user()->area_hospitalar || Auth::user()->hasAnyRole(['Admin','Gerente']) || vPerm('estoque', ['ver'])))
                     @php
-                        $areaHospitalarId = Auth::user()->area_hospitalar->area_hospitalar_id ?? 
+                        $areaHospitalarId = Auth::user()->area_hospitalar->area_hospitalar_id ??
                                            Auth::user()->userAreaHospitalar->area_hospitalar_id ?? null;
                     @endphp
                     @if($areaHospitalarId)
@@ -82,6 +82,12 @@
                         <a href="{{ route('atividade.show') }}" class="{{ Route::currentRouteName() == 'atividade.show' ? 'active' : '' }}">
                             <i class="fa fa-edit"></i>
                             <span> Atividades </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('fornecedores') }}" class="{{ Route::currentRouteName() == 'fornecedores' ? 'active' : '' }}">
+                            <i class="fa fa-edit"></i>
+                            <span> Fornecedores </span>
                         </a>
                     </li>
                     @if (Auth::user()->username == 'adriano.lata' or Auth::user()->username == 'augusto.kussema')
