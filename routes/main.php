@@ -15,6 +15,7 @@ use App\Prada\Controllers\{
     GetterController,
     FuncionarioController,
     AtividadeController,
+    FornecedorController,
     NivelAlertaController,
     StockController
 };
@@ -36,6 +37,11 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
     // Dashboard de estoque
     Route::prefix('stock')->group(function () {
         Route::get('/dashboard', [DashStock::class, 'index'])->name('stock.dashboard');
+    });
+
+    // Rotas de fornecedores
+    Route::prefix('fornecedores')->group(function () {
+        Route::get('/', [FornecedorController::class, 'index'])->name('fornecedores');
     });
 
     // Gestão de estoque
