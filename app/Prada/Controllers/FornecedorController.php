@@ -38,7 +38,7 @@ class FornecedorController extends Controller
 
         // Filtros
         $filtrosAplicados = [];
-        
+
         if ($request->filled('nome')) {
             $query->buscar($request->nome);
             $filtrosAplicados['nome'] = $request->nome;

@@ -261,18 +261,18 @@
     function popularOffcanvasHistorico(atividades) {
         const timeline = $('#timelineHistorico');
         const emptyState = $('#emptyHistorico');
-        
+
         timeline.empty();
-        
+
         if (!atividades || atividades.length === 0) {
             timeline.hide();
             emptyState.show();
             return;
         }
-        
+
         timeline.show();
         emptyState.hide();
-        
+
         atividades.forEach(atividade => {
             const item = criarTimelineItem(atividade);
             timeline.append(item);
@@ -290,7 +290,7 @@
         const actionBadge = obterActionBadge(atividade.action);
         const dataFormatada = formatarData(atividade.created_at);
         const changes = atividade.changes ? renderizarMudancas(atividade.changes) : '';
-        
+
         return $(`
             <div class="timeline-item ${actionClass}">
                 <div class="timeline-header">
@@ -329,7 +329,7 @@
             'view': '<span class="action-badge view"><i class="fas fa-eye me-1"></i>Visualização</span>',
             'list': '<span class="action-badge list"><i class="fas fa-list me-1"></i>Listagem</span>'
         };
-        
+
         return badges[action] || '<span class="action-badge"><i class="fas fa-info-circle me-1"></i>Atividade</span>';
     }
 
@@ -346,12 +346,12 @@
         const minutos = Math.floor(diff / 60000);
         const horas = Math.floor(diff / 3600000);
         const dias = Math.floor(diff / 86400000);
-        
+
         if (minutos < 1) return 'Agora mesmo';
         if (minutos < 60) return `Há ${minutos} minuto${minutos > 1 ? 's' : ''}`;
         if (horas < 24) return `Há ${horas} hora${horas > 1 ? 's' : ''}`;
         if (dias < 7) return `Há ${dias} dia${dias > 1 ? 's' : ''}`;
-        
+
         return data.toLocaleDateString('pt-PT', {
             day: '2-digit',
             month: '2-digit',
@@ -371,9 +371,9 @@
         if (!changes || typeof changes !== 'object' || Object.keys(changes).length === 0) {
             return '';
         }
-        
+
         let html = '<div class="timeline-changes"><h6>Alterações:</h6>';
-        
+
         for (const [campo, valores] of Object.entries(changes)) {
             if (valores && typeof valores === 'object' && valores.antigo !== undefined) {
                 html += `
@@ -386,7 +386,7 @@
                 `;
             }
         }
-        
+
         html += '</div>';
         return html;
     }
@@ -420,7 +420,7 @@
             'iban': 'IBAN',
             'observacoes': 'Observações'
         };
-        
+
         return nomes[campo] || campo.charAt(0).toUpperCase() + campo.slice(1).replace('_', ' ');
     }
 </script>
