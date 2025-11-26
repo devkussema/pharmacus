@@ -21,6 +21,8 @@
 
 @include('prepharma.fornecedores._editFornecedor')
 
+@include('prepharma.fornecedores._detalhesFornecedor')
+
 <!-- Toast Container -->
 <div class="toast-container-custom" id="toastContainer"></div>
 

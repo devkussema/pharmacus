@@ -114,8 +114,9 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .table-fornecedores tbody tr.row-selected {
+    .table-fornecedores tbody tr.row-selected td {
         background: #e3f2fd !important;
+        border-bottom: none !important;
     }
 
     .table-fornecedores tbody td {
@@ -124,15 +125,38 @@
         border: none;
     }
 
-    /* Action Buttons */
-    .action-buttons {
+    /* Action Buttons Row */
+    .action-buttons-row {
         display: none;
-        gap: 8px;
-        animation: fadeIn 0.3s ease;
+        background: #f0f7ff;
+        border-left: 4px solid #667eea;
+        animation: slideDown 0.3s ease;
     }
 
-    .table-fornecedores tbody tr.row-selected .action-buttons {
+    .action-buttons-row.show {
+        display: table-row;
+    }
+
+    .action-buttons-row td {
+        padding: 15px 20px;
+        border-top: 1px solid #e3f2fd;
+    }
+
+    .action-buttons {
         display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .action-buttons .btn {
@@ -222,11 +246,53 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+
+    /* Processing indicator */
+    .processing-indicator {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        padding: 30px 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        text-align: center;
+    }
+
+    .processing-indicator.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .processing-indicator .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 15px;
+    }
+
+    .processing-indicator .text {
+        color: #667eea;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
 </style>
 
 <!-- Loading Overlay -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
+</div>
+
+<!-- Processing Indicator -->
+<div class="processing-indicator" id="processingIndicator">
+    <div class="spinner"></div>
+    <div class="text">A processar...</div>
 </div>
 
 <div class="fornecedores-container">
@@ -402,26 +468,6 @@
                         let stars = '⭐'.repeat(Math.round(data));
                         return `${stars} (${data})`;
                     }
-                },
-                {
-                    data: null,
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row) {
-                        return `
-                            <div class="action-buttons">
-                                <button class="btn btn-sm btn-info btn-detalhes" data-id="${row.id}">
-                                    <i class="fas fa-eye"></i> Detalhes
-                                </button>
-                                <button class="btn btn-sm btn-primary btn-editar" data-id="${row.id}">
-                                    <i class="fas fa-edit"></i> Editar
-                                </button>
-                                <button class="btn btn-sm btn-warning btn-historico" data-id="${row.id}">
-                                    <i class="fas fa-history"></i> Histórico
-                                </button>
-                            </div>
-                        `;
-                    }
                 }
             ],
             language: {
@@ -446,12 +492,40 @@
             dom: 'rtip'
         });
 
-        $('#tableFornecedores tbody').on('click', 'tr', function() {
+        $('#tableFornecedores tbody').on('click', 'tr:not(.action-buttons-row)', function() {
+            const rowData = tableFornecedores.row(this).data();
+
             if ($(this).hasClass('row-selected')) {
+                // Remover seleção e linha de ações
                 $(this).removeClass('row-selected');
+                $(this).next('.action-buttons-row').remove();
             } else {
-                $('#tableFornecedores tbody tr').removeClass('row-selected');
+                // Remover seleções anteriores
+                $('#tableFornecedores tbody tr.row-selected').removeClass('row-selected');
+                $('#tableFornecedores tbody tr.action-buttons-row').remove();
+
+                // Adicionar nova seleção
                 $(this).addClass('row-selected');
+
+                // Criar linha de ações
+                const actionsRow = `
+                    <tr class="action-buttons-row show">
+                        <td colspan="6">
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-info btn-detalhes" data-id="${rowData.id}">
+                                    <i class="fas fa-eye"></i> Detalhes
+                                </button>
+                                <button class="btn btn-sm btn-primary btn-editar" data-id="${rowData.id}">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-sm btn-warning btn-historico" data-id="${rowData.id}">
+                                    <i class="fas fa-history"></i> Histórico
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                $(this).after(actionsRow);
             }
         });
 
@@ -477,18 +551,33 @@
         });
 
         $('#btnRefresh').on('click', function() {
-            tableFornecedores.ajax.reload();
-            showToast('Dados atualizados', 'success');
+            showProcessing('A atualizar dados...');
+            disableButtons();
+            tableFornecedores.ajax.reload(function() {
+                hideProcessing();
+                enableButtons();
+                showToast('Dados atualizados', 'success');
+            });
         });
 
         $('#formFiltros').on('submit', function(e) {
             e.preventDefault();
-            tableFornecedores.ajax.reload();
+            showProcessing('A aplicar filtros...');
+            disableButtons();
+            tableFornecedores.ajax.reload(function() {
+                hideProcessing();
+                enableButtons();
+            });
         });
 
         $('#btnLimparFiltros').on('click', function() {
             $('#formFiltros')[0].reset();
-            tableFornecedores.ajax.reload();
+            showProcessing('A limpar filtros...');
+            disableButtons();
+            tableFornecedores.ajax.reload(function() {
+                hideProcessing();
+                enableButtons();
+            });
         });
 
         $('#btnAddFornecedor').on('click', function() {
@@ -511,8 +600,9 @@
             type: 'GET',
             success: function(data) {
                 hideLoading();
-                showToast('Detalhes do fornecedor: ' + data.nome, 'info');
-                console.log('Detalhes:', data);
+                popularOffcanvasDetalhes(data);
+                const offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasDetalhesFornecedor'));
+                offcanvas.show();
             },
             error: function(xhr) {
                 hideLoading();
@@ -555,5 +645,50 @@
 
     function hideLoading() {
         $('#loadingOverlay').removeClass('active');
+    }
+
+    function showProcessing(text = 'A processar...') {
+        $('#processingIndicator .text').text(text);
+        $('#processingIndicator').addClass('active');
+    }
+
+    function hideProcessing() {
+        $('#processingIndicator').removeClass('active');
+    }
+
+    function disableButtons() {
+        $('#btnRefresh, #formFiltros button, #btnLimparFiltros').prop('disabled', true).addClass('disabled');
+    }
+
+    function enableButtons() {
+        $('#btnRefresh, #formFiltros button, #btnLimparFiltros').prop('disabled', false).removeClass('disabled');
+    }
+
+    function popularOffcanvasDetalhes(data) {
+        $('#detalheNome').text(data.nome || '--');
+        $('#detalheNif').text(data.nif || '--');
+        $('#detalheTipo').html(data.tipo === 'nacional' ? '<span class="badge badge-info">Nacional</span>' : '<span class="badge badge-primary">Internacional</span>');
+        $('#detalheStatus').html(
+            data.status === 'ativo' ? '<span class="badge badge-success">Ativo</span>' :
+            data.status === 'inativo' ? '<span class="badge badge-warning">Inativo</span>' :
+            '<span class="badge badge-danger">Bloqueado</span>'
+        );
+        $('#detalheEmail').text(data.email || '--');
+        $('#detalheTelefone').text(data.telefone || '--');
+        $('#detalheTelemovel').text(data.telemovel || '--');
+        $('#detalheWhatsapp').text(data.whatsapp || '--');
+        $('#detalheEndereco').text(data.endereco || '--');
+        $('#detalheCidade').text(data.cidade || '--');
+        $('#detalheProvincia').text(data.provincia || '--');
+        $('#detalhePais').text(data.pais || '--');
+        $('#detalheCodigoPostal').text(data.codigo_postal || '--');
+        $('#detalheWebsite').html(data.website ? `<a href="${data.website}" target="_blank">${data.website}</a>` : '--');
+        $('#detalhePessoaContacto').text(data.pessoa_contacto || '--');
+        $('#detalheCargoContacto').text(data.cargo_contacto || '--');
+        $('#detalheAvaliacao').html(data.avaliacao ? '⭐'.repeat(Math.round(data.avaliacao)) + ` (${data.avaliacao})` : '<span class="text-muted">Sem avaliação</span>');
+        $('#detalheBanco').text(data.banco || '--');
+        $('#detalheContaBancaria').text(data.conta_bancaria || '--');
+        $('#detalheIban').text(data.iban || '--');
+        $('#detalheObservacoes').text(data.observacoes || '--');
     }
 </script>
