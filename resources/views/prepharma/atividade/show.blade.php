@@ -93,9 +93,9 @@
                                         <li class="activity-item" data-user-id="{{ $at->user_id }}" data-date="{{ $at->created_at->format('Y-m-d') }}" data-text="{{ strtolower($at->texto) }}">
                                             <div class="activity-user">
                                                 <a href="javascript:void(0)"
-                                                   title="Usuário: {{ $at->user->nome }}&#10;Data: {{ formatDataAtv($at->created_at) }}&#10;Hora: {{ formatar_horas($at->created_at) }}&#10;Atividade: {{ $at->texto }}"
+                                                   title="Usuário: {{ $at->user?->nome ?? $at->user_name ?? 'Sistema' }}&#10;Data: {{ formatDataAtv($at->created_at) }}&#10;Hora: {{ formatar_horas($at->created_at) }}&#10;Atividade: {{ $at->texto }}"
                                                    data-bs-toggle="tooltip" data-bs-html="true" class="avatar">
-                                                    <img alt="{{ $at->user->nome }}"
+                                                    <img alt="{{ $at->user?->nome ?? $at->user_name ?? 'Sistema' }}"
                                                         src="{{ asset('prepharma/img/white__logo2.png') }}"
                                                         class="img-fluid rounded-circle">
                                                 </a>
@@ -108,7 +108,7 @@
                                                     <span class="time">{{ formatar_horas($at->created_at) }}</span>
                                                 </div>
                                                 <div class="comman-activitys flex-grow-1">
-                                                    <h3>{{ $at->user->nome }}</h3>
+                                                    <h3>{{ $at->user?->nome ?? $at->user_name ?? 'Sistema' }}</h3>
                                                     <p><span>{{ $at->texto }}</span></p>
                                                 </div>
                                             </div>

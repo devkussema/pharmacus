@@ -25,9 +25,23 @@ class AtividadeService
     {
         $user = Auth::user();
 
+        // Se não houver usuário autenticado, usar um usuário sistema padrão
+        if (!$user) {
+            // Buscar ou criar usuário "Sistema"
+            $user = \App\Models\User::firstOrCreate(
+                ['email' => 'sistema@pharmacus.local'],
+                [
+                    'nome' => 'Sistema',
+                    'password' => bcrypt(Str::random(32)),
+                    'status' => true,
+                    'role' => 'system'
+                ]
+            );
+        }
+
         $data = [
-            'user_id' => $user?->id,
-            'user_name' => $user?->nome ?? 'Sistema',
+            'user_id' => $user->id,
+            'user_name' => $user->nome ?? 'Sistema',
             'texto' => $texto,
             'action' => $options['action'] ?? null,
             'model_type' => $options['model_type'] ?? null,
@@ -41,7 +55,7 @@ class AtividadeService
             'correlation_id' => $options['correlation_id'] ?? Str::uuid()->toString(),
             'level' => $options['level'] ?? 'info',
             'sensitive' => $options['sensitive'] ?? false,
-            'actor_role' => $user?->roles?->first()?->name ?? 'guest',
+            'actor_role' => $user->roles?->first()?->name ?? $user->role ?? 'guest',
         ];
 
         return Atividade::create($data);
