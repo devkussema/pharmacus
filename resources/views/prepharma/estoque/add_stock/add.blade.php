@@ -6,7 +6,7 @@
     <div class="content">
         @include('partials.session')
         <div class="row">
-            @if (Auth::user()->username == 'adriano.lata')
+            @if(in_array(Auth::user()->username, ['adriano.lata', 'rosa.andre', 'augusto.kussema', 'augusto.tiago']))
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
