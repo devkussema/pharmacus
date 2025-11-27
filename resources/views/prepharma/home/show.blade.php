@@ -173,7 +173,7 @@
                                             <td class="table-image appoint-doctor">
                                                 {{-- <img width="28" height="28" class="rounded-circle"
                                                     src="{{ asset('prepharma/img/profiles/avatar-02.jpg')}}" alt> --}}
-                                                <h2>{{ $at->user->nome }}</h2>
+                                                <h2>{{ @$at->user->nome }}</h2>
                                             </td>
                                             <td>{{ $at->texto }}</td>
                                             <td class="appoint-time">

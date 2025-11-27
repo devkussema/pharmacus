@@ -7,7 +7,7 @@ use App\Models\Atividade;
 use App\Models\Fornecedor;
 use App\Services\AtividadeService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Validator, Log};
 
 class FornecedorController extends Controller
 {
@@ -70,7 +70,7 @@ class FornecedorController extends Controller
                 $fornecedores->count()
             );
         } catch (\Exception $e) {
-            \Log::error('Erro ao registar atividade de listagem: ' . $e->getMessage());
+            Log::error('Erro ao registar atividade de listagem: ' . $e->getMessage());
         }
 
         return response()->json(['data' => $fornecedores]);
@@ -96,7 +96,7 @@ class FornecedorController extends Controller
         try {
             AtividadeService::registarVisualizacao('Fornecedor', $fornecedor);
         } catch (\Exception $e) {
-            \Log::error('Erro ao registar atividade de visualização: ' . $e->getMessage());
+            Log::error('Erro ao registar atividade de visualização: ' . $e->getMessage());
         }
 
         return response()->json($fornecedor);
@@ -140,7 +140,7 @@ class FornecedorController extends Controller
         try {
             AtividadeService::registarCriacao('Fornecedor', $fornecedor);
         } catch (\Exception $e) {
-            \Log::error('Erro ao registar atividade de criação: ' . $e->getMessage());
+            Log::error('Erro ao registar atividade de criação: ' . $e->getMessage());
         }
 
         return response()->json([
@@ -210,7 +210,7 @@ class FornecedorController extends Controller
             try {
                 AtividadeService::registarAtualizacao('Fornecedor', $fornecedor, $mudancas);
             } catch (\Exception $e) {
-                \Log::error('Erro ao registar atividade de atualização: ' . $e->getMessage());
+                Log::error('Erro ao registar atividade de atualização: ' . $e->getMessage());
             }
         }
 
@@ -240,7 +240,7 @@ class FornecedorController extends Controller
         try {
             AtividadeService::registarExclusao('Fornecedor', $fornecedor);
         } catch (\Exception $e) {
-            \Log::error('Erro ao registar atividade de exclusão: ' . $e->getMessage());
+            Log::error('Erro ao registar atividade de exclusão: ' . $e->getMessage());
         }
 
         $fornecedor->delete();

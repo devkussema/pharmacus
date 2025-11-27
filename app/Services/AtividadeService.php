@@ -25,23 +25,14 @@ class AtividadeService
     {
         $user = Auth::user();
 
-        // Se não houver usuário autenticado, usar um usuário sistema padrão
+        // Garantir que há um usuário autenticado
         if (!$user) {
-            // Buscar ou criar usuário "Sistema"
-            $user = \App\Models\User::firstOrCreate(
-                ['email' => 'sistema@pharmacus.local'],
-                [
-                    'nome' => 'Sistema',
-                    'password' => bcrypt(Str::random(32)),
-                    'status' => true,
-                    'role' => 'system'
-                ]
-            );
+            throw new \RuntimeException('Não é possível registar atividade sem usuário autenticado');
         }
 
         $data = [
             'user_id' => $user->id,
-            'user_name' => $user->nome ?? 'Sistema',
+            'user_name' => $user->nome,
             'texto' => $texto,
             'action' => $options['action'] ?? null,
             'model_type' => $options['model_type'] ?? null,
@@ -55,13 +46,11 @@ class AtividadeService
             'correlation_id' => $options['correlation_id'] ?? Str::uuid()->toString(),
             'level' => $options['level'] ?? 'info',
             'sensitive' => $options['sensitive'] ?? false,
-            'actor_role' => $user->roles?->first()?->name ?? $user->role ?? 'guest',
+            'actor_role' => $user->roles?->first()?->name ?? $user->role ?? 'user',
         ];
 
         return Atividade::create($data);
-    }
-
-    /**
+    }    /**
      * Registar criação de um modelo.
      *
      * @param string $modelType Tipo do modelo (ex: 'Fornecedor')

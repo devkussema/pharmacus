@@ -44,6 +44,16 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::get('/', [FornecedorController::class, 'index'])->name('fornecedores');
     });
 
+    // APIs de fornecedores (dentro do grupo autenticado)
+    Route::prefix('api/fornecedores')->group(function () {
+        Route::get('/', [FornecedorController::class, 'listar']);
+        Route::post('/', [FornecedorController::class, 'store']);
+        Route::get('/{id}/historico', [FornecedorController::class, 'historico']);
+        Route::get('/{id}', [FornecedorController::class, 'show']);
+        Route::put('/{id}', [FornecedorController::class, 'update']);
+        Route::delete('/{id}', [FornecedorController::class, 'destroy']);
+    });
+
     // Gestão de estoque
     Route::post('estoque/adder', [EstoqueController::class, 'store'])->name('estoque.storer');
 
