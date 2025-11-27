@@ -51,7 +51,7 @@ Route::prefix('')->namespace('App\Http\Controllers\Api\v1')->group(function () {
 
     // APIs de áreas hospitalares
     Route::get('/get/area_hospitalar', [AreaHospitalarController::class, 'getAll']);
-    Route::get('/get/areas_hospitalares/def/{id}', [AreaHospitalarController::class, 'getAllMy']);
+    // Movido para routes/main.php (requer auth): /get/areas_hospitalares/def/{id}
     Route::get('/get/area_hospitalar/{id}', [AreaHospitalarController::class, 'getInfo']);
 
     // APIs de farmácias
@@ -102,4 +102,4 @@ Route::prefix('alertas')->middleware('auth')->group(function () {
 });
 
 // Compatibilidade com APIs antigas
-Route::get('/produtos/{area_id}', [ProdutoApiController::class, 'listarPorArea']);
+// Movido para routes/main.php (requer auth): /produtos/{area_id}

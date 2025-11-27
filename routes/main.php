@@ -54,6 +54,12 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         Route::delete('/{id}', [FornecedorController::class, 'destroy']);
     });
 
+    // APIs de áreas hospitalares (dentro do grupo autenticado)
+    Route::prefix('api')->group(function () {
+        Route::get('/get/areas_hospitalares/def/{id}', [\App\Prada\Controllers\AreaHospitalarController::class, 'getAllMy']);
+        Route::get('/produtos/{area_id}', [\App\Http\Controllers\ProdutoApiController::class, 'listarPorArea']);
+    });
+
     // Gestão de estoque
     Route::post('estoque/adder', [EstoqueController::class, 'store'])->name('estoque.storer');
 
