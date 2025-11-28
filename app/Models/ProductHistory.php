@@ -72,14 +72,28 @@ class ProductHistory extends Model
     }
 
     /**
-     * Resumo legível da mudança
+     * Resumo legível da mudança (inclui fornecedor se disponível)
+     *
+     * - Para ações de stock (stock_in/stock_out), tenta exibir o nome do fornecedor
+     *   a partir de payload.supplier_name (ou payload.fornecedor/meta.supplier_name).
      */
     public function summary(): string
     {
-        $user = $this->user ? $this->user->name : 'Sistema';
+        $userName = $this->user ? ($this->user->nome ?? $this->user->name) : 'Sistema';
         $when = $this->created_at ? $this->created_at->diffForHumans() : 'agora';
         $qty = $this->quantity_delta ? " ({$this->quantity_delta})" : '';
-        return ucfirst($this->action) . " por {$user} {$when}{$qty}";
+
+        $supplier = null;
+        if (is_array($this->payload)) {
+            $supplier = $this->payload['supplier_name'] ?? ($this->payload['fornecedor'] ?? null);
+        }
+        if (!$supplier && is_array($this->meta)) {
+            $supplier = $this->meta['supplier_name'] ?? null;
+        }
+
+        $supplierTxt = $supplier ? " — Fornecedor: {$supplier}" : '';
+
+        return ucfirst($this->action) . " por {$userName} {$when}{$qty}{$supplierTxt}";
     }
 
     /**

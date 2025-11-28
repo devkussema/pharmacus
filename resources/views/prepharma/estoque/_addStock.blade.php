@@ -217,6 +217,8 @@
                                                     return { id: f.id, text: text, raw: f };
                                                 });
                                             }
+                                            // Opção fixa para ajustes sem fornecedor
+                                            results.unshift({ id: '_revisao_', text: 'Revisão Estoque', raw: null });
                                             return { results: results };
                                         },
                                         cache: true
@@ -227,8 +229,14 @@
                                     var item = e.params && e.params.data ? e.params.data : null;
                                     var nome = '';
                                     if (item) {
-                                        if (item.raw && item.raw.nome) nome = item.raw.nome;
-                                        else if (item.text) nome = item.text;
+                                        if (item.id === '_revisao_') {
+                                            nome = 'Revisão Estoque';
+                                        } else if (item.raw && item.raw.nome) {
+                                            nome = item.raw.nome;
+                                        } else if (item.text) {
+                                            // Remover NIF do texto quando usado como nome
+                                            nome = String(item.text).split(' — ')[0];
+                                        }
                                     }
                                     var hidden = document.getElementById('add_fornecedor');
                                     if (hidden) hidden.value = nome;

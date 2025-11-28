@@ -870,7 +870,6 @@ class EstoqueController extends Controller
             $oldValues = [
                 'quantidade' => $produto->quantidade,
                 'num_lote' => $produto->num_lote,
-                'fornecedor' => $produto->fornecedor,
                 'obs' => $produto->obs,
             ];
 
@@ -882,10 +881,8 @@ class EstoqueController extends Controller
                 $produto->num_lote = $request->num_lote;
             }
 
-            // Atualizar fornecedor se fornecido
-            if ($request->filled('fornecedor')) {
-                $produto->fornecedor = $request->fornecedor;
-            }
+            // Nota: fornecedor NÃO é campo da tabela produto_estoques.
+            // Usamos apenas para fins de log/auditoria no histórico.
 
             // Atualizar observações se fornecido
             if ($request->filled('obs')) {
@@ -939,7 +936,7 @@ class EstoqueController extends Controller
                         'quantidade_adicionada' => $quantidadeAdicionar,
                         'quantidade_nova' => $novaQuantidade,
                         'num_lote' => $produto->num_lote,
-                        'fornecedor' => $produto->fornecedor,
+                        'supplier_name' => $request->fornecedor,
                     ],
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->header('User-Agent'),
