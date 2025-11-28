@@ -313,7 +313,7 @@
                 }
 
                 items.forEach(item => {
-                    if (mode === 'auth' || item.action) {
+                    if (mode === 'auth') {
                         // auth log
                         const date = new Date(item.created_at || item.createdAt);
                         const userName = item.user_name || item.user?.nome || '—';
@@ -343,7 +343,7 @@
                         // atividade normal (espera-se campos user, texto, created_at)
                         const date = new Date(item.created_at || item.createdAt);
                         const userName = item.user?.nome || item.user_name || '—';
-                        const texto = item.texto || item.action || '';
+                        const texto = item.texto || '';
                         const li = `<li class="activity-item" data-user-id="${item.user_id || ''}" data-date="${date.toISOString().slice(0,10)}" data-text="${(texto||'').toLowerCase()}">
                                         <div class="activity-user">
                                             <a href="javascript:void(0)" title="Usuário: ${userName}&#10;Data: ${formatDateSimple(date)}&#10;Hora: ${formatTimeSimple(date)}&#10;Atividade: ${texto}" data-bs-toggle="tooltip" data-bs-html="true" class="avatar">

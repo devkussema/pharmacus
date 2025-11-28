@@ -62,16 +62,7 @@ class FornecedorController extends Controller
         // Ordenação e paginação
         $fornecedores = $query->orderBy('nome', 'asc')->get();
 
-        // Registar atividade de listagem (não bloqueia se falhar)
-        try {
-            AtividadeService::registarListagem(
-                'Fornecedor',
-                $filtrosAplicados,
-                $fornecedores->count()
-            );
-        } catch (\Exception $e) {
-            Log::error('Erro ao registar atividade de listagem: ' . $e->getMessage());
-        }
+        // Nota: não registamos atividades de listagem para evitar ruído na timeline
 
         return response()->json(['data' => $fornecedores]);
     }
