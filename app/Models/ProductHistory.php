@@ -56,6 +56,33 @@ class ProductHistory extends Model
     ];
 
     /**
+     * Impede registos "updated" quando apenas o campo updated_at foi alterado.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (ProductHistory $history) {
+            if (($history->action ?? null) !== 'updated') return true;
+
+            // Verifica conjunto de changes
+            $changes = is_array($history->changes) ? $history->changes : [];
+            $changeKeys = array_keys($changes);
+            $meaningful = array_diff($changeKeys, ['updated_at']);
+
+            // Também verifica payload, caso o observer tenha colocado apenas updated_at
+            $payload = is_array($history->payload) ? $history->payload : [];
+            $payloadKeys = array_keys($payload);
+            $meaningfulPayload = array_diff($payloadKeys, ['updated_at']);
+
+            // Se não houver alterações relevantes além de updated_at, cancelar o save
+            if ((empty($meaningful) && !empty($changeKeys)) || (empty($meaningfulPayload) && !empty($payloadKeys))) {
+                return false; // aborta o "saving"
+            }
+
+            return true;
+        });
+    }
+
+    /**
      * Relationship para o produto
      */
     public function product()
