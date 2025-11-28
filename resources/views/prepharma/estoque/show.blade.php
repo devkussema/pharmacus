@@ -982,7 +982,8 @@
                 // Mapeamento de ações para rótulos em Português
                 var actionLabelsPT = {
                     'created': 'Criado',
-                    'updated': 'Atualizado',
+                    // Ocultar rótulo textual para 'updated' (mostra apenas detalhes)
+                    'updated': '',
                     'stock_in': 'Entrada de estoque',
                     'stock_out': 'Saída de estoque',
                     'deleted': 'Eliminado',
@@ -1032,7 +1033,8 @@
                         if (p.obs) parts.push(`<i class=\"fa fa-comment me-1\"></i> ${p.obs}`);
                     } else if (a === 'stock_in') {
                         if (p.num_lote) parts.push(`<i class=\"fa fa-barcode me-1\"></i> Lote: <strong>${p.num_lote}</strong>`);
-                        if (p.fornecedor) parts.push(`<i class=\"fa fa-truck me-1\"></i> Fornecedor: <strong>${p.fornecedor}</strong>`);
+                        var forn = p.supplier_name || p.fornecedor || '';
+                        if (forn) parts.push(`<i class=\"fa fa-truck me-1\"></i> Fornecedor: <strong>${forn}</strong>`);
                         if (p.obs) parts.push(`<i class=\"fa fa-comment me-1\"></i> ${p.obs}`);
                     } else if (a === 'updated') {
                         if (Array.isArray(p.changed_fields) && p.changed_fields.length) {

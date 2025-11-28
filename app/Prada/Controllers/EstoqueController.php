@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\DB;
 use App\Traits\{AtividadeTrait, GenerateTrait};
 use Carbon\Carbon;
 use App\Models\ProductHistory;
+use App\Observers\ProdutoEstoqueObserver;
+use App\Services\AtividadeService;
 
 class EstoqueController extends Controller
 {
@@ -682,6 +684,8 @@ class EstoqueController extends Controller
                     ->first();
 
                 if ($produtoExistente) {
+                    // Suprimir 'updated' do observer para esta operação
+                    ProdutoEstoqueObserver::markOrigin($produtoExistente->id, 'baixa');
                     // Adicionar à quantidade existente
                     $produtoExistente->quantidade += $quantidadeBaixar;
                     $produtoExistente->save();
@@ -738,6 +742,7 @@ class EstoqueController extends Controller
             }
 
             // Atualizar produto origem: reduzir quantidade
+            ProdutoEstoqueObserver::markOrigin($produto->id, 'baixa');
             $produto->update(['quantidade' => $produto->quantidade - $quantidadeBaixar]);
             $produto->saldo->update(['qtd' => $saldoRestante]);
 
@@ -851,6 +856,7 @@ class EstoqueController extends Controller
             'quantidade' => 'required|integer|min:1',
             'num_lote' => 'nullable|string',
             'fornecedor' => 'nullable|string',
+            'fornecedor_id' => 'nullable|exists:fornecedores,id',
             'obs' => 'nullable|string',
         ]);
 
@@ -872,6 +878,9 @@ class EstoqueController extends Controller
                 'num_lote' => $produto->num_lote,
                 'obs' => $produto->obs,
             ];
+
+            // Marcar origem para suprimir 'updated' duplicado no observer
+            ProdutoEstoqueObserver::markOrigin($produto->id, 'stock_in');
 
             // Atualizar o produto existente
             $produto->quantidade = $novaQuantidade;
@@ -944,6 +953,7 @@ class EstoqueController extends Controller
                         'model_type' => PE::class,
                         'route' => request()->path(),
                         'http_method' => request()->method(),
+                        'supplier_id' => $request->fornecedor_id,
                     ],
                     'quantity_delta' => $quantidadeAdicionar,
                     'movement_date' => now(),
@@ -962,7 +972,28 @@ class EstoqueController extends Controller
                 'level' => 'info',
                 'snapshot_after' => $produto->toArray(),
             ];
-            self::startAtv("Adicionou {$quantidadeAdicionar} unidades ao estoque de {$produto->designacao} (total: {$novaQuantidade})", $changes, $meta);
+            $via = $request->filled('fornecedor') ? (" via " . $request->fornecedor) : '';
+            self::startAtv("Adicionou {$quantidadeAdicionar} unidades ao estoque de {$produto->designacao}{$via} (total: {$novaQuantidade})", $changes, $meta);
+
+            // Atividade no contexto do Fornecedor (se fornecido)
+            try {
+                if ($request->filled('fornecedor_id')) {
+                    AtividadeService::registar(
+                        "Forneceu {$quantidadeAdicionar} de {$produto->designacao}",
+                        [
+                            'action' => 'supply',
+                            'model_type' => \App\Models\Fornecedor::class,
+                            'model_id' => $request->fornecedor_id,
+                            'level' => 'info',
+                            'snapshot_after' => [
+                                'produto' => $produto->designacao,
+                                'num_lote' => $produto->num_lote,
+                                'quantidade' => $quantidadeAdicionar
+                            ],
+                        ]
+                    );
+                }
+            } catch (\Throwable $_) {}
 
             DB::commit();
 

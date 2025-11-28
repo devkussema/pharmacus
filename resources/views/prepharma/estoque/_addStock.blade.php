@@ -228,23 +228,31 @@
                                 $sel.on('select2:select', function (e) {
                                     var item = e.params && e.params.data ? e.params.data : null;
                                     var nome = '';
+                                    var fid = '';
                                     if (item) {
                                         if (item.id === '_revisao_') {
                                             nome = 'Revisão Estoque';
+                                            fid = '';
                                         } else if (item.raw && item.raw.nome) {
                                             nome = item.raw.nome;
+                                            fid = item.raw.id || item.id || '';
                                         } else if (item.text) {
                                             // Remover NIF do texto quando usado como nome
                                             nome = String(item.text).split(' — ')[0];
+                                            fid = item.id || '';
                                         }
                                     }
                                     var hidden = document.getElementById('add_fornecedor');
                                     if (hidden) hidden.value = nome;
+                                    var hiddenId = document.getElementById('add_fornecedor_id');
+                                    if (hiddenId) hiddenId.value = fid;
                                 });
 
                                 $sel.on('select2:clear', function () {
                                     var hidden = document.getElementById('add_fornecedor');
                                     if (hidden) hidden.value = '';
+                                    var hiddenId = document.getElementById('add_fornecedor_id');
+                                    if (hiddenId) hiddenId.value = '';
                                 });
                             } catch (e) {
                                 console.warn('Falha ao inicializar Select2 do fornecedor:', e);
@@ -269,8 +277,9 @@
                             Fornecedor
                         </label>
                         <select class="form-control" id="add_fornecedor_select" style="width: 100%"
-                                data-placeholder="Selecionar fornecedor..."></select>
+                            data-placeholder="Selecionar fornecedor..."></select>
                         <input type="hidden" id="add_fornecedor" name="fornecedor">
+                        <input type="hidden" id="add_fornecedor_id" name="fornecedor_id">
                         <div class="form-hint">
                             <i class="fa fa-search"></i>
                             <span>Pesquise por nome ou NIF do fornecedor</span>

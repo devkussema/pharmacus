@@ -76,13 +76,17 @@ class ProdutoEstoqueObserver
 
     public function updated(ProdutoEstoque $model)
     {
-        // ignore if no meaningful changes
-        if (empty($model->getChanges())) return;
+        // Ignorar se não há mudanças relevantes (desconsidera apenas updated_at)
+        $changes = $model->getChanges();
+        if (empty($changes)) return;
+        $keys = array_diff(array_keys($changes), ['updated_at']);
+        if (empty($keys)) return;
 
         // se a alteração foi originada por uma operação de baixa, suprimimos o 'updated'
-        // para evitar duplicação com o 'stock_out' criado explicitamente em baixa().
+        // ou por uma entrada de estoque (stock_in), suprimimos 'updated'
+        // para evitar duplicação com os registos específicos criados explicitamente.
         $productId = $model->id ?? null;
-        if ($productId && isset(self::$origins[(string)$productId]) && self::$origins[(string)$productId] === 'baixa') {
+        if ($productId && isset(self::$origins[(string)$productId]) && in_array(self::$origins[(string)$productId], ['baixa','stock_in'])) {
             // limpar a flag do mapa
             unset(self::$origins[(string)$productId]);
             return;
