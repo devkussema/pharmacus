@@ -178,6 +178,73 @@
                 </div>
             </div>
 
+                <script>
+                    // Inicialização do Select2 para fornecedores dentro do offcanvas Adicionar Estoque
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var ocEl = document.getElementById('offcanvasAddStock');
+                        if (!ocEl) return;
+
+                        ocEl.addEventListener('shown.bs.offcanvas', function () {
+                            var $sel = $('#add_fornecedor_select');
+                            if (!$sel.length) return;
+
+                            if (typeof $sel.select2 !== 'function') {
+                                console.warn('Select2 não disponível');
+                                return;
+                            }
+
+                            if ($sel.hasClass('select2-hidden-accessible')) return; // já inicializado
+
+                            try {
+                                $sel.select2({
+                                    width: '100%',
+                                    dropdownParent: $('#offcanvasAddStock'),
+                                    placeholder: 'Selecionar fornecedor...',
+                                    allowClear: true,
+                                    ajax: {
+                                        url: '/api/fornecedores',
+                                        dataType: 'json',
+                                        delay: 250,
+                                        data: function (params) {
+                                            return { nome: params.term || '' };
+                                        },
+                                        processResults: function (data) {
+                                            var results = [];
+                                            if (data && data.data) {
+                                                results = data.data.map(function (f) {
+                                                    var text = f.nome || '';
+                                                    if (f.nif) text += ' — ' + f.nif;
+                                                    return { id: f.id, text: text, raw: f };
+                                                });
+                                            }
+                                            return { results: results };
+                                        },
+                                        cache: true
+                                    }
+                                });
+
+                                $sel.on('select2:select', function (e) {
+                                    var item = e.params && e.params.data ? e.params.data : null;
+                                    var nome = '';
+                                    if (item) {
+                                        if (item.raw && item.raw.nome) nome = item.raw.nome;
+                                        else if (item.text) nome = item.text;
+                                    }
+                                    var hidden = document.getElementById('add_fornecedor');
+                                    if (hidden) hidden.value = nome;
+                                });
+
+                                $sel.on('select2:clear', function () {
+                                    var hidden = document.getElementById('add_fornecedor');
+                                    if (hidden) hidden.value = '';
+                                });
+                            } catch (e) {
+                                console.warn('Falha ao inicializar Select2 do fornecedor:', e);
+                            }
+                        });
+                    });
+                </script>
+
             <div class="form-card">
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -193,8 +260,13 @@
                             <i class="fa fa-truck"></i>
                             Fornecedor
                         </label>
-                        <input type="text" class="form-control" id="add_fornecedor"
-                               name="fornecedor" placeholder="Nome do fornecedor">
+                        <select class="form-control" id="add_fornecedor_select" style="width: 100%"
+                                data-placeholder="Selecionar fornecedor..."></select>
+                        <input type="hidden" id="add_fornecedor" name="fornecedor">
+                        <div class="form-hint">
+                            <i class="fa fa-search"></i>
+                            <span>Pesquise por nome ou NIF do fornecedor</span>
+                        </div>
                     </div>
                 </div>
 
