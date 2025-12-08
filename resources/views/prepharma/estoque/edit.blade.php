@@ -560,13 +560,23 @@
 
     <!-- Header com Gradiente -->
     <div class="edit-header">
-        <div class="d-flex align-items-center gap-4 header-content">
-            <div class="icon-box">
-                <i class="fas fa-edit text-white"></i>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 header-content">
+            <div class="d-flex align-items-center gap-4">
+                <div class="icon-box">
+                    <i class="fas fa-edit text-white"></i>
+                </div>
+                <div>
+                    <h4 class="mb-2">Editar Produto</h4>
+                    <small><i class="fas fa-box me-2"></i>{{ $pe->designacao }}</small>
+                </div>
             </div>
-            <div>
-                <h4 class="mb-2">Editar Produto</h4>
-                <small><i class="fas fa-box me-2"></i>{{ $pe->designacao }}</small>
+            <div class="d-flex gap-2">
+                <button type="button" onclick="history.back()" class="btn btn-sm btn-light" title="Voltar à página anterior">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <button type="button" onclick="window.location.reload()" class="btn btn-sm btn-outline-light" title="Atualizar página">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
             </div>
         </div>
     </div>

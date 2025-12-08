@@ -18,6 +18,11 @@
             border-radius: 12px 12px 0 0;
             margin-bottom: 0;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .estoque-header h3 {
@@ -28,6 +33,25 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+        }
+
+        .estoque-header .btn-back {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .estoque-header .btn-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateX(-3px);
         }
 
         .estoque-header h3 i {
@@ -624,7 +648,11 @@
                         <small style="color: rgba(255,255,255,0.9);">Gestão completa de produtos e movimentações</small>
                     </div>
                 </div>
-                <div class="tool-buttons">
+                <div class="tool-buttons d-flex gap-2">
+                    <button onclick="history.back()" class="btn btn-sm btn-light" title="Voltar à página anterior" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Voltar</span>
+                    </button>
                     <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}"
                        id="imprimir-pagina"
                        target="_blank"
@@ -669,8 +697,9 @@
                         </button>
 
                         @if (isAdministrator() or auth()->user()->pode_cadastrar_produtos)
-                            <button onclick="location.href = '{{ route('estoque.cadastrar', ['area_id' => $ah->id]) }}'"
-                                    class="btn btn-primary">
+                            <button id="btnAdicionarProduto"
+                                    class="btn btn-primary"
+                                    title="Adicionar novo produto ao estoque">
                                 <i class="fas fa-plus"></i>
                                 Adicionar Produto
                             </button>
@@ -1308,10 +1337,27 @@
                 });
             });
 
-            // Função para Editar Produto
+            // Função para Editar Produto via Offcanvas
             $(document).on('click', '.btn-editar', function() {
-                var id = $(this).data('id');
-                window.location.href = `/estoque/editar/${id}/{{ $ah->id }}`;
+                var produtoId = $(this).data('id');
+                if (typeof openEditProductOffcanvas === 'function') {
+                    openEditProductOffcanvas(produtoId);
+                } else {
+                    console.error('Função openEditProductOffcanvas não encontrada');
+                    showToast('Erro ao abrir editor de produto', 'error');
+                }
+            });
+
+            // Função para Adicionar Produto via Offcanvas
+            $('#btnAdicionarProduto').on('click', function() {
+                var offcanvasEl = document.getElementById('offcanvasAddProduct');
+                if (offcanvasEl) {
+                    var offcanvas = new bootstrap.Offcanvas(offcanvasEl);
+                    offcanvas.show();
+                } else {
+                    console.error('Offcanvas addProduct não encontrado');
+                    showToast('Erro ao abrir formulário', 'error');
+                }
             });
 
             // Função para Sincronizar quantidade a partir do descritivo
@@ -1937,6 +1983,10 @@
 @include('prepharma.estoque._addStock')
 @include('prepharma.estoque._darBaixa')
 @include('prepharma.estoque._productDetails')
+@include('prepharma.estoque._addProduct')
+@include('prepharma.estoque._editProduct')
+{{-- @include('prepharma.estoque._addProduct')
+@include('prepharma.estoque._editProduct') --}}
 
 <!-- Small resilient script: attach keyboard toggle and delegated click handler AFTER all other scripts to avoid being blocked by earlier JS errors -->
 <script>

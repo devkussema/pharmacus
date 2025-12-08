@@ -311,13 +311,23 @@
 
     <!-- Header com Gradiente -->
     <div class="cadastro-header">
-        <div class="d-flex align-items-center gap-3">
-            <div class="rounded-circle bg-white bg-opacity-25 p-3">
-                <i class="fas fa-plus-circle fa-lg text-white"></i>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                    <i class="fas fa-plus-circle fa-lg text-white"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">Adicionar Produto ao Estoque</h4>
+                    <small>Preencha as informações do novo produto</small>
+                </div>
             </div>
-            <div>
-                <h4 class="mb-1">Adicionar Produto ao Estoque</h4>
-                <small>Preencha as informações do novo produto</small>
+            <div class="d-flex gap-2">
+                <button type="button" onclick="history.back()" class="btn btn-sm btn-light" title="Voltar à página anterior">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <button type="button" onclick="window.location.reload()" class="btn btn-sm btn-outline-light" title="Atualizar página">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
             </div>
         </div>
     </div>

@@ -5,6 +5,25 @@
 @section('content')
     <div class="content">
         @include('partials.session')
+
+        <!-- Breadcrumb e Botões de Navegação -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ route('estoque.getEstoque', ['id' => $area]) }}"><i class="fas fa-warehouse me-1"></i>Estoque</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Configurar Estoque Mínimo</li>
+                </ol>
+            </nav>
+            <div class="d-flex gap-2">
+                <button type="button" onclick="history.back()" class="btn btn-sm btn-secondary" title="Voltar à página anterior">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <button type="button" onclick="window.location.reload()" class="btn btn-sm btn-outline-secondary" title="Atualizar página">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+            </div>
+        </div>
+
         <div class="row">
             @if(in_array(Auth::user()->username, ['adriano.lata', 'rosa.andre', 'augusto.kussema', 'augusto.tiago']))
                 <div class="col-sm-12">

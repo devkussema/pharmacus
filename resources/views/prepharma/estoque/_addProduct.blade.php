@@ -1,7 +1,7 @@
 {{--
     Offcanvas para Adicionar Novo Produto ao Estoque
     Design moderno com validação e AJAX
-    
+
     @author Augusto Kussema
     @date 08 Dez 2025 10:15 (Luanda)
     @description Formulário completo para cadastrar produto via AJAX com toast notifications
@@ -20,15 +20,16 @@
     <div class="offcanvas-body">
         <form id="formAddProduct">
             @csrf
-            <input type="hidden" name="area_id" id="add_prod_area_id" value="{{ $ah->id ?? '' }}">
-            
+            <input type="hidden" name="area_id" id="add_prod_area_id" value="{{ $ah->farmacia_area->id ?? '' }}">
+            <input type="hidden" name="farmacia_id" id="add_prod_farmacia_id" value="{{ auth()->user()->isFarmacia->farmacia->id ?? auth()->user()->farmacia->farmacia->id ?? '' }}">
+
             <!-- Seção: Informações Básicas -->
             <div class="form-section">
                 <h6 class="section-title">
                     <i class="fas fa-info-circle"></i>
                     Informações Básicas
                 </h6>
-                
+
                 <div class="mb-3">
                     <label for="add_prod_designacao" class="form-label required">
                         <i class="fas fa-tag"></i> Designação
@@ -101,7 +102,7 @@
                     <i class="fas fa-boxes"></i>
                     Quantidade e Rastreamento
                 </h6>
-                
+
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="add_prod_quantidade" class="form-label required">
@@ -132,7 +133,7 @@
                     <i class="fas fa-calendar-alt"></i>
                     Datas
                 </h6>
-                
+
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="add_prod_data_producao" class="form-label required">
@@ -163,7 +164,7 @@
                     <i class="fas fa-sitemap"></i>
                     Classificação
                 </h6>
-                
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="add_prod_grupo_farmaco" class="form-label required">
@@ -192,7 +193,7 @@
                     <i class="fas fa-warehouse"></i>
                     Localização
                 </h6>
-                
+
                 <div class="mb-3">
                     <label for="add_prod_prateleira" class="form-label">
                         <i class="fas fa-th"></i> Prateleira
@@ -212,7 +213,7 @@
                     <i class="fas fa-comment-alt"></i>
                     Observações
                 </h6>
-                
+
                 <div class="mb-3">
                     <label for="add_prod_obs" class="form-label">
                         <i class="fas fa-sticky-note"></i> Observações
@@ -395,29 +396,29 @@ $(document).ready(function() {
     // Submit form via AJAX
     $('#formAddProduct').on('submit', function(e) {
         e.preventDefault();
-        
+
         var form = $(this);
         var formData = new FormData(this);
-        
+
         // Validar datas
         var dataProducao = new Date($('#add_prod_data_producao').val());
         var dataExpiracao = new Date($('#add_prod_data_expiracao').val());
-        
+
         if (dataExpiracao <= dataProducao) {
             showToast('A data de expiração deve ser posterior à data de produção', 'error');
             return;
         }
-        
+
         // UI elements
         var btn = $('#add_prod_submit_btn');
         var btnText = $('#add_prod_submit_text');
         var btnSpinner = $('#add_prod_submit_spinner');
-        
+
         // Disable form
         form.find('input, select, textarea, button').prop('disabled', true);
         btnText.hide();
         btnSpinner.show();
-        
+
         // AJAX request
         $.ajax({
             url: '{{ route("estoque.store") }}',
@@ -431,20 +432,20 @@ $(document).ready(function() {
             },
             success: function(response) {
                 showToast(response.message || 'Produto adicionado com sucesso!', 'success');
-                
+
                 // Reload DataTable
                 if (typeof table !== 'undefined' && table.ajax) {
                     table.ajax.reload(null, false);
                 } else {
                     $('#table-c').DataTable().ajax.reload(null, false);
                 }
-                
+
                 // Close offcanvas and reset form after delay
                 setTimeout(function() {
                     var offcanvasEl = document.getElementById('offcanvasAddProduct');
                     var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
                     if (offcanvas) offcanvas.hide();
-                    
+
                     form[0].reset();
                     form.find('input, select, textarea, button').prop('disabled', false);
                     btnText.show();
@@ -454,7 +455,7 @@ $(document).ready(function() {
             },
             error: function(xhr) {
                 var errorMsg = 'Erro ao adicionar produto';
-                
+
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
                     var errors = [];
                     $.each(xhr.responseJSON.errors, function(key, value) {
@@ -464,9 +465,9 @@ $(document).ready(function() {
                 } else if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMsg = xhr.responseJSON.message;
                 }
-                
+
                 showToast(errorMsg, 'error');
-                
+
                 // Re-enable form
                 form.find('input, select, textarea, button').prop('disabled', false);
                 btnText.show();
