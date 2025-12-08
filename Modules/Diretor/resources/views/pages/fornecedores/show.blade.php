@@ -22,50 +22,62 @@
             <div class="profile-card">
                 <div class="profile-header">
                     <div class="profile-avatar">
-                        <img src="https://ui-avatars.com/api/?name=PharmaCorp+International&size=80&background=2563eb&color=fff&bold=true" alt="PharmaCorp International">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($fornecedor->nome) }}&size=80&background=2563eb&color=fff&bold=true" alt="{{ $fornecedor->nome }}">
                     </div>
                     <div class="profile-info">
-                        <h2>PharmaCorp International</h2>
-                        <p>Fornecedor Premium</p>
+                        <h2>{{ $fornecedor->nome }}</h2>
+                        <p>{{ ucfirst($fornecedor->tipo) }} -
+                            <span class="status-badge {{ $fornecedor->status }}">{{ ucfirst($fornecedor->status) }}</span>
+                        </p>
                     </div>
                     <div class="profile-rating">
+                        @if($fornecedor->avaliacao)
                         <div class="rating-stars">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star-half-stroke"></i>
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= floor($fornecedor->avaliacao))
+                                    <i class="fa-solid fa-star"></i>
+                                @elseif($i - 0.5 <= $fornecedor->avaliacao)
+                                    <i class="fa-solid fa-star-half-stroke"></i>
+                                @else
+                                    <i class="fa-regular fa-star"></i>
+                                @endif
+                            @endfor
                         </div>
-                        <span>4.8/5.0</span>
+                        <span>{{ number_format($fornecedor->avaliacao, 1) }}/5.0</span>
+                        @else
+                        <div class="rating-stars">
+                            <span>Sem avaliação</span>
+                        </div>
+                        @endif
                     </div>
                 </div>
-                
+
                 <div class="profile-stats">
                     <div class="stat-item">
                         <div class="stat-icon success">
                             <i class="fa-solid fa-box"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-value">156</div>
+                            <div class="stat-value">{{ $totalProdutos }}</div>
                             <div class="stat-label">Produtos Fornecidos</div>
                         </div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-icon primary">
-                            <i class="fa-solid fa-shopping-cart"></i>
+                            <i class="fa-solid fa-cubes"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-value">243</div>
-                            <div class="stat-label">Encomendas Totais</div>
+                            <div class="stat-value">{{ number_format($totalUnidades, 0, ',', '.') }}</div>
+                            <div class="stat-label">Unidades Totais</div>
                         </div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-icon warning">
-                            <i class="fa-solid fa-dollar-sign"></i>
+                            <i class="fa-solid fa-calendar"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-value">Kz 8.5M</div>
-                            <div class="stat-label">Volume Total</div>
+                            <div class="stat-value">{{ $fornecedor->created_at->format('Y') }}</div>
+                            <div class="stat-label">Membro Desde</div>
                         </div>
                     </div>
                     <div class="stat-item">
@@ -73,13 +85,13 @@
                             <i class="fa-solid fa-clock"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-value">98%</div>
-                            <div class="stat-label">Taxa de Entrega</div>
+                            <div class="stat-value">{{ $fornecedor->created_at->diffForHumans() }}</div>
+                            <div class="stat-label">Último Fornecimento</div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="info-card">
                 <div class="info-header">
                     <h3>Informações de Contacto</h3>
@@ -123,7 +135,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="info-card">
                 <div class="info-header">
                     <h3>Produtos Principais</h3>
@@ -163,48 +175,40 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="info-card">
                 <div class="info-header">
-                    <h3>Histórico de Encomendas</h3>
+                    <h3>Histórico de Fornecimentos</h3>
                 </div>
                 <div class="info-body">
+                    @if($historico && $historico->count() > 0)
                     <div class="orders-timeline">
+                        @foreach($historico as $item)
                         <div class="order-item">
                             <div class="order-icon delivered">
                                 <i class="fa-solid fa-check"></i>
                             </div>
                             <div class="order-content">
-                                <div class="order-title">Encomenda #1243 - Entregue</div>
-                                <div class="order-desc">15 itens, Kz 156.000</div>
-                                <div class="order-date">15 Mar 2025</div>
+                                <div class="order-title">{{ $item['descricao'] }}</div>
+                                <div class="order-desc">
+                                    Lote: {{ $item['lote'] ?? 'N/A' }} |
+                                    Validade: {{ $item['data_expiracao'] }}
+                                </div>
+                                <div class="order-date">{{ $item['data'] }}</div>
                             </div>
                         </div>
-                        <div class="order-item">
-                            <div class="order-icon delivered">
-                                <i class="fa-solid fa-check"></i>
-                            </div>
-                            <div class="order-content">
-                                <div class="order-title">Encomenda #1189 - Entregue</div>
-                                <div class="order-desc">8 itens, Kz 89.500</div>
-                                <div class="order-date">02 Mar 2025</div>
-                            </div>
-                        </div>
-                        <div class="order-item">
-                            <div class="order-icon pending">
-                                <i class="fa-solid fa-clock"></i>
-                            </div>
-                            <div class="order-content">
-                                <div class="order-title">Encomenda #1067 - Pendente</div>
-                                <div class="order-desc">22 itens, Kz 234.000</div>
-                                <div class="order-date">18 Fev 2025</div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+                    @else
+                    <div class="empty-state">
+                        <i class="fa-solid fa-inbox"></i>
+                        <p>Nenhum fornecimento registrado ainda</p>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
-        
+
         <div class="profile-sidebar">
             <div class="info-card">
                 <div class="info-header">
@@ -229,7 +233,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="info-card">
                 <div class="info-header">
                     <h3>Performance</h3>
@@ -258,7 +262,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="info-card">
                 <div class="info-header">
                     <h3>Ações Rápidas</h3>
@@ -651,16 +655,16 @@
     .supplier-profile-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .profile-header {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .profile-rating {
         margin-left: 0;
     }
-    
+
     .profile-stats {
         grid-template-columns: repeat(2, 1fr);
     }

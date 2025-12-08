@@ -477,11 +477,11 @@ $(document).ready(function() {
         $('#edit_prod_dosagem').val(produto.dosagem || '');
         $('#edit_prod_forma').val(produto.forma).trigger('change');
         $('#edit_prod_quantidade').val(produto.quantidade);
-        $('#edit_prod_lote').val(produto.num_lote);
-        $('#edit_prod_documento').val(produto.num_documento);
-        $('#edit_prod_data_producao').val(produto.data_producao);
-        $('#edit_prod_data_expiracao').val(produto.data_expiracao);
-        $('#edit_prod_data_recepcao').val(produto.data_recepcao || '');
+        $('#edit_prod_lote').val(produto.num_lote || '');
+        $('#edit_prod_documento').val(produto.num_documento || '');
+        $('#edit_prod_data_producao').val(produto.data_producao ? produto.data_producao.split(' ')[0] : '');
+        $('#edit_prod_data_expiracao').val(produto.data_expiracao ? produto.data_expiracao.split(' ')[0] : '');
+        $('#edit_prod_data_recepcao').val(produto.data_recepcao ? produto.data_recepcao.split(' ')[0] : '');
         $('#edit_prod_grupo_farmaco').val(produto.grupo_farmaco_id).trigger('change');
         $('#edit_prod_fornecedor').val(produto.fornecedor_id).trigger('change');
         $('#edit_prod_prateleira').val(produto.prateleira_id || '').trigger('change');
@@ -499,12 +499,14 @@ $(document).ready(function() {
 
     // Toggle dosagem field based on tipo
     $('#edit_prod_tipo').on('change', function() {
-        if ($(this).val() === 'medicamento') {
+        var tipo = $(this).val();
+        if (tipo === 'medicamento' || tipo === 'liquido') {
             $('#edit_prod_dosagem_group').slideDown(300);
             $('#edit_prod_dosagem').prop('required', true);
         } else {
             $('#edit_prod_dosagem_group').slideUp(300);
             $('#edit_prod_dosagem').prop('required', false);
+            $('#edit_prod_dosagem').val(''); // Limpa o campo quando não é necessário
         }
     });
 

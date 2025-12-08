@@ -402,12 +402,14 @@ $(document).ready(function() {
 
     // Toggle dosagem field based on tipo
     $('#add_prod_tipo').on('change', function() {
-        if ($(this).val() === 'medicamento') {
+        var tipo = $(this).val();
+        if (tipo === 'medicamento' || tipo === 'liquido') {
             $('#add_prod_dosagem_group').slideDown(300);
             $('#add_prod_dosagem').prop('required', true);
         } else {
             $('#add_prod_dosagem_group').slideUp(300);
             $('#add_prod_dosagem').prop('required', false);
+            $('#add_prod_dosagem').val(''); // Limpa o campo quando não é necessário
         }
     });
 

@@ -488,6 +488,9 @@ class EstoqueController extends Controller
 
         // Registrar atividade
         try {
+            $fornecedor = \App\Models\Fornecedor::find($request->fornecedor_id);
+            $fornecedorNome = $fornecedor ? $fornecedor->nome : 'Fornecedor não identificado';
+
             $meta = [
                 'model_type' => PE::class,
                 'model_id' => $pe->id,
@@ -496,9 +499,11 @@ class EstoqueController extends Controller
                 'http_method' => request()->method(),
                 'level' => 'success',
                 'snapshot_after' => $pe->toArray(),
+                'fornecedor_id' => $request->fornecedor_id,
+                'fornecedor_nome' => $fornecedorNome,
             ];
             self::startAtv(
-                "Cadastrou novo produto '{$pe->designacao}' (Lote: {$pe->num_lote}) com quantidade {$quantidade} no estoque",
+                "Cadastrou novo produto '{$pe->designacao}' (Lote: {$pe->num_lote}) com quantidade {$quantidade} no estoque. Fornecedor: {$fornecedorNome} forneceu {$quantidade} unidades de {$pe->designacao}",
                 null,
                 $meta
             );
@@ -638,13 +643,27 @@ class EstoqueController extends Controller
                     }
 
                     if (!empty($structuredChanges)) {
+                        // Verificar se o fornecedor foi alterado
+                        $fornecedorInfo = '';
+                        if (isset($changes['fornecedor_id'])) {
+                            $fornecedor = \App\Models\Fornecedor::find($changes['fornecedor_id']);
+                            if ($fornecedor) {
+                                $fornecedorInfo = " Fornecedor alterado para: {$fornecedor->nome}.";
+                            }
+                        } elseif (isset($produto->fornecedor_id)) {
+                            $fornecedor = \App\Models\Fornecedor::find($produto->fornecedor_id);
+                            if ($fornecedor) {
+                                $fornecedorInfo = " Fornecedor: {$fornecedor->nome}.";
+                            }
+                        }
+
                         Atividade::create([
                             'user_id' => Auth::id(),
                             'farmacia_id' => Auth::user()->isFarmacia->farmacia->id ?? Auth::user()->farmacia->farmacia->id ?? null,
                             'area_hospitalar_id' => $produto->area_para,
                             'produto_estoque_id' => $id,
                             'accao' => 'editou produto',
-                            'descricao' => 'Produto ' . $produto->designacao . ' atualizado',
+                            'descricao' => 'Produto ' . $produto->designacao . ' atualizado.' . $fornecedorInfo,
                             'detalhes' => json_encode($structuredChanges)
                         ]);
                     }
@@ -1276,6 +1295,7 @@ class EstoqueController extends Controller
                 'grupo_farmaco',
                 'estoque.area_hospitalar',
                 'prateleira',
+                'fornecedor',
                 'status_stock',
                 'saldo'
             ])->find($id);
