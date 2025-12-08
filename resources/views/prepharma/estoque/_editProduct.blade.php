@@ -1,7 +1,7 @@
 {{--
     Offcanvas para Editar Produto Existente
     Design moderno com pré-preenchimento e AJAX
-    
+
     @author Augusto Kussema
     @date 08 Dez 2025 10:45 (Luanda)
     @description Formulário completo para editar produto via AJAX com validação
@@ -31,14 +31,14 @@
             @csrf
             @method('PUT')
             <input type="hidden" name="produto_id" id="edit_prod_id">
-            
+
             <!-- Seção: Informações Básicas -->
             <div class="form-section">
                 <h6 class="section-title">
                     <i class="fas fa-info-circle"></i>
                     Informações Básicas
                 </h6>
-                
+
                 <div class="mb-3">
                     <label for="edit_prod_designacao" class="form-label required">
                         <i class="fas fa-tag"></i> Designação
@@ -51,7 +51,7 @@
                         <label for="edit_prod_tipo" class="form-label required">
                             <i class="fas fa-layer-group"></i> Tipo
                         </label>
-                        <select class="form-select" id="edit_prod_tipo" name="tipo" required>
+                        <select class="form-select select2-edit-produto" id="edit_prod_tipo" name="tipo" required>
                             <option value="" disabled>Selecionar tipo</option>
                             <option value="descartável">Descartável</option>
                             <option value="medicamento">Medicamento</option>
@@ -71,7 +71,7 @@
                     <label for="edit_prod_forma" class="form-label required">
                         <i class="fas fa-flask"></i> Forma Farmacêutica
                     </label>
-                    <select class="form-select" id="edit_prod_forma" name="forma" required>
+                    <select class="form-select select2-edit-produto" id="edit_prod_forma" name="forma" required>
                         <option value="" disabled>Selecione uma forma</option>
                         <optgroup label="Administração Oral">
                             <option value="Comprimidos">Comprimidos</option>
@@ -111,7 +111,7 @@
                     <i class="fas fa-boxes"></i>
                     Quantidade e Rastreamento
                 </h6>
-                
+
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="edit_prod_quantidade" class="form-label required">
@@ -121,17 +121,17 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label for="edit_prod_lote" class="form-label required">
+                        <label for="edit_prod_lote" class="form-label">
                             <i class="fas fa-barcode"></i> Lote
                         </label>
-                        <input type="text" class="form-control text-uppercase" id="edit_prod_lote" name="num_lote" required>
+                        <input type="text" class="form-control text-uppercase" id="edit_prod_lote" name="num_lote">
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label for="edit_prod_documento" class="form-label required">
+                        <label for="edit_prod_documento" class="form-label">
                             <i class="fas fa-file-alt"></i> Doc. Nº
                         </label>
-                        <input type="text" class="form-control" id="edit_prod_documento" name="num_documento" required>
+                        <input type="text" class="form-control" id="edit_prod_documento" name="num_documento">
                     </div>
                 </div>
             </div>
@@ -142,13 +142,13 @@
                     <i class="fas fa-calendar-alt"></i>
                     Datas
                 </h6>
-                
+
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <label for="edit_prod_data_producao" class="form-label required">
+                        <label for="edit_prod_data_producao" class="form-label">
                             <i class="fas fa-industry"></i> Produção
                         </label>
-                        <input type="date" class="form-control" id="edit_prod_data_producao" name="data_producao" required>
+                        <input type="date" class="form-control" id="edit_prod_data_producao" name="data_producao">
                     </div>
 
                     <div class="col-md-4 mb-3">
@@ -173,13 +173,13 @@
                     <i class="fas fa-sitemap"></i>
                     Classificação
                 </h6>
-                
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="edit_prod_grupo_farmaco" class="form-label required">
                             <i class="fas fa-capsules"></i> Grupo Farmacológico
                         </label>
-                        <select class="form-select" id="edit_prod_grupo_farmaco" name="grupo_farmaco_id" required>
+                        <select class="form-select select2-edit-produto" id="edit_prod_grupo_farmaco" name="grupo_farmaco_id" required>
                             <option value="" disabled>Selecionar grupo</option>
                             @foreach(\App\Models\GrupoFarmacologico::all() as $gf)
                                 <option value="{{ $gf->id }}">{{ $gf->nome }}</option>
@@ -188,10 +188,15 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="edit_prod_origem_destino" class="form-label required">
-                            <i class="fas fa-map-marker-alt"></i> Origem/Destino
+                        <label for="edit_prod_fornecedor" class="form-label required">
+                            <i class="fas fa-truck"></i> Fornecedor
                         </label>
-                        <input type="text" class="form-control" id="edit_prod_origem_destino" name="origem_destino" required>
+                        <select class="form-select select2-edit-produto" id="edit_prod_fornecedor" name="fornecedor_id" required>
+                            <option value="" disabled>Selecionar fornecedor</option>
+                            @foreach(\App\Models\Fornecedor::orderBy('nome')->get() as $forn)
+                                <option value="{{ $forn->id }}">{{ $forn->nome }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
             </div>
@@ -202,12 +207,12 @@
                     <i class="fas fa-warehouse"></i>
                     Localização
                 </h6>
-                
+
                 <div class="mb-3">
                     <label for="edit_prod_prateleira" class="form-label">
                         <i class="fas fa-th"></i> Prateleira
                     </label>
-                    <select class="form-select" id="edit_prod_prateleira" name="prateleira_id">
+                    <select class="form-select select2-edit-produto" id="edit_prod_prateleira" name="prateleira_id">
                         <option value="">Não atribuída</option>
                         @foreach(\App\Models\Prateleira::all() as $prat)
                             <option value="{{ $prat->id }}">{{ $prat->nome }} [{{ $prat->descricao }}]</option>
@@ -222,7 +227,7 @@
                     <i class="fas fa-comment-alt"></i>
                     Observações
                 </h6>
-                
+
                 <div class="mb-3">
                     <label for="edit_prod_obs" class="form-label">
                         <i class="fas fa-sticky-note"></i> Observações
@@ -406,16 +411,42 @@
  * @date 08 Dez 2025 11:00 (Luanda)
  */
 $(document).ready(function() {
+    // Inicializar Select2 quando offcanvas abre
+    $('#offcanvasEditProduct').on('shown.bs.offcanvas', function () {
+        if (!$('.select2-edit-produto').hasClass('select2-hidden-accessible')) {
+            $('.select2-edit-produto').select2({
+                dropdownParent: $('#offcanvasEditProduct'),
+                placeholder: 'Selecione uma opção',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "Nenhum resultado encontrado";
+                    }
+                }
+            });
+        }
+    });
+
+    // Destruir Select2 ao fechar offcanvas para evitar conflitos
+    $('#offcanvasEditProduct').on('hidden.bs.offcanvas', function () {
+        $('.select2-edit-produto').each(function() {
+            if ($(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2('destroy');
+            }
+        });
+    });
+
     // Função para carregar dados do produto
     window.openEditProductOffcanvas = function(produtoId) {
         var offcanvasEl = document.getElementById('offcanvasEditProduct');
         var bsOffcanvas = new bootstrap.Offcanvas(offcanvasEl);
         bsOffcanvas.show();
-        
+
         // Show loading, hide form
         $('#edit_prod_loading').show();
         $('#formEditProduct').hide();
-        
+
         // Fetch product data
         $.ajax({
             url: '/estoque/produto/' + produtoId + '/detalhes',
@@ -442,20 +473,21 @@ $(document).ready(function() {
     function populateEditForm(produto) {
         $('#edit_prod_id').val(produto.id);
         $('#edit_prod_designacao').val(produto.designacao);
-        $('#edit_prod_tipo').val(produto.tipo);
+        $('#edit_prod_tipo').val(produto.tipo).trigger('change');
         $('#edit_prod_dosagem').val(produto.dosagem || '');
-        $('#edit_prod_forma').val(produto.forma);
+        $('#edit_prod_forma').val(produto.forma).trigger('change');
         $('#edit_prod_quantidade').val(produto.quantidade);
         $('#edit_prod_lote').val(produto.num_lote);
         $('#edit_prod_documento').val(produto.num_documento);
         $('#edit_prod_data_producao').val(produto.data_producao);
         $('#edit_prod_data_expiracao').val(produto.data_expiracao);
         $('#edit_prod_data_recepcao').val(produto.data_recepcao || '');
-        $('#edit_prod_grupo_farmaco').val(produto.grupo_farmaco_id);
-        $('#edit_prod_origem_destino').val(produto.origem_destino);
-        $('#edit_prod_prateleira').val(produto.prateleira_id || '');
+        $('#edit_prod_grupo_farmaco').val(produto.grupo_farmaco_id).trigger('change');
+        $('#edit_prod_fornecedor').val(produto.fornecedor_id).trigger('change');
+        $('#edit_prod_prateleira').val(produto.prateleira_id || '').trigger('change');er('change');
+        $('#edit_prod_prateleira').val(produto.prateleira_id || '').trigger('change');
         $('#edit_prod_obs').val(produto.obs || '');
-        
+
         // Show/hide dosagem based on tipo
         if (produto.tipo === 'medicamento') {
             $('#edit_prod_dosagem_group').show();
@@ -480,30 +512,30 @@ $(document).ready(function() {
     // Submit form via AJAX
     $('#formEditProduct').on('submit', function(e) {
         e.preventDefault();
-        
+
         var form = $(this);
         var formData = new FormData(this);
         var produtoId = $('#edit_prod_id').val();
-        
+
         // Validar datas
         var dataProducao = new Date($('#edit_prod_data_producao').val());
         var dataExpiracao = new Date($('#edit_prod_data_expiracao').val());
-        
+
         if (dataExpiracao <= dataProducao) {
             showToast('A data de expiração deve ser posterior à data de produção', 'error');
             return;
         }
-        
+
         // UI elements
         var btn = $('#edit_prod_submit_btn');
         var btnText = $('#edit_prod_submit_text');
         var btnSpinner = $('#edit_prod_submit_spinner');
-        
+
         // Disable form
         form.find('input, select, textarea, button').prop('disabled', true);
         btnText.hide();
         btnSpinner.show();
-        
+
         // AJAX request
         $.ajax({
             url: '/estoque/produto/' + produtoId + '/update',
@@ -517,20 +549,20 @@ $(document).ready(function() {
             },
             success: function(response) {
                 showToast(response.message || 'Produto atualizado com sucesso!', 'success');
-                
+
                 // Reload DataTable
                 if (typeof table !== 'undefined' && table.ajax) {
                     table.ajax.reload(null, false);
                 } else {
                     $('#table-c').DataTable().ajax.reload(null, false);
                 }
-                
+
                 // Close offcanvas after delay
                 setTimeout(function() {
                     var offcanvasEl = document.getElementById('offcanvasEditProduct');
                     var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
                     if (offcanvas) offcanvas.hide();
-                    
+
                     form[0].reset();
                     form.find('input, select, textarea, button').prop('disabled', false);
                     btnText.show();
@@ -539,7 +571,7 @@ $(document).ready(function() {
             },
             error: function(xhr) {
                 var errorMsg = 'Erro ao atualizar produto';
-                
+
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
                     var errors = [];
                     $.each(xhr.responseJSON.errors, function(key, value) {
@@ -549,9 +581,9 @@ $(document).ready(function() {
                 } else if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMsg = xhr.responseJSON.message;
                 }
-                
+
                 showToast(errorMsg, 'error');
-                
+
                 // Re-enable form
                 form.find('input, select, textarea, button').prop('disabled', false);
                 btnText.show();

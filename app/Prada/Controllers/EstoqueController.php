@@ -400,11 +400,11 @@ class EstoqueController extends Controller
             'quantidade' => 'required|integer|min:1',
             // agora area_id referencia FarmaciaAreaHospitalar
             'area_id' => 'required|exists:farmacia_areas_hospitalares,id',
-            'origem_destino' => 'nullable',
-            'num_lote' => 'required',
-            'data_producao' => 'nullable|date|before:today',
-            'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(4),
-            'data_recepcao' => 'nullable|date|before:today',
+            'fornecedor_id' => 'required|exists:fornecedores,id',
+            'num_lote' => 'nullable',
+            'data_producao' => 'nullable|date',
+            'data_expiracao' => 'required|date',
+            'data_recepcao' => 'nullable|date',
             'num_documento' => 'nullable',
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
@@ -1215,13 +1215,13 @@ class EstoqueController extends Controller
                 'dosagem' => 'nullable|string|max:100',
                 'forma' => 'required|string',
                 'quantidade' => 'required|integer|min:0',
-                'num_lote' => 'required|string|max:100',
-                'num_documento' => 'required|string|max:100',
-                'data_producao' => 'required|date',
-                'data_expiracao' => 'required|date|after:data_producao',
+                'num_lote' => 'nullable|string|max:100',
+                'num_documento' => 'nullable|string|max:100',
+                'data_producao' => 'nullable|date',
+                'data_expiracao' => 'required|date',
                 'data_recepcao' => 'nullable|date',
                 'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
-                'origem_destino' => 'required|string|max:255',
+                'fornecedor_id' => 'required|exists:fornecedores,id',
                 'prateleira_id' => 'nullable|exists:prateleiras,id',
                 'obs' => 'nullable|string',
             ], [
@@ -1230,13 +1230,9 @@ class EstoqueController extends Controller
                 'forma.required' => 'A forma farmacêutica é obrigatória',
                 'quantidade.required' => 'A quantidade é obrigatória',
                 'quantidade.min' => 'A quantidade deve ser no mínimo 0',
-                'num_lote.required' => 'O lote é obrigatório',
-                'num_documento.required' => 'O documento é obrigatório',
-                'data_producao.required' => 'A data de produção é obrigatória',
                 'data_expiracao.required' => 'A data de expiração é obrigatória',
-                'data_expiracao.after' => 'A data de expiração deve ser posterior à data de produção',
                 'grupo_farmaco_id.required' => 'O grupo farmacológico é obrigatório',
-                'origem_destino.required' => 'A origem/destino é obrigatória',
+                'fornecedor_id.required' => 'O fornecedor é obrigatório',
             ]);
 
             $produto = PE::findOrFail($id);
@@ -1254,7 +1250,8 @@ class EstoqueController extends Controller
             $produto->data_expiracao = $request->data_expiracao;
             $produto->data_recepcao = $request->data_recepcao;
             $produto->grupo_farmaco_id = $request->grupo_farmaco_id;
-            $produto->origem_destino = $request->origem_destino;
+            $produto->fornecedor_id = $request->fornecedor_id;
+            $produto->origem_destino = $request->fornecedor_id ? \App\Models\Fornecedor::find($request->fornecedor_id)?->nome : null;
             $produto->prateleira_id = $request->prateleira_id;
             $produto->obs = $request->obs;
 

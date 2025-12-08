@@ -648,24 +648,24 @@
                         <small style="color: rgba(255,255,255,0.9);">Gestão completa de produtos e movimentações</small>
                     </div>
                 </div>
-                <div class="tool-buttons d-flex gap-2">
-                    <button onclick="history.back()" class="btn btn-sm btn-light" title="Voltar à página anterior" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Voltar</span>
-                    </button>
-                    <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}"
-                       id="imprimir-pagina"
-                       target="_blank"
-                       title="Exportar PDF">
-                        <img src="{{ asset('prepharma/img/icons/pdf-icon-01.svg') }}" alt="PDF">
-                    </a>
-                </div>
             </div>
         </div>
 
         <!-- Card Principal -->
         <div class="estoque-card">
             <div class="card-body">
+                <!-- Botões de Ação no Topo do Card -->
+                <div class="d-flex justify-content-end gap-2 mb-3">
+                    <button onclick="history.back()" class="btn btn-sm btn-secondary" title="Voltar à página anterior">
+                        <i class="fas fa-arrow-left me-1"></i>Voltar
+                    </button>
+                    <a href="{{ route('print.view', ['estoque_id' => $ah->id]) }}"
+                       class="btn btn-sm btn-outline-secondary"
+                       target="_blank"
+                       title="Exportar PDF">
+                        <i class="fas fa-file-pdf me-1"></i>Imprimir
+                    </a>
+                </div>
                 <!-- Toolbar de Ações -->
                 <div class="toolbar-actions">
                     <div class="search-box">
@@ -1977,14 +1977,14 @@
             }
         })();
     </script>
-@endsection
 
-@include('prepharma.estoque._productHistory')
-@include('prepharma.estoque._addStock')
-@include('prepharma.estoque._darBaixa')
-@include('prepharma.estoque._productDetails')
-@include('prepharma.estoque._addProduct')
-@include('prepharma.estoque._editProduct')
+    @include('prepharma.estoque._productHistory')
+    @include('prepharma.estoque._addStock')
+    @include('prepharma.estoque._darBaixa')
+    @include('prepharma.estoque._productDetails')
+    @include('prepharma.estoque._addProduct')
+    @include('prepharma.estoque._editProduct')
+@endsection
 {{-- @include('prepharma.estoque._addProduct')
 @include('prepharma.estoque._editProduct') --}}
 

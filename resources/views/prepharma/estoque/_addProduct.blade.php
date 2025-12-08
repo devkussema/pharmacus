@@ -42,7 +42,7 @@
                         <label for="add_prod_tipo" class="form-label required">
                             <i class="fas fa-layer-group"></i> Tipo
                         </label>
-                        <select class="form-select" id="add_prod_tipo" name="tipo" required>
+                        <select class="form-select select2-add-produto" id="add_prod_tipo" name="tipo" required>
                             <option value="" selected disabled>Selecionar tipo</option>
                             <option value="descartável">Descartável</option>
                             <option value="medicamento">Medicamento</option>
@@ -62,7 +62,7 @@
                     <label for="add_prod_forma" class="form-label required">
                         <i class="fas fa-flask"></i> Forma Farmacêutica
                     </label>
-                    <select class="form-select" id="add_prod_forma" name="forma" required>
+                    <select class="form-select select2-add-produto" id="add_prod_forma" name="forma" required>
                         <option value="" disabled selected>Selecione uma forma</option>
                         <optgroup label="Administração Oral">
                             <option value="Comprimidos">Comprimidos</option>
@@ -112,17 +112,17 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label for="add_prod_lote" class="form-label required">
+                        <label for="add_prod_lote" class="form-label">
                             <i class="fas fa-barcode"></i> Lote
                         </label>
-                        <input type="text" class="form-control text-uppercase" id="add_prod_lote" name="num_lote" required>
+                        <input type="text" class="form-control text-uppercase" id="add_prod_lote" name="num_lote">
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label for="add_prod_documento" class="form-label required">
+                        <label for="add_prod_documento" class="form-label">
                             <i class="fas fa-file-alt"></i> Doc. Nº
                         </label>
-                        <input type="text" class="form-control" id="add_prod_documento" name="num_documento" required>
+                        <input type="text" class="form-control" id="add_prod_documento" name="num_documento">
                     </div>
                 </div>
             </div>
@@ -136,10 +136,10 @@
 
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <label for="add_prod_data_producao" class="form-label required">
+                        <label for="add_prod_data_producao" class="form-label">
                             <i class="fas fa-industry"></i> Produção
                         </label>
-                        <input type="date" class="form-control" id="add_prod_data_producao" name="data_producao" required>
+                        <input type="date" class="form-control" id="add_prod_data_producao" name="data_producao">
                     </div>
 
                     <div class="col-md-4 mb-3">
@@ -170,7 +170,7 @@
                         <label for="add_prod_grupo_farmaco" class="form-label required">
                             <i class="fas fa-capsules"></i> Grupo Farmacológico
                         </label>
-                        <select class="form-select" id="add_prod_grupo_farmaco" name="grupo_farmaco_id" required>
+                        <select class="form-select select2-add-produto" id="add_prod_grupo_farmaco" name="grupo_farmaco_id" required>
                             <option value="" selected disabled>Selecionar grupo</option>
                             @foreach(\App\Models\GrupoFarmacologico::all() as $gf)
                                 <option value="{{ $gf->id }}">{{ $gf->nome }}</option>
@@ -179,10 +179,15 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="add_prod_origem_destino" class="form-label required">
-                            <i class="fas fa-map-marker-alt"></i> Origem/Destino
+                        <label for="add_prod_fornecedor" class="form-label required">
+                            <i class="fas fa-truck"></i> Fornecedor
                         </label>
-                        <input type="text" class="form-control" id="add_prod_origem_destino" name="origem_destino" required>
+                        <select class="form-select select2-add-produto" id="add_prod_fornecedor" name="fornecedor_id" required>
+                            <option value="" selected disabled>Selecionar fornecedor</option>
+                            @foreach(\App\Models\Fornecedor::orderBy('nome')->get() as $forn)
+                                <option value="{{ $forn->id }}">{{ $forn->nome }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
             </div>
@@ -198,7 +203,7 @@
                     <label for="add_prod_prateleira" class="form-label">
                         <i class="fas fa-th"></i> Prateleira
                     </label>
-                    <select class="form-select" id="add_prod_prateleira" name="prateleira_id">
+                    <select class="form-select select2-add-produto" id="add_prod_prateleira" name="prateleira_id">
                         <option value="">Não atribuída</option>
                         @foreach(\App\Models\Prateleira::all() as $prat)
                             <option value="{{ $prat->id }}">{{ $prat->nome }} [{{ $prat->descricao }}]</option>
@@ -382,6 +387,19 @@
  * @date 08 Dez 2025 10:30 (Luanda)
  */
 $(document).ready(function() {
+    // Inicializar Select2 em todos os selects do offcanvas
+    $('.select2-add-produto').select2({
+        dropdownParent: $('#offcanvasAddProduct'),
+        placeholder: 'Selecione uma opção',
+        allowClear: true,
+        width: '100%',
+        language: {
+            noResults: function() {
+                return "Nenhum resultado encontrado";
+            }
+        }
+    });
+
     // Toggle dosagem field based on tipo
     $('#add_prod_tipo').on('change', function() {
         if ($(this).val() === 'medicamento') {
@@ -401,12 +419,37 @@ $(document).ready(function() {
         var formData = new FormData(this);
 
         // Validar datas
-        var dataProducao = new Date($('#add_prod_data_producao').val());
-        var dataExpiracao = new Date($('#add_prod_data_expiracao').val());
+        var dataProducaoVal = $('#add_prod_data_producao').val();
+        var dataExpiracaoVal = $('#add_prod_data_expiracao').val();
 
-        if (dataExpiracao <= dataProducao) {
-            showToast('A data de expiração deve ser posterior à data de produção', 'error');
+        if (!dataExpiracaoVal) {
+            showToast('A data de expiração é obrigatória', 'error');
             return;
+        }
+
+        if (dataProducaoVal && dataExpiracaoVal) {
+            var dataProducao = new Date(dataProducaoVal);
+            var dataExpiracao = new Date(dataExpiracaoVal);
+
+            if (dataExpiracao <= dataProducao) {
+
+        // Validar datas
+        var dataProducaoVal = $('#add_prod_data_producao').val();
+        var dataExpiracaoVal = $('#add_prod_data_expiracao').val();
+
+        if (!dataExpiracaoVal) {
+            showToast('A data de expiração é obrigatória', 'error');
+            return;
+        }
+
+        if (dataProducaoVal && dataExpiracaoVal) {
+            var dataProducao = new Date(dataProducaoVal);
+            var dataExpiracao = new Date(dataExpiracaoVal);
+
+            if (dataExpiracao <= dataProducao) {
+                showToast('A data de expiração deve ser posterior à data de produção', 'error');
+                return;
+            }
         }
 
         // UI elements
