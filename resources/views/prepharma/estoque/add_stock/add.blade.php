@@ -24,7 +24,10 @@
                                                     class="login-danger">*</span></label>
                                             <input id="nome_requisitante_id" class="form-control"
                                                 value="{{ Auth::user()->nome }}" type="text" disabled>
-                                            <input type="hidden" name="id_user" hidden value="{{ Auth::user()->id }}">
+                                            <input type="hidden" name="id_user" value="{{ Auth::user()->id }}">
+                                            {{-- Hidden inputs para área: serão atualizados pelo JavaScript --}}
+                                            <input type="hidden" name="area_id" id="area_id_hidden" value="">
+                                            <input type="hidden" name="area_para" id="area_para_hidden" value="">
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-xl-6">
@@ -32,8 +35,8 @@
                                             <label for="area_id_">Selecionar Área <span
                                                     class="login-danger">*</span></label>
                                             <select class="js-example-basic-single form-control" id="area_id_"
-                                                name="area_para">
-                                                <option selected disabled>Selecionar Área Hospitalar</option>
+                                                name="area_para" required>
+                                                <option value="" selected disabled>Selecionar Área Hospitalar</option>
                                             </select>
                                         </div>
                                     </div>
@@ -729,15 +732,7 @@
                         $('#area_id_').append(opt);
                     });
 
-                    // Garantir hidden inputs para submissão (mantém compatibilidade)
-                    if (!$('#area_id_hidden').length) {
-                        $('<input>').attr({type:'hidden', id:'area_id_hidden', name:'area_id', value:''}).appendTo('form');
-                    }
-                    if (!$('#area_para_hidden').length) {
-                        $('<input>').attr({type:'hidden', id:'area_para_hidden', name:'area_para', value:''}).appendTo('form');
-                    }
-
-                    // Seleciona a primeira opção por padrão e dispara change
+                    // Seleciona a primeira opção por padrão e dispara change para popular os hiddens
                     $('#area_id_ option:first').prop('selected', true);
                     $('#area_id_').trigger('change');
                 },
