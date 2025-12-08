@@ -535,9 +535,12 @@ $(document).ready(function() {
         btnText.hide();
         btnSpinner.show();
 
+        // Adicionar método PUT ao FormData
+        formData.append('_method', 'PUT');
+
         // AJAX request
         $.ajax({
-            url: '/estoque/produto/' + produtoId + '/update',
+            url: '/estoque/produto/' + produtoId,
             method: 'POST',
             data: formData,
             processData: false,

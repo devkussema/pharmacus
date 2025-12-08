@@ -432,21 +432,6 @@ $(document).ready(function() {
             var dataExpiracao = new Date(dataExpiracaoVal);
 
             if (dataExpiracao <= dataProducao) {
-
-        // Validar datas
-        var dataProducaoVal = $('#add_prod_data_producao').val();
-        var dataExpiracaoVal = $('#add_prod_data_expiracao').val();
-
-        if (!dataExpiracaoVal) {
-            showToast('A data de expiração é obrigatória', 'error');
-            return;
-        }
-
-        if (dataProducaoVal && dataExpiracaoVal) {
-            var dataProducao = new Date(dataProducaoVal);
-            var dataExpiracao = new Date(dataExpiracaoVal);
-
-            if (dataExpiracao <= dataProducao) {
                 showToast('A data de expiração deve ser posterior à data de produção', 'error');
                 return;
             }

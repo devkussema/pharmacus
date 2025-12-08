@@ -450,10 +450,12 @@ class EstoqueController extends Controller
             'quantidade' => $quantidade,
             'forma' => $request->forma,
             'confirmado' => 1,
-            'origem_destino' => $request->origem_destino,
+            'fornecedor_id' => $request->fornecedor_id,
+            'origem_destino' => $request->fornecedor_id ? \App\Models\Fornecedor::find($request->fornecedor_id)?->nome : null,
             'num_lote' => $request->num_lote,
             'data_expiracao' => $request->data_expiracao,
             'data_producao' => $request->data_producao,
+            'data_recepcao' => $request->data_recepcao,
             'num_documento' => $request->num_documento,
             'obs' => $request->obs,
             'qtd_embalagem' => ($request->qtd_embalagem ? $request->qtd_embalagem : null),
@@ -562,14 +564,117 @@ class EstoqueController extends Controller
 
     public function editarProduto(Request $request, $id)
     {
-        $prod = PE::find($id);
+        try {
+            // Validar dados
+            $request->validate([
+                'designacao' => 'required|string|max:255',
+                'tipo' => 'required|in:descartável,medicamento,liquido',
+                'dosagem' => 'nullable|string|max:100',
+                'forma' => 'required|string',
+                'quantidade' => 'required|integer|min:0',
+                'num_lote' => 'nullable|string|max:100',
+                'num_documento' => 'nullable|string|max:100',
+                'data_producao' => 'nullable|date',
+                'data_expiracao' => 'required|date',
+                'data_recepcao' => 'nullable|date',
+                'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
+                'fornecedor_id' => 'required|exists:fornecedores,id',
+                'prateleira_id' => 'nullable|exists:prateleiras,id',
+                'obs' => 'nullable|string',
+            ], [
+                'designacao.required' => 'A designação é obrigatória',
+                'tipo.required' => 'O tipo é obrigatório',
+                'forma.required' => 'A forma farmacêutica é obrigatória',
+                'quantidade.required' => 'A quantidade é obrigatória',
+                'quantidade.min' => 'A quantidade deve ser no mínimo 0',
+                'data_expiracao.required' => 'A data de expiração é obrigatória',
+                'grupo_farmaco_id.required' => 'O grupo farmacológico é obrigatório',
+                'fornecedor_id.required' => 'O fornecedor é obrigatório',
+            ]);
 
-        if (!$prod) {
-            if ($request->ajax()) {
-                return response()->json(['message' => "Desculpe, parece que esse produto não existe!"]);
+            $produto = PE::findOrFail($id);
+            $oldData = $produto->toArray();
+
+            // Atualizar campos
+            $produto->designacao = $request->designacao;
+            $produto->tipo = $request->tipo;
+            $produto->dosagem = $request->dosagem;
+            $produto->forma = $request->forma;
+            $produto->quantidade = $request->quantidade;
+            $produto->num_lote = $request->num_lote;
+            $produto->num_documento = $request->num_documento;
+            $produto->data_producao = $request->data_producao;
+            $produto->data_expiracao = $request->data_expiracao;
+            $produto->data_recepcao = $request->data_recepcao;
+            $produto->grupo_farmaco_id = $request->grupo_farmaco_id;
+            $produto->fornecedor_id = $request->fornecedor_id;
+            $produto->origem_destino = $request->fornecedor_id ? \App\Models\Fornecedor::find($request->fornecedor_id)?->nome : null;
+            $produto->prateleira_id = $request->prateleira_id;
+            $produto->obs = $request->obs;
+
+            if ($produto->isDirty()) {
+                $produto->save();
+
+                // Atualizar saldo
+                $saldo = SE::where('produto_estoque_id', $id)->first();
+                if ($saldo) {
+                    $saldo->qtd = $request->quantidade;
+                    $saldo->save();
+                }
+
+                // Registrar atividade
+                try {
+                    $changes = $produto->getChanges();
+                    $structuredChanges = [];
+
+                    foreach ($changes as $field => $newValue) {
+                        if (isset($oldData[$field])) {
+                            $structuredChanges[] = [
+                                'field' => $field,
+                                'old' => $oldData[$field],
+                                'new' => $newValue
+                            ];
+                        }
+                    }
+
+                    if (!empty($structuredChanges)) {
+                        Atividade::create([
+                            'user_id' => Auth::id(),
+                            'farmacia_id' => Auth::user()->isFarmacia->farmacia->id ?? Auth::user()->farmacia->farmacia->id ?? null,
+                            'area_hospitalar_id' => $produto->area_para,
+                            'produto_estoque_id' => $id,
+                            'accao' => 'editou produto',
+                            'descricao' => 'Produto ' . $produto->designacao . ' atualizado',
+                            'detalhes' => json_encode($structuredChanges)
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Erro ao registrar atividade: ' . $e->getMessage());
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Produto atualizado com sucesso!'
+                ]);
             }
 
-            return redirect()->back()->with('error', "Desculpe, parece que esse produto não existe!");
+            return response()->json([
+                'success' => true,
+                'message' => 'Nenhuma alteração detectada'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao atualizar produto: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar produto: ' . $e->getMessage()
+            ], 500);
         }
     }
 
