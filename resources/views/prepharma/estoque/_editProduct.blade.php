@@ -484,7 +484,6 @@ $(document).ready(function() {
         $('#edit_prod_data_recepcao').val(produto.data_recepcao || '');
         $('#edit_prod_grupo_farmaco').val(produto.grupo_farmaco_id).trigger('change');
         $('#edit_prod_fornecedor').val(produto.fornecedor_id).trigger('change');
-        $('#edit_prod_prateleira').val(produto.prateleira_id || '').trigger('change');er('change');
         $('#edit_prod_prateleira').val(produto.prateleira_id || '').trigger('change');
         $('#edit_prod_obs').val(produto.obs || '');
 
