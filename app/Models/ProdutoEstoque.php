@@ -9,6 +9,7 @@ use App\Models\GrupoFarmacologico;
 use App\Models\Estoque;
 use App\Models\SaldoEstoque;
 use App\Models\Prateleira;
+use App\Models\Fornecedor;
 // Not importing StatusStock/History directly to avoid hard dependency in case models are named differently.
 
 /**
@@ -46,6 +47,8 @@ class ProdutoEstoque extends Model
         'data_recepcao',
         'validade',
         'fornecedor',
+        'fornecedor_id',
+        'num_documento',
         'status',
         'obs',
         'tipo',
@@ -85,6 +88,11 @@ class ProdutoEstoque extends Model
     public function prateleira()
     {
         return $this->belongsTo(Prateleira::class, 'prateleira_id');
+    }
+
+    public function fornecedor()
+    {
+        return $this->belongsTo(Fornecedor::class, 'fornecedor_id');
     }
 
     public function status_stock()

@@ -5,6 +5,25 @@
 @section('content')
     <div class="content">
         @include('partials.session')
+
+        <!-- Breadcrumb e Botões de Navegação -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ route('estoque.getEstoque', ['id' => $area]) }}"><i class="fas fa-warehouse me-1"></i>Estoque</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Configurar Estoque Mínimo</li>
+                </ol>
+            </nav>
+            <div class="d-flex gap-2">
+                <button type="button" onclick="history.back()" class="btn btn-sm btn-secondary" title="Voltar à página anterior">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <button type="button" onclick="window.location.reload()" class="btn btn-sm btn-outline-secondary" title="Atualizar página">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+            </div>
+        </div>
+
         <div class="row">
             @if(in_array(Auth::user()->username, ['adriano.lata', 'rosa.andre', 'augusto.kussema', 'augusto.tiago']))
                 <div class="col-sm-12">
@@ -24,7 +43,10 @@
                                                     class="login-danger">*</span></label>
                                             <input id="nome_requisitante_id" class="form-control"
                                                 value="{{ Auth::user()->nome }}" type="text" disabled>
-                                            <input type="hidden" name="id_user" hidden value="{{ Auth::user()->id }}">
+                                            <input type="hidden" name="id_user" value="{{ Auth::user()->id }}">
+                                            {{-- Hidden inputs para área: serão atualizados pelo JavaScript --}}
+                                            <input type="hidden" name="area_id" id="area_id_hidden" value="">
+                                            <input type="hidden" name="area_para" id="area_para_hidden" value="">
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-xl-6">
@@ -32,8 +54,8 @@
                                             <label for="area_id_">Selecionar Área <span
                                                     class="login-danger">*</span></label>
                                             <select class="js-example-basic-single form-control" id="area_id_"
-                                                name="area_para">
-                                                <option selected disabled>Selecionar Área Hospitalar</option>
+                                                name="area_para" required>
+                                                <option value="" selected disabled>Selecionar Área Hospitalar</option>
                                             </select>
                                         </div>
                                     </div>
@@ -729,15 +751,7 @@
                         $('#area_id_').append(opt);
                     });
 
-                    // Garantir hidden inputs para submissão (mantém compatibilidade)
-                    if (!$('#area_id_hidden').length) {
-                        $('<input>').attr({type:'hidden', id:'area_id_hidden', name:'area_id', value:''}).appendTo('form');
-                    }
-                    if (!$('#area_para_hidden').length) {
-                        $('<input>').attr({type:'hidden', id:'area_para_hidden', name:'area_para', value:''}).appendTo('form');
-                    }
-
-                    // Seleciona a primeira opção por padrão e dispara change
+                    // Seleciona a primeira opção por padrão e dispara change para popular os hiddens
                     $('#area_id_ option:first').prop('selected', true);
                     $('#area_id_').trigger('change');
                 },

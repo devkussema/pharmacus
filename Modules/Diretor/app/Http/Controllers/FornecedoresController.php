@@ -55,10 +55,57 @@ class FornecedoresController extends Controller
      * @param mixed $id
      * @author Augusto Kussema
      * @created 05-11-2025
+     * @updated 08-12-2025 11:47 (Luanda) - Adicionado histórico completo de fornecimentos
      */
     public function show($id)
     {
-        return view('diretor::pages.fornecedores.show', compact('id'));
+        $fornecedor = \App\Models\Fornecedor::with([
+            'produtos' => function($query) {
+                $query->orderBy('created_at', 'desc')->limit(50);
+            },
+            'produtos.grupo_farmaco',
+            'produtos.prateleira'
+        ])->findOrFail($id);
+
+        // Buscar atividades relacionadas ao fornecedor
+        $atividades = \App\Models\Atividade::where('descricao', 'like', '%fornecedor%')
+            ->where('descricao', 'like', '%' . $fornecedor->nome . '%')
+            ->orderBy('created_at', 'desc')
+            ->limit(50)
+            ->get();
+
+        // Estatísticas do fornecedor
+        $totalProdutos = $fornecedor->produtos()->count();
+        $totalUnidades = $fornecedor->produtos()->sum('quantidade');
+        $produtosRecentes = $fornecedor->produtos()
+            ->with('grupo_farmaco')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Histórico formatado para exibição
+        $historico = $fornecedor->produtos()->orderBy('created_at', 'desc')->get()->map(function($produto) {
+            return [
+                'id' => $produto->id,
+                'data' => $produto->created_at->format('d M Y'),
+                'descricao' => "Forneceu {$produto->quantidade} unidades de {$produto->designacao}",
+                'produto' => $produto->designacao,
+                'quantidade' => $produto->quantidade,
+                'lote' => $produto->num_lote,
+                'data_expiracao' => $produto->data_expiracao ? \Carbon\Carbon::parse($produto->data_expiracao)->format('d/m/Y') : '-',
+                'status' => 'entregue'
+            ];
+        });
+
+        return view('diretor::pages.fornecedores.show', compact(
+            'fornecedor',
+            'totalProdutos',
+            'totalUnidades',
+            'produtosRecentes',
+            'historico',
+            'atividades',
+            'id'
+        ));
     }
 
     /**

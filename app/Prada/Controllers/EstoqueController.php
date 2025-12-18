@@ -401,11 +401,11 @@ class EstoqueController extends Controller
             'quantidade' => 'required|integer|min:1',
             // agora area_id referencia FarmaciaAreaHospitalar
             'area_id' => 'required|exists:farmacia_areas_hospitalares,id',
-            'origem_destino' => 'nullable',
-            'num_lote' => 'required',
-            'data_producao' => 'nullable|date|before:today',
-            'data_expiracao' => 'required|date|after_or_equal:' . now()->addMonths(4),
-            'data_recepcao' => 'nullable|date|before:today',
+            'fornecedor_id' => 'required|exists:fornecedores,id',
+            'num_lote' => 'nullable',
+            'data_producao' => 'nullable|date',
+            'data_expiracao' => 'required|date',
+            'data_recepcao' => 'nullable|date',
             'num_documento' => 'nullable',
             'qtd_embalagem' => 'nullable|integer|min:1',
             'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
@@ -451,10 +451,12 @@ class EstoqueController extends Controller
             'quantidade' => $quantidade,
             'forma' => $request->forma,
             'confirmado' => 1,
-            'origem_destino' => $request->origem_destino,
+            'fornecedor_id' => $request->fornecedor_id,
+            'origem_destino' => $request->fornecedor_id ? \App\Models\Fornecedor::find($request->fornecedor_id)?->nome : null,
             'num_lote' => $request->num_lote,
             'data_expiracao' => $request->data_expiracao,
             'data_producao' => $request->data_producao,
+            'data_recepcao' => $request->data_recepcao,
             'num_documento' => $request->num_documento,
             'obs' => $request->obs,
             'qtd_embalagem' => ($request->qtd_embalagem ? $request->qtd_embalagem : null),
@@ -487,6 +489,9 @@ class EstoqueController extends Controller
 
         // Registrar atividade
         try {
+            $fornecedor = \App\Models\Fornecedor::find($request->fornecedor_id);
+            $fornecedorNome = $fornecedor ? $fornecedor->nome : 'Fornecedor não identificado';
+
             $meta = [
                 'model_type' => PE::class,
                 'model_id' => $pe->id,
@@ -495,9 +500,11 @@ class EstoqueController extends Controller
                 'http_method' => request()->method(),
                 'level' => 'success',
                 'snapshot_after' => $pe->toArray(),
+                'fornecedor_id' => $request->fornecedor_id,
+                'fornecedor_nome' => $fornecedorNome,
             ];
             self::startAtv(
-                "Cadastrou novo produto '{$pe->designacao}' (Lote: {$pe->num_lote}) com quantidade {$quantidade} no estoque",
+                "Cadastrou novo produto '{$pe->designacao}' (Lote: {$pe->num_lote}) com quantidade {$quantidade} no estoque. Fornecedor: {$fornecedorNome} forneceu {$quantidade} unidades de {$pe->designacao}",
                 null,
                 $meta
             );
@@ -563,14 +570,131 @@ class EstoqueController extends Controller
 
     public function editarProduto(Request $request, $id)
     {
-        $prod = PE::find($id);
+        try {
+            // Validar dados
+            $request->validate([
+                'designacao' => 'required|string|max:255',
+                'tipo' => 'required|in:descartável,medicamento,liquido',
+                'dosagem' => 'nullable|string|max:100',
+                'forma' => 'required|string',
+                'quantidade' => 'required|integer|min:0',
+                'num_lote' => 'nullable|string|max:100',
+                'num_documento' => 'nullable|string|max:100',
+                'data_producao' => 'nullable|date',
+                'data_expiracao' => 'required|date',
+                'data_recepcao' => 'nullable|date',
+                'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
+                'fornecedor_id' => 'required|exists:fornecedores,id',
+                'prateleira_id' => 'nullable|exists:prateleiras,id',
+                'obs' => 'nullable|string',
+            ], [
+                'designacao.required' => 'A designação é obrigatória',
+                'tipo.required' => 'O tipo é obrigatório',
+                'forma.required' => 'A forma farmacêutica é obrigatória',
+                'quantidade.required' => 'A quantidade é obrigatória',
+                'quantidade.min' => 'A quantidade deve ser no mínimo 0',
+                'data_expiracao.required' => 'A data de expiração é obrigatória',
+                'grupo_farmaco_id.required' => 'O grupo farmacológico é obrigatório',
+                'fornecedor_id.required' => 'O fornecedor é obrigatório',
+            ]);
 
-        if (!$prod) {
-            if ($request->ajax()) {
-                return response()->json(['message' => "Desculpe, parece que esse produto não existe!"]);
+            $produto = PE::findOrFail($id);
+            $oldData = $produto->toArray();
+
+            // Atualizar campos
+            $produto->designacao = $request->designacao;
+            $produto->tipo = $request->tipo;
+            $produto->dosagem = $request->dosagem;
+            $produto->forma = $request->forma;
+            $produto->quantidade = $request->quantidade;
+            $produto->num_lote = $request->num_lote;
+            $produto->num_documento = $request->num_documento;
+            $produto->data_producao = $request->data_producao;
+            $produto->data_expiracao = $request->data_expiracao;
+            $produto->data_recepcao = $request->data_recepcao;
+            $produto->grupo_farmaco_id = $request->grupo_farmaco_id;
+            $produto->fornecedor_id = $request->fornecedor_id;
+            $produto->origem_destino = $request->fornecedor_id ? \App\Models\Fornecedor::find($request->fornecedor_id)?->nome : null;
+            $produto->prateleira_id = $request->prateleira_id;
+            $produto->obs = $request->obs;
+
+            if ($produto->isDirty()) {
+                $produto->save();
+
+                // Atualizar saldo
+                $saldo = SE::where('produto_estoque_id', $id)->first();
+                if ($saldo) {
+                    $saldo->qtd = $request->quantidade;
+                    $saldo->save();
+                }
+
+                // Registrar atividade
+                try {
+                    $changes = $produto->getChanges();
+                    $structuredChanges = [];
+
+                    foreach ($changes as $field => $newValue) {
+                        if (isset($oldData[$field])) {
+                            $structuredChanges[] = [
+                                'field' => $field,
+                                'old' => $oldData[$field],
+                                'new' => $newValue
+                            ];
+                        }
+                    }
+
+                    if (!empty($structuredChanges)) {
+                        // Verificar se o fornecedor foi alterado
+                        $fornecedorInfo = '';
+                        if (isset($changes['fornecedor_id'])) {
+                            $fornecedor = \App\Models\Fornecedor::find($changes['fornecedor_id']);
+                            if ($fornecedor) {
+                                $fornecedorInfo = " Fornecedor alterado para: {$fornecedor->nome}.";
+                            }
+                        } elseif (isset($produto->fornecedor_id)) {
+                            $fornecedor = \App\Models\Fornecedor::find($produto->fornecedor_id);
+                            if ($fornecedor) {
+                                $fornecedorInfo = " Fornecedor: {$fornecedor->nome}.";
+                            }
+                        }
+
+                        Atividade::create([
+                            'user_id' => Auth::id(),
+                            'farmacia_id' => Auth::user()->isFarmacia->farmacia->id ?? Auth::user()->farmacia->farmacia->id ?? null,
+                            'area_hospitalar_id' => $produto->area_para,
+                            'produto_estoque_id' => $id,
+                            'accao' => 'editou produto',
+                            'descricao' => 'Produto ' . $produto->designacao . ' atualizado.' . $fornecedorInfo,
+                            'detalhes' => json_encode($structuredChanges)
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Erro ao registrar atividade: ' . $e->getMessage());
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Produto atualizado com sucesso!'
+                ]);
             }
 
-            return redirect()->back()->with('error', "Desculpe, parece que esse produto não existe!");
+            return response()->json([
+                'success' => true,
+                'message' => 'Nenhuma alteração detectada'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao atualizar produto: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar produto: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -1296,6 +1420,7 @@ class EstoqueController extends Controller
                 'grupo_farmaco',
                 'estoque.area_hospitalar',
                 'prateleira',
+                'fornecedor',
                 'status_stock',
                 'saldo'
             ])->find($id);
@@ -1317,6 +1442,134 @@ class EstoqueController extends Controller
                 'success' => false,
                 'message' => 'Erro ao buscar detalhes do produto',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Atualizar produto via AJAX (para offcanvas)
+     *
+     * @author Augusto Kussema
+     * @date 08 Dez 2025 11:45 (Luanda)
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateViaAjax(Request $request, $id)
+    {
+        try {
+            // Validar dados
+            $request->validate([
+                'designacao' => 'required|string|max:255',
+                'tipo' => 'required|in:descartável,medicamento,liquido',
+                'dosagem' => 'nullable|string|max:100',
+                'forma' => 'required|string',
+                'quantidade' => 'required|integer|min:0',
+                'num_lote' => 'nullable|string|max:100',
+                'num_documento' => 'nullable|string|max:100',
+                'data_producao' => 'nullable|date',
+                'data_expiracao' => 'required|date',
+                'data_recepcao' => 'nullable|date',
+                'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
+                'fornecedor_id' => 'required|exists:fornecedores,id',
+                'prateleira_id' => 'nullable|exists:prateleiras,id',
+                'obs' => 'nullable|string',
+            ], [
+                'designacao.required' => 'A designação é obrigatória',
+                'tipo.required' => 'O tipo é obrigatório',
+                'forma.required' => 'A forma farmacêutica é obrigatória',
+                'quantidade.required' => 'A quantidade é obrigatória',
+                'quantidade.min' => 'A quantidade deve ser no mínimo 0',
+                'data_expiracao.required' => 'A data de expiração é obrigatória',
+                'grupo_farmaco_id.required' => 'O grupo farmacológico é obrigatório',
+                'fornecedor_id.required' => 'O fornecedor é obrigatório',
+            ]);
+
+            $produto = PE::findOrFail($id);
+            $oldData = $produto->toArray();
+
+            // Atualizar campos
+            $produto->designacao = $request->designacao;
+            $produto->tipo = $request->tipo;
+            $produto->dosagem = $request->dosagem;
+            $produto->forma = $request->forma;
+            $produto->quantidade = $request->quantidade;
+            $produto->num_lote = $request->num_lote;
+            $produto->num_documento = $request->num_documento;
+            $produto->data_producao = $request->data_producao;
+            $produto->data_expiracao = $request->data_expiracao;
+            $produto->data_recepcao = $request->data_recepcao;
+            $produto->grupo_farmaco_id = $request->grupo_farmaco_id;
+            $produto->fornecedor_id = $request->fornecedor_id;
+            $produto->origem_destino = $request->fornecedor_id ? \App\Models\Fornecedor::find($request->fornecedor_id)?->nome : null;
+            $produto->prateleira_id = $request->prateleira_id;
+            $produto->obs = $request->obs;
+
+            if ($produto->isDirty()) {
+                $produto->save();
+
+                // Atualizar saldo
+                $saldo = SE::where('produto_estoque_id', $id)->first();
+                if ($saldo) {
+                    $saldo->qtd = $request->quantidade;
+                    $saldo->save();
+                }
+
+                // Registrar atividade
+                try {
+                    $changes = $produto->getChanges();
+                    $structuredChanges = [];
+
+                    foreach ($changes as $field => $newValue) {
+                        if (isset($oldData[$field])) {
+                            $structuredChanges[] = [
+                                'field' => $field,
+                                'old' => $oldData[$field],
+                                'new' => $newValue
+                            ];
+                        }
+                    }
+
+                    $meta = [
+                        'model_type' => PE::class,
+                        'model_id' => $produto->id,
+                        'ip_address' => request()->ip(),
+                        'route' => request()->path(),
+                        'http_method' => request()->method(),
+                        'level' => 'success',
+                        'snapshot_before' => $oldData,
+                        'snapshot_after' => $produto->toArray(),
+                    ];
+
+                    $fields = implode(', ', array_keys($changes));
+                    self::startAtv("Editou produto {$produto->designacao} via AJAX - Campos: {$fields}", $structuredChanges, $meta);
+                } catch (\Throwable $e) {
+                    logger()->error('Falha ao registar atividade de edição via AJAX: ' . $e->getMessage());
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Produto atualizado com sucesso!'
+                ], 200);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Nenhuma alteração foi feita'
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de validação',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            logger()->error('Erro ao atualizar produto via AJAX: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar produto: ' . $e->getMessage()
             ], 500);
         }
     }
