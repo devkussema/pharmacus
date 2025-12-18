@@ -88,6 +88,7 @@ Route::middleware(['auth', 'is.status', 'is.online'])->group(function () {
         // AJAX para adicionar unidades/caixas a produto existente via descritivo
         Route::post('/adicionar', [EstoqueController::class, 'adicionar'])->name('estoque.adicionar');
         Route::post('/sincronizar', [EstoqueController::class, 'sincronizar'])->name('estoque.sincronizar');
+        Route::post('/sincronizar-todos', [EstoqueController::class, 'sincronizarTodos'])->name('estoque.sincronizarTodos');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');
         Route::post('/dar_baixa/{area_de}', [EstoqueController::class, 'dar_baixa'])->name('estoque.dar_baixa');
         Route::post('/baixa', [EstoqueController::class, 'baixa'])->name('estoque.baixa');

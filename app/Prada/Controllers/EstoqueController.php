@@ -19,6 +19,7 @@ use App\Models\{
 };
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Traits\{AtividadeTrait, GenerateTrait};
 use Carbon\Carbon;
 use App\Models\ProductHistory;
@@ -1136,6 +1137,16 @@ class EstoqueController extends Controller
         $produto->quantidade = $total;
         $produto->save();
 
+        // Atualizar ou criar saldo
+        if ($produto->saldo) {
+            $produto->saldo->update(['qtd' => $total]);
+        } else {
+            SE::create([
+                'produto_estoque_id' => $produto->id,
+                'qtd' => $total
+            ]);
+        }
+
         try {
             $meta = [
                 'model_type' => PE::class,
@@ -1154,6 +1165,120 @@ class EstoqueController extends Controller
             'produto_id' => $produto->id,
             'quantidade' => $produto->quantidade
         ], 200);
+    }
+
+    /**
+     * Sincroniza todos os produtos em lote
+     *
+     * Busca todos os produtos com quantidade=0 e descritivo válido,
+     * sincroniza em lote e retorna progresso
+     *
+     * @author Augusto Kussema
+     * @date 2025-11-04 10:15 (Luanda time)
+     *
+     * @param Request $request (opcional: area_id para filtrar por área)
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sincronizarTodos(Request $request)
+    {
+        try {
+            $query = PE::where('quantidade', 0)
+                ->whereNotNull('descritivo')
+                ->where('descritivo', '!=', '')
+                ->where('descritivo', '!=', '0')
+                ->where('descritivo', '!=', 'N/A');
+
+            // Filtrar por área se fornecido
+            if ($request->has('area_id') && $request->area_id) {
+                $query->where('area_id', $request->area_id);
+            }
+
+            $produtos = $query->get();
+
+            if ($produtos->isEmpty()) {
+                return response()->json([
+                    'message' => 'Nenhum produto encontrado para sincronizar',
+                    'total' => 0,
+                    'sincronizados' => 0,
+                ], 200);
+            }
+
+            $sincronizados = 0;
+            $erros = 0;
+
+            foreach ($produtos as $produto) {
+                try {
+                    $descritivo = $produto->descritivo ?? '';
+                    $des = str_replace(['X', ' '], ['x', ''], trim($descritivo));
+                    $parts = array_filter(explode('x', $des), function($v) { return $v !== ''; });
+                    $values = array_map(function($v) {
+                        return intval(preg_replace('/[^0-9]/', '', $v));
+                    }, array_values($parts));
+
+                    $total = 0;
+                    if (count($values) >= 3) {
+                        $total = intval($values[0]) * intval($values[1]) * intval($values[2]);
+                    } else {
+                        $total = 1;
+                        foreach ($values as $val) {
+                            $total *= max(0, intval($val));
+                        }
+                        if (count($values) === 0) {
+                            $total = 0;
+                        }
+                    }
+
+                    if ($total > 0) {
+                        $produto->quantidade = $total;
+                        $produto->save();
+
+                        // Atualizar saldo se existir
+                        if ($produto->saldo) {
+                            $produto->saldo->update(['qtd' => $total]);
+                        } else {
+                            SE::create([
+                                'produto_estoque_id' => $produto->id,
+                                'qtd' => $total
+                            ]);
+                        }
+
+                        $sincronizados++;
+                    }
+                } catch (\Throwable $e) {
+                    $erros++;
+                    Log::error("Erro ao sincronizar produto {$produto->id}: " . $e->getMessage());
+                }
+            }
+
+            // Registrar atividade geral
+            try {
+                $meta = [
+                    'model_type' => PE::class,
+                    'ip_address' => request()->ip(),
+                    'route' => request()->path(),
+                    'http_method' => request()->method(),
+                    'level' => 'info',
+                    'total_produtos' => $produtos->count(),
+                    'sincronizados' => $sincronizados,
+                    'erros' => $erros,
+                ];
+                self::startAtv("Sincronização em lote: {$sincronizados} de {$produtos->count()} produtos", null, $meta);
+            } catch (\Throwable $_) {}
+
+            return response()->json([
+                'message' => 'Sincronização concluída',
+                'total' => $produtos->count(),
+                'sincronizados' => $sincronizados,
+                'erros' => $erros,
+            ], 200);
+
+        } catch (\Throwable $e) {
+            Log::error("Erro na sincronização em lote: " . $e->getMessage());
+            return response()->json([
+                'message' => 'Erro ao sincronizar produtos',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

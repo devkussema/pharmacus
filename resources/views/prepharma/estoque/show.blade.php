@@ -245,12 +245,12 @@
 
         /* Botão Sincronizar Global */
         #btnSincronizarGlobal {
-            display: none;
+            display: inline-flex;
             animation: fadeInDown 0.3s ease-in-out;
         }
 
-        #btnSincronizarGlobal.show {
-            display: inline-flex;
+        #btnSincronizarGlobal.hidden {
+            display: none;
         }
 
         @keyframes fadeInDown {
@@ -657,10 +657,10 @@
                             <span>Atualizar</span>
                         </button>
 
-                        <!-- Botão Sincronizar Global (toggle com CTRL/CMD+ALT+S) -->
+                        <!-- Botão Sincronizar Global -->
                         <button id="btnSincronizarGlobal"
                                 class="btn btn-outline-secondary"
-                                title="Sincronizar todos os produtos (Ctrl/Cmd+Alt+S)">
+                                title="Sincronizar todos os produtos (Cmd+Alt+S no Mac ou Ctrl+Alt+S no Windows)">
                             <i class="fas fa-sync"></i>
                             <span>Sincronizar Todos</span>
                             <span id="btnSyncSpinner" style="display:none;">
@@ -1780,154 +1780,125 @@
                 });
         });
 
-        // ========== Atalho de Teclado: CTRL/CMD+ALT+S ==========
+        // ========== Atalho de Teclado: CMD/CTRL+ALT+S ==========
         /**
-         * Toggle do botão "Sincronizar Todos" com atalho de teclado
+         * Atalho para clicar no botão "Sincronizar Todos"
+         * Funciona com Cmd+Alt+S (macOS) ou Ctrl+Alt+S (Windows/Linux)
          * @author Augusto Kussema
-         * @date 04/11/2025 às 09:30 (Luanda)
+         * @date 28/11/2025 às 14:45 (Luanda)
          */
         document.addEventListener('keydown', function(e) {
-            // Detectar CTRL/CMD + ALT + S
-            if ((e.ctrlKey || e.metaKey) && e.altKey && e.key.toLowerCase() === 's') {
+            // Detectar (CMD ou CTRL) + ALT + S
+            var isModifierPressed = (e.metaKey || e.ctrlKey); // metaKey = Cmd no Mac, ctrlKey = Ctrl no Windows
+
+            if (isModifierPressed && e.altKey && e.key.toLowerCase() === 's') {
                 e.preventDefault();
 
                 var btn = document.getElementById('btnSincronizarGlobal');
-                if (btn) {
-                    btn.classList.toggle('show');
-
-                    // Feedback visual
-                    if (btn.classList.contains('show')) {
-                        showToast('Botão "Sincronizar Todos" ativado!', 'info', '', 2000);
-                    } else {
-                        showToast('Botão "Sincronizar Todos" desativado!', 'info', '', 2000);
-                    }
+                if (btn && !btn.disabled) {
+                    // Clica no botão para acionar a sincronização
+                    btn.click();
+                    showToast('Sincronização acionada via atalho!', 'info', '', 2000);
                 }
             }
         });
 
         // ========== Handler: Sincronizar Todos os Produtos ==========
         /**
-         * Sincroniza todos os produtos do estoque
+         * Sincroniza todos os produtos do estoque em lote usando endpoint otimizado
          * @author Augusto Kussema
-         * @date 04/11/2025 às 09:45 (Luanda)
+         * @date 04/11/2025 às 10:30 (Luanda)
          */
         (function(){
-            // Guarded attachment: só anexa o handler se o botão existir e DOM estiver pronto
             function attachGlobalSyncHandler() {
                 var btn = document.getElementById('btnSincronizarGlobal');
-                if (!btn) {
-                    // botão pode não existir dependendo do template; tenta novamente mais tarde
-                    return false;
-                }
+                if (!btn) return false;
 
                 btn.addEventListener('click', function() {
-                    try {
-                        if (this.disabled) return;
+                    if (this.disabled) return;
 
-                        // Confirmar ação
-                        if (!confirm('Deseja sincronizar TODOS os produtos do estoque? Esta operação pode demorar alguns minutos.')) {
-                            return;
-                        }
-
-                        var btnEl = this;
-                        var btnText = btnEl.querySelector('span:not(#btnSyncSpinner)');
-                        var btnSpinner = document.getElementById('btnSyncSpinner');
-                        var btnIcon = btnEl.querySelector('i');
-
-                        // Desabilitar botão e mostrar spinner
-                        btnEl.disabled = true;
-                        if (btnIcon) btnIcon.style.display = 'none';
-                        if (btnText) btnText.style.display = 'none';
-                        if (btnSpinner) btnSpinner.style.display = 'inline-flex';
-
-                        showToast('Iniciando sincronização de todos os produtos...', 'info', '', 3000);
-
-                        // Buscar todos os IDs dos produtos via DataTable (jQuery required)
-                        var produtoIds = [];
-                        try {
-                            if (window.jQuery && window.jQuery.fn && window.jQuery.fn.dataTable) {
-                                var table = window.jQuery('#table-c').DataTable();
-                                var allData = table.rows().data();
-                                for (var i = 0; i < allData.length; i++) {
-                                    if (allData[i].produto && allData[i].produto.id) produtoIds.push(allData[i].produto.id);
-                                }
-                            } else {
-                                // Tenta var table global
-                                if (typeof table !== 'undefined' && table && table.rows) {
-                                    var rows = table.rows().data();
-                                    for (var j = 0; j < rows.length; j++) {
-                                        if (rows[j].produto && rows[j].produto.id) produtoIds.push(rows[j].produto.id);
-                                    }
-                                }
-                            }
-                        } catch (err) {
-                            console.error('Erro ao ler DataTable:', err);
-                        }
-
-                        if (produtoIds.length === 0) {
-                            showToast('Nenhum produto encontrado para sincronizar', 'warning');
-                            if (btnIcon) btnIcon.style.display = 'inline-block';
-                            if (btnText) btnText.style.display = 'inline';
-                            if (btnSpinner) btnSpinner.style.display = 'none';
-                            btnEl.disabled = false;
-                            return;
-                        }
-
-                        var currentIndex = 0, successCount = 0, errorCount = 0;
-
-                        function syncNext() {
-                            if (currentIndex >= produtoIds.length) {
-                                // Finalizado
-                                btnEl.disabled = false;
-                                if (btnIcon) btnIcon.style.display = 'inline-block';
-                                if (btnText) btnText.style.display = 'inline';
-                                if (btnSpinner) btnSpinner.style.display = 'none';
-
-                                // Recarregar tabela se possível
-                                try { if (window.jQuery && window.jQuery.fn.dataTable) window.jQuery('#table-c').DataTable().ajax.reload(null, false); } catch(e){}
-
-                                if (errorCount === 0) showToast('Todos os ' + successCount + ' produtos foram sincronizados com sucesso!', 'success', '', 5000);
-                                else showToast('Sincronização concluída: ' + successCount + ' sucesso, ' + errorCount + ' erros', 'warning', '', 5000);
-                                return;
-                            }
-
-                            var produtoId = produtoIds[currentIndex++];
-                            showToast('Sincronizando produto ' + currentIndex + ' de ' + produtoIds.length + '...', 'info', '', 1200);
-
-                            fetch('{{ route('estoque.sincronizar') }}', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    'X-Requested-With': 'XMLHttpRequest'
-                                },
-                                body: JSON.stringify({ produto_id: produtoId })
-                            }).then(function(response){
-                                if (!response.ok) throw new Error('Erro na sincronização');
-                                return response.json();
-                            }).then(function(data){
-                                successCount++;
-                                setTimeout(syncNext, 250);
-                            }).catch(function(err){
-                                errorCount++;
-                                console.error('Erro ao sincronizar produto ' + produtoId, err);
-                                setTimeout(syncNext, 250);
-                            });
-                        }
-
-                        syncNext();
-                    } catch (e) {
-                        console.error('Erro no handler de sincronização global:', e);
-                        showToast('Erro ao iniciar sincronização', 'error');
+                    // Confirmar ação
+                    if (!confirm('Deseja sincronizar TODOS os produtos do estoque com quantidade zerada?\n\nIsso calculará automaticamente as quantidades a partir do descritivo.')) {
+                        return;
                     }
+
+                    var btnEl = this;
+                    var btnText = btnEl.querySelector('span:not(#btnSyncSpinner)');
+                    var btnSpinner = document.getElementById('btnSyncSpinner');
+                    var btnIcon = btnEl.querySelector('i');
+
+                    // Desabilitar botão e mostrar spinner
+                    btnEl.disabled = true;
+                    if (btnIcon) btnIcon.style.display = 'none';
+                    if (btnText) btnText.style.display = 'none';
+                    if (btnSpinner) btnSpinner.style.display = 'inline-flex';
+
+                    showToast('Iniciando sincronização em lote...', 'info', 'Sincronização', 2000);
+
+                    // Chamar endpoint de sincronização em lote
+                    fetch('{{ route('estoque.sincronizarTodos') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            area_id: {{ $ah->id ?? 'null' }}
+                        })
+                    })
+                    .then(function(response) {
+                        if (!response.ok) throw new Error('Erro na sincronização');
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        // Restaurar botão
+                        btnEl.disabled = false;
+                        if (btnIcon) btnIcon.style.display = 'inline-block';
+                        if (btnText) btnText.style.display = 'inline';
+                        if (btnSpinner) btnSpinner.style.display = 'none';
+
+                        // Recarregar tabela
+                        try {
+                            if (window.jQuery && window.jQuery.fn.dataTable) {
+                                window.jQuery('#table-c').DataTable().ajax.reload(null, false);
+                            }
+                        } catch(e) {
+                            console.warn('Erro ao recarregar tabela:', e);
+                        }
+
+                        // Mostrar resultado
+                        var percentual = data.total > 0 ? Math.round((data.sincronizados / data.total) * 100) : 0;
+                        var mensagem = data.sincronizados + ' de ' + data.total + ' produtos sincronizados (' + percentual + '%)';
+
+                        if (data.erros > 0) {
+                            mensagem += ' - ' + data.erros + ' erros';
+                            showToast(mensagem, 'warning', 'Sincronização Concluída', 5000);
+                        } else if (data.sincronizados === 0) {
+                            showToast('Nenhum produto precisou ser sincronizado', 'info', 'Sincronização', 3000);
+                        } else {
+                            showToast(mensagem, 'success', 'Sincronização Concluída', 5000);
+                        }
+                    })
+                    .catch(function(err) {
+                        console.error('Erro ao sincronizar:', err);
+
+                        // Restaurar botão
+                        btnEl.disabled = false;
+                        if (btnIcon) btnIcon.style.display = 'inline-block';
+                        if (btnText) btnText.style.display = 'inline';
+                        if (btnSpinner) btnSpinner.style.display = 'none';
+
+                        showToast('Erro ao sincronizar produtos', 'error', 'Erro', 4000);
+                    });
                 });
 
                 return true;
             }
 
-            // Tentar anexar agora; se falhar, anexa após DOMContentLoaded
+            // Anexar handler
             if (!attachGlobalSyncHandler()) {
-                document.addEventListener('DOMContentLoaded', function(){ attachGlobalSyncHandler(); });
+                document.addEventListener('DOMContentLoaded', attachGlobalSyncHandler);
             }
         })();
     </script>
@@ -1941,18 +1912,20 @@
 <!-- Small resilient script: attach keyboard toggle and delegated click handler AFTER all other scripts to avoid being blocked by earlier JS errors -->
 <script>
     (function(){
-        // Keyboard: CTRL/CMD + ALT + S toggles visibility of sync button
+        // Keyboard: CMD/CTRL + ALT + S aciona sincronização
         document.addEventListener('keydown', function(e) {
             try {
-                if ((e.ctrlKey || e.metaKey) && e.altKey && e.key && e.key.toLowerCase() === 's') {
+                var isModifierPressed = (e.metaKey || e.ctrlKey);
+                if (isModifierPressed && e.altKey && e.key && e.key.toLowerCase() === 's') {
                     e.preventDefault();
                     var btn = document.getElementById('btnSincronizarGlobal');
-                    if (btn) {
-                        btn.classList.toggle('show');
-                        if (btn.classList.contains('show')) showToast('Botão "Sincronizar Todos" ativado!', 'info');
-                        else showToast('Botão "Sincronizar Todos" desativado!', 'info');
+                    if (btn && !btn.disabled) {
+                        btn.click();
+                        showToast('Sincronização acionada!', 'info');
+                    } else if (btn && btn.disabled) {
+                        showToast('Aguarde a sincronização em andamento', 'warning');
                     } else {
-                        showToast('Botão de sincronização não encontrado na página', 'warning');
+                        showToast('Botão de sincronização não encontrado', 'warning');
                     }
                 }
             } catch (err) {
