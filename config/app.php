@@ -147,6 +147,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Aviso de Atualização do Sistema
+    |--------------------------------------------------------------------------
+    |
+    | Quando verdadeiro, exibe um aviso visual (com animações) informando que o
+    | sistema está em atualização. Controlado pelo .env.
+    |
+    */
+
+    'updating' => (bool) env('APP_UPDATING', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |

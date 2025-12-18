@@ -2,6 +2,121 @@
 
 @section('titulo', 'Página Inicial')
 
+@push('styles')
+    <style>
+        .system-updating-card {
+            position: relative;
+            overflow: hidden;
+            border: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(46, 55, 164, 0.12) 0%, rgba(46, 55, 164, 0.06) 100%);
+        }
+
+        .system-updating-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.55) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: translateX(-120%);
+            animation: su_shimmer 2.2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .system-updating-inner {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+        }
+
+        .system-updating-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: rgba(46, 55, 164, 0.10);
+            flex: 0 0 auto;
+            position: relative;
+        }
+
+        .system-updating-spinner {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 3px solid rgba(46, 55, 164, 0.20);
+            border-top-color: rgba(46, 55, 164, 0.95);
+            animation: su_spin 0.9s linear infinite;
+        }
+
+        .system-updating-title {
+            margin: 0;
+            font-weight: 700;
+            color: #2E37A4;
+            font-size: 15px;
+            line-height: 1.25;
+        }
+
+        .system-updating-text {
+            margin: 0;
+            opacity: 0.95;
+            font-size: 13px;
+            line-height: 1.3;
+        }
+
+        .system-updating-dots {
+            display: inline-flex;
+            gap: 6px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .system-updating-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(46, 55, 164, 0.75);
+            animation: su_bounce 1.2s ease-in-out infinite;
+        }
+
+        .system-updating-dots span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .system-updating-dots span:nth-child(3) {
+            animation-delay: 0.30s;
+        }
+
+        @keyframes su_spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes su_shimmer {
+            0% { transform: translateX(-120%); }
+            100% { transform: translateX(120%); }
+        }
+
+        @keyframes su_bounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.65; }
+            40% { transform: translateY(-4px); opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .system-updating-card::before,
+            .system-updating-spinner,
+            .system-updating-dots span {
+                animation: none !important;
+            }
+        }
+    </style>
+@endpush
+
 @section('content')
     <div class="content">
         <div class="page-header">
@@ -17,6 +132,31 @@
         </div>
 
         @include('partials.session')
+
+        @if (config('app.updating'))
+            <div class="row">
+                <div class="col-12">
+                    <div class="card system-updating-card">
+                        <div class="system-updating-inner">
+                            <div class="system-updating-icon" aria-hidden="true">
+                                <div class="system-updating-spinner"></div>
+                            </div>
+                            <div>
+                                <p class="system-updating-title">
+                                    Sistema em atualização
+                                    <span class="system-updating-dots" aria-hidden="true">
+                                        <span></span><span></span><span></span>
+                                    </span>
+                                </p>
+                                <p class="system-updating-text">
+                                    Algumas funcionalidades podem ficar instáveis por alguns instantes.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         <div class="good-morning-blk">
             <div class="row">
