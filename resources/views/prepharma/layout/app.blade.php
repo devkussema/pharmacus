@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -35,7 +36,7 @@
 
     <link rel="stylesheet" type="text/css" href="https://static.pharmatina.com/prepharma/assets/css/style.css">
     <!-- Overrides visuais locais -->
-    <link rel="stylesheet" href="{{ asset('prepharma/css/overrides.css') }}">
+    <link rel="stylesheet" href="{{ asset('prepharma/css/overrides.css') }}">--}}
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('prepharma/plugins/datatables/jquery.dataTables.min.js') }}"></script>
@@ -72,7 +73,7 @@
             height: 80px;
             margin-bottom: 20px;
             animation: float 3s ease-in-out infinite;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
         }
 
         /* Global Loading Overlay Premium */
@@ -83,7 +84,8 @@
             width: 100vw;
             height: 100vh;
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
-            display: none; /* ativada via .active */
+            display: none;
+            /* ativada via .active */
             z-index: 99999;
             backdrop-filter: blur(10px);
             /* Centralização perfeita independentemente de scroll/tamanho */
@@ -178,10 +180,13 @@
         }
 
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
                 opacity: 1;
             }
+
             50% {
                 transform: scale(1.2);
                 opacity: 0.6;
@@ -189,9 +194,13 @@
         }
 
         @keyframes bounce {
-            0%, 80%, 100% {
+
+            0%,
+            80%,
+            100% {
                 transform: translateY(0);
             }
+
             40% {
                 transform: translateY(-15px);
             }
@@ -245,17 +254,24 @@
             0% {
                 transform: translateY(0px);
             }
+
             50% {
                 transform: translateY(-10px);
             }
+
             100% {
                 transform: translateY(0px);
             }
         }
 
         @keyframes spin {
-            0% { transform: translateX(-50%) rotate(0deg); }
-            100% { transform: translateX(-50%) rotate(360deg); }
+            0% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translateX(-50%) rotate(360deg);
+            }
         }
 
         @keyframes fadeInUp {
@@ -263,6 +279,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -270,10 +287,24 @@
         }
 
         @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60% { content: '...'; }
-            80%, 100% { content: ''; }
+
+            0%,
+            20% {
+                content: '.';
+            }
+
+            40% {
+                content: '..';
+            }
+
+            60% {
+                content: '...';
+            }
+
+            80%,
+            100% {
+                content: '';
+            }
         }
 
         .loader-wrapper.fade-out {
@@ -291,8 +322,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
     </style>
 
@@ -333,576 +369,636 @@
         @include('partials.sidebar')
 
         <div class="page-wrapper">
-            {{-- @include('prepharma.partials.avisoUpdating')--}}
+            {{-- @include('prepharma.partials.avisoUpdating') --}}
             @yield('content')
 
             @include('partials.notification-box')
-                        <div class="col-lg-5 login-wrap">
+        </div>
     </div>
 
     <audio id="audioPlayer" style="display: none">
-        <source src="{{ asset('assets/audio/sound_notify.mp3') }}" type="audio/mpeg">
-        Seu navegador não suporta o elemento de áudio.
-    </audio>
-    <script src="{{ asset('/sw2.js') }}"></script>
+                <source src="{{ asset('assets/audio/sound_notify.mp3') }}" type="audio/mpeg">
+                Seu navegador não suporta o elemento de áudio.
+            </audio>
+            <script src="{{ asset('/sw2.js') }}"></script>
 
-    {{-- <script src="https://static.pharmatina.com/prepharma/assets/js/jquery-3.7.1.min.js"></script> --}}
+            {{-- <script src="https://static.pharmatina.com/prepharma/assets/js/jquery-3.7.1.min.js"></script> --}}
 
-    <script src="https://static.pharmatina.com/prepharma/assets/js/bootstrap.bundle.min.js"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://static.pharmatina.com/prepharma/assets/js/feather.min.js"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/js/feather.min.js"></script>
 
-    <script src="https://static.pharmatina.com/prepharma/assets/js/jquery.slimscroll.js"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/js/jquery.slimscroll.js"></script>
 
-    <script src="https://static.pharmatina.com/prepharma/assets/js/select2.min.js"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/js/select2.min.js"></script>
 
-    {{-- <script src="https://static.pharmatina.com/prepharma/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+            {{-- <script src="https://static.pharmatina.com/prepharma/assets/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="https://static.pharmatina.com/prepharma/assets/plugins/datatables/datatables.min.js"></script> --}}
 
-    <script src="https://static.pharmatina.com/prepharma/assets/plugins/moment/moment.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
-    <script src="https://static.pharmatina.com/prepharma/assets/js/bootstrap-datetimepicker.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/plugins/moment/moment.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/js/bootstrap-datetimepicker.min.js') }}" type="605432894161cb71178d599f-text/javascript"></script>
 
-    <script src="https://static.pharmatina.com/prepharma/assets/js/jquery.waypoints.js"></script>
-    <script src="https://static.pharmatina.com/prepharma/assets/js/jquery.counterup.min.js"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/js/jquery.waypoints.js"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/js/jquery.counterup.min.js"></script>
 
 
-    <script src="https://static.pharmatina.com/prepharma/assets/js/circle-progress.min.js"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/js/circle-progress.min.js"></script>
 
-    <script src="https://static.pharmatina.com/prepharma/assets/js/app.js"></script>
+            <script src="https://static.pharmatina.com/prepharma/assets/js/app.js"></script>
 
-    <script src="{{ asset('prepharma/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
-        data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
-    <script>
-        // Loader Control
-        // document.onreadystatechange = function() {
-        //     if (document.readyState === "complete") {
-        //         setTimeout(function() {
-        //             const loader = document.querySelector('.loader-wrapper');
-        //             loader.classList.add('fade-out');
-        //         }, 800);
-        //     }
-        // };
-        function playAudio() {
-            var audio = document.getElementById('audioPlayer');
-            audio.play();
-        }
+            <script src="{{ asset('prepharma/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js') }}"
+                data-cf-settings="be6558ccd95e077c3366a663-|49" defer></script>
+            <script>
+                // Loader Control
+                // document.onreadystatechange = function() {
+                //     if (document.readyState === "complete") {
+                //         setTimeout(function() {
+                //             const loader = document.querySelector('.loader-wrapper');
+                //             loader.classList.add('fade-out');
+                //         }, 800);
+                //     }
+                // };
+                function playAudio() {
+                    var audio = document.getElementById('audioPlayer');
+                    audio.play();
+                }
 
-        var audioPlayed = false;
-        var alertActive = false;
-        var mouseMoved = false;
-        var userInteracted = false;
-        function buscarPedidos() {
-            if (alertActive) {
-                return; // Não faz a solicitação se a modal estiver ativa
-            }
+                var audioPlayed = false;
+                var alertActive = false;
+                var mouseMoved = false;
+                var userInteracted = false;
 
-            $.ajax({
-                url: '/api/get/pedidos', // URL da rota no Laravel
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response > 0 && !audioPlayed) { // Acessando corretamente a contagem de pedidos
-                        alertActive = false;
-                        var msg1 = "Um pedido";
-                        var msg2 = response+" pedidos";
-                        if (response == 1) {
-                            alertify.alert(msg1, 'Por favor, atenda-os.', function(){
+                function buscarPedidos() {
+                    if (alertActive) {
+                        return; // Não faz a solicitação se a modal estiver ativa
+                    }
+
+                    $.ajax({
+                        url: '/api/get/pedidos', // URL da rota no Laravel
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response > 0 && !audioPlayed) { // Acessando corretamente a contagem de pedidos
                                 alertActive = false;
-                                window.location.href = '/pedidos';
-                            });
-                        }else if (response > 1) {
-                            alertify.alert(msg2, 'Por favor, atenda-os.', function(){
-                                alertActive = false;
-                                window.location.href = '/pedidos';
-                            });
-                        }
+                                var msg1 = "Um pedido";
+                                var msg2 = response + " pedidos";
+                                if (response == 1) {
+                                    alertify.alert(msg1, 'Por favor, atenda-os.', function() {
+                                        alertActive = false;
+                                        window.location.href = '/pedidos';
+                                    });
+                                } else if (response > 1) {
+                                    alertify.alert(msg2, 'Por favor, atenda-os.', function() {
+                                        alertActive = false;
+                                        window.location.href = '/pedidos';
+                                    });
+                                }
 
-                        playAudio();
-                        audioPlayed = 0;
+                                playAudio();
+                                audioPlayed = 0;
 
-                        // Reinicia a variável audioPlayed após 2 segundos se o cursor não se mover
-                        /* setTimeout(function() {
-                            if (!mouseMoved) {
-                                audioPlayed = false; // Reinicia a variável se o cursor não se mover
+                                // Reinicia a variável audioPlayed após 2 segundos se o cursor não se mover
+                                /* setTimeout(function() {
+                                    if (!mouseMoved) {
+                                        audioPlayed = false; // Reinicia a variável se o cursor não se mover
+                                    }
+                                }, 2000); */
                             }
-                        }, 2000); */
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log('Erro ao buscar pedidos:', error);
-                }
-            });
-        }
-        function startRequestingPedidos() {
-            buscarPedidos(); // Chama a função uma vez ao carregar a página
-            //setInterval(buscarPedidos, 5000); // Chama a função a cada 5 segundos (5000 milissegundos)
-        }
-        @if (Route::currentRouteName() != "pedido" and Route::currentRouteName() != "pedido.atender")
-            $(document).ready(function() {
-                startRequestingPedidos();
-
-                // Evento para detectar movimento do cursor
-                $(document).mousemove(function() {
-                    mouseMoved = true;
-                });
-            });
-        @endif
-
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verifica se a DataTable já foi inicializada
-            if (!$.fn.DataTable.isDataTable('#table-content')) {
-                // Inicializa a DataTable apenas se ainda não tiver sido inicializada
-                var table = $('#table-content').DataTable({
-                    // Configurações da DataTable
-                    "language": {
-                        "search": "Filtrar resultados:",
-                        "zeroRecords": "Nenhum resultado encontrado",
-                        "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                        "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
-                        "infoFiltered": "(filtrado de _MAX_ entradas no total)",
-                        "lengthMenu": "Mostrar _MENU_ entradas",
-                        "paginate": {
-                            "first": "Primeiro",
-                            "last": "Último",
-                            "next": "Próximo",
-                            "previous": "Anterior"
+                        },
+                        error: function(xhr, status, error) {
+                            console.log('Erro ao buscar pedidos:', error);
                         }
+                    });
+                }
+
+                function startRequestingPedidos() {
+                    buscarPedidos(); // Chama a função uma vez ao carregar a página
+                    //setInterval(buscarPedidos, 5000); // Chama a função a cada 5 segundos (5000 milissegundos)
+                }
+                @if (Route::currentRouteName() != 'pedido' and Route::currentRouteName() != 'pedido.atender')
+                    $(document).ready(function() {
+                        startRequestingPedidos();
+
+                        // Evento para detectar movimento do cursor
+                        $(document).mousemove(function() {
+                            mouseMoved = true;
+                        });
+                    });
+                @endif
+
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Verifica se a DataTable já foi inicializada
+                    if (!$.fn.DataTable.isDataTable('#table-content')) {
+                        // Inicializa a DataTable apenas se ainda não tiver sido inicializada
+                        var table = $('#table-content').DataTable({
+                            // Configurações da DataTable
+                            "language": {
+                                "search": "Filtrar resultados:",
+                                "zeroRecords": "Nenhum resultado encontrado",
+                                "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                                "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                                "infoFiltered": "(filtrado de _MAX_ entradas no total)",
+                                "lengthMenu": "Mostrar _MENU_ entradas",
+                                "paginate": {
+                                    "first": "Primeiro",
+                                    "last": "Último",
+                                    "next": "Próximo",
+                                    "previous": "Anterior"
+                                }
+                            }
+                        });
+
+                        // Aplica o filtro ao input de busca personalizado
+                        $('#search-table').on('keyup', function() {
+                            // Obtém a instância da DataTable
+                            var table = $('#table-content').DataTable();
+
+                            // Aplica o filtro ao DataTable usando o valor do campo de pesquisa personalizado
+                            table.search(this.value).draw();
+                        });
                     }
+
+                    // Seleciona todos os elementos input com a classe "form-control"
+                    var inputs = document.querySelectorAll('.form-control');
+
+                    // Itera sobre cada elemento e aplica o estilo desejado
+                    inputs.forEach(function(input) {
+                        input.style.borderRadius = '5px'; // Define o raio da borda
+                        input.style.borderColor = '#2E37A4'; // Define a cor da borda
+                    });
                 });
 
-                // Aplica o filtro ao input de busca personalizado
-                $('#search-table').on('keyup', function() {
-                    // Obtém a instância da DataTable
-                    var table = $('#table-content').DataTable();
+                function setDescritivo() {
+                    // Captura os valores dos inputs
+                    var caixa = document.getElementById('caixa').value;
+                    var caixinha = document.getElementById('caxinha').value;
+                    var unidade = document.getElementById('unidade').value;
 
-                    // Aplica o filtro ao DataTable usando o valor do campo de pesquisa personalizado
-                    table.search(this.value).draw();
-                });
-            }
+                    // Verifica se todos os campos estão preenchidos
+                    if (caixa && caixinha && unidade) {
+                        document.getElementById('qtd_total_estoque').disabled = false;
+                        // Concatena os valores com 'x' no meio
+                        var concatenatedValue = caixa + 'x' + caixinha + 'x' + unidade;
 
-            // Seleciona todos os elementos input com a classe "form-control"
-            var inputs = document.querySelectorAll('.form-control');
+                        // Concatena os valores com 'x' no meio
+                        var alertMessage = caixa + 'x' + caixinha + 'x' + unidade;
 
-            // Itera sobre cada elemento e aplica o estilo desejado
-            inputs.forEach(function(input) {
-                input.style.borderRadius = '5px'; // Define o raio da borda
-                input.style.borderColor = '#2E37A4'; // Define a cor da borda
-            });
-        });
+                        // Multiplica os valores
+                        var product = Number(caixa) * Number(caixinha) * Number(unidade);
 
-        function setDescritivo() {
-            // Captura os valores dos inputs
-            var caixa = document.getElementById('caixa').value;
-            var caixinha = document.getElementById('caxinha').value;
-            var unidade = document.getElementById('unidade').value;
+                        // Adiciona o valor concatenado no input hidden 'descritivo'
+                        document.getElementById('descritivo').value = concatenatedValue;
 
-            // Verifica se todos os campos estão preenchidos
-            if (caixa && caixinha && unidade) {
-                document.getElementById('qtd_total_estoque').disabled = false;
-                // Concatena os valores com 'x' no meio
-                var concatenatedValue = caixa + 'x' + caixinha + 'x' + unidade;
+                        // Adiciona o resultado da multiplicação no input 'qtd_total_estoque'
+                        document.getElementById('qtd_total_estoque').value = product;
+                        document.getElementById('qtd_total_estoque').style.display = 'block';
+                    } else {
+                        alertify.alert('Ocorreu um erro', 'Por favor, preencha todos os campos.', function() {
+                            alertify.success("Ok");
+                        });
+                    }
+                };
 
-                // Concatena os valores com 'x' no meio
-                var alertMessage = caixa + 'x' + caixinha + 'x' + unidade;
-
-                // Multiplica os valores
-                var product = Number(caixa) * Number(caixinha) * Number(unidade);
-
-                // Adiciona o valor concatenado no input hidden 'descritivo'
-                document.getElementById('descritivo').value = concatenatedValue;
-
-                // Adiciona o resultado da multiplicação no input 'qtd_total_estoque'
-                document.getElementById('qtd_total_estoque').value = product;
-                document.getElementById('qtd_total_estoque').style.display = 'block';
-            } else {
-                alertify.alert('Ocorreu um erro', 'Por favor, preencha todos os campos.', function() {
-                    alertify.success("Ok");
-                });
-            }
-        };
-
-        if ("serviceWorker" in navigator) {
-            // Register a service worker hosted at the root of the
-            // site using the default scope.
-            navigator.serviceWorker.register("/sw1.js").then(
-                (registration) => {
-                    //console.log("Service worker registration succeeded:", registration);
-                },
-                (error) => {
-                    console.error(`Service worker registration failed: ${error}`);
-                },
-            );
-        } else {
-            console.error("Service workers are not supported.");
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            $('#tipo_produto_estoque').change(function() {
-                if ($(this).val() === 'descartável') {
-                    $('#item_descartavel').fadeIn();
-                    $('#item_medicamento').fadeOut();
+                if ("serviceWorker" in navigator) {
+                    // Register a service worker hosted at the root of the
+                    // site using the default scope.
+                    navigator.serviceWorker.register("/sw1.js").then(
+                        (registration) => {
+                            //console.log("Service worker registration succeeded:", registration);
+                        },
+                        (error) => {
+                            console.error(`Service worker registration failed: ${error}`);
+                        },
+                    );
                 } else {
-                    $('#item_descartavel').fadeOut();
-                    $('#item_medicamento').fadeIn();
+                    console.error("Service workers are not supported.");
                 }
-            });
-        });
-
-        function addQtdTotal(input) {
-            var valor = $(input).val();
-
-            // Valida o valor usando uma expressão regular
-            const regex = /^(\d{1,2})x(\d{1,3})x(\d{1,5})$/; // Aumentamos para até 5 dígitos na terceira parte
-            if (!regex.test(valor)) {
-                // Retorna o último valor válido
-                $(input).val(valor.slice(0, -1));
-                return;
-            }
-
-            // Formata o valor
-            $(input).val(valor.replace(/(\d{1,2})x(\d{1,3})x(\d{1,5})/, '$1x$2x$3'));
-
-            // Multiplica os números
-            const partes = valor.split('x').map(Number); // Converte cada parte para número
-            const quantidadeTotal = partes.reduce((total, valor) => total * valor, 1); // Multiplica todas as partes
-
-            $('#formProdutoEstoque #qtd_total_estoque').val(quantidadeTotal);
-        }
-    </script>
-    <script>
-        (function () {
-            // Detecta a URL base usada pelo helper assetr() inspecionando o CSS principal
-            var mainCss = document.querySelector("link[href*='assets/css/style.css']");
-            var assetsBase = window.location.origin + '/';
-            if (mainCss && mainCss.href) {
-                try {
-                    var parts = mainCss.href.split('/assets/');
-                    if (parts.length > 0) assetsBase = parts[0] + '/assets/';
-                } catch (e) {
-                    assetsBase = window.location.origin + '/assets/';
-                }
-            }
-
-            window.Pharmatina = window.Pharmatina || {};
-            window.Pharmatina.assetsBase = assetsBase;
-            /**
-             * Constrói URL completa para um recurso usando a mesma base que assetr().
-             * Exemplo: Pharmatina.asset('prepharma/img/logo.png')
-             */
-            window.Pharmatina.assetr = function (path) {
-                if (!path) return assetsBase;
-                // Remove possíveis barras duplicadas
-                return assetsBase.replace(/\/+$/, '/') + path.replace(/^\/+/, '');
-            };
-
-            // Persistência do estado do sidebar
-            var SIDEBAR_KEY = 'pharmatina_sidebar_collapsed';
-            var BODY_CLASS = 'mini-sidebar'; // classe aplicada ao body para minimizar (ajuste se seu tema usar outra)
-
-            function applySidebarState() {
-                try {
-                    var collapsed = localStorage.getItem(SIDEBAR_KEY) === '1';
-                    if (collapsed) document.body.classList.add(BODY_CLASS);
-                    else document.body.classList.remove(BODY_CLASS);
-                } catch (e) {
-                    // localStorage pode falhar em ambientes restritos
-                }
-            }
-
-            function toggleSidebarState() {
-                var isCollapsed = document.body.classList.toggle(BODY_CLASS);
-                try {
-                    localStorage.setItem(SIDEBAR_KEY, isCollapsed ? '1' : '0');
-                } catch (e) {}
-            }
-
-            document.addEventListener('DOMContentLoaded', function () {
-                applySidebarState();
-
-                var toggleBtn = document.getElementById('toggle_btn');
-                var mobileBtn = document.getElementById('mobile_btn');
-
-                if (toggleBtn) toggleBtn.addEventListener('click', function (e) { e.preventDefault(); toggleSidebarState(); });
-                if (mobileBtn) mobileBtn.addEventListener('click', function (e) { /* mobile opens overlay, keep toggle for persistence */ toggleSidebarState(); });
-            });
-
-            // Utilidade para trocar CSS dinamicamente (ex.: temas remotos)
-            window.Pharmatina.switchCss = function (relativePath) {
-                if (!mainCss) return false;
-                mainCss.href = window.Pharmatina.assetr(relativePath);
-                return true;
-            };
-        })();
-    </script>
-    @stack('scripts')
-    <!-- Widget de atualização de estoque (canto inferior esquerdo) -->
-    <style>
-        .stock-update-widget {
-            position: fixed;
-            left: 16px;
-            bottom: 16px;
-            z-index: 2000;
-            background: rgba(46,55,164,0.95);
-            color: #fff;
-            padding: 10px 14px;
-            border-radius: 10px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            min-width: 220px;
-            max-width: 360px;
-            transform: translateY(20px) translateX(-10px) scale(0.98);
-            opacity: 0;
-            pointer-events: none;
-            transition: transform .28s ease, opacity .28s ease;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-        }
-        .stock-update-widget.show {
-            transform: translateY(0) translateX(0) scale(1);
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .stock-update-widget .icon {
-            font-size: 20px;
-            width: 36px;
-            height: 36px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.08);
-        }
-        .stock-update-widget .text {
-            display: flex;
-            flex-direction: column;
-            font-size: 13px;
-            line-height: 1.1;
-        }
-        .stock-update-widget .text .title { font-weight: 600; margin-bottom: 2px; }
-        .stock-update-widget .text .msg { font-weight: 400; opacity: .95; font-size: 12px }
-        /* pulse animation */
-        .stock-update-widget .pulse {
-            width: 36px; height: 36px; border-radius: 8px; position: relative;
-        }
-        .stock-update-widget .pulse::after {
-            content: '';
-            position: absolute; inset: 0; border-radius: 8px;
-            box-shadow: 0 0 0 0 rgba(255,255,255,0.06);
-            animation: pulse 1.6s infinite;
-            opacity: .6;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.06); }
-            70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(255,255,255,0.00); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.00); }
-        }
-        /* small dismiss button */
-        .stock-update-widget .close-btn { margin-left: auto; color: rgba(255,255,255,0.9); cursor: pointer; background: transparent; border: none; }
-        .stock-update-widget .close-btn:hover { opacity: .9 }
-    </style>
-
-    <div id="stockUpdateWidget" class="stock-update-widget" aria-hidden="true" role="status" aria-live="polite">
-        <div style="display:flex; gap:10px; align-items:center;">
-            <div class="icon pulse"><i class="fa-solid fa-box-open fa-fw spinner-icon"></i></div>
-            <div class="text">
-                <div class="title">A atualizar estoque</div>
-                <div class="msg" id="stockUpdateMsg">A iniciar atualização...</div>
-            </div>
-        </div>
-        <div id="stockUpdateLogs" style="margin-top:8px; width:100%; max-height:120px; overflow:auto; font-size:12px; opacity:.95; color:rgba(255,255,255,0.95); margin-left:46px; display:none;">
-            <!-- logs appended aqui via JS -->
-        </div>
-    </div>
-
-    <script>
-        (function () {
-            var widget = document.getElementById('stockUpdateWidget');
-            var msgEl = document.getElementById('stockUpdateMsg');
-            var logsEl = document.getElementById('stockUpdateLogs');
-
-            // mensagens cicláveis (padrão) para animação
-            var rotatingMessages = [
-                'Pode demorar devido à internet lenta. Aguarde...',
-                'A processar registros de estoque — isso pode levar alguns minutos...',
-                'Sincronizando alterações pendentes...',
-                'Verificando consistência dos lotes e saldos...'
-            ];
-            var rotateIndex = 0;
-            var rotateTimer = null;
-
-            // API global para controlar o widget e logs
-            window.Pharmatina = window.Pharmatina || {};
-            window.Pharmatina.showStockUpdate = function (message, options) {
-                if (message) msgEl.textContent = message;
-                widget.classList.add('show');
-                widget.setAttribute('aria-hidden', 'false');
-                // mostra logs se tiver conteúdo
-                if (logsEl.children.length > 0) logsEl.style.display = 'block';
-                // iniciar rotação de mensagens
-                startRotation();
-            };
-            window.Pharmatina.hideStockUpdate = function () {
-                widget.classList.remove('show');
-                widget.setAttribute('aria-hidden', 'true');
-                stopRotation();
-            };
-            window.Pharmatina.setStockUpdateMessage = function (message) {
-                msgEl.textContent = message || '';
-            };
-            window.Pharmatina.addStockLog = function (text) {
-                if (!text) return;
-                var line = document.createElement('div');
-                line.textContent = (new Date()).toLocaleTimeString() + ' — ' + text;
-                logsEl.appendChild(line);
-                logsEl.style.display = 'block';
-                // manter scroll no final
-                logsEl.scrollTop = logsEl.scrollHeight;
-            };
-            window.Pharmatina.clearStockLogs = function () {
-                logsEl.innerHTML = '';
-                logsEl.style.display = 'none';
-            };
-
-            function startRotation() {
-                stopRotation();
-                rotateTimer = setInterval(function () {
-                    rotateIndex = (rotateIndex + 1) % rotatingMessages.length;
-                    // anima fade
-                    msgEl.style.opacity = '0';
-                    setTimeout(function () {
-                        msgEl.textContent = rotatingMessages[rotateIndex];
-                        msgEl.style.transition = 'opacity .35s ease';
-                        msgEl.style.opacity = '1';
-                    }, 300);
-                }, 4000);
-            }
-            function stopRotation() {
-                if (rotateTimer) { clearInterval(rotateTimer); rotateTimer = null; }
-            }
-
-            // Atalho global: Ctrl + Alt + X (apenas Ctrl, não Cmd) para mostrar/ocultar o widget
-            document.addEventListener('keydown', function (e) {
-                try {
-                    var ctrl = e.ctrlKey && !e.metaKey; // garantir Ctrl, não Cmd
-                    if (ctrl && e.altKey && (e.key === 'x' || e.key === 'X')) {
-                        e.preventDefault();
-                        if (widget.classList.contains('show')) {
-                            window.Pharmatina.hideStockUpdate();
+                document.addEventListener('DOMContentLoaded', function() {
+                    $('#tipo_produto_estoque').change(function() {
+                        if ($(this).val() === 'descartável') {
+                            $('#item_descartavel').fadeIn();
+                            $('#item_medicamento').fadeOut();
                         } else {
-                            window.Pharmatina.showStockUpdate(rotatingMessages[rotateIndex]);
-                            widget.classList.add('flash');
-                            setTimeout(function () { widget.classList.remove('flash'); }, 800);
+                            $('#item_descartavel').fadeOut();
+                            $('#item_medicamento').fadeIn();
+                        }
+                    });
+                });
+
+                function addQtdTotal(input) {
+                    var valor = $(input).val();
+
+                    // Valida o valor usando uma expressão regular
+                    const regex = /^(\d{1,2})x(\d{1,3})x(\d{1,5})$/; // Aumentamos para até 5 dígitos na terceira parte
+                    if (!regex.test(valor)) {
+                        // Retorna o último valor válido
+                        $(input).val(valor.slice(0, -1));
+                        return;
+                    }
+
+                    // Formata o valor
+                    $(input).val(valor.replace(/(\d{1,2})x(\d{1,3})x(\d{1,5})/, '$1x$2x$3'));
+
+                    // Multiplica os números
+                    const partes = valor.split('x').map(Number); // Converte cada parte para número
+                    const quantidadeTotal = partes.reduce((total, valor) => total * valor, 1); // Multiplica todas as partes
+
+                    $('#formProdutoEstoque #qtd_total_estoque').val(quantidadeTotal);
+                }
+            </script>
+            <script>
+                (function() {
+                    // Detecta a URL base usada pelo helper assetr() inspecionando o CSS principal
+                    var mainCss = document.querySelector("link[href*='assets/css/style.css']");
+                    var assetsBase = window.location.origin + '/';
+                    if (mainCss && mainCss.href) {
+                        try {
+                            var parts = mainCss.href.split('/assets/');
+                            if (parts.length > 0) assetsBase = parts[0] + '/assets/';
+                        } catch (e) {
+                            assetsBase = window.location.origin + '/assets/';
                         }
                     }
-                } catch (err) { /* silencioso */ }
-            });
 
-            // efeito spinner: alterna classe para girar o icon
-            var spinnerIcon = widget.querySelector('.spinner-icon');
-            if (spinnerIcon) {
-                spinnerIcon.style.transition = 'transform .8s linear';
-                // girar continuamente quando visível
-                var spinInterval = setInterval(function () {
-                    if (widget.classList.contains('show')) {
-                        spinnerIcon.style.transform = 'rotate(360deg)';
-                        setTimeout(function () { spinnerIcon.style.transform = 'rotate(0deg)'; }, 800);
+                    window.Pharmatina = window.Pharmatina || {};
+                    window.Pharmatina.assetsBase = assetsBase;
+                    /**
+                     * Constrói URL completa para um recurso usando a mesma base que assetr().
+                     * Exemplo: Pharmatina.asset('prepharma/img/logo.png')
+                     */
+                    window.Pharmatina.assetr = function(path) {
+                        if (!path) return assetsBase;
+                        // Remove possíveis barras duplicadas
+                        return assetsBase.replace(/\/+$/, '/') + path.replace(/^\/+/, '');
+                    };
+
+                    // Persistência do estado do sidebar
+                    var SIDEBAR_KEY = 'pharmatina_sidebar_collapsed';
+                    var BODY_CLASS = 'mini-sidebar'; // classe aplicada ao body para minimizar (ajuste se seu tema usar outra)
+
+                    function applySidebarState() {
+                        try {
+                            var collapsed = localStorage.getItem(SIDEBAR_KEY) === '1';
+                            if (collapsed) document.body.classList.add(BODY_CLASS);
+                            else document.body.classList.remove(BODY_CLASS);
+                        } catch (e) {
+                            // localStorage pode falhar em ambientes restritos
+                        }
                     }
-                }, 900);
-            }
 
-            // parar rotação quando navegar/fechar
-            window.addEventListener('beforeunload', function () {
-                stopRotation();
-                // Mostrar loading overlay ao recarregar
-                if (typeof showLoading === 'function') {
-                    showLoading();
+                    function toggleSidebarState() {
+                        var isCollapsed = document.body.classList.toggle(BODY_CLASS);
+                        try {
+                            localStorage.setItem(SIDEBAR_KEY, isCollapsed ? '1' : '0');
+                        } catch (e) {}
+                    }
+
+                    document.addEventListener('DOMContentLoaded', function() {
+                        applySidebarState();
+
+                        var toggleBtn = document.getElementById('toggle_btn');
+                        var mobileBtn = document.getElementById('mobile_btn');
+
+                        if (toggleBtn) toggleBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            toggleSidebarState();
+                        });
+                        if (mobileBtn) mobileBtn.addEventListener('click', function(e) {
+                            /* mobile opens overlay, keep toggle for persistence */
+                            toggleSidebarState();
+                        });
+                    });
+
+                    // Utilidade para trocar CSS dinamicamente (ex.: temas remotos)
+                    window.Pharmatina.switchCss = function(relativePath) {
+                        if (!mainCss) return false;
+                        mainCss.href = window.Pharmatina.assetr(relativePath);
+                        return true;
+                    };
+                })();
+            </script>
+            @stack('scripts')
+            <!-- Widget de atualização de estoque (canto inferior esquerdo) -->
+            <style>
+                .stock-update-widget {
+                    position: fixed;
+                    left: 16px;
+                    bottom: 16px;
+                    z-index: 2000;
+                    background: rgba(46, 55, 164, 0.95);
+                    color: #fff;
+                    padding: 10px 14px;
+                    border-radius: 10px;
+                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    min-width: 220px;
+                    max-width: 360px;
+                    transform: translateY(20px) translateX(-10px) scale(0.98);
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: transform .28s ease, opacity .28s ease;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
                 }
-            });
 
-            // Detectar CMD/CTRL + R
-            document.addEventListener('keydown', function(e) {
-                if ((e.metaKey || e.ctrlKey) && e.key === 'r') {
-                    if (typeof showLoading === 'function') {
-                        showLoading();
+                .stock-update-widget.show {
+                    transform: translateY(0) translateX(0) scale(1);
+                    opacity: 1;
+                    pointer-events: auto;
+                }
+
+                .stock-update-widget .icon {
+                    font-size: 20px;
+                    width: 36px;
+                    height: 36px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 8px;
+                    background: rgba(255, 255, 255, 0.08);
+                }
+
+                .stock-update-widget .text {
+                    display: flex;
+                    flex-direction: column;
+                    font-size: 13px;
+                    line-height: 1.1;
+                }
+
+                .stock-update-widget .text .title {
+                    font-weight: 600;
+                    margin-bottom: 2px;
+                }
+
+                .stock-update-widget .text .msg {
+                    font-weight: 400;
+                    opacity: .95;
+                    font-size: 12px
+                }
+
+                /* pulse animation */
+                .stock-update-widget .pulse {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 8px;
+                    position: relative;
+                }
+
+                .stock-update-widget .pulse::after {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    border-radius: 8px;
+                    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.06);
+                    animation: pulse 1.6s infinite;
+                    opacity: .6;
+                }
+
+                @keyframes pulse {
+                    0% {
+                        transform: scale(1);
+                        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.06);
+                    }
+
+                    70% {
+                        transform: scale(1.08);
+                        box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.00);
+                    }
+
+                    100% {
+                        transform: scale(1);
+                        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.00);
                     }
                 }
-            });
 
-            // expor variáveis de teste
-            window.Pharmatina._stockRotate = rotatingMessages;
-        })();
-    </script>
+                /* small dismiss button */
+                .stock-update-widget .close-btn {
+                    margin-left: auto;
+                    color: rgba(255, 255, 255, 0.9);
+                    cursor: pointer;
+                    background: transparent;
+                    border: none;
+                }
 
-    <script>
-        /**
-         * Funções Globais de Loading Overlay
-         * @author Augusto Kussema
-         * @date 18/11/2025
-         */
-        window.showGlobalLoading = function(message = 'Carregando', subtext = 'Por favor, aguarde...') {
-            const overlay = document.getElementById('globalLoadingOverlay');
-            if (overlay) {
-                const textEl = overlay.querySelector('.global-loader-text');
-                const subtextEl = overlay.querySelector('.global-loader-subtext');
+                .stock-update-widget .close-btn:hover {
+                    opacity: .9
+                }
+            </style>
 
-                if (textEl) textEl.textContent = message;
-                if (subtextEl) subtextEl.textContent = subtext;
+            <div id="stockUpdateWidget" class="stock-update-widget" aria-hidden="true" role="status"
+                aria-live="polite">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <div class="icon pulse"><i class="fa-solid fa-box-open fa-fw spinner-icon"></i></div>
+                    <div class="text">
+                        <div class="title">A atualizar estoque</div>
+                        <div class="msg" id="stockUpdateMsg">A iniciar atualização...</div>
+                    </div>
+                </div>
+                <div id="stockUpdateLogs"
+                    style="margin-top:8px; width:100%; max-height:120px; overflow:auto; font-size:12px; opacity:.95; color:rgba(255,255,255,0.95); margin-left:46px; display:none;">
+                    <!-- logs appended aqui via JS -->
+                </div>
+            </div>
 
-                overlay.classList.add('active');
-            }
-        };
+            <script>
+                (function() {
+                    var widget = document.getElementById('stockUpdateWidget');
+                    var msgEl = document.getElementById('stockUpdateMsg');
+                    var logsEl = document.getElementById('stockUpdateLogs');
 
-        window.hideGlobalLoading = function() {
-            const overlay = document.getElementById('globalLoadingOverlay');
-            if (overlay) {
-                overlay.classList.remove('active');
-            }
-        };
+                    // mensagens cicláveis (padrão) para animação
+                    var rotatingMessages = [
+                        'Pode demorar devido à internet lenta. Aguarde...',
+                        'A processar registros de estoque — isso pode levar alguns minutos...',
+                        'Sincronizando alterações pendentes...',
+                        'Verificando consistência dos lotes e saldos...'
+                    ];
+                    var rotateIndex = 0;
+                    var rotateTimer = null;
 
-        /**
-         * Event Listeners para Recarregamento de Página
-         * Detecta CMD+R (Mac) / CTRL+R (Windows) e beforeunload
-         * @author Augusto Kussema
-         * @date 19/11/2025
-         */
-        // Listener para beforeunload (quando a página está sendo descarregada)
-        window.addEventListener('beforeunload', function() {
-            showGlobalLoading('A carregar', 'Aguarde enquanto a página é recarregada...');
-        });
+                    // API global para controlar o widget e logs
+                    window.Pharmatina = window.Pharmatina || {};
+                    window.Pharmatina.showStockUpdate = function(message, options) {
+                        if (message) msgEl.textContent = message;
+                        widget.classList.add('show');
+                        widget.setAttribute('aria-hidden', 'false');
+                        // mostra logs se tiver conteúdo
+                        if (logsEl.children.length > 0) logsEl.style.display = 'block';
+                        // iniciar rotação de mensagens
+                        startRotation();
+                    };
+                    window.Pharmatina.hideStockUpdate = function() {
+                        widget.classList.remove('show');
+                        widget.setAttribute('aria-hidden', 'true');
+                        stopRotation();
+                    };
+                    window.Pharmatina.setStockUpdateMessage = function(message) {
+                        msgEl.textContent = message || '';
+                    };
+                    window.Pharmatina.addStockLog = function(text) {
+                        if (!text) return;
+                        var line = document.createElement('div');
+                        line.textContent = (new Date()).toLocaleTimeString() + ' — ' + text;
+                        logsEl.appendChild(line);
+                        logsEl.style.display = 'block';
+                        // manter scroll no final
+                        logsEl.scrollTop = logsEl.scrollHeight;
+                    };
+                    window.Pharmatina.clearStockLogs = function() {
+                        logsEl.innerHTML = '';
+                        logsEl.style.display = 'none';
+                    };
 
-        // Listener para CMD/CTRL + R
-        document.addEventListener('keydown', function(e) {
-            // Detecta CMD (Mac) ou CTRL (Windows/Linux) + R
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'r') {
-                showGlobalLoading('A carregar', 'Aguarde enquanto a página é recarregada...');
-            }
-        });
+                    function startRotation() {
+                        stopRotation();
+                        rotateTimer = setInterval(function() {
+                            rotateIndex = (rotateIndex + 1) % rotatingMessages.length;
+                            // anima fade
+                            msgEl.style.opacity = '0';
+                            setTimeout(function() {
+                                msgEl.textContent = rotatingMessages[rotateIndex];
+                                msgEl.style.transition = 'opacity .35s ease';
+                                msgEl.style.opacity = '1';
+                            }, 300);
+                        }, 4000);
+                    }
 
-        // Corrigir travamento ao voltar (bfcache) e garantir centralização sempre
-        window.addEventListener('pageshow', function(event) {
-            // Quando voltar do histórico (bfcache), hide overlay
-            hideGlobalLoading();
-        });
+                    function stopRotation() {
+                        if (rotateTimer) {
+                            clearInterval(rotateTimer);
+                            rotateTimer = null;
+                        }
+                    }
 
-        document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'visible') {
-                hideGlobalLoading();
-            }
-        });
+                    // Atalho global: Ctrl + Alt + X (apenas Ctrl, não Cmd) para mostrar/ocultar o widget
+                    document.addEventListener('keydown', function(e) {
+                        try {
+                            var ctrl = e.ctrlKey && !e.metaKey; // garantir Ctrl, não Cmd
+                            if (ctrl && e.altKey && (e.key === 'x' || e.key === 'X')) {
+                                e.preventDefault();
+                                if (widget.classList.contains('show')) {
+                                    window.Pharmatina.hideStockUpdate();
+                                } else {
+                                    window.Pharmatina.showStockUpdate(rotatingMessages[rotateIndex]);
+                                    widget.classList.add('flash');
+                                    setTimeout(function() {
+                                        widget.classList.remove('flash');
+                                    }, 800);
+                                }
+                            }
+                        } catch (err) {
+                            /* silencioso */ }
+                    });
 
-        // Garantir que o loading seja escondido quando a página carregar
-        window.addEventListener('load', function() {
-            // Pequeno delay para evitar flash
-            setTimeout(function() {
-                hideGlobalLoading();
-            }, 300);
-        });
+                    // efeito spinner: alterna classe para girar o icon
+                    var spinnerIcon = widget.querySelector('.spinner-icon');
+                    if (spinnerIcon) {
+                        spinnerIcon.style.transition = 'transform .8s linear';
+                        // girar continuamente quando visível
+                        var spinInterval = setInterval(function() {
+                            if (widget.classList.contains('show')) {
+                                spinnerIcon.style.transform = 'rotate(360deg)';
+                                setTimeout(function() {
+                                    spinnerIcon.style.transform = 'rotate(0deg)';
+                                }, 800);
+                            }
+                        }, 900);
+                    }
 
-        // Uso nos AJAX:
-        // $(document).ajaxStart(function() { showGlobalLoading(); });
-        // $(document).ajaxStop(function() { hideGlobalLoading(); });
-    </script>
+                    // parar rotação quando navegar/fechar
+                    window.addEventListener('beforeunload', function() {
+                        stopRotation();
+                        // Mostrar loading overlay ao recarregar
+                        if (typeof showLoading === 'function') {
+                            showLoading();
+                        }
+                    });
+
+                    // Detectar CMD/CTRL + R
+                    document.addEventListener('keydown', function(e) {
+                        if ((e.metaKey || e.ctrlKey) && e.key === 'r') {
+                            if (typeof showLoading === 'function') {
+                                showLoading();
+                            }
+                        }
+                    });
+
+                    // expor variáveis de teste
+                    window.Pharmatina._stockRotate = rotatingMessages;
+                })();
+            </script>
+
+            <script>
+                /**
+                 * Funções Globais de Loading Overlay
+                 * @author Augusto Kussema
+                 * @date 18/11/2025
+                 */
+                window.showGlobalLoading = function(message = 'Carregando', subtext = 'Por favor, aguarde...') {
+                    const overlay = document.getElementById('globalLoadingOverlay');
+                    if (overlay) {
+                        const textEl = overlay.querySelector('.global-loader-text');
+                        const subtextEl = overlay.querySelector('.global-loader-subtext');
+
+                        if (textEl) textEl.textContent = message;
+                        if (subtextEl) subtextEl.textContent = subtext;
+
+                        overlay.classList.add('active');
+                    }
+                };
+
+                window.hideGlobalLoading = function() {
+                    const overlay = document.getElementById('globalLoadingOverlay');
+                    if (overlay) {
+                        overlay.classList.remove('active');
+                    }
+                };
+
+                /**
+                 * Event Listeners para Recarregamento de Página
+                 * Detecta CMD+R (Mac) / CTRL+R (Windows) e beforeunload
+                 * @author Augusto Kussema
+                 * @date 19/11/2025
+                 */
+                // Listener para beforeunload (quando a página está sendo descarregada)
+                window.addEventListener('beforeunload', function() {
+                    showGlobalLoading('A carregar', 'Aguarde enquanto a página é recarregada...');
+                });
+
+                // Listener para CMD/CTRL + R
+                document.addEventListener('keydown', function(e) {
+                    // Detecta CMD (Mac) ou CTRL (Windows/Linux) + R
+                    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'r') {
+                        showGlobalLoading('A carregar', 'Aguarde enquanto a página é recarregada...');
+                    }
+                });
+
+                // Corrigir travamento ao voltar (bfcache) e garantir centralização sempre
+                window.addEventListener('pageshow', function(event) {
+                    // Quando voltar do histórico (bfcache), hide overlay
+                    hideGlobalLoading();
+                });
+
+                document.addEventListener('visibilitychange', function() {
+                    if (document.visibilityState === 'visible') {
+                        hideGlobalLoading();
+                    }
+                });
+
+                // Garantir que o loading seja escondido quando a página carregar
+                window.addEventListener('load', function() {
+                    // Pequeno delay para evitar flash
+                    setTimeout(function() {
+                        hideGlobalLoading();
+                    }, 300);
+                });
+
+                // Uso nos AJAX:
+                // $(document).ajaxStart(function() { showGlobalLoading(); });
+                // $(document).ajaxStop(function() { hideGlobalLoading(); });
+            </script>
 </body>
 
 </html>
