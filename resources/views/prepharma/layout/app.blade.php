@@ -369,7 +369,7 @@
         @include('partials.sidebar')
 
         <div class="page-wrapper">
-            {{-- @include('prepharma.partials.avisoUpdating') --}}
+            @include('prepharma.partials.avisoUpdating')
             @yield('content')
 
             @include('partials.notification-box')
