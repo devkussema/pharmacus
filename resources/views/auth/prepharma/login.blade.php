@@ -1,5 +1,52 @@
 @extends('prepharma_auth::layout.app')
 
+@push('styles')
+<style>
+    /* Estilos para mensagem de atualização no login */
+    .system-updating-card {
+        background: #f3f4f6 !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 6px !important;
+        padding: 12px 14px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .system-updating-card::before {
+        display: none !important;
+    }
+
+    .system-updating-inner {
+        display: block !important;
+        padding: 0 !important;
+        gap: 0 !important;
+    }
+
+    .system-updating-icon {
+        display: none !important;
+    }
+
+    .system-updating-title {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #1f2937 !important;
+        margin: 0 0 4px 0 !important;
+        line-height: 1.4 !important;
+    }
+
+    .system-updating-dots {
+        display: none !important;
+    }
+
+    .system-updating-text {
+        font-size: 12px !important;
+        color: #6b7280 !important;
+        margin: 0 !important;
+        line-height: 1.4 !important;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="col-lg-6 login-wrap-bg">
     <div class="login-wrapper">
@@ -13,6 +60,41 @@
                     </div>
                     <h2>Iniciar Sessão</h2>
                     @include('partials.session')
+                    @if (config('app.updating'))
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="update-card-modern" style="background:#ffffff;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.08);padding:12px 16px;display:flex;gap:12px;align-items:center;border:1px solid rgba(2,6,23,0.04);">
+                                    <div style="flex:0 0 auto;">
+                                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <defs>
+                                                <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                                                    <stop offset="0" stop-color="#4f46e5"/>
+                                                    <stop offset="1" stop-color="#06b6d4"/>
+                                                </linearGradient>
+                                            </defs>
+                                            <rect width="24" height="24" rx="6" fill="url(#g1)"/>
+                                            <path d="M12 7v5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <circle cx="12" cy="16.2" r="0.9" fill="#fff"/>
+                                        </svg>
+                                    </div>
+                                    <div style="flex:1;min-width:0;">
+                                        <p style="margin:0;font-weight:600;font-size:14px;color:#0f172a;line-height:1.2;">
+                                            Sistema em atualização
+                                        </p>
+                                        <p style="margin:6px 0 0;font-size:13px;color:#475569;line-height:1.35;overflow:hidden;text-overflow:ellipsis;">
+                                            Algumas funcionalidades podem ficar instáveis por algum tempo. Agradecemos a sua compreensão.
+                                        </p>
+                                    </div>
+                                    <div style="flex:0 0 auto;text-align:right;">
+                                        <span style="display:inline-block;padding:6px 8px;background:rgba(15,23,42,0.04);border-radius:8px;font-size:12px;color:#64748b;">
+                                            Em curso
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    <p></p><p></p>
                     <div id="login-error" class="alert alert-danger d-none" role="alert"></div>
                     <form id="login-form" action="{{ route('login') }}" method="POST">
                         @csrf

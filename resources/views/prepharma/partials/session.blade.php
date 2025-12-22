@@ -83,4 +83,4 @@
     </div>
 @endif
 
-@include('prepharma.partials.avisoUpdating')
+{{--@include('prepharma.partials.avisoUpdating')--}}
