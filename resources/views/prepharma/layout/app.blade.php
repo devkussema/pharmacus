@@ -337,7 +337,7 @@
             @yield('content')
 
             @include('partials.notification-box')
-        </div>
+                        <div class="col-lg-5 login-wrap">
     </div>
 
     <audio id="audioPlayer" style="display: none">

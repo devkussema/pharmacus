@@ -44,6 +44,10 @@
         margin: 0 !important;
         line-height: 1.4 !important;
     }
+
+    /* Forçar o card do formulário maior no login */
+    .login-right-wrap { max-width: 560px !important; }
+
 </style>
 @endpush
 
