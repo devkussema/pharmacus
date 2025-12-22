@@ -10,6 +10,8 @@
             border: 0;
             border-radius: 14px;
             background: linear-gradient(135deg, rgba(46, 55, 164, 0.12) 0%, rgba(46, 55, 164, 0.06) 100%);
+            backdrop-filter: saturate(1.05) blur(6px);
+            box-shadow: 0 12px 34px rgba(17,24,39,0.08);
         }
 
         .system-updating-card::before {
@@ -114,11 +116,63 @@
                 animation: none !important;
             }
         }
+
+        /* ==========================
+           Modernização do Dashboard
+           (escopo desta página)
+           ========================== */
+        .dashboard-modern { --brand:#2E37A4; --radius:16px; }
+
+        .dashboard-modern .good-morning-blk { border-radius: var(--radius); overflow: hidden; position: relative; }
+        .dashboard-modern .good-morning-blk::before { content:''; position:absolute; inset:0; background:
+            radial-gradient(1200px 220px at 85% -40%, rgba(46,55,164,0.12), rgba(46,55,164,0))
+        ; pointer-events:none; }
+
+        .dashboard-modern .card,
+        .dashboard-modern .dash-widget { border-radius: var(--radius); box-shadow: 0 6px 22px rgba(17,24,39,0.08); transition: transform .24s ease, box-shadow .24s ease; }
+        .dashboard-modern .card:hover,
+        .dashboard-modern .dash-widget:hover { transform: translateY(-2px); box-shadow: 0 16px 38px rgba(17,24,39,0.12); }
+
+        .dashboard-modern .dash-boxs { position: relative; overflow: hidden; }
+        .dashboard-modern .dash-boxs::after { content:''; position:absolute; inset:-2px; background: radial-gradient(160px 80px at 20% 20%, rgba(46,55,164,.18), transparent 60%); pointer-events:none; }
+        .dashboard-modern .dash-boxs::before { content:''; position:absolute; width:42px; height:42px; border-radius:50%;
+            top:50%; left:50%; transform: translate(-50%, -50%);
+            background: conic-gradient(from 0deg, var(--brand) 0deg, rgba(46,55,164,0) 120deg);
+            animation: kpiSpin 1.8s linear infinite; opacity:.8; filter: drop-shadow(0 2px 6px rgba(46,55,164,0.2));
+        }
+        .dashboard-modern .dash-boxs img { position:relative; z-index:1; transform: translateZ(0); transition: transform .3s ease; }
+        .dashboard-modern .dash-widget:hover .dash-boxs img { transform: scale(1.06); }
+
+        @keyframes kpiSpin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* Animação de entrada */
+        .dashboard-modern .reveal { opacity: 0; transform: translateY(10px); }
+        .dashboard-modern .reveal.in { opacity: 1; transform: translateY(0); transition: all .48s cubic-bezier(.22,1,.36,1); }
+
+        /* Tabelas com realce */
+        .dashboard-modern .table tbody tr { transition: background-color .18s ease; }
+        .dashboard-modern .table tbody tr:hover { background-color: rgba(46,55,164,0.04); }
+
+        /* Link com sublinhado animado */
+        .dashboard-modern a.patient-views { position: relative; }
+        .dashboard-modern a.patient-views::after { content:''; position:absolute; left:0; bottom:-2px; height:2px; width:0; background: var(--brand); transition: width .22s ease; border-radius:2px; }
+        .dashboard-modern a.patient-views:hover::after { width:100%; }
+
+        /* Texto do KPI com leve gradiente */
+        .dashboard-modern .dash-count h2 span {
+            background: linear-gradient(90deg, #2E37A4 0%, #6D75E0 60%, #2E37A4 100%);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .dashboard-modern .reveal { opacity:1; transform:none; }
+            .dashboard-modern .card, .dashboard-modern .dash-widget { transition: none !important; }
+        }
     </style>
 @endpush
 
 @section('content')
-    <div class="content">
+    <div class="content dashboard-modern">
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
@@ -132,31 +186,6 @@
         </div>
 
         @include('partials.session')
-
-        @if (config('app.updating'))
-            <div class="row">
-                <div class="col-12">
-                    <div class="card system-updating-card">
-                        <div class="system-updating-inner">
-                            <div class="system-updating-icon" aria-hidden="true">
-                                <div class="system-updating-spinner"></div>
-                            </div>
-                            <div>
-                                <p class="system-updating-title">
-                                    Sistema em atualização
-                                    <span class="system-updating-dots" aria-hidden="true">
-                                        <span></span><span></span><span></span>
-                                    </span>
-                                </p>
-                                <p class="system-updating-text">
-                                    Algumas funcionalidades podem ficar instáveis por alguns instantes.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
 
         <div class="good-morning-blk">
             <div class="row">
@@ -173,7 +202,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row reveal">
             @php
                 use App\Models\RelatorioEstoqueAlerta as REA;
                 $id_niv = [];
@@ -256,7 +285,7 @@
                 </div>
             </div>
         </div> --}}
-        <div class="row">
+        <div class="row reveal">
             <div class="col-12 col-md-12  col-xl-4">
                 <div class="card top-departments">
                     <div class="card-header">
@@ -328,7 +357,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row reveal">
             <div class="col-12 col-xl-12">
                 <div class="card">
                     <div class="card-header pb-0">
@@ -381,3 +410,37 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    (function() {
+        const root = document.querySelector('.dashboard-modern');
+        if (!root) return;
+        const revealBlocks = root.querySelectorAll('.reveal');
+        revealBlocks.forEach(b => b.classList.remove('in'));
+
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('in');
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.08 });
+        revealBlocks.forEach(b => io.observe(b));
+
+        // Contadores
+        const $ = window.jQuery;
+        if ($ && typeof $.fn.counterUp === 'function') {
+            $('.counter-up').counterUp({ delay: 18, time: 520 });
+        } else {
+            document.querySelectorAll('.counter-up').forEach(function(el){
+                const end = parseInt(el.textContent || '0', 10) || 0;
+                let cur = 0; const steps = 24; const inc = Math.max(1, Math.ceil(end/steps));
+                const tick = () => { cur = Math.min(end, cur + inc); el.textContent = cur.toString(); if (cur < end) requestAnimationFrame(tick); };
+                requestAnimationFrame(tick);
+            });
+        }
+    })();
+</script>
+@endpush

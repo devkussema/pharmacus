@@ -7,7 +7,7 @@
             <div class="login-right">
                 <div class="login-right-wrap">
                     <div class="account-logo">
-                        <a href="index.html">
+                        <a href="javascript:;">
                             <img src="{{ asset('prepharma/img/white__logo2.png') }}" width="48px">
                         </a>
                     </div>

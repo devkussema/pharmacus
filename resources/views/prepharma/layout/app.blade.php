@@ -34,6 +34,8 @@
     <link rel="stylesheet" href="{{ asset('prepharma/plugins/datatables/datatables.min.css') }}">
 
     <link rel="stylesheet" type="text/css" href="https://static.pharmatina.com/prepharma/assets/css/style.css">
+    <!-- Overrides visuais locais -->
+    <link rel="stylesheet" href="{{ asset('prepharma/css/overrides.css') }}">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('prepharma/plugins/datatables/jquery.dataTables.min.js') }}"></script>
@@ -331,6 +333,7 @@
         @include('partials.sidebar')
 
         <div class="page-wrapper">
+            {{-- @include('prepharma.partials.avisoUpdating')--}}
             @yield('content')
 
             @include('partials.notification-box')

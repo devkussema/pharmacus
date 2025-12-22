@@ -15,6 +15,7 @@
             </div>
         </div>
     </div>
+        @include('partials.session')
 
     @include('prepharma.fornecedores._listaModerna')
 </div>

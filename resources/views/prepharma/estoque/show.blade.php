@@ -624,7 +624,7 @@
 
     <div class="content estoque-container">
         @include('partials.session')
-
+        
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-3">
             <ol class="breadcrumb">
