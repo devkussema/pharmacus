@@ -672,8 +672,8 @@ class EstoqueController extends Controller
                         }
 
                         Atividade::create([
-                            'user_id' => Auth::id(),
-                            'farmacia_id' => Auth::user()->isFarmacia->farmacia->id ?? Auth::user()->farmacia->farmacia->id ?? null,
+                            'user_id' => $this->currentUser()->id ?? null,
+                            'farmacia_id' => ($this->currentUser()->isFarmacia->farmacia->id ?? $this->currentUser()->farmacia->farmacia->id ?? null),
                             'area_hospitalar_id' => $produto->area_para,
                             'produto_estoque_id' => $id,
                             'accao' => 'editou produto',
