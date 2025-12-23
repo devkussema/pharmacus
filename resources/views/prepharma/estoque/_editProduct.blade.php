@@ -193,10 +193,12 @@
                         </label>
                         <select class="form-select select2-edit-produto" id="edit_prod_fornecedor" name="fornecedor_id" required>
                             <option value="" disabled>Selecionar fornecedor</option>
+                            <option value="revisao-estoque">Revisão Estoque</option>
                             @foreach(\App\Models\Fornecedor::orderBy('nome')->get() as $forn)
                                 <option value="{{ $forn->id }}">{{ $forn->nome }}</option>
                             @endforeach
                         </select>
+                        <div class="invalid-feedback">Por favor, selecione um fornecedor.</div>
                     </div>
                 </div>
             </div>
@@ -352,6 +354,24 @@
     .offcanvas-edit-product .form-select:focus {
         border-color: #f5576c;
         box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+    }
+
+    .offcanvas-edit-product .form-control.is-invalid,
+    .offcanvas-edit-product .form-select.is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    }
+
+    .offcanvas-edit-product .invalid-feedback {
+        display: none;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    .offcanvas-edit-product .form-control.is-invalid ~ .invalid-feedback,
+    .offcanvas-edit-product .form-select.is-invalid ~ .invalid-feedback {
+        display: block;
     }
 
     .offcanvas-edit-product textarea.form-control {
@@ -551,6 +571,37 @@ $(document).ready(function() {
         // Validar se tem ID
         if (!produtoId) {
             showToast('ID do produto não encontrado', 'error');
+            return;
+        }
+
+        // Validar campos obrigatórios
+        var camposVazios = [];
+        var primeiroCampoVazio = null;
+
+        form.find('[required]').each(function() {
+            var $campo = $(this);
+            if (!$campo.val() || $campo.val() === '') {
+                $campo.addClass('is-invalid');
+                var label = $('label[for="' + $campo.attr('id') + '"]').text().trim();
+                camposVazios.push(label);
+                if (!primeiroCampoVazio) {
+                    primeiroCampoVazio = $campo;
+                }
+            } else {
+                $campo.removeClass('is-invalid');
+            }
+        });
+
+        if (camposVazios.length > 0) {
+            showToast('Preencha os campos obrigatórios: ' + camposVazios.join(', '), 'error', 'Campos Obrigatórios');
+            if (primeiroCampoVazio) {
+                // Se for select2, abrir o dropdown
+                if (primeiroCampoVazio.hasClass('select2-hidden-accessible')) {
+                    primeiroCampoVazio.select2('open');
+                } else {
+                    primeiroCampoVazio.focus();
+                }
+            }
             return;
         }
 

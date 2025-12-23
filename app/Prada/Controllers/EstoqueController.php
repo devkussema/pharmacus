@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\{
     AreaHospitalar as AH,
+    Atividade,
     Estoque,
     PedidoItem,
     ConfirmarBaixa,
@@ -584,7 +585,11 @@ class EstoqueController extends Controller
                 'data_expiracao' => 'required|date',
                 'data_recepcao' => 'nullable|date',
                 'grupo_farmaco_id' => 'required|exists:grupo_farmacologicos,id',
-                'fornecedor_id' => 'required|exists:fornecedores,id',
+                'fornecedor_id' => ['required', function($attribute, $value, $fail) {
+                    if ($value !== 'revisao-estoque' && !\App\Models\Fornecedor::where('id', $value)->exists()) {
+                        $fail('O fornecedor selecionado é inválido.');
+                    }
+                }],
                 'prateleira_id' => 'nullable|exists:prateleiras,id',
                 'obs' => 'nullable|string',
             ], [
@@ -613,8 +618,16 @@ class EstoqueController extends Controller
             $produto->data_expiracao = $request->data_expiracao;
             $produto->data_recepcao = $request->data_recepcao;
             $produto->grupo_farmaco_id = $request->grupo_farmaco_id;
-            $produto->fornecedor_id = $request->fornecedor_id;
-            $produto->origem_destino = $request->fornecedor_id ? \App\Models\Fornecedor::find($request->fornecedor_id)?->nome : null;
+
+            // Tratar fornecedor especial "Revisão Estoque"
+            if ($request->fornecedor_id === 'revisao-estoque') {
+                $produto->fornecedor_id = null;
+                $produto->origem_destino = 'Revisão Estoque';
+            } else {
+                $produto->fornecedor_id = $request->fornecedor_id;
+                $produto->origem_destino = $request->fornecedor_id ? \App\Models\Fornecedor::find($request->fornecedor_id)?->nome : null;
+            }
+
             $produto->prateleira_id = $request->prateleira_id;
             $produto->obs = $request->obs;
 
