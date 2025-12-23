@@ -265,7 +265,7 @@
     }
 
     .offcanvas-edit-product .offcanvas-header {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 1.75rem;
         border: none;
@@ -301,7 +301,7 @@
         border-radius: 12px;
         padding: 1.5rem;
         margin-bottom: 1.25rem;
-        border-left: 4px solid #f5576c;
+        border-left: 4px solid #667eea;
         box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
@@ -316,7 +316,7 @@
     }
 
     .offcanvas-edit-product .section-title i {
-        color: #f5576c;
+        color: #667eea;
         font-size: 1.25rem;
     }
 
@@ -331,7 +331,7 @@
     }
 
     .offcanvas-edit-product .form-label i {
-        color: #f5576c;
+        color: #667eea;
         font-size: 0.875rem;
     }
 
@@ -352,8 +352,8 @@
 
     .offcanvas-edit-product .form-control:focus,
     .offcanvas-edit-product .form-select:focus {
-        border-color: #f5576c;
-        box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
     .offcanvas-edit-product .form-control.is-invalid,
@@ -397,14 +397,14 @@
     }
 
     .offcanvas-edit-product .btn-warning {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         color: white;
     }
 
     .offcanvas-edit-product .btn-warning:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
     }
 
     .offcanvas-edit-product .btn-secondary {

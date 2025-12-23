@@ -907,11 +907,13 @@ class EstoqueController extends Controller
                 'route' => request()->path(),
                 'http_method' => request()->method(),
                 'level' => 'info',
+                'movement_date' => $movementDate->format('d/m/Y H:i'),
             ];
 
             $areaDestino = \App\Models\AreaHospitalar::find($area_hospitalar_id);
+            $dataMovimentoFormatada = \Carbon\Carbon::parse($movementDate)->format('d/m/Y');
             self::startAtv(
-                "Transferiu {$quantidadeBaixar} unidades de '{$produto->designacao}' (Lote: {$produto->num_lote}) para {$areaDestino->nome}",
+                "Transferiu {$quantidadeBaixar} unidades de '{$produto->designacao}' (Lote: {$produto->num_lote}) para {$areaDestino->nome} em {$dataMovimentoFormatada}",
                 null,
                 $meta
             );

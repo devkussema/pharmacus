@@ -17,7 +17,7 @@
         position: sticky;
         top: 0;
         z-index: 10;
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 1.5rem;
         border: none;
