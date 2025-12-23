@@ -29,7 +29,7 @@
         <!-- Form Container -->
         <form id="formEditProduct" style="display:none;">
             @csrf
-            @method('PUT')
+            <input type="hidden" name="_method" value="PUT">
             <input type="hidden" name="produto_id" id="edit_prod_id">
 
             <!-- Seção: Informações Básicas -->
@@ -540,17 +540,32 @@ $(document).ready(function() {
     $('#formEditProduct').on('submit', function(e) {
         e.preventDefault();
 
+        console.log('Form submit triggered'); // Debug
+
         var form = $(this);
         var formData = new FormData(this);
         var produtoId = $('#edit_prod_id').val();
 
-        // Validar datas
-        var dataProducao = new Date($('#edit_prod_data_producao').val());
-        var dataExpiracao = new Date($('#edit_prod_data_expiracao').val());
+        console.log('Produto ID:', produtoId); // Debug
 
-        if (dataExpiracao <= dataProducao) {
-            showToast('A data de expiração deve ser posterior à data de produção', 'error');
+        // Validar se tem ID
+        if (!produtoId) {
+            showToast('ID do produto não encontrado', 'error');
             return;
+        }
+
+        // Validar datas apenas se ambas estiverem preenchidas
+        var dataProducaoVal = $('#edit_prod_data_producao').val();
+        var dataExpiracaoVal = $('#edit_prod_data_expiracao').val();
+
+        if (dataProducaoVal && dataExpiracaoVal) {
+            var dataProducao = new Date(dataProducaoVal);
+            var dataExpiracao = new Date(dataExpiracaoVal);
+
+            if (dataExpiracao <= dataProducao) {
+                showToast('A data de expiração deve ser posterior à data de produção', 'error');
+                return;
+            }
         }
 
         // UI elements
@@ -563,8 +578,11 @@ $(document).ready(function() {
         btnText.hide();
         btnSpinner.show();
 
-        // Adicionar método PUT ao FormData
-        formData.append('_method', 'PUT');
+        // Log FormData
+        console.log('Enviando dados para:', '/estoque/produto/' + produtoId);
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
 
         // AJAX request
         $.ajax({
@@ -574,32 +592,22 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 'X-Requested-With': 'XMLHttpRequest'
             },
             success: function(response) {
+                console.log('Resposta sucesso:', response); // Debug
                 showToast(response.message || 'Produto atualizado com sucesso!', 'success');
 
-                // Reload DataTable
-                if (typeof table !== 'undefined' && table.ajax) {
-                    table.ajax.reload(null, false);
-                } else {
-                    $('#table-c').DataTable().ajax.reload(null, false);
-                }
-
-                // Close offcanvas after delay
+                // Reload page to show updated data
                 setTimeout(function() {
-                    var offcanvasEl = document.getElementById('offcanvasEditProduct');
-                    var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
-                    if (offcanvas) offcanvas.hide();
-
-                    form[0].reset();
-                    form.find('input, select, textarea, button').prop('disabled', false);
-                    btnText.show();
-                    btnSpinner.hide();
+                    location.reload();
                 }, 800);
             },
-            error: function(xhr) {
+            error: function(xhr, status, error) {
+                console.error('Erro AJAX:', xhr, status, error); // Debug
+                console.error('Response:', xhr.responseText); // Debug
+
                 var errorMsg = 'Erro ao atualizar produto';
 
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
@@ -610,6 +618,8 @@ $(document).ready(function() {
                     errorMsg = errors.join(', ');
                 } else if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMsg = xhr.responseJSON.message;
+                } else if (xhr.responseText) {
+                    errorMsg = 'Erro: ' + xhr.status + ' - ' + xhr.statusText;
                 }
 
                 showToast(errorMsg, 'error');
