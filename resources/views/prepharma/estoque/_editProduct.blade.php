@@ -471,6 +471,8 @@ $(document).ready(function() {
 
     // Função para preencher o formulário
     function populateEditForm(produto) {
+        console.log('Produto recebido:', produto); // Debug
+
         $('#edit_prod_id').val(produto.id);
         $('#edit_prod_designacao').val(produto.designacao);
         $('#edit_prod_tipo').val(produto.tipo).trigger('change');
@@ -479,9 +481,33 @@ $(document).ready(function() {
         $('#edit_prod_quantidade').val(produto.quantidade);
         $('#edit_prod_lote').val(produto.num_lote || '');
         $('#edit_prod_documento').val(produto.num_documento || '');
-        $('#edit_prod_data_producao').val(produto.data_producao ? produto.data_producao.split(' ')[0] : '');
-        $('#edit_prod_data_expiracao').val(produto.data_expiracao ? produto.data_expiracao.split(' ')[0] : '');
-        $('#edit_prod_data_recepcao').val(produto.data_recepcao ? produto.data_recepcao.split(' ')[0] : '');
+
+        // Formatar datas corretamente para campos date
+        const formatDate = (dateString) => {
+            if (!dateString) return '';
+            // Se já estiver no formato YYYY-MM-DD, retorna direto
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+                return dateString;
+            }
+            // Se tiver hora (YYYY-MM-DD HH:MM:SS), pega só a data
+            if (dateString.includes(' ')) {
+                return dateString.split(' ')[0];
+            }
+            // Se for timestamp ou outro formato, tenta converter
+            const date = new Date(dateString);
+            if (!isNaN(date.getTime())) {
+                return date.toISOString().split('T')[0];
+            }
+            return '';
+        };
+
+        $('#edit_prod_data_producao').val(formatDate(produto.data_producao));
+        $('#edit_prod_data_expiracao').val(formatDate(produto.data_expiracao));
+        $('#edit_prod_data_recepcao').val(formatDate(produto.data_recepcao));
+
+        console.log('Data expiração original:', produto.data_expiracao); // Debug
+        console.log('Data expiração formatada:', formatDate(produto.data_expiracao)); // Debug
+
         $('#edit_prod_grupo_farmaco').val(produto.grupo_farmaco_id).trigger('change');
         $('#edit_prod_fornecedor').val(produto.fornecedor_id).trigger('change');
         $('#edit_prod_prateleira').val(produto.prateleira_id || '').trigger('change');

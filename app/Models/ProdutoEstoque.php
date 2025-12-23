@@ -64,9 +64,9 @@ class ProdutoEstoque extends Model
      */
     protected $casts = [
         'validade' => 'date',
-        'data_expiracao' => 'date',
-        'data_producao' => 'date',
-        'data_recepcao' => 'date',
+        'data_expiracao' => 'date:Y-m-d',
+        'data_producao' => 'date:Y-m-d',
+        'data_recepcao' => 'date:Y-m-d',
         'quantidade' => 'integer',
     ];
 
