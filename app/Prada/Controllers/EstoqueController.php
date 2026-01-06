@@ -777,7 +777,7 @@ class EstoqueController extends Controller
 
         $saldoRestante = $saldoAtual - $quantidadeBaixar;
         $user = $this->currentUser();
-        $movementDate = $request->movement_date ?? now();
+        $movementDate = $request->movement_date ? \Carbon\Carbon::parse($request->movement_date) : now();
 
         // Determinar farmacia
         $farmacia_id = null;
