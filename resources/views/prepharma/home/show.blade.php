@@ -346,7 +346,7 @@
                                             </td>
                                             <td>{{ $at->texto }}</td>
                                             <td class="appoint-time">
-                                                {{ statusOnline($at->created_at) }}
+                                                {{ \Carbon\Carbon::parse($at->created_at)->locale('pt')->diffForHumans() }}
                                             </td>
                                         </tr>
                                     @endforeach
