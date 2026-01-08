@@ -398,7 +398,31 @@
                                                     {{ $usr->email }}
                                                 </a>
                                             </td>
-                                            <td>{{ statusOnline($usr->online) }}</td>
+                                            <td>
+                                                @php
+                                                    $isOnline = $usr->online === 1 || $usr->online === '1' || $usr->online === true;
+                                                    $lastSeen = $usr->ultimo_acesso ?? $usr->last_seen ?? $usr->last_login_at ?? $usr->updated_at ?? null;
+                                                @endphp
+
+                                                @if ($isOnline)
+                                                    <span class="text-success"><i class="fa fa-circle me-1" aria-hidden="true"></i> Online</span>
+                                                @else
+                                                    @if ($lastSeen)
+                                                        @php
+                                                            $last = \Carbon\Carbon::parse($lastSeen);
+                                                            $oneWeekAgo = \Carbon\Carbon::now()->subWeek();
+                                                        @endphp
+
+                                                        @if ($last->greaterThanOrEqualTo($oneWeekAgo))
+                                                            <span class="text-success"><i class="fa fa-clock me-1" aria-hidden="true"></i> {{ statusOnline($lastSeen) }}</span>
+                                                        @else
+                                                            <span class="text-muted"><i class="fa fa-circle me-1" aria-hidden="true"></i> Offline</span>
+                                                        @endif
+                                                    @else
+                                                        <span class="text-muted"><i class="fa fa-circle me-1" aria-hidden="true"></i> Offline</span>
+                                                    @endif
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
